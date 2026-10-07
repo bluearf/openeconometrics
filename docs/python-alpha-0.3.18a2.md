@@ -1,5 +1,10 @@
 # Python SDK alpha 0.3.18a2
 
+The subsequent [SDK a3 patch](python-alpha-0.3.18a3.md) repairs a remaining
+intermittent startup RSS refusal found in a longer hosted test run. Existing a2
+GitHub release bytes remain historical and immutable; current PyPI publication
+acceptance must use the a3 source and its fresh validation receipts.
+
 This Python-only patch derives from the reviewed public source snapshot
 `7cb7517bf8bacf91f92c85f8df9a2904e76e8974`, originally exported from private
 development source `6cd9079a330b03a4f1a568e28aca04a23a8d897b`.

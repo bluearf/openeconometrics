@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import os
 import time
 from types import SimpleNamespace
 
@@ -420,3 +421,188 @@ def test_parser_rejects_true_transient_peak_after_current_rss_falls(monkeypatch,
     with pytest.raises(DataError, match="peak RSS") as caught:
         readers.Parser.receive(parser)
     assert caught.value.code == "READER_LIMIT"
+
+
+@pytest.fixture
+def simulated_parser_startup(monkeypatch):
+    """A spawned PID briefly owns parent mappings before its ready handshake."""
+    import openecon.source_readers as readers
+
+    def build(*, inherited_mib=1400, ready_peak_mib=192, baseline_mib=128,
+              batch_peak_mib=192, batch_current_mib=128, ready_type="ready",
+              failure=None, platform_name="posix"):
+        state = SimpleNamespace(ready=False, sent=[], rss_samples=[], polls=0)
+
+        class Connection:
+            def poll(self, timeout):
+                state.polls += 1
+                return failure != "dead" and state.polls > 1
+
+            def recv(self):
+                if failure == "eof":
+                    raise EOFError
+                if failure == "error":
+                    return {"type": "error", "code": "READER_LIMIT", "message": "startup refused"}
+                if not state.ready:
+                    state.ready = True
+                    return {"type": ready_type, "peak_rss_bytes": ready_peak_mib * 1024**2}
+                return {"type": "batch", "peak_rss_bytes": batch_peak_mib * 1024**2}
+
+            def send(self, message):
+                assert state.ready
+                state.sent.append(message)
+
+            def close(self):
+                pass
+
+        class Process:
+            pid = 1
+
+            def __init__(self, **kwargs):
+                self.alive = failure != "dead"
+
+            def start(self):
+                pass
+
+            def is_alive(self):
+                return self.alive
+
+            def terminate(self):
+                self.alive = False
+
+            def join(self, timeout):
+                pass
+
+        def sample(pid):
+            current = (batch_current_mib if state.sent else baseline_mib) if state.ready else inherited_mib
+            state.rss_samples.append(current)
+            return current * 1024**2
+
+        context = SimpleNamespace(Pipe=lambda: (Connection(), Connection()), Process=Process)
+        monkeypatch.setattr(readers.multiprocessing, "get_context", lambda method: context)
+        monkeypatch.setattr(readers, "rss_bytes", sample)
+        monkeypatch.setattr(readers, "os", SimpleNamespace(name=platform_name, environ=os.environ))
+        parser = readers.Parser("untrusted-not-opened.parquet", timeout=-1 if failure == "timeout" else 5)
+        return parser, state
+
+    return build
+
+
+@pytest.mark.parametrize("inherited_mib", [1400, 1800])
+def test_parser_admits_only_own_ready_address_space_before_file_access(simulated_parser_startup, inherited_mib):
+    parser, state = simulated_parser_startup(inherited_mib=inherited_mib)
+    try:
+        assert parser.start() is parser
+        assert parser.receive()["type"] == "batch"
+        assert state.sent == ["start"]
+        assert state.rss_samples == [128, 128]
+        assert parser.baseline == 128 * 1024**2
+        assert parser.peak == 192 * 1024**2
+    finally:
+        parser.close()
+
+
+@pytest.mark.parametrize("ready_peak_mib,baseline_mib", [(1600, 128), (192, 1600), (800, 128)])
+def test_parser_refuses_genuine_ready_total_or_growth_before_file_access(simulated_parser_startup, ready_peak_mib, baseline_mib):
+    parser, state = simulated_parser_startup(ready_peak_mib=ready_peak_mib, baseline_mib=baseline_mib)
+    try:
+        with pytest.raises(DataError, match="resource budget") as caught:
+            parser.start()
+        assert caught.value.code == "READER_LIMIT"
+        assert state.sent == []
+    finally:
+        parser.close()
+
+
+@pytest.mark.parametrize("batch_peak_mib,batch_current_mib", [(1600, 128), (800, 128), (192, 1600), (192, 800)])
+def test_parser_keeps_true_batch_peak_and_polled_total_growth_guards(simulated_parser_startup, batch_peak_mib, batch_current_mib):
+    parser, state = simulated_parser_startup(batch_peak_mib=batch_peak_mib, batch_current_mib=batch_current_mib)
+    try:
+        parser.start()
+        with pytest.raises(DataError) as caught:
+            parser.receive()
+        assert caught.value.code == "READER_LIMIT"
+        assert state.sent == ["start"]
+    finally:
+        parser.close()
+
+
+@pytest.mark.parametrize("failure,code", [("timeout", "READER_TIMEOUT"), ("dead", "READER_LIMIT"),
+                                          ("eof", "READER_LIMIT"), ("error", "READER_LIMIT")])
+def test_parser_startup_timeout_death_eof_and_refusal_prevent_file_access(simulated_parser_startup, failure, code):
+    parser, state = simulated_parser_startup(inherited_mib=128, failure=failure)
+    try:
+        with pytest.raises(DataError) as caught:
+            parser.start()
+        assert caught.value.code == code
+        assert state.sent == []
+    finally:
+        parser.close()
+
+
+def test_parser_wrong_startup_record_prevents_file_access(simulated_parser_startup):
+    parser, state = simulated_parser_startup(inherited_mib=128, ready_type="batch")
+    try:
+        with pytest.raises(DataError, match="did not start") as caught:
+            parser.start()
+        assert caught.value.code == "READER_LIMIT"
+        assert state.sent == []
+    finally:
+        parser.close()
+
+
+def test_parser_unavailable_ready_baseline_prevents_file_access(simulated_parser_startup):
+    parser, state = simulated_parser_startup(baseline_mib=0)
+    try:
+        with pytest.raises(DataError, match="supervision is unavailable") as caught:
+            parser.start()
+        assert caught.value.code == "READER_LIMIT"
+        assert state.sent == []
+    finally:
+        parser.close()
+
+
+@pytest.mark.parametrize("reported_peak", [None, 0, -1, True, "100"])
+def test_parser_invalid_own_ready_peak_is_not_accepted(monkeypatch, reported_peak):
+    import openecon.source_readers as readers
+
+    monkeypatch.setattr(readers, "os", SimpleNamespace(name="posix"))
+    record = {"type": "ready"}
+    if reported_peak is not None:
+        record["peak_rss_bytes"] = reported_peak
+    connection = SimpleNamespace(poll=lambda timeout: True, recv=lambda: record)
+    parser = SimpleNamespace(process=SimpleNamespace(pid=1), connection=connection,
+                             baseline=0, peak=0, deadline=time.monotonic() + 5)
+    with pytest.raises(DataError, match="supervision is unavailable") as caught:
+        readers.Parser.receive(parser, initializing=True)
+    assert caught.value.code == "READER_LIMIT"
+
+
+@pytest.mark.parametrize("initial_mib", [1600, 800])
+def test_windows_startup_keeps_real_initial_current_peak_limits(simulated_parser_startup, initial_mib):
+    # Windows CreateProcess owns fresh mappings immediately and does not report
+    # POSIX high-water values. Its genuine initial current/peak measurements
+    # must still enforce total RSS and later growth relative to ready baseline.
+    parser, state = simulated_parser_startup(platform_name="nt", inherited_mib=initial_mib,
+                                            ready_peak_mib=0, baseline_mib=128)
+    try:
+        with pytest.raises(DataError) as caught:
+            parser.start()
+        assert caught.value.code == "READER_LIMIT"
+        assert state.sent == []
+        assert initial_mib in state.rss_samples
+    finally:
+        parser.close()
+
+
+def test_windows_startup_admits_valid_current_baseline_without_posix_peak(simulated_parser_startup):
+    parser, state = simulated_parser_startup(platform_name="nt", inherited_mib=192,
+                                            ready_peak_mib=0, baseline_mib=128,
+                                            batch_peak_mib=0)
+    try:
+        parser.start()
+        assert parser.receive()["type"] == "batch"
+        assert parser.peak == 192 * 1024**2
+        assert state.sent == ["start"]
+    finally:
+        parser.close()

@@ -333,13 +333,16 @@ class Parser:
         self.process.start()
         child.close()
         self.deadline = time.monotonic() + self.timeout
-        if self.receive().get("type") != "ready":
+        if self.receive(initializing=True).get("type") != "ready":
             raise DataError("Parser did not start correctly.", "READER_LIMIT")
         self.baseline = rss_bytes(self.process.pid) or 0
         if not self.baseline:
             raise DataError(
                 "Parser RSS supervision is unavailable on this platform.", "READER_LIMIT"
             )
+        self.peak = max(self.peak, self.baseline)
+        if self.peak > MAX_READER_RSS_BYTES or self.peak - self.baseline > MAX_READER_EXTRA_BYTES:
+            raise DataError("Parser peak RSS exceeded its resource budget.", "READER_LIMIT")
         self.connection.send("start")
         return self
 
@@ -349,9 +352,16 @@ class Parser:
 
         return MAX_FILE_BYTES, MAX_ROWS, MAX_COLUMNS
 
-    def receive(self):
+    def receive(self, *, initializing=False):
+        own_peak_only = initializing and os.name == "posix"
         while True:
-            current = rss_bytes(self.process.pid)
+            # A spawn PID may still own its parent's mappings before exec. The
+            # worker reads no source bytes until we admit its ready/start
+            # handshake, so account only its reported own-address-space peak
+            # during initialization. Timeout and liveness checks still apply.
+            # Windows starts with fresh mappings and has no reported own peak,
+            # so retain its current-RSS initialization polling and peak history.
+            current = None if own_peak_only else rss_bytes(self.process.pid)
             if current:
                 self.peak = max(self.peak, current)
                 if current > MAX_READER_RSS_BYTES or (
@@ -372,9 +382,15 @@ class Parser:
                     ) from exc
                 if record.get("type") == "error":
                     raise DataError(record["message"], record["code"])
-                self.peak = max(self.peak, record.get("peak_rss_bytes", 0))
+                reported_peak = record.get("peak_rss_bytes", 0)
+                if own_peak_only and (
+                    type(reported_peak) is not int or reported_peak <= 0
+                ):
+                    raise DataError("Parser peak RSS supervision is unavailable.", "READER_LIMIT")
+                self.peak = reported_peak if own_peak_only else max(self.peak, reported_peak)
                 if self.peak > MAX_READER_RSS_BYTES or (
-                    self.baseline and self.peak - self.baseline > MAX_READER_EXTRA_BYTES
+                    not initializing and self.baseline
+                    and self.peak - self.baseline > MAX_READER_EXTRA_BYTES
                 ):
                     raise DataError("Parser peak RSS exceeded its resource budget.", "READER_LIMIT")
                 return record

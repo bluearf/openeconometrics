@@ -81,7 +81,7 @@
       "pydantic>=2.9,<3",
       "threadpoolctl>=3.5,<4",
       "packaging>=24,<27",
-      "openecon-charts==0.3.0a1"
+      "openecon-charts==0.3.0a2"
     ]
   },
   "estimators": {
@@ -10716,8 +10716,8 @@
   "schema": 1,
   "source_fingerprints": {
     "desktop/src-tauri/tauri.conf.json": "fb6d3abcd0286f70195317d85291e56db5c9e9ce843244b6badb493c5943de37",
-    "packages/openecon-charts/pyproject.toml": "4768e990df3747335059644e8b13b30d6fb96cd5ac7b3ad11810a9815a9123ef",
-    "pyproject.toml": "9d056c4205f5eee5913c80346102b2d48da0b86be0ed973b179ffa1546afd0c9",
+    "packages/openecon-charts/pyproject.toml": "95b8fcd21ed8613ec3318aa127f68b230ead01278cfc0cff20d32b9121d110ee",
+    "pyproject.toml": "6fa5a032d7aac7f0f3df0277d5ad254e4c7321eb3eff8cf8d14aa27b1daef763",
     "src/openecon/analysis_contracts.py": "2ed26c0e46a5346247fba66795600dc7c7f8bb08fdb4b3c0cb0d3f2f21cb3fd3",
     "src/openecon/dataset.py": "cfc19b714a6807ab33b3e8264cdda2d92e9418bfd909ca9532082fcd1b516616",
     "src/openecon/dataset_prepare.py": "180aca26fddac9276f7706bb539b20c9851dddc9e9c37eef569b8bb26cd76cdb",
@@ -10759,9 +10759,9 @@
     "src/openecon/linear_ols/spec.py": "164cc1449bfe0208bfe1468bdb3612f14255106d13b4d1a732fb1bf8ea36e53e",
     "src/openecon/prediction_capabilities.py": "c8fdc84fc59abec89d9dcc1d2166b672d5532ee9cd367585df9e4e075d4f6b2e",
     "src/openecon/resources.py": "bfd3b89ab6aabd80822f10d829bd5e52b48bd142ed84b792ecd75f3ad06517ac",
-    "src/openecon/source_readers.py": "192dbbed2856e11f02b1f6ad009b18d30292e8c3de12446d7d61e15d8ae6ae61"
+    "src/openecon/source_readers.py": "6c90b8870ba76a6a906889f8f2dbd318223f45189332993d59c13cdd1b53a18c"
   },
-  "source_ref": "842def1",
+  "source_ref": "316608235b867ef2498ae4cd294e6fa6ab6b2788",
   "stata_parity_validated": false,
   "streaming": {
     "algorithm": "native float64 global factors, likelihood/moment replays, disk group/risk-set/time-series kernels",
@@ -11749,9 +11749,9 @@
     "working_memory_budget_bytes": 134217728
   },
   "versions": {
-    "charts": "0.3.0a1",
+    "charts": "0.3.0a2",
     "native": "0.3.43",
-    "sdk": "0.3.18a2"
+    "sdk": "0.3.18a3"
   },
   "workspace": {
     "configuration": "OPENECON_WORKSPACE_MB",
