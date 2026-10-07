@@ -90,6 +90,30 @@ def rss_bytes(pid):
     return None
 
 
+def peak_rss_bytes():
+    """Peak for this parser's address space, excluding pre-exec parent history."""
+    if sys.platform.startswith("linux"):
+        # getrusage().ru_maxrss survives execve on Linux. A spawned parser can
+        # inherit a console's historical peak even though it owns fresh mappings.
+        # VmHWM belongs to the new address space and still catches brief peaks
+        # that the parent's current-RSS polling did not observe.
+        try:
+            for line in Path("/proc/self/status").read_text().splitlines():
+                if line.startswith("VmHWM:"):
+                    _, value, unit = line.split()
+                    peak = int(value)
+                    return peak * 1024 if unit == "kB" and peak > 0 else None
+        except (OSError, ValueError):
+            return None
+        return None
+    if os.name == "posix":
+        import resource
+
+        peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        return int(peak if sys.platform == "darwin" else peak * 1024)
+    return None
+
+
 def preflight_csv(path, *, header_only=False):
     """Bound fields/records using fixed byte blocks before any CSV parser call.
 
@@ -190,10 +214,10 @@ def _child(connection, directory, mode, path, columns, batch_rows, dense_limits)
 
     def report(record):
         if os.name == "posix":
-            import resource
-
-            peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-            record["peak_rss_bytes"] = int(peak if sys.platform == "darwin" else peak * 1024)
+            peak = peak_rss_bytes()
+            if not peak:
+                raise DataError("Parser peak RSS supervision is unavailable.", "READER_LIMIT")
+            record["peak_rss_bytes"] = peak
         connection.send(record)
 
     try:

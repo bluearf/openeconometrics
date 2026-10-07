@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+import math
 
 import numpy as np
 import pytest
@@ -268,14 +269,45 @@ def test_empty_stream_rejected():
     assert error.value.code == "insufficient_observations"
 
 
-def test_zero_residual_variance_rejected():
-    # Both column norms equal two, so this exact fit has representable zero
-    # residuals rather than merely tiny QR roundoff residuals.
+@pytest.mark.parametrize("covariance", ["nonrobust", "HC1", "HC3"])
+@pytest.mark.parametrize("batch_rows", [1, 3, 4])
+@pytest.mark.parametrize("outcome_scale", [1e-100, 1.0, 1e100])
+@pytest.mark.parametrize("intercept", [True, False])
+def test_zero_residual_variance_rejected(covariance, batch_rows, outcome_scale, intercept):
+    # An exact fit need not produce literal zero: QR roundoff varies across
+    # BLAS implementations and TSQR partitions. Batch size three also exposes
+    # the defect on macOS, where the former single-block example was exact.
     x = torch.tensor([[1, -1], [1, -1], [1, 1], [1, 1]], dtype=torch.float64)
-    y = torch.tensor([-1, -1, 1, 1], dtype=torch.float64)
+    y = x[:, 1] * outcome_scale
+    if not intercept:
+        x = x[:, 1:]
     with pytest.raises(KernelError) as error:
-        streaming_ols.solve_ols(batches(x, y, 4), "nonrobust")
+        streaming_ols.solve_ols(batches(x, y, batch_rows), covariance, intercept=intercept)
     assert error.value.code == "numerical_failure"
+
+
+@pytest.mark.parametrize("batch_rows", [1, 3, 4])
+@pytest.mark.parametrize("outcome_scale", [1e-100, 1.0, 1e100])
+def test_tiny_identifiable_residual_variance_is_not_rounded_to_zero(batch_rows, outcome_scale):
+    x = torch.tensor([[1, -1], [1, -1], [1, 1], [1, 1]], dtype=torch.float64)
+    # This alternating noise is orthogonal to both columns. Its exact SSR is
+    # 4 * (scale * 1e-10)**2, despite a variance ratio of only 1e-20.
+    noise = torch.tensor([1, -1, 1, -1], dtype=torch.float64) * 1e-10
+    y = (x[:, 1] + noise) * outcome_scale
+    result = streaming_ols.solve_ols(batches(x, y, batch_rows), "nonrobust")
+    assert result.residual_ss == pytest.approx(4 * (outcome_scale * 1e-10) ** 2, rel=1e-5, abs=0)
+    assert math.isfinite(result.log_likelihood)
+    assert result.diagnostics["relative_residual_norm"] > result.diagnostics["residual_tolerance_value"]
+
+
+def test_residual_resolution_uses_centered_outcome_with_intercept():
+    x = torch.tensor([[1, -1], [1, -1], [1, 1], [1, 1]], dtype=torch.float64)
+    noise = torch.tensor([1, -1, 1, -1], dtype=torch.float64) * 2**-12
+    y = 2**40 + x[:, 1] * 2**-10 + noise
+    result = streaming_ols.solve_ols(batches(x, y, 3), "nonrobust")
+    # All values are exactly representable; scaling by the uncentered 2**40
+    # level would misclassify genuine residual variance as numerical zero.
+    assert result.residual_ss == pytest.approx(4 * 2**-24, rel=2e-12, abs=0)
 
 
 def test_direct_kernel_width_bound_is_independent_of_row_count():
