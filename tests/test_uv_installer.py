@@ -92,6 +92,8 @@ def test_uv_resolution_retains_full_specs_and_core_constraints(tmp_path, monkeyp
     for required in ["--no-build", "--no-sources", "--constraint", "--keyring-provider", "--quiet"]:
         assert required in calls[0]
     assert calls[0][calls[0].index("--default-index") + 1] == "https://pypi.org/simple"
+    assert calls[0][calls[0].index("--constraint") + 1] == "constraints.txt"
+    assert calls[0][-1] == "requirements.in"
 
 
 def test_uv_resolution_restores_exact_transitive_graph(tmp_path, monkeypatch):
@@ -418,7 +420,10 @@ def test_uv_probe_does_not_accept_general_python_execution(arguments, capsys):
     assert not capsys.readouterr().out
 
 
-def test_real_uv_installs_verified_local_wheel_without_system_python_or_network(tmp_path, monkeypatch, native_uv):
+@pytest.mark.parametrize("profile", ["plain", "Application Support/Çalışma QA"])
+def test_real_uv_installs_verified_local_wheel_without_system_python_or_network(tmp_path, monkeypatch, native_uv, profile):
+    tmp_path = tmp_path / profile
+    tmp_path.mkdir(parents=True)
     wheel = tmp_path / "demo_uv-1.2.3-py3-none-any.whl"
     content = wheel_bytes()
     wheel.write_bytes(content)
@@ -437,6 +442,27 @@ def test_real_uv_installs_verified_local_wheel_without_system_python_or_network(
     assert (overlay / "demo_uv" / "__init__.py").read_text() == "VALUE = 'isolated verified wheel'\n"
     assert (overlay / "demo_uv-1.2.3.dist-info" / "METADATA").is_file()
     assert not (tmp_path / ".venv").exists()
+
+
+def test_real_uv_resolves_in_spaced_unicode_profile_with_relative_inputs(tmp_path, monkeypatch, native_uv):
+    stage = tmp_path / "Library/Application Support/Çalışma QA/.packages/stage-fixture"
+    wheels = stage / "wheels"
+    wheels.mkdir(parents=True)
+    (wheels / "demo_uv-1.2.3-py3-none-any.whl").write_bytes(wheel_bytes())
+    monkeypatch.setattr(uv_runtime, "uv_executable", lambda: native_uv)
+    run = installer._run_uv
+
+    def offline(stage, arguments):
+        run(stage, [*arguments, "--offline", "--no-index", "--find-links", "wheels"])
+
+    monkeypatch.setattr(installer, "_run_uv", offline)
+    # The independent generated lock is inspected here. Local test wheel URLs
+    # are outside the production HTTPS download policy, tested separately.
+    monkeypatch.setattr(installer, "_read_uv_lock", lambda path, *_: tomllib.loads(path.read_text()))
+    result = installer._resolve_uv(stage, [{"name": "demo-uv", "version": "1.2.3"}], {}, None,
+                                   ["demo-uv==1.2.3"])
+    assert [(p["name"], p["version"]) for p in result["packages"]] == [("demo-uv", "1.2.3")]
+    assert (stage / "constraints.txt").read_text() == "demo-uv==1.2.3\n"
 
 
 def test_real_uv_compiles_ranges_extras_and_fixed_core_without_other_python(tmp_path, monkeypatch, native_uv):

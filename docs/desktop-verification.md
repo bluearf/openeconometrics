@@ -6,6 +6,11 @@ This is historical 0.3.0 evidence. See [large local datasets](streaming.md) for
 support categories and disk-backed cluster inference.
 The current delivery scope is Mac only. See the [desktop architecture](desktop.md),
 [workbench architecture](architecture.md) and [desktop build instructions](../desktop/README.md).
+The [clean-profile Mac installation record](clean-mac-installation.md) separately
+tracks first launch, reopen, authenticated loading, bundled CPU computation and
+update/rollback. Historical minimum-OS labels below are recorded metadata, not
+a retrospective audit of every dependency; the current finalizer performs that
+audit before creating a DMG.
 The current [0.3.33 local installation record](evidence/desktop-0.3.33.json)
 documents complete native Dataset option families, exact frozen-source
 fingerprints, 30 actual bundled-worker fits and saved-output restart,

@@ -116,8 +116,10 @@ starts in a background thread and receives no native application permission.
 ## Build on Apple Silicon
 
 Build prerequisites: Xcode command line tools, Rust and Node.js. Python and
-PyInstaller are build dependencies only. Install the project and chart package
-in a build environment with the `desktop` extra and `pyinstaller==6.22.3`, then:
+PyInstaller are build dependencies only. Use a compatible standalone Python and
+a locked environment (`uv sync --frozen --no-dev --all-packages --all-extras`),
+then install `pyinstaller==6.22.3` in that environment. Cloud service modules and
+development oracle packages are excluded from the frozen desktop. Then:
 
 ```sh
 cd desktop
@@ -147,8 +149,16 @@ shortcut; a retained legacy `OpenEcon.app` beside it is neither included nor
 deleted. Release-cache cleanup recognizes both exact product names, validates
 the retained pair against its approved source configuration, and keeps its
 existing source, backup, path, signature and active-build guards.
-The current Apple Silicon build uses Python with a macOS 15 deployment target,
-so its application metadata requires macOS 15 or later.
+The configured minimum is macOS 15. The finalizer audits the Mach-O minimum OS
+of every bundled native dependency and rejects an installer requiring a newer
+system. A Python deployment-target setting alone is insufficient: Homebrew's
+Python 3.13.5 on the QA host brought in four dylibs requiring macOS 26. Use a
+compatible standalone Python and the locked dependency versions. For an update,
+also retain the protected bundled dependency set: removing cloud-related HTTP
+dependencies from a build environment can change the frozen core and prevent
+existing project package overlays from opening. Do not bypass that check.
+The [clean-profile installation record](../docs/clean-mac-installation.md)
+documents a compatible managed-Python build and an actual update/rollback.
 An unsigned local build is suitable for local verification; signed and
 notarized distribution requires the project's Apple Developer identity.
 

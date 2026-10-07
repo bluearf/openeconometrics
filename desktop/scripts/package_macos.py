@@ -11,6 +11,7 @@ import sys
 import tempfile
 
 from package_runtime import optimize_runtime, prepare_distribution_notices
+from macos_contract import audit
 
 DESKTOP = Path(__file__).resolve().parents[1]
 
@@ -50,6 +51,13 @@ def finalize_app(app: Path) -> dict:
     # preserves the hashes that native startup checks before execution.
     subprocess.run(["codesign", "--force", "--sign", "-", str(app)], check=True)
     subprocess.run(["codesign", "--verify", "--deep", "--strict", str(app)], check=True)
+    contract = audit(app)
+    if contract["minimum_os_violations"]:
+        raise RuntimeError(
+            "Bundled binaries require a newer macOS version than LSMinimumSystemVersion: "
+            + ", ".join(contract["minimum_os_violations"])
+            + ". Rebuild with a compatible standalone Python/toolchain or raise the actual minimum OS."
+        )
     return optimization
 
 

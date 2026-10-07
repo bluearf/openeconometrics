@@ -126,7 +126,11 @@ def capture(binary: Path, output: Path, seconds: float, interval: float):
                             changed = True
                 bsd = BSDInfo()
                 if lib.proc_pidinfo(root, 3, 0, C.byref(bsd), C.sizeof(bsd)) != C.sizeof(bsd):
-                    raise RuntimeError("Cannot establish the native process start time.")
+                    # The app can exit between PID enumeration and this read,
+                    # especially during an update/rollback capture. Skip the
+                    # incomplete sample and retain capture for the next launch.
+                    time.sleep(interval)
+                    continue
                 resources = []
                 for pid in sorted(owned):
                     usage = RUsage()

@@ -43,6 +43,10 @@ results = [oe.ols(data=data, y="y", x=["x", "z"], covariance="HC3"),
            oe.mvreg(data=data, y=["y", "z"], x=["x"]),
            oe.gmm(data=data, moments=["y - {a} - {b}*x"], instruments=["x", "z"])]
 assert all(result.nobs == 320 for result in results)
+for procedure in (oe.ngperron, oe.kss):
+    tested = procedure(frame, "y", lags=1)
+    assert tested.attrs["p_value"] is None
+    assert tested.attrs["nobs"] == 318
 assert not any(name == "scipy" or name.startswith("scipy.") for name in sys.modules)
 print(json.dumps({"models": [result.spec.estimator for result in results], "scipy_loaded": False}))
 '''

@@ -37,6 +37,8 @@ BUILTINS = (
 # Short descriptions explain the existing public behavior. Signatures and
 # defaults always come from syntax or the trusted standard-library builtin.
 DESCRIPTIONS = {
+    "openecon.ngperron": "Ng-Perron GLS MZa/MZt/MSB/MPT statistics only, p_value=None. Fixed lags or MAIC including lag zero. No critical values or rejection decisions until published-table calibration is resolved (MARKET-136). Complete consecutive integer periods required.",
+    "openecon.kss": "KSS cubic-regression unit-root test against globally stationary ESTAR dynamics. Raw, demeaned or detrended levels with fixed augmentation; published asymptotic 1/5/10% lower-tail critical values, p_value=None.",
     "openecon.ols": "Fit an OLS/WLS regression. Use y/x or formula; explicitly choose standard errors, weights and missing-value handling.",
     "openecon.logit": "Fit a logistic regression for a binary (0/1) outcome.",
     "openecon.probit": "Fit a probit regression for a binary (0/1) outcome.",
@@ -579,12 +581,14 @@ def generate(ref: str = "HEAD", pandas_root: Path | None = None) -> list[dict[st
         "hypergraph", "read_hypergraph",
     }
     return_types = {
+        "bai_perron": "openecon.TableSet",
         "fit": "openecon.ResultBundle", "ols": "openecon.OLSResult",
         "logit": "openecon.ResultBundle", "probit": "openecon.ResultBundle",
         "read": "openecon.DataFrame", "example": "openecon.DataFrame",
         "load_dataset": "openecon.DataFrame", "scan": "openecon.Dataset",
         "predict": "openecon.DataFrame", "margins": "openecon.DataFrame",
         "xtcd": "openecon.DataFrame", "nardl_multipliers": "openecon.DataFrame",
+        "ngperron": "openecon.DataFrame", "kss": "openecon.DataFrame",
         "network": "openecon.Network",
         "signed_network": "openecon.SignedNetwork",
         "multigraph": "openecon.MultiNetwork",

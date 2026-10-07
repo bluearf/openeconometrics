@@ -10753,15 +10753,15 @@
     "src/openecon/econometrics/teffects/__init__.py": "27b51e5aca6542461c050c70044c7d4fb91942bec3dedd4de30da1d3f29e5452",
     "src/openecon/econometrics/tsmodels/__init__.py": "d26aa69a4670d1bb62b1d9b9103f8ddfbb15a091ea98aea14baf02c6f231b825",
     "src/openecon/econometrics/tsworkflows/__init__.py": "70218eff15f3f53f924f5631b33d8ad38fa9b7e2520f01ca55a3e83880024e2c",
-    "src/openecon/econometrics/unitroot/__init__.py": "2319e58cf55baf271082617634ac9f3b03a7899f3a519991a39c6db2b2d70d5e",
-    "src/openecon/econometrics/var/__init__.py": "1fdbd957fcd7e22adecf359dee6832039c5dabad26751cdb199a4cd8c24e5e86",
+    "src/openecon/econometrics/unitroot/__init__.py": "fe4fb9c4882c1e5bfacf1d5e5c298e775ab7da531858bc55bd1adbd19df1caa8",
+    "src/openecon/econometrics/var/__init__.py": "3288763cc9f8eefff80e04bdbb5e2e343b6a74edcb636c95fa64056c408ba6a9",
     "src/openecon/engines/separation.py": "a2f3aca6e5390dcc6c4443ca90c3f3d2758a637eea0b676553c9a0f5d615c612",
     "src/openecon/linear_ols/spec.py": "164cc1449bfe0208bfe1468bdb3612f14255106d13b4d1a732fb1bf8ea36e53e",
     "src/openecon/prediction_capabilities.py": "c8fdc84fc59abec89d9dcc1d2166b672d5532ee9cd367585df9e4e075d4f6b2e",
     "src/openecon/resources.py": "bfd3b89ab6aabd80822f10d829bd5e52b48bd142ed84b792ecd75f3ad06517ac",
     "src/openecon/source_readers.py": "0f1f630969f21bcee6289f58fc2dbd50e8dece517b3dea9fd78080777a5d7deb"
   },
-  "source_ref": "7a1cf8da2571e0568caa308a1ae86d13295fc19d",
+  "source_ref": "HEAD",
   "stata_parity_validated": false,
   "streaming": {
     "algorithm": "native float64 global factors, likelihood/moment replays, disk group/risk-set/time-series kernels",

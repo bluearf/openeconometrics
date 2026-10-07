@@ -16,6 +16,9 @@ critical values come from the published tables typed into
 ``unitroot/tables.py`` and ``unitroot/cips_tables.py``. See
 ``docs/econometrics/unitroot.md``, ``docs/econometrics/cips.md`` and
 ``docs/econometrics/panic.md``.
+
+``bai_perron`` supplies pure multiple-change OLS with bounded Gaussian iid
+fixed-design Monte Carlo calibration; see ``docs/econometrics/bai-perron.md``.
 """
 
 from openecon.econometrics.registry import EstimatorInfo
@@ -24,6 +27,9 @@ ESTIMATORS: tuple[EstimatorInfo, ...] = ()
 
 # Extra public functions exported as oe.<name>: {"name": "package.module:function"}.
 EXPORTS: dict[str, str] = {
+    "ngperron": "openecon.econometrics.unitroot.advanced_series:ngperron",
+    "kss": "openecon.econometrics.unitroot.advanced_series:kss",
+    "bai_perron": "openecon.econometrics.unitroot.bai_perron:bai_perron",
     "phillips_ouliaris": "openecon.econometrics.unitroot.phillips_ouliaris:phillips_ouliaris",
     "po_za": "openecon.econometrics.unitroot.phillips_ouliaris:po_za",
     "po_zt": "openecon.econometrics.unitroot.phillips_ouliaris:po_zt",

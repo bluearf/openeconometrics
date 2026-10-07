@@ -242,10 +242,14 @@ def _resolve_uv(stage: Path, requests: list[dict], core: dict, locked: list[dict
     inputs.write_text("".join(f"{specification}\n" for specification in _source_roots(specifications)), encoding="utf-8")
     report = stage / "pylock.toml"
     print("Resolving compatible wheels with uv", flush=True)
-    _run_uv(stage, ["compile", "--quiet", "--format", "pylock.toml", "--output-file", str(report),
+    # uv 0.9.26 splits requirement-file arguments on whitespace, even when
+    # subprocess receives one argv element. The macOS Application Support
+    # directory always contains a space. Our generated files live in cwd;
+    # use their fixed relative names rather than absolute profile paths.
+    _run_uv(stage, ["compile", "--quiet", "--format", "pylock.toml", "--output-file", report.name,
                     "--no-header", "--no-annotate", "--no-build", "--no-sources",
                     "--keyring-provider", "disabled", "--default-index", _SOURCE_POLICY.get("index_url",INDEX_URL),
-                    "--constraint", str(constraints), str(inputs)])
+                    "--constraint", constraints.name, inputs.name])
     return _read_uv_lock(report, core, locked)
 
 
@@ -254,7 +258,7 @@ def _install_uv(stage: Path, overlay: Path, wheel_lock: Path) -> None:
     # our bounded, hashed, path-checked local wheel files and runs offline.
     _run_uv(stage, ["install", "--offline", "--no-index", "--no-deps", "--no-build",
                     "--require-hashes", "--link-mode", "copy", "--target", str(overlay),
-                    "--keyring-provider", "disabled", "--requirement", str(wheel_lock)])
+                    "--keyring-provider", "disabled", "--requirement", wheel_lock.name])
 
 
 def _download_wheels(stage: Path, selected: list[dict]) -> list[Path]:

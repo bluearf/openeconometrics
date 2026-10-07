@@ -102,4 +102,6 @@ EXPORTS: dict[str, str] = {
     "vec_forecast": "openecon.econometrics.var.postestimation:vec_forecast",
     "vecrank": "openecon.econometrics.var.johansen:vecrank",
     "tycausality": "openecon.econometrics.var.toda_yamamoto:tycausality",
+    "bccaustest": "openecon.econometrics.var.frequency_causality:bccaustest",
+    "dhcausality": "openecon.econometrics.var.panel_causality:dhcausality",
 }

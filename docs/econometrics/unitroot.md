@@ -64,6 +64,10 @@ p-values. Individual CADF output is available with `individual=True`.
 
 ## Samples, missing data and failures
 
+Ng–Perron GLS M tests and the KSS nonlinear test are documented separately in
+[advanced_unitroot.md](advanced_unitroot.md), including their strict integer
+calendar contracts and published asymptotic critical values.
+
 A series is taken in row order, or sorted by `time` when a time column is
 named. Integer periods must be consecutive (`time_gaps` otherwise); datetimes
 are taken as consecutive in sorted order; repeated periods are an error

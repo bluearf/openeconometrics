@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_commit": "0f9fa08bb516e30aff92e183a8f1ce79f81665ae",
+  "source_commit": "6cd9079a330b03a4f1a568e28aca04a23a8d897b",
   "publication_state": "prepared source snapshot; public access requires separate verification",
   "history": "new snapshot only; private Git history, branches, PRs and issues excluded",
   "research_data": "external fixture bytes excluded; obtain separately from original providers under their terms",
@@ -23,6 +23,7 @@
     "tests/test_econ_structural.py",
     "tests/test_engine_equivalence.py",
     "tests/test_inference_extensions.py",
+    "tests/test_macos_installer_audit.py",
     "tests/test_network_io.py",
     "tests/test_network_paths.py",
     "tests/test_network_pipeline_benchmark.py",
@@ -259,6 +260,13 @@
       "transformed": false
     },
     {
+      "path": "benchmarks/research/frequency_panel_causality.py",
+      "bytes": 7840,
+      "sha256": "69bb3201236cd7425ab0cee6fd5db0cb30162c1edef98bde295d06e6449de9cc",
+      "original_sha256": "69bb3201236cd7425ab0cee6fd5db0cb30162c1edef98bde295d06e6449de9cc",
+      "transformed": false
+    },
+    {
       "path": "benchmarks/research/nardl_bounds.py",
       "bytes": 31169,
       "sha256": "2ff58c36321832f5ebf5686e22769e93b77fd465ffbc2d627fb0d95e96bf6712",
@@ -316,9 +324,9 @@
     },
     {
       "path": "desktop/README.md",
-      "bytes": 11003,
-      "sha256": "e210b2d3a5fbf6de92f8aca44c396be4c1523694466cc7a2e7206d8144392da3",
-      "original_sha256": "e210b2d3a5fbf6de92f8aca44c396be4c1523694466cc7a2e7206d8144392da3",
+      "bytes": 11793,
+      "sha256": "8502632a916990abcdbc429ec2615bda8beaf83b5a896647e867a349edd3090b",
+      "original_sha256": "8502632a916990abcdbc429ec2615bda8beaf83b5a896647e867a349edd3090b",
       "transformed": false
     },
     {
@@ -385,10 +393,17 @@
       "transformed": false
     },
     {
+      "path": "desktop/scripts/macos_contract.py",
+      "bytes": 4236,
+      "sha256": "a7685c60abbe972cf1a73467eabbda857f9a2c253baa5e31f1a8c202e47dad5e",
+      "original_sha256": "a7685c60abbe972cf1a73467eabbda857f9a2c253baa5e31f1a8c202e47dad5e",
+      "transformed": false
+    },
+    {
       "path": "desktop/scripts/package_macos.py",
-      "bytes": 4563,
-      "sha256": "75624525a4ec55ed6e01a5e100583410a13c8da88c297a210e3880f495d5a54b",
-      "original_sha256": "75624525a4ec55ed6e01a5e100583410a13c8da88c297a210e3880f495d5a54b",
+      "bytes": 4956,
+      "sha256": "916bc46b807fb70b54ac655405f66cefaf35f5d92da6731dd225ea3bb7b16f1a",
+      "original_sha256": "916bc46b807fb70b54ac655405f66cefaf35f5d92da6731dd225ea3bb7b16f1a",
       "transformed": false
     },
     {
@@ -638,9 +653,9 @@
     },
     {
       "path": "docs/capabilities.md",
-      "bytes": 38730,
-      "sha256": "956a9edd8319fad3fb1e6b3990c0050bcc3a5cb74abf6037fb07ce74a198a757",
-      "original_sha256": "956a9edd8319fad3fb1e6b3990c0050bcc3a5cb74abf6037fb07ce74a198a757",
+      "bytes": 38694,
+      "sha256": "d4da45117d617bf379ecd72abc6d42fd8b2fdab7c3266928befb1014ca8fd7cd",
+      "original_sha256": "d4da45117d617bf379ecd72abc6d42fd8b2fdab7c3266928befb1014ca8fd7cd",
       "transformed": false
     },
     {
@@ -649,6 +664,13 @@
       "sha256": "57589d35b14a5165fbe3b3f2e284b17ea9dda5f53aae2eca7a387692ac74bf68",
       "original_sha256": "77d5d8e3d9d0f2e71c45ddabe559acfd38ad0f8f4d2bb2a2794cf139b383037b",
       "transformed": true
+    },
+    {
+      "path": "docs/clean-mac-installation.md",
+      "bytes": 7292,
+      "sha256": "7470bc9f47b95d8d668ddab7027d946cefd9bf99a0d818129c109fb81c4ff19e",
+      "original_sha256": "7470bc9f47b95d8d668ddab7027d946cefd9bf99a0d818129c109fb81c4ff19e",
+      "transformed": false
     },
     {
       "path": "docs/cloud-deployment.md",
@@ -666,9 +688,9 @@
     },
     {
       "path": "docs/desktop-verification.md",
-      "bytes": 6060,
-      "sha256": "cac0ae78aba62ae78b7142aa0a6cfc279a67f93059a230d1fcba41c5e57d7977",
-      "original_sha256": "cac0ae78aba62ae78b7142aa0a6cfc279a67f93059a230d1fcba41c5e57d7977",
+      "bytes": 6409,
+      "sha256": "64b2f5f2f50ce3b0eb7391a651e8ccd8ae95f48803060e98262674e7ac7f50f5",
+      "original_sha256": "64b2f5f2f50ce3b0eb7391a651e8ccd8ae95f48803060e98262674e7ac7f50f5",
       "transformed": false
     },
     {
@@ -707,6 +729,13 @@
       "transformed": false
     },
     {
+      "path": "docs/econometrics/advanced_unitroot.md",
+      "bytes": 7714,
+      "sha256": "9ed3ce159012956c27012e1ce27ea9c65c7e075c3be536173ba29139e9041484",
+      "original_sha256": "9ed3ce159012956c27012e1ce27ea9c65c7e075c3be536173ba29139e9041484",
+      "transformed": false
+    },
+    {
       "path": "docs/econometrics/ahreg.md",
       "bytes": 9693,
       "sha256": "10dc13efd05ec32842e63b29a17391cf445246bfa2ba2da79a03b7eec23b11e7",
@@ -728,10 +757,17 @@
       "transformed": false
     },
     {
+      "path": "docs/econometrics/bai-perron.md",
+      "bytes": 4762,
+      "sha256": "141274442dbc74e204064bf91a8a782c78c154f6718b322149e1e5f9ea5e3c88",
+      "original_sha256": "141274442dbc74e204064bf91a8a782c78c154f6718b322149e1e5f9ea5e3c88",
+      "transformed": false
+    },
+    {
       "path": "docs/econometrics/capabilities.generated.json",
-      "bytes": 338005,
-      "sha256": "435ecd91030035bbab90c7100fbe36109a7d26c5843a172648a80604ad485a49",
-      "original_sha256": "435ecd91030035bbab90c7100fbe36109a7d26c5843a172648a80604ad485a49",
+      "bytes": 337969,
+      "sha256": "7297f0e3dc672e4dac13c9e3851fa866761355fbb52ca9bb59afae69e8b45b4a",
+      "original_sha256": "7297f0e3dc672e4dac13c9e3851fa866761355fbb52ca9bb59afae69e8b45b4a",
       "transformed": false
     },
     {
@@ -764,9 +800,9 @@
     },
     {
       "path": "docs/econometrics/coverage.md",
-      "bytes": 15389,
-      "sha256": "210bcd18c0c2ba6e3bba8069de405fa2828ee66b074d933639103d7c65923279",
-      "original_sha256": "210bcd18c0c2ba6e3bba8069de405fa2828ee66b074d933639103d7c65923279",
+      "bytes": 16050,
+      "sha256": "2bb7fc80431e94d108b16c24e78f2b54e8d3465cbc1d1cdc1901bfc4aed821c5",
+      "original_sha256": "2bb7fc80431e94d108b16c24e78f2b54e8d3465cbc1d1cdc1901bfc4aed821c5",
       "transformed": false
     },
     {
@@ -795,6 +831,13 @@
       "bytes": 4280,
       "sha256": "dc5261d7959947cd0b1f5af341d747a4f7a7c70bea122be83af955ea8e7678a7",
       "original_sha256": "dc5261d7959947cd0b1f5af341d747a4f7a7c70bea122be83af955ea8e7678a7",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/frequency_panel_causality.md",
+      "bytes": 7839,
+      "sha256": "998c2e998d81c13adc30486bce345a0f1d2d6f8e1007737ce0456584969d6f8b",
+      "original_sha256": "998c2e998d81c13adc30486bce345a0f1d2d6f8e1007737ce0456584969d6f8b",
       "transformed": false
     },
     {
@@ -1128,9 +1171,9 @@
     },
     {
       "path": "docs/econometrics/unitroot.md",
-      "bytes": 36372,
-      "sha256": "b7447c0b873be525b3ebbfd27cc0b38a2353b993090a36e9e7b70177ec915f38",
-      "original_sha256": "b7447c0b873be525b3ebbfd27cc0b38a2353b993090a36e9e7b70177ec915f38",
+      "bytes": 36591,
+      "sha256": "89344d262827daf3cc09b5167de2835af185b4d537fa96b8562895b2445522e6",
+      "original_sha256": "89344d262827daf3cc09b5167de2835af185b4d537fa96b8562895b2445522e6",
       "transformed": false
     },
     {
@@ -1145,6 +1188,13 @@
       "bytes": 4358,
       "sha256": "c92179e7a27e265e9245ce8b1ddaf2edfb5bdbce448cc1011792e81041b660d5",
       "original_sha256": "c92179e7a27e265e9245ce8b1ddaf2edfb5bdbce448cc1011792e81041b660d5",
+      "transformed": false
+    },
+    {
+      "path": "docs/examples/bai_perron.py",
+      "bytes": 1258,
+      "sha256": "c8b300fe0194369590098be145ca24ab32494907ebc5781c5300b48a9a6a8b49",
+      "original_sha256": "c8b300fe0194369590098be145ca24ab32494907ebc5781c5300b48a9a6a8b49",
       "transformed": false
     },
     {
@@ -1166,6 +1216,13 @@
       "bytes": 7076,
       "sha256": "7edae7ce5b257c12a5ccea06d9b3b2e9a357e625f10c7ef8d34e65311e2f9729",
       "original_sha256": "7edae7ce5b257c12a5ccea06d9b3b2e9a357e625f10c7ef8d34e65311e2f9729",
+      "transformed": false
+    },
+    {
+      "path": "docs/examples/frequency_panel_causality.py",
+      "bytes": 3254,
+      "sha256": "55d2c2eff09f47ad953efbb33f37e9e8f2c3492957227957b2a117d2bca0c6c9",
+      "original_sha256": "55d2c2eff09f47ad953efbb33f37e9e8f2c3492957227957b2a117d2bca0c6c9",
       "transformed": false
     },
     {
@@ -1299,6 +1356,13 @@
       "bytes": 5294,
       "sha256": "751721ad10b7b99a5522b5c0308d496a3afa898f26452430c04d2d79e418665f",
       "original_sha256": "751721ad10b7b99a5522b5c0308d496a3afa898f26452430c04d2d79e418665f",
+      "transformed": false
+    },
+    {
+      "path": "docs/examples/unitroot_methods.py",
+      "bytes": 2266,
+      "sha256": "fbd2d6ab7c9914d64e33487533cc68fb6ea6c16aeccdf10ddbaa758c8cb89b7e",
+      "original_sha256": "fbd2d6ab7c9914d64e33487533cc68fb6ea6c16aeccdf10ddbaa758c8cb89b7e",
       "transformed": false
     },
     {
@@ -1799,6 +1863,13 @@
       "transformed": false
     },
     {
+      "path": "scripts/audit_macos_installer.py",
+      "bytes": 1068,
+      "sha256": "4b6ee113aefa52b010cdd612a63a213f11540bf7829bfa87bea1c97d5d041ea0",
+      "original_sha256": "4b6ee113aefa52b010cdd612a63a213f11540bf7829bfa87bea1c97d5d041ea0",
+      "transformed": false
+    },
+    {
       "path": "scripts/benchmark.py",
       "bytes": 1159,
       "sha256": "1d1946c2012b25770540f53647f3e3e225220188ff2d1527184a920d0b518701",
@@ -1904,10 +1975,17 @@
       "transformed": false
     },
     {
+      "path": "scripts/capture_bai_perron_native.py",
+      "bytes": 4314,
+      "sha256": "63c4070cd748f8bea13791d2a10b40782eeeae5a50501da71358924c07ab8040",
+      "original_sha256": "63c4070cd748f8bea13791d2a10b40782eeeae5a50501da71358924c07ab8040",
+      "transformed": false
+    },
+    {
       "path": "scripts/capture_native_performance.py",
-      "bytes": 7951,
-      "sha256": "59902c279eb32e3bd51646a463b9fd49167c264868806e7f79aa66bd0ef6bb1f",
-      "original_sha256": "59902c279eb32e3bd51646a463b9fd49167c264868806e7f79aa66bd0ef6bb1f",
+      "bytes": 8166,
+      "sha256": "de756543ea16157a0b5a1e595e999df86b0fc32479913ed8b6e57021feee2c70",
+      "original_sha256": "de756543ea16157a0b5a1e595e999df86b0fc32479913ed8b6e57021feee2c70",
       "transformed": false
     },
     {
@@ -1933,9 +2011,9 @@
     },
     {
       "path": "scripts/generate_editor_api.py",
-      "bytes": 52856,
-      "sha256": "0dc8f3e735b55ef5d4651e2fd293321f47b3995d8bce463190cdaa59a58faf32",
-      "original_sha256": "0dc8f3e735b55ef5d4651e2fd293321f47b3995d8bce463190cdaa59a58faf32",
+      "bytes": 53480,
+      "sha256": "d467589a51c4094385e4721b32e063ce7d5675b8336529dcdd0e34d5bd476d18",
+      "original_sha256": "d467589a51c4094385e4721b32e063ce7d5675b8336529dcdd0e34d5bd476d18",
       "transformed": false
     },
     {
@@ -1981,6 +2059,13 @@
       "transformed": false
     },
     {
+      "path": "scripts/prove_installed_runtime.py",
+      "bytes": 2800,
+      "sha256": "ff0e1b0a6663690ecae481d3b97d3defa917965bda9d26a09505bd9d8b2dfe45",
+      "original_sha256": "ff0e1b0a6663690ecae481d3b97d3defa917965bda9d26a09505bd9d8b2dfe45",
+      "transformed": false
+    },
+    {
       "path": "scripts/publication_matrix.py",
       "bytes": 5852,
       "sha256": "d14608525b057632a1027f874c1741f01c62c6988b759df9b8e4d2b9515a311e",
@@ -2002,6 +2087,13 @@
       "transformed": false
     },
     {
+      "path": "scripts/snapshot_install_profile.py",
+      "bytes": 4123,
+      "sha256": "5433192dd2c34a29054c361a9e61020de09325bc31cd6fbe31023d73bdb4b052",
+      "original_sha256": "5433192dd2c34a29054c361a9e61020de09325bc31cd6fbe31023d73bdb4b052",
+      "transformed": false
+    },
+    {
       "path": "scripts/start.sh",
       "bytes": 563,
       "sha256": "3b6843fe073626b39373b6cafc1b3156cad1e7a27b3573c1eea411def4644059",
@@ -2013,6 +2105,20 @@
       "bytes": 6055,
       "sha256": "9b1b025a2b768322494abca900cf214803b4fb2d796503ba6bef10ba2bbe5ff6",
       "original_sha256": "9b1b025a2b768322494abca900cf214803b4fb2d796503ba6bef10ba2bbe5ff6",
+      "transformed": false
+    },
+    {
+      "path": "scripts/unitroot_reference.py",
+      "bytes": 2793,
+      "sha256": "41c382272e42a1f3787a9290d9d57d9b205cb16dacc8f6f9f2b3e15f226432a3",
+      "original_sha256": "41c382272e42a1f3787a9290d9d57d9b205cb16dacc8f6f9f2b3e15f226432a3",
+      "transformed": false
+    },
+    {
+      "path": "scripts/validate_bai_perron.py",
+      "bytes": 4347,
+      "sha256": "9af570789246132295e632df0c107429a062de3611767fb99231fa0629a84d25",
+      "original_sha256": "9af570789246132295e632df0c107429a062de3611767fb99231fa0629a84d25",
       "transformed": false
     },
     {
@@ -2072,10 +2178,38 @@
       "transformed": false
     },
     {
+      "path": "scripts/validate_unitroot_methods.py",
+      "bytes": 11925,
+      "sha256": "2576ac7c5d6820195a43a3c385bfaf6bce9b86e13633b55ae4b94e92a5fa4858",
+      "original_sha256": "2576ac7c5d6820195a43a3c385bfaf6bce9b86e13633b55ae4b94e92a5fa4858",
+      "transformed": false
+    },
+    {
       "path": "scripts/verify_advanced_bundle.py",
       "bytes": 2911,
       "sha256": "cb94144130415519538ec35f49a8df684848b714cbe07741a625c817de056739",
       "original_sha256": "cb94144130415519538ec35f49a8df684848b714cbe07741a625c817de056739",
+      "transformed": false
+    },
+    {
+      "path": "scripts/verify_bai_perron_runtime.py",
+      "bytes": 9273,
+      "sha256": "08ee5f0d62a47bf6b55fe085c465af2fb705d15408cbddb2742ff1a5437dbae0",
+      "original_sha256": "08ee5f0d62a47bf6b55fe085c465af2fb705d15408cbddb2742ff1a5437dbae0",
+      "transformed": false
+    },
+    {
+      "path": "scripts/verify_causality_installed.py",
+      "bytes": 5979,
+      "sha256": "efd2f9ca255dc1c6c919c9448462c6d45eb68c29eee8da6803246d7ea733aacf",
+      "original_sha256": "efd2f9ca255dc1c6c919c9448462c6d45eb68c29eee8da6803246d7ea733aacf",
+      "transformed": false
+    },
+    {
+      "path": "scripts/verify_causality_runtime.py",
+      "bytes": 8273,
+      "sha256": "d16718faea6d0c7fb92999955304d773e11184b354405e7b14f5342aa1f63dc3",
+      "original_sha256": "d16718faea6d0c7fb92999955304d773e11184b354405e7b14f5342aa1f63dc3",
       "transformed": false
     },
     {
@@ -2328,6 +2462,13 @@
       "bytes": 4823,
       "sha256": "e5dc1ac6704f9851533b86d5e6239ef041c742f7efa60eebb041cc11df505cd8",
       "original_sha256": "e5dc1ac6704f9851533b86d5e6239ef041c742f7efa60eebb041cc11df505cd8",
+      "transformed": false
+    },
+    {
+      "path": "scripts/verify_unitroot_methods_desktop.py",
+      "bytes": 9025,
+      "sha256": "71827c92242a282fc750671e592e2b48a27acd8f2054c2626e478be98fc9a1fa",
+      "original_sha256": "71827c92242a282fc750671e592e2b48a27acd8f2054c2626e478be98fc9a1fa",
       "transformed": false
     },
     {
@@ -5069,9 +5210,23 @@
     },
     {
       "path": "src/openecon/econometrics/unitroot/__init__.py",
-      "bytes": 2446,
-      "sha256": "2319e58cf55baf271082617634ac9f3b03a7899f3a519991a39c6db2b2d70d5e",
-      "original_sha256": "2319e58cf55baf271082617634ac9f3b03a7899f3a519991a39c6db2b2d70d5e",
+      "bytes": 2815,
+      "sha256": "fe4fb9c4882c1e5bfacf1d5e5c298e775ab7da531858bc55bd1adbd19df1caa8",
+      "original_sha256": "fe4fb9c4882c1e5bfacf1d5e5c298e775ab7da531858bc55bd1adbd19df1caa8",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/advanced_series.py",
+      "bytes": 14679,
+      "sha256": "1fc36080dad04f548234a352558fd693b308024fc039feec062c91f347406fcc",
+      "original_sha256": "1fc36080dad04f548234a352558fd693b308024fc039feec062c91f347406fcc",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/bai_perron.py",
+      "bytes": 16425,
+      "sha256": "b49964aa2b4689183b73549d9df5480110cbc3ce56f20d704d357ffb59da0925",
+      "original_sha256": "b49964aa2b4689183b73549d9df5480110cbc3ce56f20d704d357ffb59da0925",
       "transformed": false
     },
     {
@@ -5209,9 +5364,9 @@
     },
     {
       "path": "src/openecon/econometrics/var/__init__.py",
-      "bytes": 6623,
-      "sha256": "1fdbd957fcd7e22adecf359dee6832039c5dabad26751cdb199a4cd8c24e5e86",
-      "original_sha256": "1fdbd957fcd7e22adecf359dee6832039c5dabad26751cdb199a4cd8c24e5e86",
+      "bytes": 6777,
+      "sha256": "3288763cc9f8eefff80e04bdbb5e2e343b6a74edcb636c95fa64056c408ba6a9",
+      "original_sha256": "3288763cc9f8eefff80e04bdbb5e2e343b6a74edcb636c95fa64056c408ba6a9",
       "transformed": false
     },
     {
@@ -5236,6 +5391,13 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/econometrics/var/frequency_causality.py",
+      "bytes": 10961,
+      "sha256": "1e688dcb0e2f703f48a1e3c0531b944b1aec034a6e44a3c5fc44e0798cdf1a85",
+      "original_sha256": "1e688dcb0e2f703f48a1e3c0531b944b1aec034a6e44a3c5fc44e0798cdf1a85",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/econometrics/var/impulse.py",
       "bytes": 13118,
       "sha256": "e4c4373449a9a0c3958f29f1dbf6e5bba767147aaeeb2dff68e571ecbeb5deaf",
@@ -5254,6 +5416,13 @@
       "bytes": 12149,
       "sha256": "29bdca7300332cee4efa0da80cd781725cd71510c623a227930145716f317bda",
       "original_sha256": "29bdca7300332cee4efa0da80cd781725cd71510c623a227930145716f317bda",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/var/panel_causality.py",
+      "bytes": 14238,
+      "sha256": "23d8e2905943a89dba932a9bb014a823983c3ddb191de84a22bc7ab880f0c7d5",
+      "original_sha256": "23d8e2905943a89dba932a9bb014a823983c3ddb191de84a22bc7ab880f0c7d5",
       "transformed": false
     },
     {
@@ -5559,9 +5728,9 @@
     },
     {
       "path": "src/openecon/package_installer.py",
-      "bytes": 31669,
-      "sha256": "f9e0e1cc237bb2699c46bcd172b8a785b6b793d5db9ec4bf2041c6fdf60d3f5f",
-      "original_sha256": "f9e0e1cc237bb2699c46bcd172b8a785b6b793d5db9ec4bf2041c6fdf60d3f5f",
+      "bytes": 31965,
+      "sha256": "7fa390badc6837ad3b2b89342ad035a3ec6158a87d77b07d740fe2213fa22011",
+      "original_sha256": "7fa390badc6837ad3b2b89342ad035a3ec6158a87d77b07d740fe2213fa22011",
       "transformed": false
     },
     {
@@ -6076,6 +6245,13 @@
       "transformed": false
     },
     {
+      "path": "tests/test_econ_bai_perron.py",
+      "bytes": 10184,
+      "sha256": "ae64907ded4a44d705b4417944831d6c1541c0040e50bb91e5e500eecab4ecf9",
+      "original_sha256": "ae64907ded4a44d705b4417944831d6c1541c0040e50bb91e5e500eecab4ecf9",
+      "transformed": false
+    },
+    {
       "path": "tests/test_econ_causal_evaluation.py",
       "bytes": 12264,
       "sha256": "c3d514d4b980e7798b84175ff82f88ee03f85e5cc5bb8aff92f9824a3638432e",
@@ -6304,6 +6480,13 @@
       "bytes": 9219,
       "sha256": "c215a72c68c88f8ca556265c3321669bc9ee8769de599ba8dd4d995f4525109f",
       "original_sha256": "c215a72c68c88f8ca556265c3321669bc9ee8769de599ba8dd4d995f4525109f",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_econ_frequency_panel_causality.py",
+      "bytes": 11180,
+      "sha256": "f68ee8861b7121fe4308c89f09ce7f6d79ada8905ae5a1255b4766029e51e5f6",
+      "original_sha256": "f68ee8861b7121fe4308c89f09ce7f6d79ada8905ae5a1255b4766029e51e5f6",
       "transformed": false
     },
     {
@@ -7616,10 +7799,17 @@
       "transformed": false
     },
     {
+      "path": "tests/test_econ_unitroot_advanced_series.py",
+      "bytes": 7896,
+      "sha256": "d387d7330a3c6b5ac9df401bdcd6eeaaa6cccb2b753ac03ee16a4f2d87fddd52",
+      "original_sha256": "d387d7330a3c6b5ac9df401bdcd6eeaaa6cccb2b753ac03ee16a4f2d87fddd52",
+      "transformed": false
+    },
+    {
       "path": "tests/test_econ_unitroot_adversarial.py",
-      "bytes": 32537,
-      "sha256": "23f458e3ded2a2e2e65d470e0b9fafe1e65f4dd41f4ae02c96de69bb032d5327",
-      "original_sha256": "23f458e3ded2a2e2e65d470e0b9fafe1e65f4dd41f4ae02c96de69bb032d5327",
+      "bytes": 32613,
+      "sha256": "2d925d905ac40d031d6dd735bf9231a72151bdb305d7a84450f7c25cbc985340",
+      "original_sha256": "2d925d905ac40d031d6dd735bf9231a72151bdb305d7a84450f7c25cbc985340",
       "transformed": false
     },
     {
@@ -7701,9 +7891,9 @@
     },
     {
       "path": "tests/test_editor_api_catalog.py",
-      "bytes": 18800,
-      "sha256": "2ed4c9d494654bc8fdeb3ebbff873905559b5ec4034d381fdaf794259ce22178",
-      "original_sha256": "2ed4c9d494654bc8fdeb3ebbff873905559b5ec4034d381fdaf794259ce22178",
+      "bytes": 19834,
+      "sha256": "9f4c6e9a74c8487d5e4943ca03806a9d84f9aaed5bfd29ac1bd50ac75b05b368",
+      "original_sha256": "9f4c6e9a74c8487d5e4943ca03806a9d84f9aaed5bfd29ac1bd50ac75b05b368",
       "transformed": false
     },
     {
@@ -7865,6 +8055,13 @@
       "bytes": 4771,
       "sha256": "707213f68673474f470a1c14c4be2c843a45489ae629aeb6b6d4dd6657a77ca1",
       "original_sha256": "707213f68673474f470a1c14c4be2c843a45489ae629aeb6b6d4dd6657a77ca1",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_macos_installer_audit.py",
+      "bytes": 4904,
+      "sha256": "56647e413bc74569785e7283c8df16f0e09e795497fb275b2f0b44e737665342",
+      "original_sha256": "56647e413bc74569785e7283c8df16f0e09e795497fb275b2f0b44e737665342",
       "transformed": false
     },
     {
@@ -8464,9 +8661,9 @@
     },
     {
       "path": "tests/test_runtime_without_scipy.py",
-      "bytes": 2590,
-      "sha256": "6015f17044cacb1dbd02e83110dc6425d96693e63812888045216b31752a9d3c",
-      "original_sha256": "6015f17044cacb1dbd02e83110dc6425d96693e63812888045216b31752a9d3c",
+      "bytes": 2755,
+      "sha256": "e2920c94779efadfdfd4d8790ffa6a2a598898319c071e067110f0116187d383",
+      "original_sha256": "e2920c94779efadfdfd4d8790ffa6a2a598898319c071e067110f0116187d383",
       "transformed": false
     },
     {
@@ -8898,9 +9095,9 @@
     },
     {
       "path": "tests/test_uv_installer.py",
-      "bytes": 26178,
-      "sha256": "554e1e041a75d5832ebaf11453062aec483c6dcacdc4c5e93a3340d9641de702",
-      "original_sha256": "554e1e041a75d5832ebaf11453062aec483c6dcacdc4c5e93a3340d9641de702",
+      "bytes": 27646,
+      "sha256": "7da37d88948a3032d2e1051b66ab9ab8a5fb1d7cc0440f5494a25fdb54e22837",
+      "original_sha256": "7da37d88948a3032d2e1051b66ab9ab8a5fb1d7cc0440f5494a25fdb54e22837",
       "transformed": false
     },
     {
@@ -9185,9 +9382,9 @@
     },
     {
       "path": "web/src/editor-api.json",
-      "bytes": 456067,
-      "sha256": "b02741a46d0ed4eebeee2f097d930dde8870f4ee31565977a00346038bf6f275",
-      "original_sha256": "b02741a46d0ed4eebeee2f097d930dde8870f4ee31565977a00346038bf6f275",
+      "bytes": 462923,
+      "sha256": "08d50586d9ebe1188aa85bb3a889ffa9acb060f7dffeb20ca08ce9cca830cffc",
+      "original_sha256": "08d50586d9ebe1188aa85bb3a889ffa9acb060f7dffeb20ca08ce9cca830cffc",
       "transformed": false
     },
     {
@@ -9856,6 +10053,23 @@
     "docs/evidence/advanced-native-2026-10-07/signature.json",
     "docs/evidence/advanced-native-2026-10-07/source-models.json",
     "docs/evidence/advanced-native-2026-10-07/web-tests.log.gz",
+    "docs/evidence/bai-perron-2026-10-07/README.md",
+    "docs/evidence/bai-perron-2026-10-07/frozen-restart.json",
+    "docs/evidence/bai-perron-2026-10-07/integrated-frozen-restart.json",
+    "docs/evidence/bai-perron-2026-10-07/native-restart.json",
+    "docs/evidence/bai-perron-2026-10-07/native-restarted.png",
+    "docs/evidence/bai-perron-2026-10-07/native-restarted.txt",
+    "docs/evidence/bai-perron-2026-10-07/native-run.png",
+    "docs/evidence/bai-perron-2026-10-07/native-run.txt",
+    "docs/evidence/bai-perron-2026-10-07/native-shutdown.json",
+    "docs/evidence/bai-perron-2026-10-07/receipt.json",
+    "docs/evidence/bai-perron-2026-10-07/size-power.json",
+    "docs/evidence/bai-perron-2026-10-07/wheel.json",
+    "docs/evidence/clean-mac-install-rollback-2026-10-07/macos-binaries.json",
+    "docs/evidence/clean-mac-install-rollback-2026-10-07/preservation.json",
+    "docs/evidence/clean-mac-install-rollback-2026-10-07/source-frozen-parity.json",
+    "docs/evidence/clean-mac-install-rollback-2026-10-07/summary.json",
+    "docs/evidence/clean-mac-install-rollback-2026-10-07/timings.json",
     "docs/evidence/close-three-issues/README.md",
     "docs/evidence/close-three-issues/library-wheel.json",
     "docs/evidence/close-three-issues/local-projects-frozen.json",
@@ -9943,6 +10157,16 @@
     "docs/evidence/five-panel-2026-10-07/installed-proof.json",
     "docs/evidence/five-panel-2026-10-07/native-ui.json",
     "docs/evidence/five-panel-2026-10-07/validation.json",
+    "docs/evidence/frequency-panel-causality-2026-10-07/README.md",
+    "docs/evidence/frequency-panel-causality-2026-10-07/checks.json",
+    "docs/evidence/frequency-panel-causality-2026-10-07/frozen.json",
+    "docs/evidence/frequency-panel-causality-2026-10-07/full-results/frequency.json",
+    "docs/evidence/frequency-panel-causality-2026-10-07/full-results/frequency.tex",
+    "docs/evidence/frequency-panel-causality-2026-10-07/full-results/panel.json",
+    "docs/evidence/frequency-panel-causality-2026-10-07/full-results/panel.tex",
+    "docs/evidence/frequency-panel-causality-2026-10-07/installed.json",
+    "docs/evidence/frequency-panel-causality-2026-10-07/size-power-pilot.json",
+    "docs/evidence/frequency-panel-causality-2026-10-07/size-power.json",
     "docs/evidence/inference-five-2026-10-07/README.md",
     "docs/evidence/inference-five-2026-10-07/receipt.json",
     "docs/evidence/inference-five-2026-10-07/wheel-smoke.json",
@@ -10193,6 +10417,27 @@
     "docs/evidence/streaming-helpers-million-2026-10-06.json",
     "docs/evidence/streaming-local-0.3.2.json",
     "docs/evidence/streaming-local-0.3.4.json",
+    "docs/evidence/unitroot-methods-2026-10-07/README.md",
+    "docs/evidence/unitroot-methods-2026-10-07/frozen-before-main-integration.json",
+    "docs/evidence/unitroot-methods-2026-10-07/frozen.json",
+    "docs/evidence/unitroot-methods-2026-10-07/integration-bai-perron.json",
+    "docs/evidence/unitroot-methods-2026-10-07/integration-bai-perron.log.gz",
+    "docs/evidence/unitroot-methods-2026-10-07/integration-bai-perron.xml",
+    "docs/evidence/unitroot-methods-2026-10-07/integration.json",
+    "docs/evidence/unitroot-methods-2026-10-07/integration.log.gz",
+    "docs/evidence/unitroot-methods-2026-10-07/integration.xml",
+    "docs/evidence/unitroot-methods-2026-10-07/native-build-integration.log.gz",
+    "docs/evidence/unitroot-methods-2026-10-07/native-restarted.png",
+    "docs/evidence/unitroot-methods-2026-10-07/native-results.png",
+    "docs/evidence/unitroot-methods-2026-10-07/native.json",
+    "docs/evidence/unitroot-methods-2026-10-07/runtime-build-integration.log.gz",
+    "docs/evidence/unitroot-methods-2026-10-07/scientific-initial-unresolved.json",
+    "docs/evidence/unitroot-methods-2026-10-07/scientific.json",
+    "docs/evidence/unitroot-methods-2026-10-07/tests-final.log.gz",
+    "docs/evidence/unitroot-methods-2026-10-07/tests-final.xml",
+    "docs/evidence/unitroot-methods-2026-10-07/tests.json",
+    "docs/evidence/unitroot-methods-2026-10-07/tests.xml",
+    "docs/evidence/unitroot-methods-2026-10-07/web-build-final.log.gz",
     "\"reports/Ekonometrik modeller Stata EViews SPSS katalo\\304\\237u.md\"",
     "\"reports/Ekonometrik modeller ve Stata katalo\\304\\237u.md\"",
     "\"reports/OpenEcon ekonometri ekleme plan\\304\\261.md\"",
@@ -10245,5 +10490,5 @@
     "tests/fixtures/stata/reproduce-auto-reference.do",
     "tests/fixtures/structural-macro.csv"
   ],
-  "source_files_sha256": "a010f60b2f005ba5a1b5b55bd89efc9d2516f11df33e4977ab4176f15553a23e"
+  "source_files_sha256": "2f19287526385ebebbbe71ec3fb6b5c270a01d1f040a32817cb3772c12f48657"
 }

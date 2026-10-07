@@ -557,10 +557,11 @@ def test_panel_cointegration_adversarial():
     assert_clean(kao())
     assert_clean(kao(demean=True))
     pd.testing.assert_frame_equal(base, before)
-    with pytest.raises(AnalysisError) as caught:
-        kao(test="pedroni")
-    assert caught.value.code == "unsupported_test" and "kao" in str(caught.value)
-    assert code_of(lambda: kao(test="westerlund")) == "invalid_option"
+    # These routes were added independently; retain rejection of unknown tests,
+    # rather than requiring shipped Pedroni/Westerlund routes to be absent.
+    assert_clean(kao(test="pedroni"))
+    assert_clean(kao(test="westerlund"))
+    assert code_of(lambda: kao(test="not_a_test")) == "invalid_option"
     assert code_of(lambda: kao(x=())) == "invalid_spec"
     assert code_of(lambda: kao(x=("y",))) == "invalid_spec"
     assert code_of(lambda: oe.xtcointtest(base, "y", "x", "id", "year")) == "invalid_spec"

@@ -22,6 +22,28 @@ def saved_catalog():
     return {entry["name"]: entry for entry in entries}
 
 
+def test_advanced_unitroot_help_preserves_discrete_inference_contracts():
+    catalog = saved_catalog()
+    for name in ("ngperron", "kss"):
+        entry = catalog[f"openecon.{name}"]
+        assert entry["returns"] == "openecon.DataFrame"
+        assert "p_value=None" in entry["description"]
+        params = {p["name"]: p for p in entry["parameters"]}
+        assert params["trend"]["default"] == "'constant'"
+        assert params["max_work"]["default"] == "100000000"
+    assert {p["name"]: p for p in catalog["openecon.ngperron"]["parameters"]}["lags"]["default"] == "None"
+
+
+def test_multiple_break_help_states_bounded_iid_inference():
+    entry = saved_catalog()["openecon.bai_perron"]
+    assert entry["returns"] == "openecon.TableSet"
+    options = {p["name"]: p for p in entry["parameters"]}
+    assert options["errors"]["default"] == "'iid_gaussian'"
+    assert "fixed exogenous" in options["x"]["description"].lower()
+    assert options["replications"]["default"] == "499"
+    assert options["seed"]["default"] == "0"
+
+
 def test_native_network_extensions_have_explicit_offline_contracts():
     catalog = saved_catalog()
     assert catalog["openecon.hypergraph"]["returns"] == "openecon.Hypergraph"
