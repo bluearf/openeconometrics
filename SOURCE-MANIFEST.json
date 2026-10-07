@@ -1,8 +1,8 @@
 {
-  "schema_version": 1,
-  "source_commit": "6cd9079a330b03a4f1a568e28aca04a23a8d897b",
-  "publication_state": "prepared source snapshot; public access requires separate verification",
-  "history": "new snapshot only; private Git history, branches, PRs and issues excluded",
+  "schema_version": 2,
+  "source_commit": null,
+  "publication_state": "prepared derivative public SDK patch; public merge/release/PyPI access require separate verification",
+  "history": "Derivative of the reviewed public snapshot, importing only listed scoped patch bytes; no private Git history, branches, PRs, internal evidence or external fixture bytes imported.",
   "research_data": "external fixture bytes excluded; obtain separately from original providers under their terms",
   "external_fixture_test_modules": [
     "tests/test_cleanup_releases.py",
@@ -653,10 +653,11 @@
     },
     {
       "path": "docs/capabilities.md",
-      "bytes": 38694,
-      "sha256": "d4da45117d617bf379ecd72abc6d42fd8b2fdab7c3266928befb1014ca8fd7cd",
+      "bytes": 38697,
+      "sha256": "f70d84b907e06acd5cbc543874de548ed76d22ef9987b38a93bee388d383b707",
       "original_sha256": "d4da45117d617bf379ecd72abc6d42fd8b2fdab7c3266928befb1014ca8fd7cd",
-      "transformed": false
+      "transformed": true,
+      "base_public_sha256": "d4da45117d617bf379ecd72abc6d42fd8b2fdab7c3266928befb1014ca8fd7cd"
     },
     {
       "path": "docs/charts-provenance.md",
@@ -765,10 +766,11 @@
     },
     {
       "path": "docs/econometrics/capabilities.generated.json",
-      "bytes": 337969,
-      "sha256": "7297f0e3dc672e4dac13c9e3851fa866761355fbb52ca9bb59afae69e8b45b4a",
+      "bytes": 337972,
+      "sha256": "51c772d86ac74bd2292475a9c2a0ebde25f76f0b6a57cbe5ac23ecda8cc796fa",
       "original_sha256": "7297f0e3dc672e4dac13c9e3851fa866761355fbb52ca9bb59afae69e8b45b4a",
-      "transformed": false
+      "transformed": true,
+      "base_public_sha256": "7297f0e3dc672e4dac13c9e3851fa866761355fbb52ca9bb59afae69e8b45b4a"
     },
     {
       "path": "docs/econometrics/censored_count.md",
@@ -1506,6 +1508,22 @@
       "transformed": false
     },
     {
+      "path": "docs/pypi-publishing.md",
+      "bytes": 6538,
+      "sha256": "1e148f306dd56c21599f9a58ca65f13005774d23c7905fa944a6cbaf9094b32f",
+      "original_sha256": null,
+      "transformed": true,
+      "origin": "public SDK patch delivery/verification source"
+    },
+    {
+      "path": "docs/python-alpha-0.3.18a2.md",
+      "bytes": 2719,
+      "sha256": "faf85f60c41d4a39737ed807b0b037a8cacafe871e3ed0d4b62ec62604040e24",
+      "original_sha256": null,
+      "transformed": true,
+      "origin": "public SDK patch delivery/verification source"
+    },
+    {
       "path": "docs/reference-licenses/arch.txt",
       "bytes": 1660,
       "sha256": "c6e622bd89db4e13315f4e91605ff96fcbb9012d78ee74e429855870b203eed6",
@@ -1857,10 +1875,11 @@
     },
     {
       "path": "pyproject.toml",
-      "bytes": 2277,
-      "sha256": "f2b120f0c5c8b2f0e265e8366a53cffe29f0364e879ead87d49a0d1ff9667117",
+      "bytes": 2321,
+      "sha256": "9d056c4205f5eee5913c80346102b2d48da0b86be0ed973b179ffa1546afd0c9",
       "original_sha256": "f2b120f0c5c8b2f0e265e8366a53cffe29f0364e879ead87d49a0d1ff9667117",
-      "transformed": false
+      "transformed": true,
+      "base_public_sha256": "f2b120f0c5c8b2f0e265e8366a53cffe29f0364e879ead87d49a0d1ff9667117"
     },
     {
       "path": "scripts/audit_macos_installer.py",
@@ -2430,6 +2449,14 @@
       "transformed": false
     },
     {
+      "path": "scripts/verify_sdk_distribution.py",
+      "bytes": 6799,
+      "sha256": "1241f536f4414c4282831e9759d7f76622217b5b6d45419eb735384c3b49c6b0",
+      "original_sha256": null,
+      "transformed": true,
+      "origin": "public SDK patch delivery/verification source"
+    },
+    {
       "path": "scripts/verify_streaming_runtime.py",
       "bytes": 18676,
       "sha256": "cf36258006c1e75cdf2901b4c9678fcf671ddbf208d662956e424ab300e2ad73",
@@ -2488,9 +2515,10 @@
     {
       "path": "src/openecon/__init__.py",
       "bytes": 7263,
-      "sha256": "3003b10251fbaff8f677b96b7b08509859353a3e9a0f7cc556854a29f15e09b5",
+      "sha256": "9fc371c2bae941589abdcfc428e83e7bb79902486844d05465d5b7d226cdc77a",
       "original_sha256": "3003b10251fbaff8f677b96b7b08509859353a3e9a0f7cc556854a29f15e09b5",
-      "transformed": false
+      "transformed": true,
+      "base_public_sha256": "3003b10251fbaff8f677b96b7b08509859353a3e9a0f7cc556854a29f15e09b5"
     },
     {
       "path": "src/openecon/_network_bipartite.py",
@@ -5560,10 +5588,11 @@
     },
     {
       "path": "src/openecon/engines/streaming_ols.py",
-      "bytes": 20853,
-      "sha256": "2c85c58d6e1036e5c3ac065e96aef148ecdb961c55b51fe9081ad8a64fe0016b",
+      "bytes": 21999,
+      "sha256": "3c23bd0ff7adab816ef75efa9f5c49aba457f1942d4fa12b545791717faca075",
       "original_sha256": "2c85c58d6e1036e5c3ac065e96aef148ecdb961c55b51fe9081ad8a64fe0016b",
-      "transformed": false
+      "transformed": true,
+      "base_public_sha256": "2c85c58d6e1036e5c3ac065e96aef148ecdb961c55b51fe9081ad8a64fe0016b"
     },
     {
       "path": "src/openecon/engines/torch_engine.py",
@@ -5840,10 +5869,11 @@
     },
     {
       "path": "src/openecon/source_readers.py",
-      "bytes": 28861,
-      "sha256": "0f1f630969f21bcee6289f58fc2dbd50e8dece517b3dea9fd78080777a5d7deb",
+      "bytes": 29908,
+      "sha256": "192dbbed2856e11f02b1f6ad009b18d30292e8c3de12446d7d61e15d8ae6ae61",
       "original_sha256": "0f1f630969f21bcee6289f58fc2dbd50e8dece517b3dea9fd78080777a5d7deb",
-      "transformed": false
+      "transformed": true,
+      "base_public_sha256": "0f1f630969f21bcee6289f58fc2dbd50e8dece517b3dea9fd78080777a5d7deb"
     },
     {
       "path": "src/openecon/streaming_analysis.py",
@@ -5979,6 +6009,13 @@
       "transformed": false
     },
     {
+      "path": "tests/conftest.py",
+      "bytes": 717,
+      "sha256": "baacc4aa13f018b92890b7fa06fd28f9a2cd9647a300af39cace451a30718b05",
+      "original_sha256": null,
+      "transformed": true
+    },
+    {
       "path": "tests/test_advanced_runtime_contract.py",
       "bytes": 2690,
       "sha256": "eaed44803cfa7d8aae8d4cef3c1e577ed0a26947d0eadfd8c9f69e4b3229b93d",
@@ -6064,10 +6101,11 @@
     },
     {
       "path": "tests/test_dataset.py",
-      "bytes": 15186,
-      "sha256": "9a3836787210f992ff2ac2361b905ab4e9bc8a5b8f496f27a9224342500afee6",
+      "bytes": 17300,
+      "sha256": "63b1542c48c55b7ab0fefac52a4d6b5fb366bbb8310a05861208084956deb6d2",
       "original_sha256": "9a3836787210f992ff2ac2361b905ab4e9bc8a5b8f496f27a9224342500afee6",
-      "transformed": false
+      "transformed": true,
+      "base_public_sha256": "9a3836787210f992ff2ac2361b905ab4e9bc8a5b8f496f27a9224342500afee6"
     },
     {
       "path": "tests/test_dataset_prepare.py",
@@ -8892,10 +8930,11 @@
     },
     {
       "path": "tests/test_streaming_ols_engine.py",
-      "bytes": 17581,
-      "sha256": "d34211c2e2515ddb5bc92faa69c5b0aeb2be403289f860fffe04a8f93fe3aa6d",
+      "bytes": 19447,
+      "sha256": "cc8d7e4c1f246f2c8d67840e68f2b17068a908b66745eedc551ac7ac74e20fdb",
       "original_sha256": "d34211c2e2515ddb5bc92faa69c5b0aeb2be403289f860fffe04a8f93fe3aa6d",
-      "transformed": false
+      "transformed": true,
+      "base_public_sha256": "d34211c2e2515ddb5bc92faa69c5b0aeb2be403289f860fffe04a8f93fe3aa6d"
     },
     {
       "path": "tests/test_streaming_prais.py",
@@ -9145,9 +9184,10 @@
     {
       "path": "uv.lock",
       "bytes": 420396,
-      "sha256": "f7a3d5be28567d987e7adb0ecc1043e00c3ba5ccbde9ef6a34de3e0978514d28",
+      "sha256": "d7cf6cb21cdc225ba0dca911a5f72828a8f1dfebd2872f498472569dfacf838b",
       "original_sha256": "f7a3d5be28567d987e7adb0ecc1043e00c3ba5ccbde9ef6a34de3e0978514d28",
-      "transformed": false
+      "transformed": true,
+      "base_public_sha256": "f7a3d5be28567d987e7adb0ecc1043e00c3ba5ccbde9ef6a34de3e0978514d28"
     },
     {
       "path": "web/index.html",
@@ -10002,13 +10042,6 @@
       "sha256": "515ce5b7ead92b787622237515373512cb9ba68e686cd30359ee78f289e3a556",
       "original_sha256": "515ce5b7ead92b787622237515373512cb9ba68e686cd30359ee78f289e3a556",
       "transformed": false
-    },
-    {
-      "path": "tests/conftest.py",
-      "bytes": 717,
-      "sha256": "baacc4aa13f018b92890b7fa06fd28f9a2cd9647a300af39cace451a30718b05",
-      "original_sha256": null,
-      "transformed": true
     }
   ],
   "excluded_paths": [
@@ -10490,5 +10523,39 @@
     "tests/fixtures/stata/reproduce-auto-reference.do",
     "tests/fixtures/structural-macro.csv"
   ],
-  "source_files_sha256": "2f19287526385ebebbbe71ec3fb6b5c270a01d1f040a32817cb3772c12f48657"
+  "source_files_sha256": "19890e48481711663ad0e26ca900f20d8183a338a31421a2abc0e36005b459d4",
+  "snapshot_kind": "derived public Python SDK patch",
+  "base_source_commit": "6cd9079a330b03a4f1a568e28aca04a23a8d897b",
+  "base_public_snapshot_commit": "7cb7517bf8bacf91f92c85f8df9a2904e76e8974",
+  "base_repository_commit": "8ddf76b51932a91014db53f193ef643c012b142e",
+  "base_source_files_sha256": "2f19287526385ebebbbe71ec3fb6b5c270a01d1f040a32817cb3772c12f48657",
+  "source_patch_commits": [
+    {
+      "commit": "b8a2b461702251412a151105be530de50e47b19e",
+      "scope": "Linux parser own-process high-water RSS",
+      "paths": [
+        "src/openecon/source_readers.py",
+        "tests/test_dataset.py"
+      ]
+    },
+    {
+      "commit": "e4589e8aa12a4c8745d2ddcda235b0edd4f965bd",
+      "scope": "Streaming OLS numerical-zero residual variance guard",
+      "paths": [
+        "src/openecon/engines/streaming_ols.py",
+        "tests/test_streaming_ols_engine.py"
+      ]
+    },
+    {
+      "commit": "8d29d23ce45e169a5896d9cc1469786412efc63f",
+      "scope": "Resource test portability only",
+      "paths": [
+        "tests/test_dataset.py"
+      ]
+    }
+  ],
+  "package_versions": {
+    "openecon": "0.3.18a2",
+    "openecon-charts": "0.3.0a1"
+  }
 }

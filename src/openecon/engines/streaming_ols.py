@@ -345,8 +345,20 @@ def solve_ols(
         _same_count(count, n)
         residual_ss = float(rss.value)
         total_ss = float(total.value)
-        if not math.isfinite(residual_ss) or residual_ss <= 0 or not math.isfinite(total_ss):
+        if (not math.isfinite(residual_ss) or residual_ss <= 0
+                or not math.isfinite(total_ss) or total_ss <= 0):
             raise KernelError("numerical_failure", "Residual variance or outcome variance is outside finite float64 range.")
+        # A perfect fit can leave O(eps) residuals after QR and triangular
+        # solution, depending on the BLAS backend and reduction partition.
+        # Diagnose numerical zero in norm units, using the centered outcome
+        # when an intercept is present. Squaring eps or an absolute outcome
+        # scale would introduce underflow or incorrectly reject small units.
+        # This is a resolution heuristic, like the small-factor rank cutoff,
+        # rather than a claim that an arbitrarily tiny variance is identifiable.
+        residual_tolerance = torch.finfo(torch.float64).eps * (k + 1) * (tree.depth + 1)
+        relative_residual_norm = math.sqrt(residual_ss) / math.sqrt(total_ss)
+        if relative_residual_norm <= residual_tolerance:
+            raise KernelError("numerical_failure", "Residual variance is zero within float64 resolution of the fit.")
         group_count = None
         cluster_diagnostics = {}
         if clustered:
@@ -376,6 +388,9 @@ def solve_ols(
             "rank_tolerance": "eps * design_columns * max(1, reduction_depth) * largest_singular_value",
             "rank_tolerance_value": float(rank_limit),
             "rank_tolerance_interpretation": "conservative small-factor numerical-rank heuristic",
+            "residual_tolerance": "eps * augmented_columns * (1 + reduction_depth) relative to outcome norm",
+            "residual_tolerance_value": residual_tolerance,
+            "relative_residual_norm": relative_residual_norm,
             "tsqr_tree_depth": tree.depth, "tsqr_peak_retained_factors": tree.peak_factors,
             "tsqr_factor_capacity": _FACTOR_LEVELS,
             "dense_observation_matrix": False, "retains_full_q": False,

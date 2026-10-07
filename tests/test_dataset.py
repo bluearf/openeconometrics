@@ -1,6 +1,10 @@
 """Projected, replayable file sources and bounded reader failure contracts."""
 from __future__ import annotations
 
+from pathlib import Path
+import time
+from types import SimpleNamespace
+
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -373,3 +377,46 @@ def test_parquet_projection_preserves_declared_category_order_and_unused_levels(
         assert block.g.cat.categories.tolist() == ["B", "A", "C"]
         assert block.g.cat.ordered
     assert next(scan(path).iter_batches(["precise"], batch_rows=1)).precise.iloc[0] == 2**63 - 1
+
+
+def test_linux_parser_peak_uses_own_mappings_not_pre_exec_parent_history(monkeypatch):
+    import openecon.source_readers as readers
+
+    monkeypatch.setattr(readers.sys, "platform", "linux")
+    monkeypatch.setattr(Path, "read_text", lambda _: "VmHWM:\t262144 kB\nVmRSS:\t131072 kB\n")
+    # Linux retains this prior executable's 2 GiB high water across execve.
+    monkeypatch.setitem(readers.sys.modules, "resource", SimpleNamespace(
+        RUSAGE_SELF=0, getrusage=lambda _: SimpleNamespace(ru_maxrss=2 * 1024**2)))
+    assert readers.peak_rss_bytes() == 256 * 1024**2
+
+
+@pytest.mark.parametrize("status", ["VmRSS: 10 kB\n", "VmHWM: 0 kB\n",
+                                     "VmHWM: 100 bytes\n", "VmHWM: invalid kB\n"])
+def test_invalid_linux_peak_is_not_accepted_as_supervision(monkeypatch, status):
+    import openecon.source_readers as readers
+
+    monkeypatch.setattr(readers.sys, "platform", "linux")
+    monkeypatch.setattr(Path, "read_text", lambda _: status)
+    assert readers.peak_rss_bytes() is None
+
+
+@pytest.mark.parametrize("baseline_mib,peak_mib", [(1400, 1600), (200, 800)])
+def test_parser_rejects_true_transient_peak_after_current_rss_falls(monkeypatch, baseline_mib, peak_mib):
+    import openecon.source_readers as readers
+
+    class Connection:
+        def poll(self, timeout):
+            return True
+
+        def recv(self):
+            return {"type": "batch", "peak_rss_bytes": peak_mib * 1024**2}
+
+    # A brief peak can disappear between polls; its reported high water still
+    # enforces both the 1536 MiB total and 512 MiB additional-allocation limits.
+    monkeypatch.setattr(readers, "rss_bytes", lambda pid: baseline_mib * 1024**2)
+    parser = SimpleNamespace(process=SimpleNamespace(pid=1), connection=Connection(),
+                             baseline=baseline_mib * 1024**2, peak=0,
+                             deadline=time.monotonic() + 5)
+    with pytest.raises(DataError, match="peak RSS") as caught:
+        readers.Parser.receive(parser)
+    assert caught.value.code == "READER_LIMIT"
