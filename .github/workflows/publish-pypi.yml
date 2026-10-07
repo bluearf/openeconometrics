@@ -9,6 +9,11 @@ on:
         type: boolean
         required: true
         default: false
+      publish_sdk:
+        description: 'Also publish SDK after charts (disable for first charts-only bootstrap)'
+        type: boolean
+        required: true
+        default: true
 
 permissions:
   contents: read
@@ -196,7 +201,7 @@ jobs:
   publish-sdk:
     name: Publish openecon 0.3.18a1
     needs: [verify, publish-charts]
-    if: github.repository == 'bluearf/openeconometrics' && github.event_name == 'workflow_dispatch' && inputs.publish && github.ref == 'refs/heads/main'
+    if: github.repository == 'bluearf/openeconometrics' && github.event_name == 'workflow_dispatch' && inputs.publish && inputs.publish_sdk && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: pypi

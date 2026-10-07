@@ -8,8 +8,11 @@ private development snapshot or establish acceptance of desktop 0.3.44.
 
 ## Account and publisher setup
 
-Use a verified PyPI account with two-factor authentication. Add a pending GitHub
-Trusted Publisher for each new project with these exact values:
+Use a verified PyPI account with two-factor authentication. For the first setup,
+register the charts pending publisher, publish charts, then register the SDK
+pending publisher. PyPI rejects two pending projects with the same publisher
+configuration; once charts has its normal publisher, the SDK can use the same
+workflow and environment. Use these exact values:
 
 | Field | Value |
 | --- | --- |
@@ -32,12 +35,17 @@ Creating a pending publisher alone does not reserve an unused project name.
 
 ## Initial publication
 
-1. Merge the reviewed publishing workflow into `main`. Confirm both pending
-   publishers and the GitHub `pypi` environment match the table above.
+1. Merge the reviewed publishing workflow into `main`. Confirm the GitHub
+   `pypi` environment and charts pending publisher match the table above.
+   Bootstrap charts with `publish=true` and `publish_sdk=false`, approve the
+   environment, and verify charts ownership and hashes. Then add the SDK pending
+   publisher with the same configuration. This first charts-only run deliberately
+   skips SDK publication.
 2. The PR runs verification without publishing. A manual run on `main` defaults
    to `publish=false` and also performs verification only. After the account,
    pending publishers, and environment are ready, manually run
-   `Publish reviewed packages to PyPI` on `main` with `publish=true` and approve
+   `Publish reviewed packages to PyPI` on `main` with `publish=true` and
+   `publish_sdk=true` and approve
    the environment's release review.
 3. The verification job downloads the four fixed public distribution files and
    release provenance. It verifies hardcoded SHA256, source/public commit
