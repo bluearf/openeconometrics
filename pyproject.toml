@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "openecon"
-version = "0.3.18a2"
+version = "0.3.18a3"
 description = "An open-source Python workspace for reproducible statistics and econometrics"
 readme = "README.md"
 requires-python = ">=3.11,<3.15"

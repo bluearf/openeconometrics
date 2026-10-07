@@ -53,9 +53,9 @@ jobs:
             python -m venv "$RUNNER_TEMP/sdk-$mode"
             "$package_python" -m pip install --index-url https://download.pytorch.org/whl/cpu 'torch>=2.6,<3'
             if [ "$mode" = wheel ]; then
-              "$package_python" -m pip install dist/openecon_charts-0.3.0a1-py3-none-any.whl dist/openecon-0.3.18a2-py3-none-any.whl
+              "$package_python" -m pip install dist/openecon_charts-0.3.0a1-py3-none-any.whl dist/openecon-0.3.18a3-py3-none-any.whl
             else
-              "$package_python" -m pip install dist/openecon_charts-0.3.0a1-py3-none-any.whl dist/openecon-0.3.18a2.tar.gz
+              "$package_python" -m pip install dist/openecon_charts-0.3.0a1-py3-none-any.whl dist/openecon-0.3.18a3.tar.gz
             fi
             "$package_python" -m pip check
             "$package_python" scripts/generate_capability_docs.py --check
@@ -71,7 +71,7 @@ jobs:
         with:
           name: sdk-patch-package-${{ matrix.python }}
           path: |
-            dist/openecon-0.3.18a2*
+            dist/openecon-0.3.18a3*
             ${{ runner.temp }}/sdk-*-smoke.json
           if-no-files-found: warn
           retention-days: 7
