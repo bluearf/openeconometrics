@@ -8,8 +8,9 @@ Reviewed source snapshots and Mac alpha releases are distributed through
 [bluearf/openeconometrics](https://github.com/bluearf/openeconometrics).
 Mac packages require Apple Silicon and macOS 15 or later. Read each release's
 checksum and signing status before installation. Developer ID signing and
-notarization are pending for the first alpha; neither Python package is published
-to PyPI. See [PUBLIC-SOURCE.md](https://github.com/bluearf/openeconometrics/blob/main/PUBLIC-SOURCE.md) and `SOURCE-MANIFEST.json` in the
+notarization are pending for the first Mac alpha. Its desktop version
+`v0.3.43-alpha.1` embeds SDK `0.3.18a1`; the separate Python SDK patch below does
+not rebuild that Mac application. See [PUBLIC-SOURCE.md](https://github.com/bluearf/openeconometrics/blob/main/PUBLIC-SOURCE.md) and `SOURCE-MANIFEST.json` in the
 public snapshot for its precise source and external-fixture boundary.
 
 Distribution preserves the [third-party notices](THIRD_PARTY.md). See
@@ -77,6 +78,19 @@ Relative file paths in the console resolve inside the active workspace (`.openec
 **Console code runs with your local account's permissions.** It can read and write files, access the network and import installed packages. The worker is a separate process, not a security sandbox. Run code you trust. A stop, timeout or session reset terminates the worker and clears its variables. Successful commands and ordinary Python errors leave the session alive; errors do not roll back assignments made before the error. Command history is saved, but in-memory variables do not survive a server restart.
 
 ## Use the library
+
+Install the reviewed Python alpha packages in a fresh Python 3.11–3.14 environment:
+
+```sh
+python -m pip install 'openecon==0.3.18a3' 'openecon-charts==0.3.0a2'
+python -m pip check
+```
+
+The fixed package files and validation scope are recorded in the
+[Python SDK release](https://github.com/bluearf/openeconometrics/releases/tag/python-v0.3.18a3).
+The [publishing guide](docs/pypi-publishing.md) distinguishes GitHub release
+availability from completed PyPI publication. An exact pin selects these alpha
+versions; CPU package checks do not establish physical CUDA or vendor parity.
 
 The library accepts pandas DataFrames, dictionaries of columns and lists of records. It is not tied to the included wage dataset.
 

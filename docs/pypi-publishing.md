@@ -1,10 +1,13 @@
 # Publishing reviewed packages to PyPI
 
 The manual `Publish reviewed packages to PyPI` workflow publishes the existing
-public release `v0.3.43-alpha.1`: `openecon-charts==0.3.0a1` followed by
-`openecon==0.3.18a1`. The SDK requires that exact charts version. These package
-versions differ from the desktop version; this setup does not publish the newer
-private development snapshot or establish acceptance of desktop 0.3.44.
+public Python release `python-v0.3.18a3`: `openecon-charts==0.3.0a2` followed by
+`openecon==0.3.18a3`. The SDK requires that exact charts version. Both packages
+have reviewed scoped repairs: parser startup/high-water RSS and streaming OLS in
+the SDK, and installed-browser selection/owned profile cleanup in charts. The
+previous charts `0.3.0a1` files remain immutable. The Mac release `v0.3.43-alpha.1` still
+embeds SDK `0.3.18a1`; this Python publication does not rebuild the Mac application,
+publish newer private development, or establish desktop 0.3.44 acceptance.
 
 ## Account and publisher setup
 
@@ -48,8 +51,9 @@ Creating a pending publisher alone does not reserve an unused project name.
    `publish_sdk=true` and approve
    the environment's release review.
 3. The verification job downloads the four fixed public distribution files and
-   release provenance. It verifies hardcoded SHA256, source/public commit
-   identities, package versions, SDK dependency, license notices, excluded
+   release provenance. It verifies hardcoded SHA256, derivative source/base/patch
+   identities, successful Linux/Mac package and sandboxed browser export receipts, package versions,
+   SDK dependency, license notices, excluded
    source material, and metadata using Twine 7.0.0. It builds no new packages.
 4. Separate jobs publish charts first, then the SDK, through short-lived GitHub
    OIDC identity. Only those jobs have `id-token: write`. Distribution hashes are
@@ -57,7 +61,10 @@ Creating a pending publisher alone does not reserve an unused project name.
    publishing workflow; original build provenance remains the release's
    `RELEASE-PROVENANCE.json`.
 5. Each job reads back the exact non-yanked filenames and SHA256 values from
-   PyPI. SDK publication starts only after the charts readback succeeds.
+   PyPI. Every request includes a distinct run/attempt/phase/poll query and
+   no-cache headers, so a previous negative CDN response cannot be reused by a
+   later readback. Only an HTTP 404 or an incomplete matching file set is retried,
+   for at most 12 polls. SDK publication starts only after charts readback succeeds.
 6. Confirm project ownership and publisher settings in PyPI. Install from PyPI
    in a fresh environment and run the fit, JSON persistence, LaTeX, and chart
    checks before recording end-to-end publication as complete.
@@ -65,7 +72,7 @@ Creating a pending publisher alone does not reserve an unused project name.
 For example, in a clean Python 3.11–3.14 environment:
 
 ```sh
-python -m pip install 'openecon==0.3.18a1'
+python -m pip install 'openecon==0.3.18a3' 'openecon-charts==0.3.0a2'
 python -m pip check
 ```
 
@@ -108,7 +115,24 @@ or retarget a fixed release after approval.
    script against the proposed public release, and run Twine's strict metadata
    check. Review the PR before merging and manually dispatching the new release.
 
-The initial pin records private source
-`6cd9079a330b03a4f1a568e28aca04a23a8d897b` and public snapshot
-`7cb7517bf8bacf91f92c85f8df9a2904e76e8974`. The original release and validation
-scope are available in the [public GitHub release](https://github.com/bluearf/openeconometrics/releases/tag/v0.3.43-alpha.1).
+The fixed SDK files were built from public source
+`ca7854593e2591f56c380dc19f7abeba0b7b0117`, whose public merge is recorded
+in the fixed release provenance. This derivative follows SDK a2 public source
+`0d8a8ea3ef12ddf8bdadfc8c64135052741f29c9` and starts from public
+snapshot `7cb7517bf8bacf91f92c85f8df9a2904e76e8974`, originally exported from private
+source `6cd9079a330b03a4f1a568e28aca04a23a8d897b`, and records only the reviewed
+parser/OLS/startup and charts browser cleanup patches plus delivery verification
+metadata. Linux Python 3.11/3.13 checks must pass from that exact source, including
+fresh standalone charts fonts/HTML, SDK wheel/sdist and real sandboxed exports.
+The exact immutable distribution hashes and successful checks are recorded in
+release provenance before this publisher is approved.
+See the [fixed Python release and provenance](https://github.com/bluearf/openeconometrics/releases/tag/python-v0.3.18a3)
+and the [original Mac release](https://github.com/bluearf/openeconometrics/releases/tag/v0.3.43-alpha.1).
+
+Later publisher-only workflow/documentation commits do not change either fixed
+package's bytes or their release provenance. The current repository's
+`SOURCE-MANIFEST.json` tracks current listed source/documentation files;
+`RELEASE-PROVENANCE.json` separately pins the manifest and source files as they
+were at the SDK build commit. A verified GitHub release and merged publishing
+workflow alone do not prove successful PyPI upload or a fresh registry installation;
+complete steps 5–6 before recording those delivery layers as passed.
