@@ -6,12 +6,14 @@ It never uses a user's existing browser, downloads a browser or fetches fonts.
 from __future__ import annotations
 
 import base64
+import errno
 import hashlib
 import json
 import math
 import os
 from pathlib import Path
 import shutil
+import signal
 import socket
 import struct
 import subprocess
@@ -29,7 +31,53 @@ class NetworkExportError(RuntimeError):
     """A controlled browser, layout or export failure; no output was published."""
 
 
+def _stop_browser(process):
+    """Stop every owned POSIX browser child, including after its launcher exits."""
+    if os.name == "posix":
+        # Popen owns a new session, so its PID is a dedicated process-group ID.
+        # Waiting for the launcher alone does not stop Chrome's profile writers.
+        try:
+            os.killpg(process.pid, signal.SIGTERM)
+        except ProcessLookupError:
+            pass
+        if process.poll() is None:
+            try:
+                process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                pass  # Escalate the same owned group, never an unrelated browser.
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        process.wait(timeout=5)
+    elif process.poll() is None:
+        process.terminate()
+        try:
+            process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait(timeout=5)
+
+
+def _remove_profile(profile):
+    """Finish deletion after bounded process shutdown; persistent errors fail."""
+    for attempt in range(5):
+        try:
+            shutil.rmtree(profile)
+            return
+        except FileNotFoundError:
+            return
+        except OSError as exc:
+            # A just-killed child can finish a pending filesystem operation.
+            # Retry only this race, with a fixed 200 ms total delay budget.
+            if exc.errno != errno.ENOTEMPTY or attempt == 4:
+                raise
+            time.sleep(.05)
+
+
 def _browser(explicit):
+    if explicit is None:
+        explicit = os.environ.get("OPENECON_BROWSER_EXECUTABLE")
     if explicit is not None:
         path = Path(explicit).expanduser().resolve(strict=True)
         if not path.is_file() or not os.access(path, os.X_OK):
@@ -191,7 +239,8 @@ def export_network(plot, path, format, *, width=960, height=600, scale=1,
                 "--disable-background-networking", "--disable-component-update", "--disable-sync",
                 "--disable-extensions", "--disable-crash-reporter", "--remote-debugging-address=127.0.0.1",
                 "--remote-debugging-port=0", f"--user-data-dir={profile}", "about:blank"],
-                stdin=subprocess.DEVNULL, stdout=log, stderr=log)
+                stdin=subprocess.DEVNULL, stdout=log, stderr=log,
+                start_new_session=os.name == "posix")
             cdp = None
             try:
                 descriptor = profile / "DevToolsActivePort"
@@ -268,15 +317,12 @@ def export_network(plot, path, format, *, width=960, height=600, scale=1,
             except (OSError, ValueError, KeyError, StopIteration) as exc:
                 raise NetworkExportError(f"Network export failed: {exc}") from exc
             finally:
-                if cdp:
-                    cdp.sock.close()
-                if process.poll() is None:
-                    process.terminate()
-                    try:
-                        process.wait(timeout=5)
-                    except subprocess.TimeoutExpired:
-                        process.kill()
-                        process.wait(timeout=5)
+                try:
+                    if cdp:
+                        cdp.sock.close()
+                finally:
+                    _stop_browser(process)
+                    _remove_profile(profile)
     # Same-directory staging, exclusive publication by default, no partial files.
     fd, staging = tempfile.mkstemp(prefix=".openecon-export-", dir=destination.parent)
     try:

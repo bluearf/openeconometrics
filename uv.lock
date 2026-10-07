@@ -1504,7 +1504,7 @@ dev = [
 
 [[package]]
 name = "openecon-charts"
-version = "0.3.0a1"
+version = "0.3.0a2"
 source = { editable = "packages/openecon-charts" }
 
 [[package]]

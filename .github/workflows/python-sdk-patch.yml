@@ -27,24 +27,32 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ matrix.python }}
-      - name: Build the local public SDK patch
+      - name: Select provisioned Chrome with its sandbox enabled
+        run: |
+          browser_path="$(command -v google-chrome || command -v google-chrome-stable)"
+          test -n "$browser_path"
+          "$browser_path" --version
+          printf 'OPENECON_BROWSER_EXECUTABLE=%s\n' "$browser_path" >> "$GITHUB_ENV"
+      - name: Build the local public SDK and charts patches
         run: |
           python -m pip install 'build==1.3.0' 'twine==7.0.0'
+          python -m build packages/openecon-charts --outdir dist
           python -m build --outdir dist
           python -m twine check --strict dist/*
-      - name: Download unchanged reviewed charts wheel
-        shell: python
+      - name: Install and verify dependency-free charts wheel and sdist
+        shell: bash
         run: |
-          import hashlib
-          from pathlib import Path
-          import urllib.request
-          name = 'openecon_charts-0.3.0a1-py3-none-any.whl'
-          url = 'https://github.com/bluearf/openeconometrics/releases/download/v0.3.43-alpha.1/' + name
-          with urllib.request.urlopen(url, timeout=60) as response:
-              data = response.read()
-          if hashlib.sha256(data).hexdigest() != '47384306e8136b8783afe01ef57e376b4fb1b86888eeafed0eb175b557f4386a':
-              raise SystemExit('Reviewed charts wheel SHA256 mismatch')
-          Path('dist', name).write_bytes(data)
+          for mode in wheel sdist; do
+            chart_python="$RUNNER_TEMP/charts-$mode/bin/python"
+            python -m venv "$RUNNER_TEMP/charts-$mode"
+            if [ "$mode" = wheel ]; then
+              "$chart_python" -m pip install dist/openecon_charts-0.3.0a2-py3-none-any.whl
+            else
+              "$chart_python" -m pip install dist/openecon_charts-0.3.0a2.tar.gz
+            fi
+            "$chart_python" -m pip check
+            python scripts/verify_charts_distribution.py --python "$chart_python" --output "$RUNNER_TEMP/charts-$mode-smoke.json"
+          done
       - name: Install and test fresh wheel and sdist environments
         shell: bash
         run: |
@@ -53,9 +61,9 @@ jobs:
             python -m venv "$RUNNER_TEMP/sdk-$mode"
             "$package_python" -m pip install --index-url https://download.pytorch.org/whl/cpu 'torch>=2.6,<3'
             if [ "$mode" = wheel ]; then
-              "$package_python" -m pip install dist/openecon_charts-0.3.0a1-py3-none-any.whl dist/openecon-0.3.18a3-py3-none-any.whl
+              "$package_python" -m pip install dist/openecon_charts-0.3.0a2-py3-none-any.whl dist/openecon-0.3.18a3-py3-none-any.whl
             else
-              "$package_python" -m pip install dist/openecon_charts-0.3.0a1-py3-none-any.whl dist/openecon-0.3.18a3.tar.gz
+              "$package_python" -m pip install dist/openecon_charts-0.3.0a2.tar.gz dist/openecon-0.3.18a3.tar.gz
             fi
             "$package_python" -m pip check
             "$package_python" scripts/generate_capability_docs.py --check
@@ -66,12 +74,19 @@ jobs:
           python -m pip install 'pytest>=8,<10' 'statsmodels>=0.14.4,<0.15'
           "$RUNNER_TEMP/sdk-wheel/bin/python" -m pip install 'pytest>=8,<10' 'statsmodels>=0.14.4,<0.15'
           "$RUNNER_TEMP/sdk-wheel/bin/python" -m pytest tests/test_dataset.py tests/test_streaming_ols_engine.py
+      - name: Verify real sandboxed Chrome exports and owned profile cleanup
+        run: |
+          "$RUNNER_TEMP/sdk-wheel/bin/python" -c 'from openecon_charts.network_export import _browser; print(_browser(None))'
+          "$RUNNER_TEMP/sdk-wheel/bin/python" -m pytest packages/openecon-charts/tests/test_network_export.py --junitxml="$RUNNER_TEMP/network-export.xml"
+          python -c 'from pathlib import Path; import os; import xml.etree.ElementTree as ET; root = ET.parse(Path(os.environ["RUNNER_TEMP"]) / "network-export.xml").getroot(); assert not root.findall(".//skipped"), "Real browser export acceptance cannot be skipped"'
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: sdk-patch-package-${{ matrix.python }}
           path: |
-            dist/openecon-0.3.18a3*
+            dist/*
             ${{ runner.temp }}/sdk-*-smoke.json
+            ${{ runner.temp }}/charts-*-smoke.json
+            ${{ runner.temp }}/network-export.xml
           if-no-files-found: warn
           retention-days: 7

@@ -14,7 +14,7 @@ authors = [{name = "OpenEconometrics contributors"}]
 dependencies = [
   "torch>=2.6,<3", "pandas>=2.2,<3",
   "pyarrow>=18,<24", "pydantic>=2.9,<3",
-  "threadpoolctl>=3.5,<4", "packaging>=24,<27", "openecon-charts==0.3.0a1"
+  "threadpoolctl>=3.5,<4", "packaging>=24,<27", "openecon-charts==0.3.0a2"
 ]
 
 [project.urls]

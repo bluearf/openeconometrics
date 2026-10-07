@@ -1525,8 +1525,8 @@
     },
     {
       "path": "docs/python-alpha-0.3.18a3.md",
-      "bytes": 3141,
-      "sha256": "fbc4809715c03c95aa06b378c7b095a1a3529de576785333fc0f8b3bfc6b3df5",
+      "bytes": 4651,
+      "sha256": "a066247eb42be71b61510291fd69e8b944fe116b9f5595431595808d26aec370",
       "original_sha256": null,
       "transformed": true,
       "origin": "public SDK a3 patch delivery/verification source"
@@ -1632,16 +1632,16 @@
     {
       "path": "packages/openecon-charts/pyproject.toml",
       "bytes": 515,
-      "sha256": "4768e990df3747335059644e8b13b30d6fb96cd5ac7b3ad11810a9815a9123ef",
+      "sha256": "95b8fcd21ed8613ec3318aa127f68b230ead01278cfc0cff20d32b9121d110ee",
       "original_sha256": "4768e990df3747335059644e8b13b30d6fb96cd5ac7b3ad11810a9815a9123ef",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "packages/openecon-charts/src/openecon_charts/__init__.py",
       "bytes": 358,
-      "sha256": "87885685bd064df189bd1104f629c42c70ed48291b6a3a7c925a0ff4f6a95cf6",
+      "sha256": "fb52c1619440691dbbd52faa7e45da8096df96e9c7fd105987e66c32db1c83ec",
       "original_sha256": "87885685bd064df189bd1104f629c42c70ed48291b6a3a7c925a0ff4f6a95cf6",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "packages/openecon-charts/src/openecon_charts/annotations.py",
@@ -1771,10 +1771,10 @@
     },
     {
       "path": "packages/openecon-charts/src/openecon_charts/network_export.py",
-      "bytes": 15782,
-      "sha256": "6e8598f289c5a2ba6469e4d32ca58ef29b7b7e4821228f96b55159ae5cdf5672",
+      "bytes": 17358,
+      "sha256": "b64fd0834b8c8255c27802cfd404be11c8ee393b584903002a433ac90cda9056",
       "original_sha256": "6e8598f289c5a2ba6469e4d32ca58ef29b7b7e4821228f96b55159ae5cdf5672",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "packages/openecon-charts/src/openecon_charts/resident.py",
@@ -1869,10 +1869,10 @@
     },
     {
       "path": "packages/openecon-charts/tests/test_network_export.py",
-      "bytes": 4958,
-      "sha256": "c110211e02830910e23c993243a1ee63bc06f477a91841f1d8c6ccd1d60cb409",
+      "bytes": 8425,
+      "sha256": "231f68ab2eb42669ba2bae7aed66d620091ec0f2dbf0ea20dea0536ac444ba22",
       "original_sha256": "c110211e02830910e23c993243a1ee63bc06f477a91841f1d8c6ccd1d60cb409",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "packages/openecon-charts/tests/test_timeline_transport.py",
@@ -1884,7 +1884,7 @@
     {
       "path": "pyproject.toml",
       "bytes": 2321,
-      "sha256": "32b96b7d57e56ec5b35b55dd601a48a9c375bcb51cc2bbb8b3555b78a60b5395",
+      "sha256": "6fa5a032d7aac7f0f3df0277d5ad254e4c7321eb3eff8cf8d14aa27b1daef763",
       "original_sha256": "f2b120f0c5c8b2f0e265e8366a53cffe29f0364e879ead87d49a0d1ff9667117",
       "transformed": true,
       "base_public_sha256": "f2b120f0c5c8b2f0e265e8366a53cffe29f0364e879ead87d49a0d1ff9667117"
@@ -2240,6 +2240,14 @@
       "transformed": false
     },
     {
+      "path": "scripts/verify_charts_distribution.py",
+      "bytes": 3113,
+      "sha256": "2a25eafdc8412b06d849d70547d77785efaa373e0148dc8e29af077944714e21",
+      "original_sha256": null,
+      "transformed": true,
+      "origin": "public charts a2 patch delivery/verification source"
+    },
+    {
       "path": "scripts/verify_desktop_cloud_live.py",
       "bytes": 9161,
       "sha256": "5956976bed0e9a537914a932cb90fc9fc3fc290a6ac4c14733bb480f72734ec6",
@@ -2459,7 +2467,7 @@
     {
       "path": "scripts/verify_sdk_distribution.py",
       "bytes": 6799,
-      "sha256": "5155d25a69aa7a62d8d9d2671bad2e0d5391b75b32f1a30eacd316b07a5fa07d",
+      "sha256": "60ff03066e7e8a19ff8744f6bb29f87271580fc32c0f548b77992b2d20d668a4",
       "original_sha256": null,
       "transformed": true,
       "origin": "public SDK patch delivery/verification source"
@@ -9192,7 +9200,7 @@
     {
       "path": "uv.lock",
       "bytes": 420396,
-      "sha256": "872494aeb09b3d5ee4e80154dcaeba08dfe20f23e859516673feb276d0b59b15",
+      "sha256": "9bf8749864e9c7da7f20333fbea3eafd5ffe7b0acf622096cde95c3d3ad1100a",
       "original_sha256": "f7a3d5be28567d987e7adb0ecc1043e00c3ba5ccbde9ef6a34de3e0978514d28",
       "transformed": true,
       "base_public_sha256": "f7a3d5be28567d987e7adb0ecc1043e00c3ba5ccbde9ef6a34de3e0978514d28"
@@ -10531,7 +10539,7 @@
     "tests/fixtures/stata/reproduce-auto-reference.do",
     "tests/fixtures/structural-macro.csv"
   ],
-  "source_files_sha256": "f733cd3617dbeda36cf9325a6d11eeb7c32feb0b2de5216d09c5b76755030046",
+  "source_files_sha256": "28ccea9177332f2ed4e2aab2813282ee54f1426bd4a9d4fde9b6b591989d8388",
   "snapshot_kind": "derived public Python SDK patch",
   "base_source_commit": "6cd9079a330b03a4f1a568e28aca04a23a8d897b",
   "base_public_snapshot_commit": "7cb7517bf8bacf91f92c85f8df9a2904e76e8974",
@@ -10568,11 +10576,27 @@
         "src/openecon/source_readers.py",
         "tests/test_dataset.py"
       ]
+    },
+    {
+      "commit": "efc9df77bca551a87403a2f867ca715ea6b86816",
+      "scope": "Explicit installed browser selection for sandboxed exporter",
+      "paths": [
+        "packages/openecon-charts/src/openecon_charts/network_export.py",
+        "packages/openecon-charts/tests/test_network_export.py"
+      ]
+    },
+    {
+      "commit": "a04b0466a94a7c1ea0b3cbfc7debc8cef3c242ab",
+      "scope": "Owned POSIX browser descendants stopped before bounded profile cleanup",
+      "paths": [
+        "packages/openecon-charts/src/openecon_charts/network_export.py",
+        "packages/openecon-charts/tests/test_network_export.py"
+      ]
     }
   ],
   "package_versions": {
     "openecon": "0.3.18a3",
-    "openecon-charts": "0.3.0a1"
+    "openecon-charts": "0.3.0a2"
   },
   "previous_public_sdk_source_commit": "0d8a8ea3ef12ddf8bdadfc8c64135052741f29c9",
   "parent_public_merge_commit": "ff50b3f90634282208077cfe62e53919ebb09e82"
