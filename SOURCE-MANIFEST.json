@@ -1507,8 +1507,8 @@
     },
     {
       "path": "docs/pypi-publishing.md",
-      "bytes": 6027,
-      "sha256": "1942183ff57fe399d305a118ee9b4baae0cf3a18922f986ebb4e7f13bde732b8",
+      "bytes": 6538,
+      "sha256": "1e148f306dd56c21599f9a58ca65f13005774d23c7905fa944a6cbaf9094b32f",
       "original_sha256": null,
       "transformed": true,
       "origin": "public SDK patch delivery/verification source"
@@ -10521,11 +10521,11 @@
     "tests/fixtures/stata/reproduce-auto-reference.do",
     "tests/fixtures/structural-macro.csv"
   ],
-  "source_files_sha256": "d7c3702d1efaeff1e527fc84e797825b2fc4bcd9cd64f38f986af14825715877",
+  "source_files_sha256": "2674ed1743a7c63c94fa5530fe83a74cf1ab8107d471d5c92856ead836bf4aed",
   "snapshot_kind": "derived public Python SDK patch",
   "base_source_commit": "6cd9079a330b03a4f1a568e28aca04a23a8d897b",
   "base_public_snapshot_commit": "7cb7517bf8bacf91f92c85f8df9a2904e76e8974",
-  "base_repository_commit": "5f720d2d24f5bcd35e6f2ab6188fe0e6a747486a",
+  "base_repository_commit": "8ddf76b51932a91014db53f193ef643c012b142e",
   "base_source_files_sha256": "2f19287526385ebebbbe71ec3fb6b5c270a01d1f040a32817cb3772c12f48657",
   "source_patch_commits": [
     {
