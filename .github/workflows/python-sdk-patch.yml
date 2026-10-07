@@ -29,7 +29,6 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: Build the local public SDK patch
         run: |
-          python scripts/generate_capability_docs.py --check
           python -m pip install 'build==1.3.0' 'twine==7.0.0'
           python -m build --outdir dist
           python -m twine check --strict dist/*
@@ -59,6 +58,7 @@ jobs:
               "$package_python" -m pip install dist/openecon_charts-0.3.0a1-py3-none-any.whl dist/openecon-0.3.18a2.tar.gz
             fi
             "$package_python" -m pip check
+            "$package_python" scripts/generate_capability_docs.py --check
             python scripts/verify_sdk_distribution.py --python "$package_python" --output "$RUNNER_TEMP/sdk-$mode-smoke.json"
           done
       - name: Run bounded parser and OLS guard regressions

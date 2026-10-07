@@ -653,10 +653,11 @@
     },
     {
       "path": "docs/capabilities.md",
-      "bytes": 38694,
-      "sha256": "d4da45117d617bf379ecd72abc6d42fd8b2fdab7c3266928befb1014ca8fd7cd",
+      "bytes": 38697,
+      "sha256": "f70d84b907e06acd5cbc543874de548ed76d22ef9987b38a93bee388d383b707",
       "original_sha256": "d4da45117d617bf379ecd72abc6d42fd8b2fdab7c3266928befb1014ca8fd7cd",
-      "transformed": false
+      "transformed": true,
+      "base_public_sha256": "d4da45117d617bf379ecd72abc6d42fd8b2fdab7c3266928befb1014ca8fd7cd"
     },
     {
       "path": "docs/charts-provenance.md",
@@ -765,10 +766,11 @@
     },
     {
       "path": "docs/econometrics/capabilities.generated.json",
-      "bytes": 337969,
-      "sha256": "7297f0e3dc672e4dac13c9e3851fa866761355fbb52ca9bb59afae69e8b45b4a",
+      "bytes": 337972,
+      "sha256": "51c772d86ac74bd2292475a9c2a0ebde25f76f0b6a57cbe5ac23ecda8cc796fa",
       "original_sha256": "7297f0e3dc672e4dac13c9e3851fa866761355fbb52ca9bb59afae69e8b45b4a",
-      "transformed": false
+      "transformed": true,
+      "base_public_sha256": "7297f0e3dc672e4dac13c9e3851fa866761355fbb52ca9bb59afae69e8b45b4a"
     },
     {
       "path": "docs/econometrics/censored_count.md",
@@ -10521,7 +10523,7 @@
     "tests/fixtures/stata/reproduce-auto-reference.do",
     "tests/fixtures/structural-macro.csv"
   ],
-  "source_files_sha256": "2674ed1743a7c63c94fa5530fe83a74cf1ab8107d471d5c92856ead836bf4aed",
+  "source_files_sha256": "db7341d89a7007c56457171645328baacc80befde3cb475f36217995474011b2",
   "snapshot_kind": "derived public Python SDK patch",
   "base_source_commit": "6cd9079a330b03a4f1a568e28aca04a23a8d897b",
   "base_public_snapshot_commit": "7cb7517bf8bacf91f92c85f8df9a2904e76e8974",
