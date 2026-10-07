@@ -7,3 +7,11 @@ All other production Python, chart, web and desktop source remains from the revi
 This repository contains no private Git history, internal QA evidence/report files or external research fixture data. Original license and asset attribution files remain included. `SOURCE-MANIFEST.json` records source hashes and the explicit list of fixture-backed test modules omitted from default collection. Their source remains available for review; their external-data scientific checks are not claimed here. Synthetic tests and native kernels remain included. Repository `.github` delivery automation is maintained separately from the source-file manifest.
 
 Install source with `uv sync --frozen --extra app`, `npm --prefix web ci` and `npm --prefix web run build`. Initial dependency installation requires internet. See [the Python patch scope](docs/python-alpha-0.3.18a2.md) for bounded package/parser/OLS validation and provenance. Preparation alone does not prove hosted CI, public Release access, PyPI publication, a fresh Mac download, Developer ID signing or notarization. Verify those delivery layers separately.
+
+The fixed SDK 0.3.18a2 wheel and source archive were built from public commit
+`0d8a8ea3ef12ddf8bdadfc8c64135052741f29c9`. Later publisher/documentation commits
+retain those exact release assets. The repository manifest tracks current listed
+files; the fixed release provenance retains the build commit's manifest digest.
+Install the separate Python packages with
+`python -m pip install 'openecon==0.3.18a2' 'openecon-charts==0.3.0a1'` after the
+registry publication/readback described in [the publishing guide](docs/pypi-publishing.md).
