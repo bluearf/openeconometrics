@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-suggestions-status"
+description = "Enables the suggestions_status command without any pre-configured scope."
+commands.allow = ["suggestions_status"]
+
+[[permission]]
+identifier = "deny-suggestions-status"
+description = "Denies the suggestions_status command without any pre-configured scope."
+commands.deny = ["suggestions_status"]

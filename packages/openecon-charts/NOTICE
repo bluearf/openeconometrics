@@ -1,0 +1,12 @@
+OpenEconometrics Charts
+Copyright 2026 OpenEconometrics contributors
+
+Licensed under the Apache License, Version 2.0. See LICENSE.
+
+The custom renderer adapts the project owner's Bluearf/Dart-D3 chart family with
+permission. This does not assert that the original private repositories carried
+an Apache-2.0 grant. Source attribution and adaptation boundaries are retained in
+openecon_charts/assets/THIRD_PARTY.md.
+
+Third-party D3 code and Barlow fonts retain their original ISC and SIL OFL 1.1
+licenses, included in openecon_charts/assets/D3-LICENSE.txt and BARLOW-OFL.txt.

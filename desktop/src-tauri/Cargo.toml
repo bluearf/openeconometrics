@@ -1,0 +1,41 @@
+[package]
+name = "openecon-desktop"
+version = "0.3.43"
+description = "OpenEconometrics local Python desktop workspace"
+authors = ["OpenEconometrics contributors"]
+edition = "2021"
+rust-version = "1.85"
+
+[features]
+default = []
+custom-protocol = ["tauri/custom-protocol"]
+qa-metrics = []
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["dynamic-acl"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+reqwest = { version = "0.12", default-features = false, features = ["json", "multipart", "stream", "rustls-tls-native-roots"] }
+sha2 = "0.10"
+uuid = { version = "1", features = ["v4"] }
+tokio = { version = "1", features = ["fs", "io-util", "rt-multi-thread", "sync", "time"] }
+tokio-util = { version = "0.7", features = ["io", "rt"] }
+rfd = "0.15"
+cap-std = "4"
+cap-fs-ext = "4"
+url = "2"
+open = "5"
+fs2 = "0.4"
+socket2 = "0.6"
+
+[target.'cfg(all(target_os = "macos", target_arch = "aarch64"))'.dependencies]
+sha2 = { version = "0.10", features = ["asm-aarch64"] }
+
+[profile.release]
+opt-level = "s"
+lto = "thin"
+codegen-units = 1
+strip = true

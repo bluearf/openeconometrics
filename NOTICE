@@ -1,0 +1,18 @@
+OpenEconometrics
+Copyright 2026 OpenEconometrics contributors
+
+Licensed under the Apache License, Version 2.0. See LICENSE.
+
+The chart renderer adapts the project owner's Bluearf/Dart-D3 chart family with
+permission. Source attribution and the port boundary are preserved in
+packages/openecon-charts/src/openecon_charts/assets/THIRD_PARTY.md and
+docs/charts-provenance.md. This attribution is not an upstream Apache-2.0 grant.
+
+Bundled third-party code and fonts retain their own licenses. The standalone
+chart package includes the D3 ISC and Barlow SIL OFL notices. The built web
+interface includes THIRD-PARTY-NOTICES.txt, third-party-manifest.json and
+licenses/, including the KaTeX font SIL OFL notice. See THIRD_PARTY.md.
+
+External research fixtures and quoted/published reference statistics are not
+relicensed by this project's Apache-2.0 license. Their provenance and publication
+boundaries remain recorded alongside the fixtures.

@@ -1,0 +1,10 @@
+[
+  {
+    "file": "FIREBASE-LICENSE.txt",
+    "repository": "firebase/firebase-js-sdk",
+    "ref": "firebase@12.19.0",
+    "git_blob_sha": "4627db48cf644e15e1ff9bc70b6bc810d9620c63",
+    "sha256": "065e45b5674f9bf76670496e5472611b3fbd87fbeaf99336725430a9909cb687",
+    "source_url": "https://github.com/firebase/firebase-js-sdk/blob/firebase@12.19.0/LICENSE"
+  }
+]

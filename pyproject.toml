@@ -1,0 +1,72 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "openecon"
+version = "0.3.18a1"
+description = "An open-source Python workspace for reproducible statistics and econometrics"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE", "THIRD_PARTY.md"]
+authors = [{name = "OpenEconometrics contributors"}]
+dependencies = [
+  "torch>=2.6,<3", "pandas>=2.2,<3",
+  "pyarrow>=18,<24", "pydantic>=2.9,<3",
+  "threadpoolctl>=3.5,<4", "packaging>=24,<27", "openecon-charts==0.3.0a1"
+]
+
+[project.urls]
+Homepage = "https://openeconometrics.com"
+Repository = "https://github.com/bluearf/openeconometrics"
+
+[project.optional-dependencies]
+files = ["openpyxl>=3.1,<4", "pyreadstat>=1.2,<2"]
+cli = ["typer>=0.15,<1"]
+server = ["fastapi>=0.115,<1", "uvicorn>=0.30,<1", "python-multipart>=0.0.20,<1"]
+agent = ["mcp>=1.26,<2"]
+app = ["openecon[files,cli,server,agent]"]
+desktop = ["openecon[app]", "pip>=26.2,<27", "uv==0.9.26"]
+cloud = [
+  "openecon[app]",
+  "PyJWT[crypto]>=2.10,<3", "firebase-admin>=6.9,<8",
+  "google-cloud-firestore>=2.20,<3", "google-cloud-storage>=3,<4",
+  "google-cloud-run>=0.10,<1"
+]
+
+[project.scripts]
+openecon = "openecon.entrypoints:main"
+
+[dependency-groups]
+dev = ["pytest>=8,<10", "httpx>=0.28,<1", "ruff>=0.11,<1", "statsmodels>=0.14.4,<0.15", "numpy>=2,<3", "scipy>=1.13,<2", "networkx>=3,<4"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/openecon"]
+
+[tool.hatch.build]
+artifacts = ["src/openecon/static/**"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "src/openecon", "web/src", "web/tests", "web/package.json", "web/package-lock.json",
+  "web/tsconfig.json", "web/vite.config.ts", "web/index.html", "tests", "docs",
+  "scripts", "benchmarks", "packages/openecon-charts", "README.md", "LICENSE", "NOTICE", "THIRD_PARTY.md", "CONTRIBUTING.md", "SECURITY.md", "web/public", "pyproject.toml", "uv.lock", ".python-version"
+]
+
+[tool.uv.workspace]
+members = ["packages/openecon-charts"]
+
+[tool.uv.sources]
+openecon-charts = { workspace = true }
+
+[tool.pytest.ini_options]
+testpaths = ["tests", "packages/openecon-charts/tests"]
+addopts = "-q"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F"]

@@ -1,0 +1,377 @@
+/* Scoped Canvas network presentation; Barlow is supplied by the shared chart stylesheet. */
+.oe-network {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  background: #fff;
+  color: #14263d;
+  font-family: Barlow, system-ui, sans-serif;
+  letter-spacing: 0;
+}
+.oe-network *,
+.oe-network-dialog * {
+  box-sizing: border-box;
+}
+.oe-network [hidden] {
+  display: none !important;
+}
+.oe-network-heading {
+  margin: 0 0 12px;
+  color: #163d68;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.oe-network-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.oe-network-search-box {
+  position: relative;
+  flex: 1 1 170px;
+  max-width: 300px;
+}
+.oe-network-search {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 10px;
+  border: 1px solid #dce5ee;
+  border-radius: 6px;
+  background: #fff;
+  color: #14263d;
+  font: inherit;
+  font-size: 13px;
+}
+.oe-network-search::placeholder {
+  color: #718196;
+}
+.oe-network-tools {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 4px;
+  margin-left: auto;
+}
+.oe-network-button,
+.oe-network-download > summary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 7px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: #fff;
+  color: #163d68;
+  cursor: pointer;
+  list-style: none;
+}
+.oe-network-button svg,
+.oe-network-download > summary svg {
+  width: 18px;
+  height: 18px;
+}
+.oe-network-button:hover,
+.oe-network-download > summary:hover {
+  background: #edf2f8;
+}
+.oe-network-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.oe-network :is(button, input, summary):focus-visible,
+.oe-network-dialog button:focus-visible {
+  outline: 2px solid #315f91;
+  outline-offset: 2px;
+}
+.oe-network-search-results,
+.oe-network-export-menu {
+  position: absolute;
+  z-index: 8;
+  padding: 5px;
+  border: 1px solid #dce5ee;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 6px 24px #163d6824;
+}
+.oe-network-search-results {
+  top: 40px;
+  left: 0;
+  width: max(100%, 230px);
+  max-width: min(380px, 85vw);
+}
+.oe-network-search-results > :is(button, span),
+.oe-network-export-menu > button {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 4px;
+  background: #fff;
+  color: #163d68;
+  text-align: left;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.oe-network-search-results > button {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.oe-network-export-menu > button {
+  cursor: pointer;
+}
+.oe-network-search-results > button:hover,
+.oe-network-export-menu > button:hover {
+  background: #edf2f8;
+}
+.oe-network-download {
+  position: relative;
+}
+.oe-network-download > summary::-webkit-details-marker {
+  display: none;
+}
+.oe-network-export-menu {
+  top: 40px;
+  right: 0;
+  width: 130px;
+}
+.oe-network-stage {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid #e8eef4;
+  border-radius: 8px;
+  background: #fff;
+}
+.oe-network-canvas {
+  display: block;
+  max-width: 100%;
+  touch-action: none;
+  cursor: grab;
+}
+.oe-network-canvas.is-panning {
+  cursor: grabbing;
+}
+.oe-network-canvas:focus-visible {
+  outline: 2px solid #315f91;
+  outline-offset: -3px;
+}
+.oe-network-hint {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  padding: 4px 6px;
+  background: #ffffffe6;
+  color: #718196;
+  font-size: 11px;
+  line-height: 1.3;
+  pointer-events: none;
+}
+.oe-network-tooltip {
+  position: absolute;
+  z-index: 5;
+  max-width: min(260px, calc(100% - 16px));
+  max-height: 180px;
+  overflow: hidden;
+  padding: 9px 11px;
+  border: 1px solid #dce5ee;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 4px 18px #163d6820;
+  color: #14263d;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}
+.oe-network-selection {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 36px;
+  padding: 10px 1px 0;
+  color: #546883;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.oe-network-selection > span {
+  min-width: 0;
+  max-height: 80px;
+  overflow: auto;
+  overflow-wrap: anywhere;
+}
+.oe-network-selection > button {
+  flex: 0 0 auto;
+  padding: 1px 0;
+  border: 0;
+  background: transparent;
+  color: #315f91;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.oe-network-footer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  padding: 10px 1px 2px;
+  color: #718196;
+  font-size: 11px;
+  line-height: 1.55;
+}
+.oe-network-coverage {
+  flex: 1 1 240px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.oe-network-status {
+  flex: 0 0 auto;
+  color: #546883;
+}
+.oe-network-dialog {
+  width: min(1220px, 94vw);
+  max-height: 94vh;
+  padding: 20px;
+  border: 0;
+  border-radius: 10px;
+  overflow: auto;
+  background: #fff;
+  box-shadow: 0 24px 80px #0d233547;
+}
+.oe-network-dialog::backdrop {
+  background: #071c37a0;
+}
+.oe-network-dialog > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 14px;
+  color: #163d68;
+  font:
+    600 18px Barlow,
+    system-ui,
+    sans-serif;
+}
+.oe-network-dialog > header > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.oe-network-dialog > header > button {
+  flex: 0 0 34px;
+}
+.oe-network-expanded .oe-network-heading {
+  display: none;
+}
+@media (max-width: 420px) {
+  .oe-network-search-box {
+    max-width: none;
+    flex-basis: 100%;
+  }
+  .oe-network-toolbar {
+    gap: 5px;
+  }
+  .oe-network-hint {
+    font-size: 10px;
+    right: 7px;
+    bottom: 7px;
+  }
+  .oe-network-dialog {
+    padding: 12px;
+  }
+}
+@media print {
+  .oe-network {
+    break-inside: avoid;
+  }
+  .oe-network-toolbar,
+  .oe-network-tooltip,
+  .oe-network-hint,
+  .oe-network-status,
+  .oe-network-selection > button {
+    display: none !important;
+  }
+}
+/* The transparent Canvas overlay owns picking, labels and accessibility; WebGL owns geometry. */
+.oe-network-gpu {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+.oe-network-canvas {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+}
+.oe-network-hint,
+.oe-network-legend {
+  z-index: 2;
+}
+.oe-network-legend {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 10px;
+  max-width: 70%;
+  max-height: 80px;
+  overflow: auto;
+  padding: 5px 7px;
+  border-radius: 4px;
+  background: #ffffffe6;
+  color: #14263d;
+  font-size: 11px;
+}
+.oe-network-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.oe-network-legend-item i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.oe-network-timeline {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-top: 8px;
+  color: #546883;
+  font-size: 12px;
+}
+.oe-network-timeline button {
+  padding: 4px 8px;
+  color: #163d68;
+  background: #fff;
+  border: 1px solid #dce5ee;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.oe-network-timeline input {
+  flex: 1;
+  min-width: 0;
+  accent-color: #163d68;
+}
+@media print {
+  .oe-network-timeline {
+    display: none !important;
+  }
+}

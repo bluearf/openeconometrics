@@ -1,0 +1,13 @@
+node_modules/
+.toolchains/
+.build-venv/
+.build-tools/
+build/
+runtime/openecon-runtime/
+runtime/runtime-manifest.json
+suggestions/
+src-tauri/target/
+src-tauri/gen/
+artifacts/
+*.log
+__pycache__/

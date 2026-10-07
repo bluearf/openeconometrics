@@ -1,0 +1,89 @@
+.pane-separator {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+  background: #fff;
+  touch-action: none;
+  user-select: none;
+  outline: none;
+}
+
+.pane-separator::after {
+  content: "";
+  position: absolute;
+  background: var(--line, rgba(20, 38, 61, 0.14));
+}
+
+.pane-separator--vertical {
+  inline-size: 6px;
+  cursor: col-resize;
+}
+
+.pane-separator--vertical::after {
+  inset-block: 0;
+  inset-inline-start: 2px;
+  inline-size: 1px;
+}
+
+.pane-separator--horizontal {
+  block-size: 6px;
+  cursor: row-resize;
+}
+
+.pane-separator--horizontal::after {
+  inset-inline: 0;
+  inset-block-start: 2px;
+  block-size: 1px;
+}
+
+.pane-separator:hover::after,
+.pane-separator:focus-visible::after,
+.pane-separator--dragging::after {
+  background: var(--ink, #14263d);
+}
+
+.pane-separator--vertical:focus-visible::after {
+  inline-size: 2px;
+}
+
+.pane-separator--horizontal:focus-visible::after {
+  block-size: 2px;
+}
+
+.workspace-layout--resizable {
+  position: relative;
+}
+
+.workbench.workbench--resizable {
+  grid-template-columns:
+    minmax(0, calc((100% - 6px) * var(--editor-pane-ratio, 0.5)))
+    6px minmax(0, 1fr);
+}
+
+.workbench--resizable > .editor-pane {
+  border-right: 0;
+}
+
+.workspace-layout--resizable > .files-sidebar {
+  border-inline-end: 0;
+}
+
+@media (max-width: 720px) {
+  .workspace-layout--resizable > .pane-separator,
+  .workbench--resizable > .pane-separator {
+    display: none;
+  }
+
+  .workspace-layout--resizable > .files-sidebar:not(.files-sidebar--collapsed) {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    z-index: 20;
+    inline-size: min(var(--files-pane-width, 220px), 80vw);
+    border-inline-end: 1px solid var(--line, rgba(20, 38, 61, 0.14));
+  }
+
+  .workspace-layout--files-open > .workbench {
+    margin-inline-start: 40px;
+  }
+}

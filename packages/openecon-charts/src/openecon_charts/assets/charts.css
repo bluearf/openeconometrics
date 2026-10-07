@@ -1,0 +1,52 @@
+/* Adapted from Bluearf reporting/bluearf_charts.css; see THIRD_PARTY.md. */
+@font-face { font-family: Barlow; src: url("Barlow.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+.bluearf-chart { position: relative; min-width: 0; width: 100%; background: #fff; color: #163d68; font-family: Barlow, Arial, sans-serif; letter-spacing: 0; }
+.bluearf-chart-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 32px; padding: 2px 0 8px; }
+.bluearf-chart-unit { color: #61758a; font-size: 12px; overflow-wrap: anywhere; }
+.bluearf-chart-tools { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 5px; }
+.bluearf-chart-tools button, .bluearf-chart-download summary, .bluearf-chart-dialog header button { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 6px; border: 0; border-radius: 5px; background: #fff; color: #163d68; cursor: pointer; }
+.bluearf-chart-tools button:hover, .bluearf-chart-download summary:hover, .bluearf-chart-tools button[aria-pressed="true"] { background: #edf2f8; }
+.bluearf-chart-tools button:focus-visible, .bluearf-chart-download summary:focus-visible, .bluearf-chart-type select:focus-visible, .bluearf-chart-legend button:focus-visible, .bluearf-chart-dialog header button:focus-visible { outline: 2px solid #163d68; outline-offset: 2px; }
+.bluearf-chart-tools svg, .bluearf-chart-dialog header svg, .bluearf-chart-type svg { width: 16px; height: 16px; flex: 0 0 16px; }
+.bluearf-chart-type { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: #163d68; padding: 0 6px; border-radius: 5px; background: #fff; min-height: 32px; }
+.bluearf-chart-type select { font: inherit; color: inherit; border: 0; background: transparent; width: 125px; height: 32px; padding: 0 20px 0 0; cursor: pointer; }
+.bluearf-chart-download { position: relative; }
+.bluearf-chart-download summary { list-style: none; }
+.bluearf-chart-download summary::-webkit-details-marker { display: none; }
+.bluearf-chart-download > div { position: absolute; top: 37px; right: 0; padding: 5px; width: 110px; background: #fff; box-shadow: 0 6px 24px #163d6829; border: 1px solid #e6edf3; border-radius: 6px; z-index: 25; }
+.bluearf-chart-download > div button { width: 100%; justify-content: flex-start; background: #fff; font-size: 12px; }
+.bluearf-chart-stage { width: 100%; overflow: auto; max-height: 580px; }
+.bluearf-chart-stage > svg { display: block; width: 100%; }
+.bluearf-chart-stage [tabindex]:focus { outline: none; }
+.bluearf-chart-stage circle[tabindex]:focus, .bluearf-chart-stage rect[tabindex]:focus, .bluearf-chart-stage path[tabindex]:focus, .bluearf-chart-stage g[tabindex]:focus circle { stroke: #163d68; stroke-width: 3px; }
+.bluearf-chart[data-chart-type="scatter"] .bluearf-chart-stage { max-height: none; }
+.bluearf-chart-stage [role="button"] { cursor: pointer; }
+.bluearf-chart-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px 15px; padding: 10px 0 4px; }
+.bluearf-chart-legend--top { padding: 4px 0 10px; }
+.bluearf-chart-legend button { display: inline-flex; align-items: center; gap: 6px; max-width: 100%; text-align: left; font: inherit; font-size: 12px; color: #2d426a; border: 0; background: transparent; padding: 3px; cursor: pointer; overflow-wrap: anywhere; }
+.bluearf-chart-legend button > span { width: 10px; height: 10px; border-radius: 2px; flex: 0 0 10px; }
+.bluearf-chart-legend button[aria-pressed="false"] { opacity: .45; text-decoration: line-through; }
+.bluearf-chart-legend button:disabled { cursor: default; opacity: 1; }
+.bluearf-chart-tooltip { position: absolute; z-index: 30; pointer-events: none; max-width: min(320px, 95%); padding: 10px 12px; font-size: 12px; line-height: 1.5; overflow-wrap: anywhere; background: #fff; color: #163d68; border: 1px solid #dce5ee; border-radius: 6px; box-shadow: 0 4px 18px #163d6820; }
+.bluearf-chart-tooltip strong { display: block; margin-bottom: 3px; }
+.bluearf-chart-table { overflow: auto; margin-top: 12px; max-height: 320px; }
+.bluearf-chart-table table { width: 100%; border-collapse: collapse; font-size: 12px; color: #2d426a; }
+.bluearf-chart-table th, .bluearf-chart-table td { padding: 9px 12px; text-align: right; border-bottom: 1px solid #e9eef4; }
+.bluearf-chart-table th:first-child { text-align: left; }
+.bluearf-chart-message { color: #163d68; font-size: 12px; }
+.bluearf-chart-message:empty { display: none; }
+.bluearf-chart [hidden] { display: none !important; }
+.bluearf-chart-dialog { width: min(1150px, 92vw); max-height: 90vh; padding: 20px; border: 0; border-radius: 8px; overflow: auto; box-shadow: 0 24px 80px #0d233547; }
+.bluearf-chart-dialog::backdrop { background: #071c37a0; }
+.bluearf-chart-dialog > header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 15px; font: 600 18px Barlow, Arial, sans-serif; color: #163d68; }
+.bluearf-chart-dialog > header button { flex: 0 0 32px; }
+@media print {
+  .bluearf-chart-toolbar, .bluearf-chart-tooltip, .bluearf-chart-message { display: none !important; }
+  .bluearf-chart-stage { max-height: none; overflow: visible; }
+  .bluearf-chart { break-inside: avoid; }
+}
+.bluearf-chart-heading { margin: 0 0 2px; color: #163d68; font: 600 17px Barlow, Arial, sans-serif; overflow-wrap: anywhere; }
+.bluearf-chart-footnote { padding-top: 12px; color: #61758a; font: 12px Barlow, Arial, sans-serif; line-height: 1.6; overflow-wrap: anywhere; }
+.bluearf-chart-numeric-line .bluearf-chart-stage { max-height: none; }
+.bluearf-chart-dialog .bluearf-chart { box-sizing: border-box; }
+.bluearf-chart-annotations { pointer-events: none; }

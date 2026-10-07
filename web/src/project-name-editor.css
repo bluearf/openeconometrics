@@ -1,0 +1,110 @@
+.project-name-editor {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3px;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  color: #14263d;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.project-name-editor__form {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.project-name-editor--name {
+  font-size: inherit;
+}
+
+.project-name-editor__name {
+  display: block;
+  max-inline-size: min(40ch, 30vw);
+  min-inline-size: 0;
+  padding: 5px 0;
+  border: 0;
+  border-radius: 3px;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  text-align: start;
+  cursor: text;
+}
+
+.project-name-editor__name strong {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.project-name-editor__name:hover:not(:disabled) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.project-name-editor__name:focus-visible {
+  outline: 2px solid #14263d;
+  outline-offset: 3px;
+}
+
+.project-name-editor__name:disabled {
+  cursor: default;
+}
+
+.project-name-editor__form input {
+  inline-size: clamp(110px, 20vw, 240px);
+  min-inline-size: 0;
+  padding: 5px 7px;
+  border: 1px solid rgba(20, 38, 61, 0.2);
+  border-radius: 4px;
+  color: inherit;
+  background: #fff;
+  font: inherit;
+}
+
+.project-name-editor__form input:focus {
+  border-color: #14263d;
+  outline: 2px solid rgba(20, 38, 61, 0.08);
+}
+
+.project-name-editor__button {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 28px;
+  inline-size: 28px;
+  block-size: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.project-name-editor__button:hover:not(:disabled) {
+  background: rgba(20, 38, 61, 0.05);
+}
+
+.project-name-editor__button:focus-visible {
+  outline: 2px solid #14263d;
+  outline-offset: 2px;
+}
+
+.project-name-editor__button:disabled,
+.project-name-editor__form input:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.project-name-editor__error {
+  flex-basis: 100%;
+  max-inline-size: 280px;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}

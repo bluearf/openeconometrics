@@ -1,0 +1,16 @@
+{
+  "name": "openecon-desktop",
+  "version": "0.3.43",
+  "private": true,
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "test": "cargo test --manifest-path src-tauri/Cargo.toml",
+    "runtime": "python3 scripts/package_runtime.py",
+    "bundle:mac": "python3 scripts/build_desktop.py --bundles app,dmg",
+    "bundle:windows": "python scripts/build_desktop.py --bundles nsis"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.9.4"
+  }
+}

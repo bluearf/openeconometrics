@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-open-desktop-login"
+description = "Enables the open_desktop_login command without any pre-configured scope."
+commands.allow = ["open_desktop_login"]
+
+[[permission]]
+identifier = "deny-open-desktop-login"
+description = "Denies the open_desktop_login command without any pre-configured scope."
+commands.deny = ["open_desktop_login"]

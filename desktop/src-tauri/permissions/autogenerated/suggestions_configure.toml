@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-suggestions-configure"
+description = "Enables the suggestions_configure command without any pre-configured scope."
+commands.allow = ["suggestions_configure"]
+
+[[permission]]
+identifier = "deny-suggestions-configure"
+description = "Denies the suggestions_configure command without any pre-configured scope."
+commands.deny = ["suggestions_configure"]

@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-upload-project-file"
+description = "Enables the upload_project_file command without any pre-configured scope."
+commands.allow = ["upload_project_file"]
+
+[[permission]]
+identifier = "deny-upload-project-file"
+description = "Denies the upload_project_file command without any pre-configured scope."
+commands.deny = ["upload_project_file"]

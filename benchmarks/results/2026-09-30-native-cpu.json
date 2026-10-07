@@ -1,0 +1,1086 @@
+{
+  "benchmark_version": 2,
+  "measured_at_utc": "2026-09-30T15:11:11.469536+00:00",
+  "environment": {
+    "os": "Darwin",
+    "os_release": "25.6.0",
+    "macos_version": "26.6.2",
+    "architecture": "arm64",
+    "cpu": "Apple M3 Pro",
+    "logical_cpu_count": 12,
+    "python": "3.13.5",
+    "numpy": "2.5.3",
+    "pandas": "2.3.3",
+    "scipy": "1.18.1",
+    "statsmodels_oracle": "0.14.6",
+    "threadpoolctl": "3.7.0",
+    "torch": {
+      "installed": true,
+      "version": "2.14.0",
+      "num_threads": 1,
+      "num_interop_threads": 1,
+      "cuda_available": false,
+      "cuda_measured": false,
+      "cuda_version": null,
+      "cuda_device": null,
+      "mps_measured": false,
+      "dtype": "float64"
+    },
+    "blas_build": {
+      "numpy": {
+        "name": "accelerate",
+        "version": "unknown",
+        "openblas configuration": "unknown"
+      },
+      "scipy": {
+        "name": "Accelerate",
+        "version": "unknown",
+        "openblas configuration": "unknown",
+        "has ilp64": false
+      }
+    }
+  },
+  "thread_control": {
+    "requested_threads": 1,
+    "environment_requests": {
+      "OMP_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "BLIS_NUM_THREADS": "1",
+      "VECLIB_MAXIMUM_THREADS": "1"
+    },
+    "threadpoolctl_limit": 1,
+    "observed_pools": [
+      {
+        "user_api": "openmp",
+        "internal_api": "openmp",
+        "num_threads": 1,
+        "prefix": "libomp",
+        "version": null
+      }
+    ],
+    "limitation": "Runtime counts are observable only for pools discovered by threadpoolctl; environment requests do not prove an undiscoverable backend's count."
+  },
+  "method": {
+    "seed": 20260930,
+    "warmups_per_workload_engine": 1,
+    "measurements_per_workload_engine": 5,
+    "engine_order": "rotated each repetition",
+    "timer": "time.perf_counter",
+    "cuda_synchronization": "before and after every CUDA timing",
+    "timed": "ModelSpec validation + complete fit including input checks, binary separation LP, inference, provenance hashing and ResultBundle JSON-mode conversion; CPU/CUDA data transfers included",
+    "excluded": "Process/import startup, data generation, DataFrame construction, pre-run GC, JSON text encoding, filesystem/UI/MCP work",
+    "peak_ram_measured": false,
+    "stata_comparison": false
+  },
+  "source_sha256": {
+    "scripts/benchmark.py": "51ef8d65f154f06c944ea9301ac626f8c7d5227798e39f75c4d3e440831fbd09",
+    "benchmarks/reference/analysis_statsmodels.py": "c9349d292d3666672200bdc6574550c2ecd6a2ff07454cafcc0dd6531a391874",
+    "uv.lock": "9d17f73434f49cb834c73b51ddf4a9381b9fa9410a0e5515d6e98c30d8bb9e6c",
+    "src/openecon/__init__.py": "347f9e606aa08ba9078a75c87ad85d7f8a0864ef45a3def8396a9ae40d5925c3",
+    "src/openecon/analysis.py": "60ef78329e338748926290541a48f8c3ef9c4fcc38e976eb6db31194d64cdc81",
+    "src/openecon/cli.py": "b620d65a92845d7590d37fed90ba11f5280471a553ec70d6b734792aa2aaf9ae",
+    "src/openecon/data.py": "d2630bb6a3b9a574e3b8697e5ef4f4dd29cf3418e93017fb78f16591d58426c7",
+    "src/openecon/engines/__init__.py": "9f1877099e7b89e10eb903f08accba76bf891a920978200590fe3b8dc756a738",
+    "src/openecon/engines/contracts.py": "2243527aa00eee127cbfe9035966c29790768a6d41430e1227492002f655d09d",
+    "src/openecon/engines/numpy_engine.py": "0ba61c206764a6b8a687d8d3afcf268ec01ddb627dcc985e36b49df7e97de7b9",
+    "src/openecon/engines/torch_engine.py": "051e2f334599b28bae600a058c84b2423bf3401d4cee6969fce48a221d3f0de6",
+    "src/openecon/mcp_server.py": "fa2a61e64d26abdf1c92ba2dba725f4480a17c88a6413aa4ac095b5778adbd32",
+    "src/openecon/models.py": "54198b0fddf199c059b971d33805a7e294c8a6e616eaf946c9246428a3c08fb4",
+    "src/openecon/server.py": "1468e53dfbd711fbe7ff1db5c2df1b7b7fb4762437a503349234b1144954c322",
+    "src/openecon/workspace.py": "31741247159cdf61ccbbb1235351fb988e9e3cfdc7b4ec790b667f9ce9375238"
+  },
+  "results": [
+    {
+      "estimator": "ols",
+      "rows": 10000,
+      "numeric_predictors": 5,
+      "dtype": "float64",
+      "spec": {
+        "estimator": "ols",
+        "outcome": "y",
+        "predictors": [
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "intercept": true,
+        "covariance": "HC3",
+        "missing": "raise",
+        "alpha": 0.05
+      },
+      "synthetic_generation_seconds": 0.0063962910789996386,
+      "dataframe_construction_seconds": 0.03816537489183247,
+      "engines": {
+        "statsmodels_adapter": {
+          "warmup_seconds": [
+            0.0630113328807056
+          ],
+          "fit_seconds": [
+            0.028989374870434403,
+            0.02985454211011529,
+            0.019848124822601676,
+            0.018387166084721684,
+            0.016515916911885142
+          ],
+          "recorded_backend": "statsmodels",
+          "recorded_device": "cpu",
+          "median_seconds": 0.019848124822601676,
+          "min_seconds": 0.016515916911885142,
+          "max_seconds": 0.02985454211011529,
+          "baseline_time_divided_by_engine_time": 1.0,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 0.0,
+            "max_abs_covariance_difference": 0.0,
+            "max_abs_p_value_difference": 0.0,
+            "max_abs_confidence_interval_difference": 0.0,
+            "max_abs_chart_prediction_difference": 0.0,
+            "absolute_metric_differences": {
+              "r_squared": 0.0,
+              "adjusted_r_squared": 0.0,
+              "aic": 0.0,
+              "bic": 0.0,
+              "log_likelihood": 0.0,
+              "rmse": 0.0,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        },
+        "native_numpy": {
+          "warmup_seconds": [
+            0.11301029101014137
+          ],
+          "fit_seconds": [
+            0.014679708983749151,
+            0.011864125030115247,
+            0.007591750007122755,
+            0.007755416911095381,
+            0.011652166023850441
+          ],
+          "recorded_backend": "openecon.numpy",
+          "recorded_device": "cpu",
+          "median_seconds": 0.011652166023850441,
+          "min_seconds": 0.007591750007122755,
+          "max_seconds": 0.014679708983749151,
+          "baseline_time_divided_by_engine_time": 1.7033850000055948,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 4.440892098500626e-16,
+            "max_abs_covariance_difference": 1.6263032587282567e-19,
+            "max_abs_p_value_difference": 1.5557538194652854e-61,
+            "max_abs_confidence_interval_difference": 4.440892098500626e-16,
+            "max_abs_chart_prediction_difference": 2.6645352591003757e-15,
+            "absolute_metric_differences": {
+              "r_squared": 0.0,
+              "adjusted_r_squared": 0.0,
+              "aic": 3.637978807091713e-12,
+              "bic": 3.637978807091713e-12,
+              "log_likelihood": 1.8189894035458565e-12,
+              "rmse": 0.0,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        },
+        "native_torch_cpu": {
+          "warmup_seconds": [
+            0.9588650418445468
+          ],
+          "fit_seconds": [
+            0.02327133296057582,
+            0.016050083097070456,
+            0.01343358401209116,
+            0.012770583853125572,
+            0.007398625137284398
+          ],
+          "recorded_backend": "openecon.torch",
+          "recorded_device": "cpu",
+          "median_seconds": 0.01343358401209116,
+          "min_seconds": 0.007398625137284398,
+          "max_seconds": 0.02327133296057582,
+          "baseline_time_divided_by_engine_time": 1.4775003308675467,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 5.551115123125783e-16,
+            "max_abs_covariance_difference": 1.2197274440461925e-19,
+            "max_abs_p_value_difference": 1.90735418266444e-58,
+            "max_abs_confidence_interval_difference": 5.551115123125783e-16,
+            "max_abs_chart_prediction_difference": 2.6645352591003757e-15,
+            "absolute_metric_differences": {
+              "r_squared": 0.0,
+              "adjusted_r_squared": 0.0,
+              "aic": 3.637978807091713e-12,
+              "bic": 3.637978807091713e-12,
+              "log_likelihood": 1.8189894035458565e-12,
+              "rmse": 0.0,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        }
+      },
+      "dense_design_theoretical_bytes": 480000,
+      "dense_design_theoretical_mib": 0.457763671875,
+      "peak_ram_measured": false
+    },
+    {
+      "estimator": "ols",
+      "rows": 100000,
+      "numeric_predictors": 5,
+      "dtype": "float64",
+      "spec": {
+        "estimator": "ols",
+        "outcome": "y",
+        "predictors": [
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "intercept": true,
+        "covariance": "HC3",
+        "missing": "raise",
+        "alpha": 0.05
+      },
+      "synthetic_generation_seconds": 0.029155875090509653,
+      "dataframe_construction_seconds": 0.0022277079988271,
+      "engines": {
+        "statsmodels_adapter": {
+          "warmup_seconds": [
+            0.08149445801973343
+          ],
+          "fit_seconds": [
+            0.14067354192957282,
+            0.1426168750040233,
+            0.1316268329974264,
+            0.3240919578820467,
+            0.21589475008659065
+          ],
+          "recorded_backend": "statsmodels",
+          "recorded_device": "cpu",
+          "median_seconds": 0.1426168750040233,
+          "min_seconds": 0.1316268329974264,
+          "max_seconds": 0.3240919578820467,
+          "baseline_time_divided_by_engine_time": 1.0,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 0.0,
+            "max_abs_covariance_difference": 0.0,
+            "max_abs_p_value_difference": 0.0,
+            "max_abs_confidence_interval_difference": 0.0,
+            "max_abs_chart_prediction_difference": 0.0,
+            "absolute_metric_differences": {
+              "r_squared": 0.0,
+              "adjusted_r_squared": 0.0,
+              "aic": 0.0,
+              "bic": 0.0,
+              "log_likelihood": 0.0,
+              "rmse": 0.0,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        },
+        "native_numpy": {
+          "warmup_seconds": [
+            0.06700524990446866
+          ],
+          "fit_seconds": [
+            0.044739207951352,
+            0.0423244999255985,
+            0.07636487483978271,
+            0.09355991589836776,
+            0.06301112496294081
+          ],
+          "recorded_backend": "openecon.numpy",
+          "recorded_device": "cpu",
+          "median_seconds": 0.06301112496294081,
+          "min_seconds": 0.0423244999255985,
+          "max_seconds": 0.09355991589836776,
+          "baseline_time_divided_by_engine_time": 2.2633602413526437,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 2.220446049250313e-15,
+            "max_abs_covariance_difference": 6.268043809681823e-20,
+            "max_abs_p_value_difference": 0.0,
+            "max_abs_confidence_interval_difference": 2.220446049250313e-15,
+            "max_abs_chart_prediction_difference": 7.105427357601002e-15,
+            "absolute_metric_differences": {
+              "r_squared": 2.220446049250313e-16,
+              "adjusted_r_squared": 2.220446049250313e-16,
+              "aic": 0.0,
+              "bic": 0.0,
+              "log_likelihood": 0.0,
+              "rmse": 0.0,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        },
+        "native_torch_cpu": {
+          "warmup_seconds": [
+            0.15171920787543058
+          ],
+          "fit_seconds": [
+            0.12223183293826878,
+            0.0766387500334531,
+            0.26243766699917614,
+            0.058618125040084124,
+            0.14302466716617346
+          ],
+          "recorded_backend": "openecon.torch",
+          "recorded_device": "cpu",
+          "median_seconds": 0.12223183293826878,
+          "min_seconds": 0.058618125040084124,
+          "max_seconds": 0.26243766699917614,
+          "baseline_time_divided_by_engine_time": 1.1667735938808155,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 1.3322676295501878e-15,
+            "max_abs_covariance_difference": 6.945670167485263e-20,
+            "max_abs_p_value_difference": 0.0,
+            "max_abs_confidence_interval_difference": 1.3322676295501878e-15,
+            "max_abs_chart_prediction_difference": 6.217248937900877e-15,
+            "absolute_metric_differences": {
+              "r_squared": 2.220446049250313e-16,
+              "adjusted_r_squared": 2.220446049250313e-16,
+              "aic": 0.0,
+              "bic": 0.0,
+              "log_likelihood": 0.0,
+              "rmse": 0.0,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        }
+      },
+      "dense_design_theoretical_bytes": 4800000,
+      "dense_design_theoretical_mib": 4.57763671875,
+      "peak_ram_measured": false
+    },
+    {
+      "estimator": "ols",
+      "rows": 10000,
+      "numeric_predictors": 50,
+      "dtype": "float64",
+      "spec": {
+        "estimator": "ols",
+        "outcome": "y",
+        "predictors": [
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5",
+          "x6",
+          "x7",
+          "x8",
+          "x9",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "x15",
+          "x16",
+          "x17",
+          "x18",
+          "x19",
+          "x20",
+          "x21",
+          "x22",
+          "x23",
+          "x24",
+          "x25",
+          "x26",
+          "x27",
+          "x28",
+          "x29",
+          "x30",
+          "x31",
+          "x32",
+          "x33",
+          "x34",
+          "x35",
+          "x36",
+          "x37",
+          "x38",
+          "x39",
+          "x40",
+          "x41",
+          "x42",
+          "x43",
+          "x44",
+          "x45",
+          "x46",
+          "x47",
+          "x48",
+          "x49",
+          "x50"
+        ],
+        "intercept": true,
+        "covariance": "HC3",
+        "missing": "raise",
+        "alpha": 0.05
+      },
+      "synthetic_generation_seconds": 0.010149165987968445,
+      "dataframe_construction_seconds": 0.002777374815195799,
+      "engines": {
+        "statsmodels_adapter": {
+          "warmup_seconds": [
+            0.3147814590483904
+          ],
+          "fit_seconds": [
+            0.43800337496213615,
+            0.30747312493622303,
+            0.31350725004449487,
+            0.22289133397862315,
+            0.2454060420859605
+          ],
+          "recorded_backend": "statsmodels",
+          "recorded_device": "cpu",
+          "median_seconds": 0.30747312493622303,
+          "min_seconds": 0.22289133397862315,
+          "max_seconds": 0.43800337496213615,
+          "baseline_time_divided_by_engine_time": 1.0,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 0.0,
+            "max_abs_covariance_difference": 0.0,
+            "max_abs_p_value_difference": 0.0,
+            "max_abs_confidence_interval_difference": 0.0,
+            "max_abs_chart_prediction_difference": 0.0,
+            "absolute_metric_differences": {
+              "r_squared": 0.0,
+              "adjusted_r_squared": 0.0,
+              "aic": 0.0,
+              "bic": 0.0,
+              "log_likelihood": 0.0,
+              "rmse": 0.0,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        },
+        "native_numpy": {
+          "warmup_seconds": [
+            0.155552624957636
+          ],
+          "fit_seconds": [
+            0.17233074991963804,
+            0.1652964169625193,
+            0.1486557919997722,
+            0.1579531659372151,
+            0.11309608281590044
+          ],
+          "recorded_backend": "openecon.numpy",
+          "recorded_device": "cpu",
+          "median_seconds": 0.1579531659372151,
+          "min_seconds": 0.11309608281590044,
+          "max_seconds": 0.17233074991963804,
+          "baseline_time_divided_by_engine_time": 1.9466094466155919,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 8.049116928532385e-16,
+            "max_abs_covariance_difference": 5.014435047745458e-19,
+            "max_abs_p_value_difference": 5.595524044110789e-14,
+            "max_abs_confidence_interval_difference": 8.465450562766819e-16,
+            "max_abs_chart_prediction_difference": 1.0658141036401503e-14,
+            "absolute_metric_differences": {
+              "r_squared": 0.0,
+              "adjusted_r_squared": 0.0,
+              "aic": 3.637978807091713e-12,
+              "bic": 3.637978807091713e-12,
+              "log_likelihood": 1.8189894035458565e-12,
+              "rmse": 0.0,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        },
+        "native_torch_cpu": {
+          "warmup_seconds": [
+            0.0852789580821991
+          ],
+          "fit_seconds": [
+            0.10812166705727577,
+            0.11393387499265373,
+            0.0991434168536216,
+            0.07303412491455674,
+            0.08551141596399248
+          ],
+          "recorded_backend": "openecon.torch",
+          "recorded_device": "cpu",
+          "median_seconds": 0.0991434168536216,
+          "min_seconds": 0.07303412491455674,
+          "max_seconds": 0.11393387499265373,
+          "baseline_time_divided_by_engine_time": 3.1012964319172682,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 9.43689570931383e-16,
+            "max_abs_covariance_difference": 5.21772295508649e-19,
+            "max_abs_p_value_difference": 5.67323965583455e-14,
+            "max_abs_confidence_interval_difference": 9.992007221626409e-16,
+            "max_abs_chart_prediction_difference": 9.769962616701378e-15,
+            "absolute_metric_differences": {
+              "r_squared": 0.0,
+              "adjusted_r_squared": 0.0,
+              "aic": 3.637978807091713e-12,
+              "bic": 3.637978807091713e-12,
+              "log_likelihood": 1.8189894035458565e-12,
+              "rmse": 0.0,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        }
+      },
+      "dense_design_theoretical_bytes": 4080000,
+      "dense_design_theoretical_mib": 3.8909912109375,
+      "peak_ram_measured": false
+    },
+    {
+      "estimator": "ols",
+      "rows": 100000,
+      "numeric_predictors": 50,
+      "dtype": "float64",
+      "spec": {
+        "estimator": "ols",
+        "outcome": "y",
+        "predictors": [
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5",
+          "x6",
+          "x7",
+          "x8",
+          "x9",
+          "x10",
+          "x11",
+          "x12",
+          "x13",
+          "x14",
+          "x15",
+          "x16",
+          "x17",
+          "x18",
+          "x19",
+          "x20",
+          "x21",
+          "x22",
+          "x23",
+          "x24",
+          "x25",
+          "x26",
+          "x27",
+          "x28",
+          "x29",
+          "x30",
+          "x31",
+          "x32",
+          "x33",
+          "x34",
+          "x35",
+          "x36",
+          "x37",
+          "x38",
+          "x39",
+          "x40",
+          "x41",
+          "x42",
+          "x43",
+          "x44",
+          "x45",
+          "x46",
+          "x47",
+          "x48",
+          "x49",
+          "x50"
+        ],
+        "intercept": true,
+        "covariance": "HC3",
+        "missing": "raise",
+        "alpha": 0.05
+      },
+      "synthetic_generation_seconds": 0.07101487508043647,
+      "dataframe_construction_seconds": 0.08955487492494285,
+      "engines": {
+        "statsmodels_adapter": {
+          "warmup_seconds": [
+            3.468570833094418
+          ],
+          "fit_seconds": [
+            3.0953047079965472,
+            5.263468708144501,
+            5.070411125198007,
+            4.288318250095472,
+            5.338696500053629
+          ],
+          "recorded_backend": "statsmodels",
+          "recorded_device": "cpu",
+          "median_seconds": 5.070411125198007,
+          "min_seconds": 3.0953047079965472,
+          "max_seconds": 5.338696500053629,
+          "baseline_time_divided_by_engine_time": 1.0,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 0.0,
+            "max_abs_covariance_difference": 0.0,
+            "max_abs_p_value_difference": 0.0,
+            "max_abs_confidence_interval_difference": 0.0,
+            "max_abs_chart_prediction_difference": 0.0,
+            "absolute_metric_differences": {
+              "r_squared": 0.0,
+              "adjusted_r_squared": 0.0,
+              "aic": 0.0,
+              "bic": 0.0,
+              "log_likelihood": 0.0,
+              "rmse": 0.0,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        },
+        "native_numpy": {
+          "warmup_seconds": [
+            2.2402851250953972
+          ],
+          "fit_seconds": [
+            1.2824100831057876,
+            2.4456489589065313,
+            1.2313456668052822,
+            5.0842179579194635,
+            1.4183553338516504
+          ],
+          "recorded_backend": "openecon.numpy",
+          "recorded_device": "cpu",
+          "median_seconds": 1.4183553338516504,
+          "min_seconds": 1.2313456668052822,
+          "max_seconds": 5.0842179579194635,
+          "baseline_time_divided_by_engine_time": 3.5748525099341113,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 3.83026943495679e-15,
+            "max_abs_covariance_difference": 9.656175598699024e-20,
+            "max_abs_p_value_difference": 7.643625316022806e-18,
+            "max_abs_confidence_interval_difference": 3.885780586188048e-15,
+            "max_abs_chart_prediction_difference": 2.042810365310288e-14,
+            "absolute_metric_differences": {
+              "r_squared": 1.1102230246251565e-16,
+              "adjusted_r_squared": 2.220446049250313e-16,
+              "aic": 0.0,
+              "bic": 0.0,
+              "log_likelihood": 0.0,
+              "rmse": 0.0,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        },
+        "native_torch_cpu": {
+          "warmup_seconds": [
+            0.8591772918589413
+          ],
+          "fit_seconds": [
+            1.4970091248396784,
+            2.576764832949266,
+            5.10946295899339,
+            1.577156749786809,
+            3.6825792908202857
+          ],
+          "recorded_backend": "openecon.torch",
+          "recorded_device": "cpu",
+          "median_seconds": 2.576764832949266,
+          "min_seconds": 1.4970091248396784,
+          "max_seconds": 5.10946295899339,
+          "baseline_time_divided_by_engine_time": 1.967743063069752,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 3.552713678800501e-15,
+            "max_abs_covariance_difference": 1.0164395367051604e-19,
+            "max_abs_p_value_difference": 7.20316818345057e-18,
+            "max_abs_confidence_interval_difference": 3.552713678800501e-15,
+            "max_abs_chart_prediction_difference": 1.865174681370263e-14,
+            "absolute_metric_differences": {
+              "r_squared": 1.1102230246251565e-16,
+              "adjusted_r_squared": 2.220446049250313e-16,
+              "aic": 2.9103830456733704e-11,
+              "bic": 2.9103830456733704e-11,
+              "log_likelihood": 1.4551915228366852e-11,
+              "rmse": 0.0,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        }
+      },
+      "dense_design_theoretical_bytes": 40800000,
+      "dense_design_theoretical_mib": 38.909912109375,
+      "peak_ram_measured": false
+    },
+    {
+      "estimator": "logit",
+      "rows": 10000,
+      "numeric_predictors": 5,
+      "dtype": "float64",
+      "spec": {
+        "estimator": "logit",
+        "outcome": "y",
+        "predictors": [
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "intercept": true,
+        "covariance": "nonrobust",
+        "missing": "raise",
+        "alpha": 0.05
+      },
+      "synthetic_generation_seconds": 0.01633216696791351,
+      "dataframe_construction_seconds": 0.001189708011224866,
+      "engines": {
+        "statsmodels_adapter": {
+          "warmup_seconds": [
+            0.2215414580423385
+          ],
+          "fit_seconds": [
+            0.07930154213681817,
+            0.11833183304406703,
+            0.09311875002458692,
+            0.06851058313623071,
+            0.10273816715925932
+          ],
+          "recorded_backend": "statsmodels",
+          "recorded_device": "cpu",
+          "median_seconds": 0.09311875002458692,
+          "min_seconds": 0.06851058313623071,
+          "max_seconds": 0.11833183304406703,
+          "baseline_time_divided_by_engine_time": 1.0,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 0.0,
+            "max_abs_covariance_difference": 0.0,
+            "max_abs_p_value_difference": 0.0,
+            "max_abs_confidence_interval_difference": 0.0,
+            "max_abs_chart_prediction_difference": 0.0,
+            "absolute_metric_differences": {
+              "pseudo_r_squared": 0.0,
+              "aic": 0.0,
+              "bic": 0.0,
+              "log_likelihood": 0.0,
+              "rmse": 0.0,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        },
+        "native_numpy": {
+          "warmup_seconds": [
+            0.16449883300811052
+          ],
+          "fit_seconds": [
+            0.10155387502163649,
+            0.11891554109752178,
+            0.08404891681857407,
+            0.08972400007769465,
+            0.08157254103571177
+          ],
+          "recorded_backend": "openecon.numpy",
+          "recorded_device": "cpu",
+          "median_seconds": 0.08972400007769465,
+          "min_seconds": 0.08157254103571177,
+          "max_seconds": 0.11891554109752178,
+          "baseline_time_divided_by_engine_time": 1.0378354726043495,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 1.1102230246251565e-16,
+            "max_abs_covariance_difference": 4.336808689942018e-19,
+            "max_abs_p_value_difference": 1.0299920638612292e-18,
+            "max_abs_confidence_interval_difference": 1.1102230246251565e-16,
+            "max_abs_chart_prediction_difference": 2.220446049250313e-16,
+            "absolute_metric_differences": {
+              "pseudo_r_squared": 1.1845358027784414e-10,
+              "aic": 0.0,
+              "bic": 0.0,
+              "log_likelihood": 0.0,
+              "rmse": 5.551115123125783e-17,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        },
+        "native_torch_cpu": {
+          "warmup_seconds": [
+            1.965258166193962
+          ],
+          "fit_seconds": [
+            0.12201704201288521,
+            0.05548737500794232,
+            0.09017433295957744,
+            0.06859087501652539,
+            0.05705524981021881
+          ],
+          "recorded_backend": "openecon.torch",
+          "recorded_device": "cpu",
+          "median_seconds": 0.06859087501652539,
+          "min_seconds": 0.05548737500794232,
+          "max_seconds": 0.12201704201288521,
+          "baseline_time_divided_by_engine_time": 1.3575967649071703,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 1.1102230246251565e-16,
+            "max_abs_covariance_difference": 2.3310346708438345e-18,
+            "max_abs_p_value_difference": 4.0389678347315804e-25,
+            "max_abs_confidence_interval_difference": 1.6653345369377348e-16,
+            "max_abs_chart_prediction_difference": 2.220446049250313e-16,
+            "absolute_metric_differences": {
+              "pseudo_r_squared": 1.184536913001466e-10,
+              "aic": 1.8189894035458565e-12,
+              "bic": 1.8189894035458565e-12,
+              "log_likelihood": 9.094947017729282e-13,
+              "rmse": 5.551115123125783e-17,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        }
+      },
+      "dense_design_theoretical_bytes": 480000,
+      "dense_design_theoretical_mib": 0.457763671875,
+      "peak_ram_measured": false
+    },
+    {
+      "estimator": "probit",
+      "rows": 10000,
+      "numeric_predictors": 5,
+      "dtype": "float64",
+      "spec": {
+        "estimator": "probit",
+        "outcome": "y",
+        "predictors": [
+          "x1",
+          "x2",
+          "x3",
+          "x4",
+          "x5"
+        ],
+        "intercept": true,
+        "covariance": "nonrobust",
+        "missing": "raise",
+        "alpha": 0.05
+      },
+      "synthetic_generation_seconds": 0.0007875419687479734,
+      "dataframe_construction_seconds": 0.00030987500213086605,
+      "engines": {
+        "statsmodels_adapter": {
+          "warmup_seconds": [
+            0.08750366698950529
+          ],
+          "fit_seconds": [
+            0.1190557919908315,
+            0.08844141708686948,
+            0.1671672088559717,
+            0.1956929590087384,
+            0.17992329108528793
+          ],
+          "recorded_backend": "statsmodels",
+          "recorded_device": "cpu",
+          "median_seconds": 0.1671672088559717,
+          "min_seconds": 0.08844141708686948,
+          "max_seconds": 0.1956929590087384,
+          "baseline_time_divided_by_engine_time": 1.0,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 0.0,
+            "max_abs_covariance_difference": 0.0,
+            "max_abs_p_value_difference": 0.0,
+            "max_abs_confidence_interval_difference": 0.0,
+            "max_abs_chart_prediction_difference": 0.0,
+            "absolute_metric_differences": {
+              "pseudo_r_squared": 0.0,
+              "aic": 0.0,
+              "bic": 0.0,
+              "log_likelihood": 0.0,
+              "rmse": 0.0,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        },
+        "native_numpy": {
+          "warmup_seconds": [
+            0.06073233298957348
+          ],
+          "fit_seconds": [
+            0.09292012499645352,
+            0.09311645897105336,
+            0.045895625138655305,
+            0.14617408299818635,
+            0.16823416692204773
+          ],
+          "recorded_backend": "openecon.numpy",
+          "recorded_device": "cpu",
+          "median_seconds": 0.09311645897105336,
+          "min_seconds": 0.045895625138655305,
+          "max_seconds": 0.16823416692204773,
+          "baseline_time_divided_by_engine_time": 1.7952487745258667,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 1.6542323066914832e-14,
+            "max_abs_covariance_difference": 5.7462715141731735e-18,
+            "max_abs_p_value_difference": 1.8146274687882045e-22,
+            "max_abs_confidence_interval_difference": 1.687538997430238e-14,
+            "max_abs_chart_prediction_difference": 5.162537064506978e-15,
+            "absolute_metric_differences": {
+              "pseudo_r_squared": 1.9150570018666713e-11,
+              "aic": 0.0,
+              "bic": 0.0,
+              "log_likelihood": 0.0,
+              "rmse": 5.551115123125783e-17,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        },
+        "native_torch_cpu": {
+          "warmup_seconds": [
+            0.3706512087956071
+          ],
+          "fit_seconds": [
+            0.1028934579808265,
+            0.10586804198101163,
+            0.2355517919640988,
+            0.26790950004942715,
+            0.13263616594485939
+          ],
+          "recorded_backend": "openecon.torch",
+          "recorded_device": "cpu",
+          "median_seconds": 0.13263616594485939,
+          "min_seconds": 0.1028934579808265,
+          "max_seconds": 0.26790950004942715,
+          "baseline_time_divided_by_engine_time": 1.2603440974422304,
+          "vs_statsmodels_adapter": {
+            "equivalent_on_workload": true,
+            "max_abs_coefficient_difference": 1.6542323066914832e-14,
+            "max_abs_covariance_difference": 3.74049749507499e-18,
+            "max_abs_p_value_difference": 1.8740810753154533e-22,
+            "max_abs_confidence_interval_difference": 1.6764367671839864e-14,
+            "max_abs_chart_prediction_difference": 5.10702591327572e-15,
+            "absolute_metric_differences": {
+              "pseudo_r_squared": 1.9150570018666713e-11,
+              "aic": 0.0,
+              "bic": 0.0,
+              "log_likelihood": 0.0,
+              "rmse": 5.551115123125783e-17,
+              "df_resid": 0.0
+            },
+            "excluded_comparison_fields": [
+              "id",
+              "created_at",
+              "backend/versions/optimizer provenance",
+              "condition_number_scaled (different diagnostic scaling)"
+            ]
+          }
+        }
+      },
+      "dense_design_theoretical_bytes": 480000,
+      "dense_design_theoretical_mib": 0.457763671875,
+      "peak_ram_measured": false
+    }
+  ],
+  "source_unchanged_during_run": true
+}

@@ -1,0 +1,95 @@
+.inline-suggestions-dialog {
+  width: min(400px, calc(100vw - 32px));
+  padding: 0;
+  color: #172d4c;
+}
+
+.inline-suggestions-dialog .dialog-head {
+  margin: 0;
+  padding: 18px 22px 0;
+}
+
+.inline-suggestions-close {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  background: #fff;
+  color: #172d4c;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.inline-suggestions-body {
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+}
+
+.inline-suggestions-model {
+  display: grid;
+  gap: 6px;
+}
+
+.inline-suggestions-model span,
+.inline-suggestions-shortcuts {
+  color: #63748b;
+  font-size: 12px;
+}
+
+.inline-suggestions-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.inline-suggestions-toggle input {
+  width: 17px;
+  height: 17px;
+  accent-color: #172d4c;
+}
+
+.inline-suggestions-dialog .inline-suggestions-state,
+.inline-suggestions-dialog .inline-suggestions-error,
+.inline-suggestions-dialog .inline-suggestions-shortcuts {
+  margin: 0;
+}
+
+.inline-suggestions-state,
+.inline-suggestions-error {
+  font-size: 13px;
+}
+
+.inline-suggestions-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+}
+
+.inline-suggestions-progress progress {
+  width: 100%;
+  height: 6px;
+  accent-color: #172d4c;
+}
+
+.inline-suggestions-body > button {
+  justify-self: start;
+  padding: 8px 12px;
+  border: 1px solid #cbd7e6;
+  border-radius: 4px;
+  background: #fff;
+  color: #172d4c;
+  cursor: pointer;
+}
+
+.inline-suggestions-dialog button:focus-visible,
+.inline-suggestions-dialog input:focus-visible {
+  outline: 2px solid #315478;
+  outline-offset: 2px;
+}
+
+.inline-suggestions-dialog button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

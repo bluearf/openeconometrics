@@ -1,0 +1,103 @@
+"""Identified VAR and local projections (Torch-free catalogue)."""
+
+from openecon.econometrics.registry import EstimatorInfo, Option, Role
+
+ESTIMATORS = (
+    EstimatorInfo(
+        name="svar",
+        title="Structural vector autoregression",
+        family="structural",
+        function="svar",
+        entry="openecon.econometrics.structural.svar:fit_svar",
+        predictors="none",
+        categorical=False,
+        covariances=("nonrobust",),
+        default_covariance="nonrobust",
+        time="optional",
+        roles=(Role("system", many=True, required=True),),
+        options=(
+            Option("lags", "int", 1, minimum=1, maximum=12),
+            Option("short_run", "json", None),
+            Option("long_run", "json", None),
+            Option("signs", "json", None),
+            Option("seed", "int", 0, minimum=0),
+            Option("draws", "int", 2000, minimum=1, maximum=100000),
+            Option("accepted", "int", 100, minimum=1, maximum=1000),
+        ),
+        description="Exactly identified zero restrictions on impact or long-run responses; explicit Haar sign-restricted identified sets.",
+    ),
+    EstimatorInfo(
+        name="lp",
+        title="Local projections",
+        family="structural",
+        function="lp",
+        entry="openecon.econometrics.structural.projections:fit_projection",
+        covariances=("cluster",) if "lp" == "panel_lp" else ("hac",),
+        default_covariance="cluster" if "lp" == "panel_lp" else "hac",
+        categorical=False,
+        intercept="always",
+        panel="required" if "lp" == "panel_lp" else "none",
+        time="required",
+        cluster_dimensions=1,
+        roles=(Role("controls", many=True),)
+        + ((Role("instruments", many=True, required=True),) if "lp" == "lpiv" else ()),
+        options=(
+            Option("horizons", "int", 8, minimum=0, maximum=200),
+            Option("lags", "int", 1, minimum=0, maximum=12),
+            Option("bandwidth", "int", None, minimum=0),
+            Option("cumulative", "bool", False),
+        ),
+        description="Local projections: within-unit calendar/sample alignment and joint horizon covariance; causal interpretation requires specified shock exogeneity.",
+    ),
+    EstimatorInfo(
+        name="lpiv",
+        title="Instrumental-variable local projections",
+        family="structural",
+        function="lpiv",
+        entry="openecon.econometrics.structural.projections:fit_projection",
+        covariances=("cluster",) if "lpiv" == "panel_lp" else ("hac",),
+        default_covariance="cluster" if "lpiv" == "panel_lp" else "hac",
+        categorical=False,
+        intercept="always",
+        panel="required" if "lpiv" == "panel_lp" else "none",
+        time="required",
+        cluster_dimensions=1,
+        roles=(Role("controls", many=True),)
+        + ((Role("instruments", many=True, required=True),) if "lpiv" == "lpiv" else ()),
+        options=(
+            Option("horizons", "int", 8, minimum=0, maximum=200),
+            Option("lags", "int", 1, minimum=0, maximum=12),
+            Option("bandwidth", "int", None, minimum=0),
+            Option("cumulative", "bool", False),
+        ),
+        description="Instrumental-variable local projections: within-unit calendar/sample alignment and joint horizon covariance; causal interpretation requires specified shock exogeneity.",
+    ),
+    EstimatorInfo(
+        name="panel_lp",
+        title="Panel local projections",
+        family="structural",
+        function="panel_lp",
+        entry="openecon.econometrics.structural.projections:fit_projection",
+        covariances=("cluster",) if "panel_lp" == "panel_lp" else ("hac",),
+        default_covariance="cluster" if "panel_lp" == "panel_lp" else "hac",
+        categorical=False,
+        intercept="always",
+        panel="required" if "panel_lp" == "panel_lp" else "none",
+        time="required",
+        cluster_dimensions=1,
+        roles=(Role("controls", many=True),)
+        + ((Role("instruments", many=True, required=True),) if "panel_lp" == "lpiv" else ()),
+        options=(
+            Option("horizons", "int", 8, minimum=0, maximum=200),
+            Option("lags", "int", 1, minimum=0, maximum=12),
+            Option("bandwidth", "int", None, minimum=0),
+            Option("cumulative", "bool", False),
+        ),
+        description="Panel local projections: within-unit calendar/sample alignment and joint horizon covariance; causal interpretation requires specified shock exogeneity.",
+    ),
+)
+EXPORTS = {
+    "svar_irf": "openecon.econometrics.structural.svar:svar_irf",
+    "connectedness": "openecon.econometrics.structural.connectedness:connectedness",
+    "rolling_connectedness": "openecon.econometrics.structural.connectedness:rolling_connectedness",
+}

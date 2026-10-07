@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-suggestions-cancel"
+description = "Enables the suggestions_cancel command without any pre-configured scope."
+commands.allow = ["suggestions_cancel"]
+
+[[permission]]
+identifier = "deny-suggestions-cancel"
+description = "Denies the suggestions_cancel command without any pre-configured scope."
+commands.deny = ["suggestions_cancel"]
