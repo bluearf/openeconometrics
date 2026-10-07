@@ -2450,8 +2450,8 @@
     },
     {
       "path": "scripts/verify_sdk_distribution.py",
-      "bytes": 6705,
-      "sha256": "cb972c4e124f4f5f508c753fa2b609734974fdd7d026deb111f9e68a5ed0a3ec",
+      "bytes": 6799,
+      "sha256": "1241f536f4414c4282831e9759d7f76622217b5b6d45419eb735384c3b49c6b0",
       "original_sha256": null,
       "transformed": true,
       "origin": "public SDK patch delivery/verification source"
@@ -10523,7 +10523,7 @@
     "tests/fixtures/stata/reproduce-auto-reference.do",
     "tests/fixtures/structural-macro.csv"
   ],
-  "source_files_sha256": "db7341d89a7007c56457171645328baacc80befde3cb475f36217995474011b2",
+  "source_files_sha256": "19890e48481711663ad0e26ca900f20d8183a338a31421a2abc0e36005b459d4",
   "snapshot_kind": "derived public Python SDK patch",
   "base_source_commit": "6cd9079a330b03a4f1a568e28aca04a23a8d897b",
   "base_public_snapshot_commit": "7cb7517bf8bacf91f92c85f8df9a2904e76e8974",

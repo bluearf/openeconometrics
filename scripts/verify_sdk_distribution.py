@@ -126,7 +126,8 @@ def main():
     parser.add_argument('--python', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    check = subprocess.run([str(args.python.resolve()), '-I', '-c', PROGRAM], capture_output=True, text=True, check=False)
+    # Preserve the venv executable path: resolving its symlink selects the host interpreter.
+    check = subprocess.run([str(args.python.absolute()), '-I', '-c', PROGRAM], capture_output=True, text=True, check=False)
     if check.returncode:
         raise SystemExit(check.stderr)
     record = json.loads(check.stdout)
