@@ -42,13 +42,13 @@ jobs:
           import zipfile
 
           # Update only through a reviewed PR for a new published snapshot.
-          base = 'https://github.com/bluearf/openeconometrics/releases/download/v0.3.43-alpha.1/'
+          base = 'https://github.com/bluearf/openeconometrics/releases/download/python-v0.3.18a3/'
           hashes = {
-              'openecon-0.3.18a1-py3-none-any.whl': '095d942a6609e717263cbf8ec09beea71abaafaac3d6ca83b624e11332bf9d64',
-              'openecon-0.3.18a1.tar.gz': '397e62ed23d3e78521d33eaa00f5f969dbf3217e8e4fcd520d21f038a388e40f',
-              'openecon_charts-0.3.0a1-py3-none-any.whl': '47384306e8136b8783afe01ef57e376b4fb1b86888eeafed0eb175b557f4386a',
-              'openecon_charts-0.3.0a1.tar.gz': '4ceb73882aa2489e58dca553cce2d2c9dc9f32ddc450f5a29eaba689b9029997',
-              'RELEASE-PROVENANCE.json': '68640b4faf7ecbdf893b0596bd28ce83002da5c64395abd1f5b24d1c2add1014',
+              'openecon-0.3.18a3-py3-none-any.whl': '08c64a62e51ab008be81e33543305d2c1bda80425e99802117bb1e8b48a084fa',
+              'openecon-0.3.18a3.tar.gz': '24ea3425bcdbf7717532c12129207417d144c42d58ef4603fb6d06d44d6b8222',
+              'openecon_charts-0.3.0a2-py3-none-any.whl': 'f61491cfbc026b9e558ee04f97f57edd8cf6974871c9cb3132f68becd8683639',
+              'openecon_charts-0.3.0a2.tar.gz': 'b96168e4dd24560ff54e6041490ad68f1d47a7890c5d928883ddcb79d4e7e47e',
+              'RELEASE-PROVENANCE.json': 'c85e5a4abe628d632dac4cae8cf6a9904235615be2b517bb503a86602f2a9412',
           }
           root = Path('reviewed')
           root.mkdir()
@@ -60,19 +60,81 @@ jobs:
               (root / name).write_bytes(data)
           provenance = json.loads((root / 'RELEASE-PROVENANCE.json').read_text())
           expected_provenance = {
-              'release': 'v0.3.43-alpha.1',
+              'schema_version': 2,
+              'release': 'python-v0.3.18a3',
               'repository': 'bluearf/openeconometrics',
-              'source_commit': '6cd9079a330b03a4f1a568e28aca04a23a8d897b',
-              'public_source_commit': '7cb7517bf8bacf91f92c85f8df9a2904e76e8974',
+              'source_kind': 'derived public Python SDK and charts patch',
+              'source_commit': 'ca7854593e2591f56c380dc19f7abeba0b7b0117',
+              'public_source_commit': 'ca7854593e2591f56c380dc19f7abeba0b7b0117',
+              'public_merge_commit': '0b124e42e0dd7dfa8d38085941be62a49b3c00d8',
+              'base_source_commit': '6cd9079a330b03a4f1a568e28aca04a23a8d897b',
+              'base_public_snapshot_commit': '7cb7517bf8bacf91f92c85f8df9a2904e76e8974',
+              'base_repository_commit': '8ddf76b51932a91014db53f193ef643c012b142e',
+              'previous_public_sdk_source_commit': '0d8a8ea3ef12ddf8bdadfc8c64135052741f29c9',
+              'parent_public_merge_commit': 'ff50b3f90634282208077cfe62e53919ebb09e82',
+              'source_manifest_sha256': 'd0d2815115331bf9c57fb999a4c63732fed3a9b92f8223996f792b615b619de7',
+              'source_files_sha256': 'e1ade7dbf6f423ff9b5aa5b66f4ede03c044acea2030ad8eb8cc45cf17ffadb5',
+              'source_manifest_files_verified': 1430,
+              'capability_source_commit': '316608235b867ef2498ae4cd294e6fa6ab6b2788',
           }
           for key, expected in expected_provenance.items():
               if provenance.get(key) != expected:
                   raise SystemExit(f'Provenance mismatch: {key}')
-          if provenance['versions']['sdk'] != '0.3.18a1' or provenance['versions']['charts'] != '0.3.0a1':
+          if provenance['versions'] != {'sdk': '0.3.18a3', 'charts': '0.3.0a2'}:
               raise SystemExit('Provenance package version mismatch')
+          expected_patches = {
+              'b8a2b461702251412a151105be530de50e47b19e': ['src/openecon/source_readers.py', 'tests/test_dataset.py'],
+              'e4589e8aa12a4c8745d2ddcda235b0edd4f965bd': ['src/openecon/engines/streaming_ols.py', 'tests/test_streaming_ols_engine.py'],
+              '8d29d23ce45e169a5896d9cc1469786412efc63f': ['tests/test_dataset.py'],
+              'c758b7cdd26e6b6548019c945735f17092730f77': ['src/openecon/source_readers.py', 'tests/test_dataset.py'],
+              'efc9df77bca551a87403a2f867ca715ea6b86816': ['packages/openecon-charts/src/openecon_charts/network_export.py', 'packages/openecon-charts/tests/test_network_export.py'],
+              'a04b0466a94a7c1ea0b3cbfc7debc8cef3c242ab': ['packages/openecon-charts/src/openecon_charts/network_export.py', 'packages/openecon-charts/tests/test_network_export.py'],
+          }
+          patches = provenance['source_patch_commits']
+          if len(patches) != len(expected_patches) or {p['commit']: p['paths'] for p in patches} != expected_patches:
+              raise SystemExit('Provenance derivative patch mismatch')
+          distribution_hashes = {name: digest for name, digest in hashes.items() if name != 'RELEASE-PROVENANCE.json'}
+          if set(provenance['artifacts']) != set(distribution_hashes):
+              raise SystemExit('Provenance distribution filename mismatch')
+          for name, digest in distribution_hashes.items():
+              artifact = provenance['artifacts'][name]
+              if artifact['sha256'] != digest or artifact['bytes'] != (root / name).stat().st_size:
+                  raise SystemExit(f'Provenance distribution mismatch: {name}')
+          linux = provenance['linux_package_validation']
+          expected_checks = {'Verify SDK patch package (3.11)', 'Verify SDK patch package (3.13)'}
+          checks = linux['required_checks']
+          if (linux['status'] != 'passed' or linux['source_commit'] != expected_provenance['source_commit']
+                  or linux['linux_build_sha256_matches_reviewed_release_assets'] is not True
+                  or linux['verified_distribution_sha256'] != distribution_hashes
+                  or linux['browser_sandbox_enabled'] is not True
+                  or len(checks) != 2 or {check['name'] for check in checks} != expected_checks
+                  or any(check['status'] != 'passed' or check['skipped'] != 0
+                         or check['regressions_passed'] != 219 or check['installed_wheel_sdist_environments'] != 2
+                         or check['installed_standalone_charts_environments'] != 2
+                         or check['browser_exports_regressions_passed'] != 18 or check['browser_exports_skipped'] != 0
+                         or check['browser_sandbox_enabled'] is not True
+                         for check in checks)):
+              raise SystemExit('Provenance Linux package acceptance mismatch')
+          if provenance['macos_package_validation']['status'] != 'passed' or provenance['macos_package_validation']['environments'] != 4:
+              raise SystemExit('Provenance Mac package acceptance mismatch')
+          mac_browser = provenance['macos_browser_validation']
+          browser_records = mac_browser['records']
+          if (mac_browser['status'] != 'passed' or mac_browser['installed_standalone_environments'] != 2
+                  or len(browser_records) != 2 or {record['environment'] for record in browser_records} != {'charts-wheel', 'charts-sdist'}
+                  or any(record['status'] != 'passed' or record['charts_version'] != '0.3.0a2'
+                         or record['standalone_no_heavy_dependencies'] is not True
+                         or record['loopback_only_python_transport'] is not True
+                         or record['atomic_existing_file_refusal'] is not True or record['disposable_profile_cleanup'] is not True
+                         or len(record['exports']) != 3 or {item['format'] for item in record['exports']} != {'pdf', 'svg', 'png'}
+                         or any(item['status'] != 'passed' or item['bytes'] <= 0 for item in record['exports'])
+                         for record in browser_records)):
+              raise SystemExit('Provenance installed Mac browser acceptance mismatch')
+          if provenance['desktop_boundary'] != {
+                  'unchanged_release': 'v0.3.43-alpha.1', 'existing_sdk': '0.3.18a1', 'new_desktop_artifact': False}:
+              raise SystemExit('Provenance desktop boundary mismatch')
           packages = {
-              'openecon': ('0.3.18a1', 'openecon-0.3.18a1-py3-none-any.whl'),
-              'openecon-charts': ('0.3.0a1', 'openecon_charts-0.3.0a1-py3-none-any.whl'),
+              'openecon': ('0.3.18a3', 'openecon-0.3.18a3-py3-none-any.whl'),
+              'openecon-charts': ('0.3.0a2', 'openecon_charts-0.3.0a2-py3-none-any.whl'),
           }
           for project, (version, filename) in packages.items():
               with zipfile.ZipFile(root / filename) as archive:
@@ -86,7 +148,7 @@ jobs:
                       path = metadata_path.removesuffix('METADATA') + 'licenses/' + license_file
                       if path not in archive.namelist():
                           raise SystemExit(f'Missing license notice: {filename}/{license_file}')
-                  if project == 'openecon' and 'openecon-charts==0.3.0a1' not in metadata.get_all('Requires-Dist', []):
+                  if project == 'openecon' and 'openecon-charts==0.3.0a2' not in metadata.get_all('Requires-Dist', []):
                       raise SystemExit('SDK must depend on the reviewed charts version')
               destination = Path(project) / 'dist'
               destination.mkdir(parents=True)
@@ -117,23 +179,23 @@ jobs:
           retention-days: 7
 
   publish-charts:
-    name: Publish openecon-charts 0.3.0a1
+    name: Publish openecon-charts 0.3.0a2
     needs: verify
     if: github.repository == 'bluearf/openeconometrics' && github.event_name == 'workflow_dispatch' && inputs.publish && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/openecon-charts/0.3.0a1/
+      url: https://pypi.org/project/openecon-charts/0.3.0a2/
     permissions:
       contents: read
       id-token: write
     env:
       PROJECT: openecon-charts
-      VERSION: 0.3.0a1
-      WHEEL: openecon_charts-0.3.0a1-py3-none-any.whl
-      WHEEL_SHA256: 47384306e8136b8783afe01ef57e376b4fb1b86888eeafed0eb175b557f4386a
-      SDIST: openecon_charts-0.3.0a1.tar.gz
-      SDIST_SHA256: 4ceb73882aa2489e58dca553cce2d2c9dc9f32ddc450f5a29eaba689b9029997
+      VERSION: 0.3.0a2
+      WHEEL: openecon_charts-0.3.0a2-py3-none-any.whl
+      WHEEL_SHA256: f61491cfbc026b9e558ee04f97f57edd8cf6974871c9cb3132f68becd8683639
+      SDIST: openecon_charts-0.3.0a2.tar.gz
+      SDIST_SHA256: b96168e4dd24560ff54e6041490ad68f1d47a7890c5d928883ddcb79d4e7e47e
     steps:
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
         with:
@@ -143,19 +205,39 @@ jobs:
         id: preflight
         shell: python
         run: |
-          import hashlib, json, os
+          import hashlib, json, os, re
           from pathlib import Path
-          import urllib.error, urllib.request
+          import urllib.error, urllib.parse, urllib.request
+          def read_pypi(phase, poll):
+              query = urllib.parse.urlencode({
+                  '_openecon_run': os.environ['GITHUB_RUN_ID'],
+                  '_openecon_attempt': os.environ['GITHUB_RUN_ATTEMPT'],
+                  '_openecon_phase': phase,
+                  '_openecon_poll': poll,
+              })
+              url = f"https://pypi.org/pypi/{os.environ['PROJECT']}/{os.environ['VERSION']}/json?{query}"
+              request = urllib.request.Request(url, headers={
+                  'Accept': 'application/json', 'Cache-Control': 'no-cache, max-age=0', 'Pragma': 'no-cache',
+              })
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  payload = json.load(response)
+              canonical = lambda name: re.sub(r'[-_.]+', '-', name).lower()
+              if (canonical(payload['info']['name']) != canonical(os.environ['PROJECT'])
+                      or payload['info']['version'] != os.environ['VERSION']):
+                  raise SystemExit('PyPI project/version identity mismatch')
+              records = payload['urls']
+              names = [record['filename'] for record in records]
+              if len(set(names)) != len(names) or any(record['yanked'] for record in records):
+                  raise SystemExit('PyPI contains duplicate or yanked distribution files')
+              return records
           expected = {os.environ[k]: os.environ[k + '_SHA256'] for k in ('WHEEL', 'SDIST')}
           if {p.name for p in Path('dist').iterdir()} != set(expected):
               raise SystemExit('Unexpected distribution files')
           for name, digest in expected.items():
               if hashlib.sha256((Path('dist') / name).read_bytes()).hexdigest() != digest:
                   raise SystemExit(f'Transferred distribution SHA256 mismatch: {name}')
-          url = f"https://pypi.org/pypi/{os.environ['PROJECT']}/{os.environ['VERSION']}/json"
           try:
-              with urllib.request.urlopen(url, timeout=30) as response:
-                  published = json.load(response)['urls']
+              published = read_pypi('preflight', 0)
           except urllib.error.HTTPError as exc:
               if exc.code != 404:
                   raise
@@ -177,15 +259,35 @@ jobs:
       - name: Confirm charts are available with exact hashes
         shell: python
         run: |
-          import json, os, time
-          import urllib.error, urllib.request
+          import json, os, re, time
+          import urllib.error, urllib.parse, urllib.request
+          def read_pypi(phase, poll):
+              query = urllib.parse.urlencode({
+                  '_openecon_run': os.environ['GITHUB_RUN_ID'],
+                  '_openecon_attempt': os.environ['GITHUB_RUN_ATTEMPT'],
+                  '_openecon_phase': phase,
+                  '_openecon_poll': poll,
+              })
+              url = f"https://pypi.org/pypi/{os.environ['PROJECT']}/{os.environ['VERSION']}/json?{query}"
+              request = urllib.request.Request(url, headers={
+                  'Accept': 'application/json', 'Cache-Control': 'no-cache, max-age=0', 'Pragma': 'no-cache',
+              })
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  payload = json.load(response)
+              canonical = lambda name: re.sub(r'[-_.]+', '-', name).lower()
+              if (canonical(payload['info']['name']) != canonical(os.environ['PROJECT'])
+                      or payload['info']['version'] != os.environ['VERSION']):
+                  raise SystemExit('PyPI project/version identity mismatch')
+              records = payload['urls']
+              names = [record['filename'] for record in records]
+              if len(set(names)) != len(names) or any(record['yanked'] for record in records):
+                  raise SystemExit('PyPI contains duplicate or yanked distribution files')
+              return records
           expected = {os.environ[k]: os.environ[k + '_SHA256'] for k in ('WHEEL', 'SDIST')}
-          url = f"https://pypi.org/pypi/{os.environ['PROJECT']}/{os.environ['VERSION']}/json"
           for attempt in range(12):
               try:
-                  with urllib.request.urlopen(url, timeout=30) as response:
-                      records = json.load(response)['urls']
-                  actual = {r['filename']: r['digests']['sha256'] for r in records if not r['yanked']}
+                  records = read_pypi('readback', attempt)
+                  actual = {r['filename']: r['digests']['sha256'] for r in records}
                   if actual == expected:
                       print('Charts available from PyPI; SDK publication may proceed.')
                       break
@@ -199,23 +301,23 @@ jobs:
               time.sleep(5)
 
   publish-sdk:
-    name: Publish openecon 0.3.18a1
+    name: Publish openecon 0.3.18a3
     needs: [verify, publish-charts]
     if: github.repository == 'bluearf/openeconometrics' && github.event_name == 'workflow_dispatch' && inputs.publish && inputs.publish_sdk && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/openecon/0.3.18a1/
+      url: https://pypi.org/project/openecon/0.3.18a3/
     permissions:
       contents: read
       id-token: write
     env:
       PROJECT: openecon
-      VERSION: 0.3.18a1
-      WHEEL: openecon-0.3.18a1-py3-none-any.whl
-      WHEEL_SHA256: 095d942a6609e717263cbf8ec09beea71abaafaac3d6ca83b624e11332bf9d64
-      SDIST: openecon-0.3.18a1.tar.gz
-      SDIST_SHA256: 397e62ed23d3e78521d33eaa00f5f969dbf3217e8e4fcd520d21f038a388e40f
+      VERSION: 0.3.18a3
+      WHEEL: openecon-0.3.18a3-py3-none-any.whl
+      WHEEL_SHA256: 08c64a62e51ab008be81e33543305d2c1bda80425e99802117bb1e8b48a084fa
+      SDIST: openecon-0.3.18a3.tar.gz
+      SDIST_SHA256: 24ea3425bcdbf7717532c12129207417d144c42d58ef4603fb6d06d44d6b8222
     steps:
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
         with:
@@ -225,19 +327,39 @@ jobs:
         id: preflight
         shell: python
         run: |
-          import hashlib, json, os
+          import hashlib, json, os, re
           from pathlib import Path
-          import urllib.error, urllib.request
+          import urllib.error, urllib.parse, urllib.request
+          def read_pypi(phase, poll):
+              query = urllib.parse.urlencode({
+                  '_openecon_run': os.environ['GITHUB_RUN_ID'],
+                  '_openecon_attempt': os.environ['GITHUB_RUN_ATTEMPT'],
+                  '_openecon_phase': phase,
+                  '_openecon_poll': poll,
+              })
+              url = f"https://pypi.org/pypi/{os.environ['PROJECT']}/{os.environ['VERSION']}/json?{query}"
+              request = urllib.request.Request(url, headers={
+                  'Accept': 'application/json', 'Cache-Control': 'no-cache, max-age=0', 'Pragma': 'no-cache',
+              })
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  payload = json.load(response)
+              canonical = lambda name: re.sub(r'[-_.]+', '-', name).lower()
+              if (canonical(payload['info']['name']) != canonical(os.environ['PROJECT'])
+                      or payload['info']['version'] != os.environ['VERSION']):
+                  raise SystemExit('PyPI project/version identity mismatch')
+              records = payload['urls']
+              names = [record['filename'] for record in records]
+              if len(set(names)) != len(names) or any(record['yanked'] for record in records):
+                  raise SystemExit('PyPI contains duplicate or yanked distribution files')
+              return records
           expected = {os.environ[k]: os.environ[k + '_SHA256'] for k in ('WHEEL', 'SDIST')}
           if {p.name for p in Path('dist').iterdir()} != set(expected):
               raise SystemExit('Unexpected distribution files')
           for name, digest in expected.items():
               if hashlib.sha256((Path('dist') / name).read_bytes()).hexdigest() != digest:
                   raise SystemExit(f'Transferred distribution SHA256 mismatch: {name}')
-          url = f"https://pypi.org/pypi/{os.environ['PROJECT']}/{os.environ['VERSION']}/json"
           try:
-              with urllib.request.urlopen(url, timeout=30) as response:
-                  published = json.load(response)['urls']
+              published = read_pypi('preflight', 0)
           except urllib.error.HTTPError as exc:
               if exc.code != 404:
                   raise
@@ -259,15 +381,35 @@ jobs:
       - name: Confirm SDK is available with exact hashes
         shell: python
         run: |
-          import json, os, time
-          import urllib.error, urllib.request
+          import json, os, re, time
+          import urllib.error, urllib.parse, urllib.request
+          def read_pypi(phase, poll):
+              query = urllib.parse.urlencode({
+                  '_openecon_run': os.environ['GITHUB_RUN_ID'],
+                  '_openecon_attempt': os.environ['GITHUB_RUN_ATTEMPT'],
+                  '_openecon_phase': phase,
+                  '_openecon_poll': poll,
+              })
+              url = f"https://pypi.org/pypi/{os.environ['PROJECT']}/{os.environ['VERSION']}/json?{query}"
+              request = urllib.request.Request(url, headers={
+                  'Accept': 'application/json', 'Cache-Control': 'no-cache, max-age=0', 'Pragma': 'no-cache',
+              })
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  payload = json.load(response)
+              canonical = lambda name: re.sub(r'[-_.]+', '-', name).lower()
+              if (canonical(payload['info']['name']) != canonical(os.environ['PROJECT'])
+                      or payload['info']['version'] != os.environ['VERSION']):
+                  raise SystemExit('PyPI project/version identity mismatch')
+              records = payload['urls']
+              names = [record['filename'] for record in records]
+              if len(set(names)) != len(names) or any(record['yanked'] for record in records):
+                  raise SystemExit('PyPI contains duplicate or yanked distribution files')
+              return records
           expected = {os.environ[k]: os.environ[k + '_SHA256'] for k in ('WHEEL', 'SDIST')}
-          url = f"https://pypi.org/pypi/{os.environ['PROJECT']}/{os.environ['VERSION']}/json"
           for attempt in range(12):
               try:
-                  with urllib.request.urlopen(url, timeout=30) as response:
-                      records = json.load(response)['urls']
-                  actual = {r['filename']: r['digests']['sha256'] for r in records if not r['yanked']}
+                  records = read_pypi('readback', attempt)
+                  actual = {r['filename']: r['digests']['sha256'] for r in records}
                   if actual == expected:
                       print('SDK available from PyPI with the reviewed release hashes.')
                       break

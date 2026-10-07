@@ -72,10 +72,10 @@
     },
     {
       "path": "README.md",
-      "bytes": 21578,
-      "sha256": "c9556bf108219a1a404d8fca8ad83b23ab0b966c4778a8b1a4ce40b0bdf12c1f",
+      "bytes": 22258,
+      "sha256": "291155e31142a107f32ecbba8ff9060edcedf127c1e6507c960d4754e1871321",
       "original_sha256": "c9556bf108219a1a404d8fca8ad83b23ab0b966c4778a8b1a4ce40b0bdf12c1f",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "SECURITY.md",
@@ -1509,8 +1509,8 @@
     },
     {
       "path": "docs/pypi-publishing.md",
-      "bytes": 6538,
-      "sha256": "1e148f306dd56c21599f9a58ca65f13005774d23c7905fa944a6cbaf9094b32f",
+      "bytes": 8428,
+      "sha256": "ff15976dee151064817ba2884852a729e4456fbe4ad20c19bf9d6b3515e88fe4",
       "original_sha256": null,
       "transformed": true,
       "origin": "public SDK patch delivery/verification source"
@@ -10539,8 +10539,8 @@
     "tests/fixtures/stata/reproduce-auto-reference.do",
     "tests/fixtures/structural-macro.csv"
   ],
-  "source_files_sha256": "e1ade7dbf6f423ff9b5aa5b66f4ede03c044acea2030ad8eb8cc45cf17ffadb5",
-  "snapshot_kind": "derived public Python SDK patch",
+  "source_files_sha256": "075997a3a53d83ca91d1d78083ca06486d95a3b38387e3d7542626f03b34961e",
+  "snapshot_kind": "derived public SDK and charts minimal patch",
   "base_source_commit": "6cd9079a330b03a4f1a568e28aca04a23a8d897b",
   "base_public_snapshot_commit": "7cb7517bf8bacf91f92c85f8df9a2904e76e8974",
   "base_repository_commit": "8ddf76b51932a91014db53f193ef643c012b142e",
