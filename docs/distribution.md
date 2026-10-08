@@ -5,17 +5,19 @@ without installing the web server, CLI, MCP or additional file readers.
 
 | Installation | Included application layer |
 | --- | --- |
-| `pip install openecon` | Scientific library and openecon-charts |
-| `pip install 'openecon[files]'` | Excel and Stata readers |
-| `pip install 'openecon[cli]'` | Command-line interface |
-| `pip install 'openecon[server]'` | Local HTTP workspace service |
-| `pip install 'openecon[agent]'` | MCP service |
-| `pip install 'openecon[app]'` | Files, CLI, server and agent together |
-| `pip install 'openecon[desktop]'` | Application plus bundled pip/uv tooling |
-| `pip install 'openecon[cloud]'` | Application plus authentication/storage services |
+| `pip install 'openecon==0.3.18a4'` | Scientific library and openecon-charts |
+| `pip install 'openecon[files]==0.3.18a4'` | Excel and Stata readers |
+| `pip install 'openecon[cli]==0.3.18a4'` | Command-line interface |
+| `pip install 'openecon[server]==0.3.18a4'` | Local HTTP workspace service |
+| `pip install 'openecon[agent]==0.3.18a4'` | MCP service |
+| `pip install 'openecon[app]==0.3.18a4'` | Files, CLI, server and agent together |
+| `pip install 'openecon[desktop]==0.3.18a4'` | Application plus bundled pip/uv tooling |
+| `pip install 'openecon[cloud]==0.3.18a4'` | Application plus authentication/storage services |
 
-These commands describe the package metadata; this change does not publish a new
-PyPI release. In a source checkout use `uv sync --frozen --extra app` for the
+The SDK pins the already-published `openecon-charts==0.3.0a2` distribution.
+SDK `0.3.18a4` corrects package documentation and metadata; it keeps the reviewed
+a3 estimation/parser implementation. Public release and PyPI installation need
+their own completed readback. In a source checkout use `uv sync --frozen --extra app` for the
 local application, `--extra cli` for the CLI, and `--extra desktop` for freezing.
 The launcher and locked runtime exporter select their extras explicitly.
 
@@ -24,11 +26,13 @@ readers remain in the scientific layer; Excel/Stata reads require `files`.
 Development oracle packages belong to the dev dependency group. The frozen
 runtime excludes SciPy, statsmodels and linearmodels.
 
-## Measured library wheel
+## Historical local wheel measurement
 
-The [measurement record](evidence/close-three-issues/library-wheel.json) comes
-from a fresh, isolated macOS ARM64 environment with the locally built wheels
-installed into site-packages. It verifies a 480-observation HC3 OLS fit, an exact
+The historical local wheel measurement came from a fresh, isolated macOS ARM64
+environment with locally built wheels installed into site-packages. Its internal
+receipt is excluded from this public snapshot; these historical figures do not
+measure the new PyPI a4 installation. The [public source boundary](../PUBLIC-SOURCE.md)
+describes that evidence separation. It verifies a 480-observation HC3 OLS fit, an exact
 JSON result round trip, LaTeX output, standalone chart HTML and actionable errors
 for missing CLI/server/agent/desktop/file extras.
 

@@ -13,7 +13,7 @@ from pathlib import Path
 import socket
 import sys
 
-assert metadata.version('openecon') == '0.3.18a3'
+assert metadata.version('openecon') == '0.3.18a4'
 assert metadata.version('openecon-charts') == '0.3.0a2'
 import openecon as oe
 from openecon.econometrics import registry

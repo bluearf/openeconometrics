@@ -82,12 +82,12 @@ Relative file paths in the console resolve inside the active workspace (`.openec
 Install the reviewed Python alpha packages in a fresh Python 3.11–3.14 environment:
 
 ```sh
-python -m pip install 'openecon==0.3.18a3' 'openecon-charts==0.3.0a2'
+python -m pip install 'openecon==0.3.18a4' 'openecon-charts==0.3.0a2'
 python -m pip check
 ```
 
 The fixed package files and validation scope are recorded in the
-[Python SDK release](https://github.com/bluearf/openeconometrics/releases/tag/python-v0.3.18a3).
+[Python SDK release](https://github.com/bluearf/openeconometrics/releases/tag/python-v0.3.18a4).
 The [publishing guide](docs/pypi-publishing.md) distinguishes GitHub release
 availability from completed PyPI publication. An exact pin selects these alpha
 versions; CPU package checks do not establish physical CUDA or vendor parity.
@@ -217,8 +217,9 @@ chart.save_html("chart.html")
 # In the workbench: display(chart)
 ```
 
-From this checkout, install just the chart package with
-`pip install ./packages/openecon-charts`. It has not been published to PyPI.
+Install the standalone published chart package with
+`python -m pip install 'openecon-charts==0.3.0a2'`, or use
+`pip install ./packages/openecon-charts` from this source checkout.
 The workspace launcher installs it alongside OpenEconometrics. For distributable wheels,
 build both using `uv build --all-packages` and install both wheels together.
 
@@ -284,10 +285,12 @@ uv run --no-sync python -m pytest
 uv build --all-packages
 ```
 
-GitHub verification and Windows packaging use `workflow_dispatch` only. Pushes
-and pull-request updates do not start Actions runs while the account's billing
-restriction blocks runners. Manual Actions runs also require that restriction to
-be resolved; the local checks above remain available.
+The public Python package checks run on pull requests and pushes to `main`,
+and also support manual dispatch. They verify the reviewed SDK and exact charts
+packages on Linux Python 3.11 and 3.13. The publishing workflow verifies pull
+requests; uploads require a manual run on protected `main` and approval of the
+`pypi` environment. See [the publishing guide](docs/pypi-publishing.md). Platform
+packaging and physical GPU acceptance remain separate checks.
 
 For interface development, run `uv run --extra app openecon serve` and `npm --prefix web run dev` separately. Vite proxies `/api` and `/chart-assets` to port 8765. Build the interface before packaging; the OpenEconometrics wheel includes generated interface assets and the frozen synthetic fixture. The chart wheel contains the single shared D3 renderer and its local assets.
 
