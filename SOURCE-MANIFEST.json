@@ -662,7 +662,7 @@
     {
       "path": "docs/capabilities.md",
       "bytes": 38730,
-      "sha256": "780ee001df83d66702bdeedcc91c156f7ba2e6a7f9bd3252f3ba9e7b13f454f4",
+      "sha256": "d615c8e62128fb8e8d05cd488b890a89e3ca4cc51fb273cf814055edf9ac0d50",
       "original_sha256": "d4da45117d617bf379ecd72abc6d42fd8b2fdab7c3266928befb1014ca8fd7cd",
       "transformed": true,
       "base_public_sha256": "d4da45117d617bf379ecd72abc6d42fd8b2fdab7c3266928befb1014ca8fd7cd"
@@ -775,7 +775,7 @@
     {
       "path": "docs/econometrics/capabilities.generated.json",
       "bytes": 338005,
-      "sha256": "249978b02b4dd39a26bd4d4c7647d589f2569a36bb3e3a31fd54c5799dbc0c5e",
+      "sha256": "4e671aa9ff7e6016957515c75c35d2eea97d72a107f2e7b9cc083748d53bfd8e",
       "original_sha256": "7297f0e3dc672e4dac13c9e3851fa866761355fbb52ca9bb59afae69e8b45b4a",
       "transformed": true,
       "base_public_sha256": "7297f0e3dc672e4dac13c9e3851fa866761355fbb52ca9bb59afae69e8b45b4a"
@@ -10547,7 +10547,7 @@
     "tests/fixtures/stata/reproduce-auto-reference.do",
     "tests/fixtures/structural-macro.csv"
   ],
-  "source_files_sha256": "fd69ba98d39524933de0246baf3ec4d24f1d7e1ced32c81324ceb34e05124fe6",
+  "source_files_sha256": "3ee6c370bb7d0e0fb2b2e79ec1fa18cc7ef24a03230f2a744d918a6563266595",
   "snapshot_kind": "derived public SDK metadata correction; published charts a2 bytes retained",
   "base_source_commit": "6cd9079a330b03a4f1a568e28aca04a23a8d897b",
   "base_public_snapshot_commit": "7cb7517bf8bacf91f92c85f8df9a2904e76e8974",
