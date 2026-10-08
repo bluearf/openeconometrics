@@ -1,13 +1,14 @@
 # Publishing reviewed packages to PyPI
 
 The manual `Publish reviewed packages to PyPI` workflow publishes the existing
-public Python release `python-v0.3.18a3`: `openecon-charts==0.3.0a2` followed by
-`openecon==0.3.18a3`. The SDK requires that exact charts version. Both packages
-have reviewed scoped repairs: parser startup/high-water RSS and streaming OLS in
-the SDK, and installed-browser selection/owned profile cleanup in charts. The
-previous charts `0.3.0a1` files remain immutable. The Mac release `v0.3.43-alpha.1` still
-embeds SDK `0.3.18a1`; this Python publication does not rebuild the Mac application,
-publish newer private development, or establish desktop 0.3.44 acceptance.
+public Python release `python-v0.3.18a4`: `openecon-charts==0.3.0a2` followed by
+`openecon==0.3.18a4`. The SDK requires that exact charts version. SDK a4 changes
+only its package README, documentation and version metadata from reviewed a3.
+Charts a2 is the exact already-published pair originally built from
+`ca7854593e2591f56c380dc19f7abeba0b7b0117`; it is downloaded and hash-checked,
+not rebuilt. The Mac release `v0.3.43-alpha.1` still embeds SDK `0.3.18a1`; this
+Python publication does not rebuild the application or import newer private
+implementations. Existing PyPI publishers and the `pypi` environment stay in use.
 
 ## Account and publisher setup
 
@@ -72,7 +73,7 @@ Creating a pending publisher alone does not reserve an unused project name.
 For example, in a clean Python 3.11–3.14 environment:
 
 ```sh
-python -m pip install 'openecon==0.3.18a3' 'openecon-charts==0.3.0a2'
+python -m pip install 'openecon==0.3.18a4' 'openecon-charts==0.3.0a2'
 python -m pip check
 ```
 
@@ -93,7 +94,8 @@ published version, rebuild private current main using an old version number,
 or retarget a fixed release after approval.
 
 1. Finish the scoped release acceptance checks for the new source commit.
-   Select new SDK/charts versions and update the SDK's exact charts dependency.
+   Select new versions only for changed packages. Reuse the exact existing
+   distributions for an unchanged charts version and preserve the SDK's pin.
 2. Prepare the public snapshot from the reviewed HEAD in an isolated private
    source checkout using `scripts/prepare_public_source.py`. Preserve the
    private development checkout and history. Review the snapshot manifest,
@@ -115,19 +117,19 @@ or retarget a fixed release after approval.
    script against the proposed public release, and run Twine's strict metadata
    check. Review the PR before merging and manually dispatching the new release.
 
-The fixed SDK files were built from public source
-`ca7854593e2591f56c380dc19f7abeba0b7b0117`, whose public merge is recorded
-in the fixed release provenance. This derivative follows SDK a2 public source
-`0d8a8ea3ef12ddf8bdadfc8c64135052741f29c9` and starts from public
-snapshot `7cb7517bf8bacf91f92c85f8df9a2904e76e8974`, originally exported from private
-source `6cd9079a330b03a4f1a568e28aca04a23a8d897b`, and records only the reviewed
-parser/OLS/startup and charts browser cleanup patches plus delivery verification
-metadata. Linux Python 3.11/3.13 checks must pass from that exact source, including
-fresh standalone charts fonts/HTML, SDK wheel/sdist and real sandboxed exports.
-The exact immutable distribution hashes and successful checks are recorded in
-release provenance before this publisher is approved.
-See the [fixed Python release and provenance](https://github.com/bluearf/openeconometrics/releases/tag/python-v0.3.18a3)
-and the [original Mac release](https://github.com/bluearf/openeconometrics/releases/tag/v0.3.43-alpha.1).
+The fixed SDK a4 files were built from public source
+`03add0e10867885ed10cf426c6b6dccbd00dedee`, merged as
+`090b3656c95c25b2f707516b5868bed529396763`. Its documentation-only source ancestor
+is `aad8962af4c5d26bfb8ad0ff2c43f35bc8542eed`. The six previously reviewed scoped
+private patches remain inherited; no new implementation is imported. Charts a2
+retains its published hashes and original `ca7854593e2591f56c380dc19f7abeba0b7b0117`
+build source. New SDK a4 Mac installs and existing charts a2 registry/Chrome
+receipts retain their actual versions and origins in release provenance.
+Linux Python 3.11/3.13 acceptance runs from the new SDK source with the exact
+existing charts pair: 219 parser/OLS cases, 18 sandboxed export cases, zero skips,
+and two SDK plus two standalone charts wheel/sdist installations per job.
+See the [fixed SDK a4 release and provenance](https://github.com/bluearf/openeconometrics/releases/tag/python-v0.3.18a4)
+and the [original charts a2 build](https://github.com/bluearf/openeconometrics/releases/tag/python-v0.3.18a3).
 
 Later publisher-only workflow/documentation commits do not change either fixed
 package's bytes or their release provenance. The current repository's

@@ -22,3 +22,9 @@ manifest tracks current listed files; fixed release provenance retains the build
 commit's manifest digest. Install the separate Python packages with
 `python -m pip install 'openecon==0.3.18a3' 'openecon-charts==0.3.0a2'` after the
 registry publication/readback described in [the publishing guide](docs/pypi-publishing.md).
+
+SDK a4 release assets are built from public source
+`03add0e10867885ed10cf426c6b6dccbd00dedee`. Its charts a2 assets retain the original
+`ca7854593e2591f56c380dc19f7abeba0b7b0117` build and published hashes. Subsequent
+publisher-only documentation commits update the current repository manifest;
+they do not change either fixed package's bytes or its recorded build manifest.
