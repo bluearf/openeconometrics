@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING
 # function export with that module as a side effect of normal Python imports.
 from openecon.latex import Latex, latex, regression_table, to_latex
 
-__version__ = "0.3.18a3"
+__version__ = "0.3.18a4"
 
 if TYPE_CHECKING:
     from openecon.analysis import AnalysisError, capabilities, fit, ols, logit, probit
