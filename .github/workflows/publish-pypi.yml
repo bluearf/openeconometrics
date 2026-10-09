@@ -27,207 +27,15 @@ jobs:
     name: Verify fixed public release distributions
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.13'
-      - name: Download and verify reviewed public bytes
-        shell: python
+      - name: Download and verify the reviewed immutable fixed pair
         run: |
-          import email
-          import hashlib
-          import json
-          from pathlib import Path
-          import tarfile
-          import urllib.request
-          import zipfile
-
-          # Update only through a reviewed PR for a new published snapshot.
-          base = 'https://github.com/bluearf/openeconometrics/releases/download/python-v0.3.18a4/'
-          hashes = {
-              'openecon-0.3.18a4-py3-none-any.whl': '281ec5d83dfc83d9c198cddd38cebaaedba41f2afbd34744a35ca2568740fa3c',
-              'openecon-0.3.18a4.tar.gz': '494921c197d86b3494e9dd1eed4f64e80ce2441cf47abdfec7d5585c062db5ba',
-              'openecon_charts-0.3.0a2-py3-none-any.whl': 'f61491cfbc026b9e558ee04f97f57edd8cf6974871c9cb3132f68becd8683639',
-              'openecon_charts-0.3.0a2.tar.gz': 'b96168e4dd24560ff54e6041490ad68f1d47a7890c5d928883ddcb79d4e7e47e',
-              'RELEASE-PROVENANCE.json': '2c840daffc1633339cca3cb1ab2ae53f2e5f00d8b76fb3802bfe24040c3be062',
-          }
-          root = Path('reviewed')
-          root.mkdir()
-          for name, expected in hashes.items():
-              with urllib.request.urlopen(base + name, timeout=60) as response:
-                  data = response.read()
-              if hashlib.sha256(data).hexdigest() != expected:
-                  raise SystemExit(f'Public release SHA256 mismatch: {name}')
-              (root / name).write_bytes(data)
-          provenance = json.loads((root / 'RELEASE-PROVENANCE.json').read_text())
-          expected_provenance = {
-              'schema_version': 2,
-              'release': 'python-v0.3.18a4',
-              'repository': 'bluearf/openeconometrics',
-              'source_kind': 'derived public Python SDK and charts patch',
-              'source_commit': '03add0e10867885ed10cf426c6b6dccbd00dedee',
-              'public_source_commit': '03add0e10867885ed10cf426c6b6dccbd00dedee',
-              'public_merge_commit': '090b3656c95c25b2f707516b5868bed529396763',
-              'base_source_commit': '6cd9079a330b03a4f1a568e28aca04a23a8d897b',
-              'base_public_snapshot_commit': '7cb7517bf8bacf91f92c85f8df9a2904e76e8974',
-              'base_repository_commit': '8ddf76b51932a91014db53f193ef643c012b142e',
-              'previous_public_sdk_source_commit': 'ca7854593e2591f56c380dc19f7abeba0b7b0117',
-              'parent_public_merge_commit': '19d7ae7801234aa1d1a55851c0de2fe131c70d37',
-              'source_manifest_sha256': '21b0b8a53dd4cd8be3e9621a0f8fde6cede6692160a7e63798d764f71a814ccc',
-              'source_files_sha256': '3ee6c370bb7d0e0fb2b2e79ec1fa18cc7ef24a03230f2a744d918a6563266595',
-              'source_manifest_files_verified': 1431,
-              'capability_source_commit': 'aad8962af4c5d26bfb8ad0ff2c43f35bc8542eed',
-          }
-          for key, expected in expected_provenance.items():
-              if provenance.get(key) != expected:
-                  raise SystemExit(f'Provenance mismatch: {key}')
-          if provenance['versions'] != {'sdk': '0.3.18a4', 'charts': '0.3.0a2'}:
-              raise SystemExit('Provenance package version mismatch')
-          correction = provenance['documentation_correction']
-          if (correction['previous_sdk_version'] != '0.3.18a3' or correction['sdk_version'] != '0.3.18a4'
-                  or correction['base_public_source_commit'] != expected_provenance['previous_public_sdk_source_commit']
-                  or correction['base_publishing_commit'] != expected_provenance['parent_public_merge_commit']
-                  or correction['source_commit'] != expected_provenance['source_commit']
-                  or correction['algorithms_changed'] is not False or correction['charts_distribution_rebuilt'] is not False
-                  or correction['sdk_wheel_production_delta_from_a3'] != ['openecon/__init__.py']):
-              raise SystemExit('Provenance SDK documentation correction mismatch')
-          if provenance['package_sources'] != {
-                  'sdk': {'version': '0.3.18a4', 'source_commit': expected_provenance['source_commit'],
-                          'source_manifest_sha256': expected_provenance['source_manifest_sha256'], 'rebuilt': True},
-                  'charts': {'version': '0.3.0a2', 'source_commit': expected_provenance['previous_public_sdk_source_commit'],
-                             'source_manifest_sha256': 'd0d2815115331bf9c57fb999a4c63732fed3a9b92f8223996f792b615b619de7',
-                             'reused_from_release': 'python-v0.3.18a3', 'already_published': True, 'rebuilt': False}}:
-              raise SystemExit('Provenance package build/reuse mismatch')
-          expected_patches = {
-              'b8a2b461702251412a151105be530de50e47b19e': ['src/openecon/source_readers.py', 'tests/test_dataset.py'],
-              'e4589e8aa12a4c8745d2ddcda235b0edd4f965bd': ['src/openecon/engines/streaming_ols.py', 'tests/test_streaming_ols_engine.py'],
-              '8d29d23ce45e169a5896d9cc1469786412efc63f': ['tests/test_dataset.py'],
-              'c758b7cdd26e6b6548019c945735f17092730f77': ['src/openecon/source_readers.py', 'tests/test_dataset.py'],
-              'efc9df77bca551a87403a2f867ca715ea6b86816': ['packages/openecon-charts/src/openecon_charts/network_export.py', 'packages/openecon-charts/tests/test_network_export.py'],
-              'a04b0466a94a7c1ea0b3cbfc7debc8cef3c242ab': ['packages/openecon-charts/src/openecon_charts/network_export.py', 'packages/openecon-charts/tests/test_network_export.py'],
-          }
-          patches = provenance['source_patch_commits']
-          if len(patches) != len(expected_patches) or {p['commit']: p['paths'] for p in patches} != expected_patches:
-              raise SystemExit('Provenance derivative patch mismatch')
-          distribution_hashes = {name: digest for name, digest in hashes.items() if name != 'RELEASE-PROVENANCE.json'}
-          if set(provenance['artifacts']) != set(distribution_hashes):
-              raise SystemExit('Provenance distribution filename mismatch')
-          for name, digest in distribution_hashes.items():
-              artifact = provenance['artifacts'][name]
-              if artifact['sha256'] != digest or artifact['bytes'] != (root / name).stat().st_size:
-                  raise SystemExit(f'Provenance distribution mismatch: {name}')
-          linux = provenance['linux_package_validation']
-          expected_checks = {'Verify SDK patch package (3.11)', 'Verify SDK patch package (3.13)'}
-          checks = linux['required_checks']
-          if (linux['status'] != 'passed' or linux['source_commit'] != expected_provenance['source_commit']
-                  or linux['linux_build_sha256_matches_reviewed_release_assets'] is not True
-                  or linux['verified_distribution_sha256'] != distribution_hashes
-                  or linux['browser_sandbox_enabled'] is not True
-                  or len(checks) != 2 or {check['name'] for check in checks} != expected_checks
-                  or any(check['status'] != 'passed' or check['skipped'] != 0
-                         or check['regressions_passed'] != 219 or check['installed_wheel_sdist_environments'] != 2
-                         or check['installed_standalone_charts_environments'] != 2
-                         or check['browser_exports_regressions_passed'] != 18 or check['browser_exports_skipped'] != 0
-                         or check['browser_sandbox_enabled'] is not True
-                         for check in checks)):
-              raise SystemExit('Provenance Linux package acceptance mismatch')
-          mac_sdk = provenance['macos_package_validation']
-          sdk_records = mac_sdk['records']
-          if (mac_sdk['status'] != 'passed' or mac_sdk['source'] != 'local'
-                  or mac_sdk['receipt'] != 'pypi-sdk-a4-local-install-smoke.json' or mac_sdk['environments'] != 2
-                  or len(sdk_records) != 2
-                  or {(record['environment'], record['distribution']) for record in sdk_records}
-                  != {('sdk-wheel', 'wheel'), ('sdk-sdist', 'sdist')}
-                  or any(record['status'] != 'passed' or record['sdk_version'] != '0.3.18a4'
-                         or record['charts_version'] != '0.3.0a2'
-                         or any(record[key] is not True for key in (
-                             'lazy_registry_no_heavy_imports', 'ols_independent_algebra', 'guarded_parquet_after_torch',
-                             'exact_fit_guard_and_real_noise', 'poisson_score_check',
-                             'json_restore_predictions_duplicate_index', 'latex_and_chart_protocol'))
-                         for record in sdk_records)):
-              raise SystemExit('Provenance new Mac SDK acceptance mismatch')
-          mac_charts = provenance['macos_charts_package_validation']
-          charts_records = mac_charts['records']
-          if (mac_charts['status'] != 'passed' or mac_charts['version'] != '0.3.0a2' or mac_charts['source'] != 'pypi'
-                  or mac_charts['receipt'] != 'pypi-sdk-a3-charts-a2-registry-install-smoke.json'
-                  or mac_charts['registry_installation_index'] != 'https://pypi.org/simple' or mac_charts['environments'] != 2
-                  or len(charts_records) != 2
-                  or {(record['environment'], record['distribution']) for record in charts_records}
-                  != {('charts-wheel', 'wheel'), ('charts-sdist', 'sdist')}
-                  or any(record['status'] != 'passed' or record['version'] != '0.3.0a2'
-                         or record['standalone_no_heavy_dependencies'] is not True
-                         or record['offline_html_latex'] is not True or record['embedded_woff2_and_ttf_fonts'] is not True
-                         for record in charts_records)):
-              raise SystemExit('Provenance existing Mac charts acceptance mismatch')
-          mac_browser = provenance['macos_browser_validation']
-          browser_records = mac_browser['records']
-          if (mac_browser['status'] != 'passed' or mac_browser['version'] != '0.3.0a2' or mac_browser['source'] != 'pypi'
-                  or mac_browser['receipt'] != 'pypi-charts-a2-registry-chrome-smoke.json'
-                  or mac_browser['installed_standalone_environments'] != 2
-                  or len(browser_records) != 2 or {record['environment'] for record in browser_records} != {'charts-wheel', 'charts-sdist'}
-                  or any(record['status'] != 'passed' or record['charts_version'] != '0.3.0a2'
-                         or record['standalone_no_heavy_dependencies'] is not True
-                         or record['loopback_only_python_transport'] is not True
-                         or record['atomic_existing_file_refusal'] is not True or record['disposable_profile_cleanup'] is not True
-                         or len(record['exports']) != 3 or {item['format'] for item in record['exports']} != {'pdf', 'svg', 'png'}
-                         or any(item['status'] != 'passed' or item['bytes'] <= 0 for item in record['exports'])
-                         for record in browser_records)):
-              raise SystemExit('Provenance installed Mac browser acceptance mismatch')
-          readme = provenance['package_readme_validation']
-          example = readme['installed_example']
-          if (readme['status'] != 'passed' or readme['description_file'] != 'PYPI-README.md'
-                  or readme['description_sha256'] != '3c3a005a54b2d08119614b3cc3b7f94b7a8e8ac58d300dcf49576fa291f30bb3'
-                  or readme['distribution_descriptions_match_source'] is not True
-                  or readme['absolute_https_links'] != 8 or readme['relative_links'] != 0
-                  or readme['link_http_statuses'] != [200] * 8
-                  or readme['installed_example_receipt'] != 'sdk-a4-readme-installed-example/receipt.json'
-                  or example['status'] != 'passed' or example['sdk_version'] != '0.3.18a4'
-                  or example['charts_version'] != '0.3.0a2' or example['nobs'] != 480
-                  or example['json_restore'] is not True or example['latex_bytes'] <= 0 or example['saved_html_bytes'] <= 0):
-              raise SystemExit('Provenance installed SDK README acceptance mismatch')
-          if provenance['desktop_boundary'] != {
-                  'unchanged_release': 'v0.3.43-alpha.1', 'existing_sdk': '0.3.18a1', 'new_desktop_artifact': False}:
-              raise SystemExit('Provenance desktop boundary mismatch')
-          packages = {
-              'openecon': ('0.3.18a4', 'openecon-0.3.18a4-py3-none-any.whl'),
-              'openecon-charts': ('0.3.0a2', 'openecon_charts-0.3.0a2-py3-none-any.whl'),
-          }
-          for project, (version, filename) in packages.items():
-              with zipfile.ZipFile(root / filename) as archive:
-                  metadata_path, = [p for p in archive.namelist() if p.endswith('.dist-info/METADATA')]
-                  metadata = email.message_from_bytes(archive.read(metadata_path))
-                  if metadata['Name'] != project or metadata['Version'] != version:
-                      raise SystemExit(f'Package identity mismatch: {filename}')
-                  if metadata['License-Expression'] != 'Apache-2.0':
-                      raise SystemExit(f'Package license mismatch: {filename}')
-                  for license_file in metadata.get_all('License-File', []):
-                      path = metadata_path.removesuffix('METADATA') + 'licenses/' + license_file
-                      if path not in archive.namelist():
-                          raise SystemExit(f'Missing license notice: {filename}/{license_file}')
-                  if project == 'openecon' and 'openecon-charts==0.3.0a2' not in metadata.get_all('Requires-Dist', []):
-                      raise SystemExit('SDK must depend on the reviewed charts version')
-                  if project == 'openecon' and (
-                          metadata['Description-Content-Type'] != 'text/markdown'
-                          or hashlib.sha256(metadata.get_payload().encode('utf-8')).hexdigest()
-                          != '3c3a005a54b2d08119614b3cc3b7f94b7a8e8ac58d300dcf49576fa291f30bb3'):
-                      raise SystemExit('SDK wheel description differs from the reviewed PyPI README')
-              destination = Path(project) / 'dist'
-              destination.mkdir(parents=True)
-              pattern = project.replace('-', '_') + '-*'
-              for path in root.glob(pattern):
-                  path.rename(destination / path.name)
-          with tarfile.open('openecon/dist/openecon-0.3.18a4.tar.gz') as archive:
-              metadata = email.message_from_bytes(archive.extractfile('openecon-0.3.18a4/PKG-INFO').read())
-              if (metadata['Name'] != 'openecon' or metadata['Version'] != '0.3.18a4'
-                      or metadata['Description-Content-Type'] != 'text/markdown'
-                      or hashlib.sha256(metadata.get_payload().encode('utf-8')).hexdigest()
-                      != '3c3a005a54b2d08119614b3cc3b7f94b7a8e8ac58d300dcf49576fa291f30bb3'):
-                  raise SystemExit('SDK sdist description differs from the reviewed PyPI README')
-          for path in Path('.').glob('*/dist/*.tar.gz'):
-              with tarfile.open(path) as archive:
-                  for name in archive.getnames():
-                      if any(part in name for part in ('/.git/', '/docs/evidence/', '/tests/fixtures/')):
-                          raise SystemExit(f'Excluded private material in source distribution: {name}')
-          print('Verified release provenance, package identities, notices and all distribution hashes.')
+          python -m pip install 'packaging>=24.2,<27'
+          python .github/checks/verify_reviewed_package_release.py \
+            --profile .github/checks/reviewed-package-release.json
       - name: Check distribution metadata
         run: |
           python -m pip install 'twine==7.0.0'
@@ -246,23 +54,23 @@ jobs:
           retention-days: 7
 
   publish-charts:
-    name: Publish openecon-charts 0.3.0a2
+    name: Publish openecon-charts 0.3.1a1
     needs: verify
     if: github.repository == 'bluearf/openeconometrics' && github.event_name == 'workflow_dispatch' && inputs.publish && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/openecon-charts/0.3.0a2/
+      url: https://pypi.org/project/openecon-charts/0.3.1a1/
     permissions:
       contents: read
       id-token: write
     env:
       PROJECT: openecon-charts
-      VERSION: 0.3.0a2
-      WHEEL: openecon_charts-0.3.0a2-py3-none-any.whl
-      WHEEL_SHA256: f61491cfbc026b9e558ee04f97f57edd8cf6974871c9cb3132f68becd8683639
-      SDIST: openecon_charts-0.3.0a2.tar.gz
-      SDIST_SHA256: b96168e4dd24560ff54e6041490ad68f1d47a7890c5d928883ddcb79d4e7e47e
+      VERSION: 0.3.1a1
+      WHEEL: openecon_charts-0.3.1a1-py3-none-any.whl
+      WHEEL_SHA256: 4badfb26cbb1860dbb266d59cc726ad0057b640b007c9cbfb673bf95108ae4b4
+      SDIST: openecon_charts-0.3.1a1.tar.gz
+      SDIST_SHA256: 9b053443ebca72332b8da7d7d45548654e742d303073e1e5b398399331fa0e3c
     steps:
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
         with:
@@ -368,23 +176,23 @@ jobs:
               time.sleep(5)
 
   publish-sdk:
-    name: Publish openecon 0.3.18a4
+    name: Publish openecon 0.3.19a1
     needs: [verify, publish-charts]
     if: github.repository == 'bluearf/openeconometrics' && github.event_name == 'workflow_dispatch' && inputs.publish && inputs.publish_sdk && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/openecon/0.3.18a4/
+      url: https://pypi.org/project/openecon/0.3.19a1/
     permissions:
       contents: read
       id-token: write
     env:
       PROJECT: openecon
-      VERSION: 0.3.18a4
-      WHEEL: openecon-0.3.18a4-py3-none-any.whl
-      WHEEL_SHA256: 281ec5d83dfc83d9c198cddd38cebaaedba41f2afbd34744a35ca2568740fa3c
-      SDIST: openecon-0.3.18a4.tar.gz
-      SDIST_SHA256: 494921c197d86b3494e9dd1eed4f64e80ce2441cf47abdfec7d5585c062db5ba
+      VERSION: 0.3.19a1
+      WHEEL: openecon-0.3.19a1-py3-none-any.whl
+      WHEEL_SHA256: 09377fe0220c4c35ff27289236fa29f63666684ba72edb4de82ae89b4cbdc85a
+      SDIST: openecon-0.3.19a1.tar.gz
+      SDIST_SHA256: 98bbbea50d7225788dd72413d1ecda85ef025e05c80b41353284f84727ab54c7
     steps:
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
         with:
