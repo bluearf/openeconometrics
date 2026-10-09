@@ -1,0 +1,20 @@
+{
+  "source_head": "ff90411f78a6d648f6341da7288933bec282ea43",
+  "integrated_main_snapshot": "122229329e352803afef3837d265857f47f1c516",
+  "python_tests": 245,
+  "python_failures": 0,
+  "web_tests": 738,
+  "web_failures": 0,
+  "web_concurrency": 1,
+  "meta_sources_unchanged_from_frozen": {
+    "openecon.econometrics.meta": "eecc9abaa4036b96aac53e54fee0e7df62d4d81fe19dc3e34b74054febe5e9f2",
+    "openecon.econometrics.meta.common": "03b7f98f1aa27670e86c82b63b6dbac78ac7f8f8027540f91eb45d01824cb200",
+    "openecon.econometrics.meta.effects": "ecef30df350d1ba65bdd04003c461acbac3a4549aeb1a65408b02ed9919b4b5c",
+    "openecon.econometrics.meta.models": "c21001701f524cbf072d5848025f6d639dfb61c4f07896268c39382ad5372a41",
+    "openecon.econometrics.meta.kernels": "127d9a1f03a4f1088ffe0b10c6bac83baef1ca4f35550b6df25160dff91e0c33",
+    "openecon.econometrics.meta.diagnostics": "8a72358e27701af612cd0979652ce51f9554d05e7efaeff8bc311b9dfdfe5975"
+  },
+  "frozen_source_head": "1a3d360fd3736d4b9c780cbbba0e3582a6271ff2",
+  "scope": "Combined source checked after main integration; native/frozen receipts remain pinned to their explicitly recorded snapshot",
+  "public_release_delivered": false
+}

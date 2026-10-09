@@ -88,7 +88,7 @@ checks PageRank; scalar row equations check supra-matvec. The unit suite also
 checks 48 seeded nonuniform small directed/undirected networks, projections,
 lossless edits/interchange, resource refusal and sparse allocation.
 
-The [fresh-process measurement](evidence/market-59-multilayer-scale-2026-10-07.json)
+The fresh-process measurement (internal evidence excluded from this public snapshot)
 uses two undirected circulants plus diagonal coupling on macOS ARM64,
 Python 3.13.5, Torch 2.14.0 and one CPU thread:
 
@@ -107,12 +107,12 @@ definitions in [Kivelä et al., Multilayer Networks, sections 2.1 and 2.3](https
 The particular PageRank walk and projection policies above are explicit API
 choices; they do not assert equivalence to every multilayer descriptor.
 
-[Installed native acceptance](evidence/market-59-installed-native-2026-10-07/README.md)
+Installed native acceptance (internal evidence excluded from this public snapshot)
 passed eight complete tables and a full application restart, with output/event
 hashes unchanged and no recalculation. The existing 0.3.42 native shell was
 preserved and its runtime was updated; six selected compiled SDK modules match
 the recorded source revision. All 15 pre-existing source/data files retained
 their hashes. Cloud team sharing showed the separately recorded MARKET-87
 publication-protocol rejection; it is excluded from this local network
-acceptance. [Isolated frozen acceptance](evidence/market-59-frozen-desktop-2026-10-07.json)
+acceptance. Isolated frozen acceptance (internal evidence excluded from this public snapshot)
 also passed and removed its owned process/data.

@@ -9,12 +9,14 @@ import torch
 
 from openecon.analysis_contracts import AnalysisError
 from openecon.econometrics.core import ModelFrame, build_result, column_list, make_spec, table
+from openecon.econometrics.resident_cpu import resident_cpu
 from openecon.models import ResultBundle
 from openecon.resources import plan_workspace, tensor_bytes
-from .kernels import bandwidth_vector, fit_penalized, local_predict, work_guard
+from .kernels import bandwidth_vector, fit_penalized, local_predict, penalty_factors, work_guard
 
 
-def _convenience(name, data, outcome, predictors, *, intercept=True, missing="raise", **options):
+def _convenience(name, data, outcome, predictors, *, categorical=None, weights=None,
+                 weight_type="aweight", intercept=True, missing="raise", **options):
     from openecon.analysis import fit
 
     return fit(
@@ -22,6 +24,9 @@ def _convenience(name, data, outcome, predictors, *, intercept=True, missing="ra
             name,
             outcome=outcome,
             predictors=column_list(predictors, "predictors"),
+            categorical=column_list(categorical, "categorical"),
+            weights=weights,
+            weight_type=weight_type,
             intercept=intercept,
             missing=missing,
             options=options,
@@ -30,19 +35,25 @@ def _convenience(name, data, outcome, predictors, *, intercept=True, missing="ra
     )
 
 
-def ridge(*, data, y, x, intercept=True, missing="raise", **options):
+def ridge(*, data, y, x, categorical=None, weights=None, weight_type="aweight",
+          intercept=True, missing="raise", **options):
     """Ridge prediction; selection='fixed' needs penalty, default CV."""
-    return _convenience("ridge", data, y, x, intercept=intercept, missing=missing, **options)
+    return _convenience("ridge", data, y, x, categorical=categorical, weights=weights,
+                        weight_type=weight_type, intercept=intercept, missing=missing, **options)
 
 
-def lasso(*, data, y, x, intercept=True, missing="raise", **options):
+def lasso(*, data, y, x, categorical=None, weights=None, weight_type="aweight",
+          intercept=True, missing="raise", **options):
     """Lasso prediction, with fixed/CV/heteroskedastic plug-in selection."""
-    return _convenience("lasso", data, y, x, intercept=intercept, missing=missing, **options)
+    return _convenience("lasso", data, y, x, categorical=categorical, weights=weights,
+                        weight_type=weight_type, intercept=intercept, missing=missing, **options)
 
 
-def elasticnet(*, data, y, x, intercept=True, missing="raise", **options):
+def elasticnet(*, data, y, x, categorical=None, weights=None, weight_type="aweight",
+               intercept=True, missing="raise", **options):
     """Elastic-net prediction: l1_ratio=1 is lasso, 0 is ridge."""
-    return _convenience("elasticnet", data, y, x, intercept=intercept, missing=missing, **options)
+    return _convenience("elasticnet", data, y, x, categorical=categorical, weights=weights,
+                        weight_type=weight_type, intercept=intercept, missing=missing, **options)
 
 
 def kernelreg(*, data, y, x, missing="raise", **options):
@@ -91,7 +102,11 @@ def _prediction_result(frame, fitted, extra, diagnostics):
     )
 
 
+@resident_cpu
 def _penalized(spec, data, ratio):
+    if spec.weights or spec.categorical or isinstance(spec.options.get("penalty_factors"), dict):
+        from .extended import fit_extended
+        return fit_extended(spec, data, ratio=ratio)
     frame = ModelFrame(spec, data)
     n, p = frame.n, len(spec.predictors)
     frame.workspace_plan(
@@ -103,8 +118,17 @@ def _penalized(spec, data, ratio):
         },
     )
     x, y = frame.matrix(spec.predictors), frame.numeric(spec.outcome)
-    result = fit_penalized(x, y, ratio=ratio, intercept=spec.intercept, options=_options(frame))
+    options = _options(frame)
+    factors = penalty_factors(options.get("penalty_factors"), p)
+    forced = options.get("forced_controls") or []
+    if len(forced) != len(set(forced)) or any(name not in spec.predictors for name in forced):
+        raise AnalysisError("invalid_forced_controls", "forced_controls must be distinct names already present in x.")
+    for name in forced:
+        factors[spec.predictors.index(name)] = 0
+    options["penalty_factors"] = factors.tolist()
+    result = fit_penalized(x, y, ratio=ratio, intercept=spec.intercept, options=options)
     state = result["state"]
+    state["forced_controls"] = [name for name, factor in zip(spec.predictors, state["penalty_factors"], strict=True) if factor == 0]
     return _prediction_result(
         frame,
         result["fitted"],
@@ -297,6 +321,7 @@ def fit_localreg(spec, data):
     return _kernel(spec, data, 1)
 
 
+@resident_cpu
 def regularized_predict(result: ResultBundle, data, *, support=None, max_work=200000000):
     """Predict from persisted state; return row-preserving conditional means.
 
@@ -315,6 +340,9 @@ def regularized_predict(result: ResultBundle, data, *, support=None, max_work=20
             "streaming_unsupported",
             "Saved regularized prediction requires an in-memory table; Dataset is not collected.",
         )
+    if "regularized_extended_state" in result.extra:
+        from .extended import predict_extended
+        return predict_extended(result, data, max_work=max_work)
     data = _coerce_frame(data)
     names = result.extra["terms"]
     if data.columns.has_duplicates or any(name not in data for name in names):
@@ -366,6 +394,9 @@ def regularized_table(result: ResultBundle):
     """Export actual predictive estimates with no coefficient-SE fiction."""
     if not isinstance(result, ResultBundle) or result.extra.get("target") != "prediction":
         raise AnalysisError("invalid_result", "regularized_table requires a predictive result.")
+    if "regularized_extended_state" in result.extra:
+        from .extended import _validate_result
+        _validate_result(result)
     if "penalized_state" in result.extra:
         state = result.extra["penalized_state"]
         rows = [("Intercept", state["constant"])] if result.spec.intercept else []
@@ -375,7 +406,8 @@ def regularized_table(result: ResultBundle):
             columns=["Predictive term", "Estimate"],
             target="prediction",
             inference="unavailable",
-            penalty=state["selected_penalty"],
+            penalty=state.get("selected_penalty"),
+            components=state.get("components"),
             notes=result.extra["notes"],
         )
     rows = [

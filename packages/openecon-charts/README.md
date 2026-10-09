@@ -279,7 +279,7 @@ and are excluded from the bounded resident-input claim.
 
 The repository's [code-panel example](../../docs/examples/resident_charts.py),
 [memory probe](../../benchmarks/resident_charts.py) and
-[verification receipts](../../docs/evidence/market-99-resident-charts/README.md)
+verification receipts (internal evidence excluded from this public snapshot)
 cover one- and five-million-row inputs, numeric contracts, publication validation,
 saved output readback and a freshly frozen runtime. Resident loading and the
 input table's memory are separate from additional chart workspace.

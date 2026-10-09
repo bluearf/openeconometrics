@@ -1,5 +1,11 @@
 # OpenEconometrics
 
+<!-- BEGIN source-generated capability scope -->
+Current source: **157 registered fit names**, **92 Dataset fit routes**, **74 common saved predict/margins adapters**. The [generated method/option inventory](docs/capabilities.md) states conditions, exclusions and devices.
+
+Fit routes, common prediction adapters and family-specific helpers/forecasts have separate contracts. Source implementation does not establish independent scientific validation, installed-package verification or public shipment for a method/option. Those require their own dated, source-pinned evidence; historical measurements retain their original scope.
+<!-- END source-generated capability scope -->
+
 An open-source Python statistics library and local research workbench with a code editor, persistent Python session, data inspector, plots and MCP integration. Apache-2.0 licensed.
 
 Python package remains `openecon`. Project website: [openeconometrics.com](https://openeconometrics.com).
@@ -8,10 +14,16 @@ Reviewed source snapshots and Mac alpha releases are distributed through
 [bluearf/openeconometrics](https://github.com/bluearf/openeconometrics).
 Mac packages require Apple Silicon and macOS 15 or later. Read each release's
 checksum and signing status before installation. Developer ID signing and
-notarization are pending for the first Mac alpha. Its desktop version
-`v0.3.43-alpha.1` embeds SDK `0.3.18a1`; the separate Python SDK patch below does
-not rebuild that Mac application. See [PUBLIC-SOURCE.md](https://github.com/bluearf/openeconometrics/blob/main/PUBLIC-SOURCE.md) and `SOURCE-MANIFEST.json` in the
+notarization remain pending. The published PyPI alpha packages are
+[openecon 0.3.18a4](https://pypi.org/project/openecon/0.3.18a4/) and
+[openecon-charts 0.3.0a2](https://pypi.org/project/openecon-charts/0.3.0a2/).
+Their scope follows the reviewed public snapshot. See
+[PUBLIC-SOURCE.md](https://github.com/bluearf/openeconometrics/blob/main/PUBLIC-SOURCE.md) and `SOURCE-MANIFEST.json` in the
 public snapshot for its precise source and external-fixture boundary.
+
+This checkout prepares SDK **0.3.19a1** and charts **0.3.1a1**. Those versions
+require their own frozen public-source manifest, wheel/sdist installation checks
+and verified PyPI publication; the published pair above retains its earlier scope.
 
 Distribution preserves the [third-party notices](THIRD_PARTY.md). See
 [contribution guidelines](CONTRIBUTING.md) and the [private security-reporting
@@ -79,18 +91,17 @@ Relative file paths in the console resolve inside the active workspace (`.openec
 
 ## Use the library
 
-Install the reviewed Python alpha packages in a fresh Python 3.11–3.14 environment:
+Install the published alpha on Python 3.11–3.14:
 
 ```sh
-python -m pip install 'openecon==0.3.18a4' 'openecon-charts==0.3.0a2'
-python -m pip check
+python -m pip install 'openecon==0.3.18a4'
 ```
 
-The fixed package files and validation scope are recorded in the
-[Python SDK release](https://github.com/bluearf/openeconometrics/releases/tag/python-v0.3.18a4).
-The [publishing guide](docs/pypi-publishing.md) distinguishes GitHub release
-availability from completed PyPI publication. An exact pin selects these alpha
-versions; CPU package checks do not establish physical CUDA or vendor parity.
+This version installs its exact chart dependency, `openecon-charts==0.3.0a2`.
+The current source candidate is `openecon==0.3.19a1` with
+`openecon-charts==0.3.1a1`; it has not replaced the published pair above.
+The source checkout and desktop candidate have separate release scope;
+see [distribution versions and extras](docs/distribution.md).
 
 The library accepts pandas DataFrames, dictionaries of columns and lists of records. It is not tied to the included wage dataset.
 
@@ -217,9 +228,9 @@ chart.save_html("chart.html")
 # In the workbench: display(chart)
 ```
 
-Install the standalone published chart package with
-`python -m pip install 'openecon-charts==0.3.0a2'`, or use
-`pip install ./packages/openecon-charts` from this source checkout.
+Install the published chart alpha independently with
+`python -m pip install 'openecon-charts==0.3.0a2'`. From this checkout,
+use `python -m pip install ./packages/openecon-charts` for the current source version.
 The workspace launcher installs it alongside OpenEconometrics. For distributable wheels,
 build both using `uv build --all-packages` and install both wheels together.
 
@@ -285,12 +296,10 @@ uv run --no-sync python -m pytest
 uv build --all-packages
 ```
 
-The public Python package checks run on pull requests and pushes to `main`,
-and also support manual dispatch. They verify the reviewed SDK and exact charts
-packages on Linux Python 3.11 and 3.13. The publishing workflow verifies pull
-requests; uploads require a manual run on protected `main` and approval of the
-`pypi` environment. See [the publishing guide](docs/pypi-publishing.md). Platform
-packaging and physical GPU acceptance remain separate checks.
+GitHub verification runs on pull requests, pushes to `main`, merge-queue events
+and manual dispatch. Windows packaging uses manual dispatch. The local checks
+above remain available; a workflow definition alone does not establish that a
+particular source revision passed its required checks.
 
 For interface development, run `uv run --extra app openecon serve` and `npm --prefix web run dev` separately. Vite proxies `/api` and `/chart-assets` to port 8765. Build the interface before packaging; the OpenEconometrics wheel includes generated interface assets and the frozen synthetic fixture. The chart wheel contains the single shared D3 renderer and its local assets.
 
@@ -301,3 +310,5 @@ Tests cover independent statistical references, data integrity and metadata, Pyt
 OpenEconometrics code is licensed under [Apache-2.0](LICENSE). Dependencies retain their licenses; datasets remain subject to their own permissions and licenses.
 
 Library-only users can install `openecon` without the web/CLI/MCP layers. See [distribution extras and measured dependencies](docs/distribution.md).
+
+[Nonlinear SUR](docs/econometrics/nonlinear-sur.md): bounded shared-parameter Gaussian systems with complete saved-state replay and joint postestimation.

@@ -42,6 +42,7 @@ that could not be confirmed.
 | --- | --- |
 | [linear.md](linear.md) | `areg`, `reghdfe`, `cnsreg`; `regress` and `newey` (wrappers over `oe.ols`) |
 | [panel.md](panel.md) | `xtreg` (fe, re, be, fd, mle, pooled; Driscoll–Kraay), `hausman`, `xtfmb` |
+| [panel-prediction-extensions.md](panel-prediction-extensions.md) | PLS1, `xtreg(model='cre')`, Mundlak test, `xthtaylor`, reverse/calendar panel windows and `rolling_predict` |
 | [panel_diagnostics.md](panel_diagnostics.md), [panel_dependence.md](panel_dependence.md) | `xtserial`, `xttest3`; `xtcd` (Pesaran CD, balanced BP LM/scaled LM) |
 | [panel_homogeneity.md](panel_homogeneity.md) | `xthst` (Pesaran–Yamagata slope homogeneity, balanced/unbalanced static panels) |
 | [iv.md](iv.md) | `ivregress` (2SLS, LIML, GMM; first-stage, overidentification, endogeneity tests), `xtivreg`, `ivreghdfe` |
@@ -55,6 +56,7 @@ that could not be confirmed.
 | --- | --- |
 | [glm.md](glm.md) | `glm`, `poisson`, `nbreg`, `cloglog`, `fracreg`, `betareg`, `ppmlhdfe` |
 | [discrete.md](discrete.md) | `ologit`, `oprobit`, `mlogit`, `clogit`, `hetprobit`, `biprobit` |
+| [nested-choice.md](nested-choice.md) | `nlogit`, `nlogit_restore`, `nlogit_predict`, `nlogit_margins` |
 | [limited.md](limited.md) | `tobit`, `truncreg`, `intreg`, `heckman`, `heckprobit`, `ivprobit`, `ivtobit` |
 | [count.md](count.md) | `zip`, `zinb`, `tpoisson`, `tnbreg`, `churdle`, `hurdle`, `gnbreg` |
 | [mixed.md](mixed.md) | `mixed`, `melogit`, `meprobit`, `mepoisson`, `xtlogit`, `xtprobit`, `xtpoisson`, `xtgee` |
@@ -113,5 +115,18 @@ the guides list the ones that were not.
 
 ## Writing a new family
 
+The [five capability milestones](capability-closures-2026-10-07.md) document
+CRE/HT, interaction mediation/Fairlie, signed partial-sum tests, CUE/effective F
+and extended window workflows, with separate numerical/runtime evidence.
+
+The [research method stage plans](roadmaps/README.md) separate survey, specialized
+quantile and advanced state-space proposals from implemented capabilities. The
+[single-stage survey declaration](survey-design.md) validates design geometry
+without providing survey estimates or inference.
+
 See [development.md](development.md) for the registry contract, the shared
 sample/design/result layer and the numerical rules.
+
+The [deferred research plans](../research/README.md) define staged scope and
+acceptance for latent SEM, Bayesian, supervised prediction and mixture families.
+These are planning deliverables; their implementation trackers remain open.

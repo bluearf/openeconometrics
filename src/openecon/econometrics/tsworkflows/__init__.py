@@ -8,6 +8,22 @@ _ITER = (
 )
 ESTIMATORS = (
     EstimatorInfo(
+        name="umidas",
+        title="Unrestricted MIDAS regression",
+        family="tsworkflows",
+        entry="openecon.econometrics.tsworkflows.umidas:fit_umidas",
+        covariances=("nonrobust", "HC0", "HC1", "HC2", "HC3"),
+        default_covariance="nonrobust",
+        function="umidas",
+        predictors="optional",
+        categorical=False,
+        inference="t",
+        roles=(Role("lags", many=True, required=True),),
+        time="optional",
+        options=(Option("alignment", "json", required=True),),
+        description="Full-rank unrestricted MIDAS on release-bound numeric high-frequency lags, native CPU float64 OLS covariance and t inference; saved means and conventional Gaussian outcome intervals use separately validated evaluation alignment.",
+    ),
+    EstimatorInfo(
         name="sspace",
         title="Linear Gaussian state space",
         family="tsworkflows",
@@ -20,8 +36,8 @@ ESTIMATORS = (
         intercept="never",
         time="optional",
         roles=(Role("responses", many=True),),
-        options=(Option("system", "json", required=True), *_ITER),
-        description="Time-invariant linear Gaussian state-space estimation or fixed-system filtering with full state and measurement covariance; known or stationary initialization, float64 CPU.",
+        options=(Option("system", "json", required=True), Option("observation_missing", "str", "raise", choices=("raise", "mask")), *_ITER),
+        description="Linear Gaussian state-space estimation with proper prior, per-date observation masks, fixed schedules and known exogenous paths; full filtering, smoothing and conditional forecast covariance, float64 CPU.",
     ),
     EstimatorInfo(
         name="ets",
@@ -62,12 +78,20 @@ ESTIMATORS = (
     ),
 )
 EXPORTS = {
+    "umidas_predict": "openecon.econometrics.tsworkflows.umidas:umidas_predict",
+    "auto_ets": "openecon.econometrics.tsworkflows.selection:auto_ets",
+    "rolling_panel": "openecon.econometrics.tsworkflows.panel_windows:rolling_panel",
+    "recursive_ols": "openecon.econometrics.tsworkflows.recursive_ols:recursive_ols",
+    "rolling_predict": "openecon.econometrics.tsworkflows.window_targets:rolling_predict",
     "auto_arima": "openecon.econometrics.tsworkflows.workflows:auto_arima",
     "rolling": "openecon.econometrics.tsworkflows.workflows:rolling",
     "recursive": "openecon.econometrics.tsworkflows.workflows:recursive",
     "midas_align": "openecon.econometrics.tsworkflows.midas:midas_align",
     "midas_predict": "openecon.econometrics.tsworkflows.midas:midas_predict",
     "sspace_filter": "openecon.econometrics.tsworkflows.sspace:sspace_filter",
+    "sspace_smooth": "openecon.econometrics.tsworkflows.sspace:sspace_smooth",
+    "sspace_autocov": "openecon.econometrics.tsworkflows.sspace:sspace_autocov",
+    "sspace_disturbances": "openecon.econometrics.tsworkflows.sspace:sspace_disturbances",
 }
 FORECAST = {
     "sspace": "openecon.econometrics.tsworkflows.sspace:forecast",

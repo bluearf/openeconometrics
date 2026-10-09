@@ -1,5 +1,9 @@
 # Classical parametric statistics
 
+Prospective sample-size/power and known-SD CI-width planning is documented
+separately in [planning.md](planning.md): `power_mean`, `power_proportion`,
+`power_correlation` and `precision_mean`.
+
 t tests, tests of variances, one-way and factorial analysis of variance and
 covariance with post hoc comparisons, repeated measures, MANOVA, correlations
 and descriptive statistics: `ttest`, `sdtest`, `oneway`, `anova`, `rm_anova`,

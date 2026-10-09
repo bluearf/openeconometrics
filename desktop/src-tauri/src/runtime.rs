@@ -348,6 +348,7 @@ mod tests {
         let chosen = probe.local_addr().unwrap().port();
         drop(probe);
         remember_port(&dir, chosen).unwrap();
+        drop(dir);
         drop(lock);
         let (lock, remembered, _) = instance_and_port(&root).unwrap();
         assert_eq!(remembered, chosen);

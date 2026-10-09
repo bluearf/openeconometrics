@@ -211,7 +211,7 @@ def fit_iv_replay(spec, source, *, batch_rows=None):
                  "nobs": sample.nobs, "method": method, "small": small,
                  "error_variance": "RSS/(N-K)" if small else "RSS/N",
                  "r_squared_definition": "centered" if spec.intercept else "uncentered",
-                 "residual_definition": "outcome minus X b with observed, not fitted, endogenous regressors"})
+                 "residual_definition": "outcome minus X b with the observed (not fitted) endogenous regressors"})
     r2 = 1-rss/tss
     metrics = {"r_squared": r2, "adjusted_r_squared": 1-(1-r2)*(sample.nobs-int(spec.intercept))/df,
                "rmse": math.sqrt(rss/(df if small else sample.nobs)), "df_model": k-int(spec.intercept),

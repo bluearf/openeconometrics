@@ -259,11 +259,12 @@ export default function PackageManager({
         currentClient.current === client &&
         currentOpen.current
       ) {
-        download(
+        const exported = await download(
           JSON.stringify(document),
           "openeconometrics-environment.json",
         );
-        setNotice("Environment exported.");
+        if (exported.status === "failed") throw new Error("The environment could not be exported.");
+        if (exported.status !== "cancelled") setNotice("Environment exported.");
       }
     } catch (failure) {
       if (!signal.aborted && currentClient.current === client)

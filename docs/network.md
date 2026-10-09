@@ -179,13 +179,13 @@ source, new snapshot and admitted buffers do not fit the declared budget.
 
 Paste the [runnable multigraph example](examples/network_multigraph.py) into the
 code panel for five ordered tables and isolated temporary interchange files.
-[MARKET-57 scale evidence](evidence/market-57-multigraph-2026-10-06.json) checks
+MARKET-57 scale evidence (internal evidence excluded from this public snapshot) checks
 25,000 and 100,000 separate edges with analytic counts and exact ordered typed
 record fingerprints through both XML formats. On the 100,000-edge local ARM64
 CPU run, peak process RSS was approximately 337 MiB, separate from its explicit
 512 MiB owned-workspace allowance. This is a three-node parallel-edge workload,
 not an arbitrary-topology throughput guarantee.
-The [frozen worker receipt](evidence/market-57-frozen-desktop-2026-10-06.json)
+The frozen worker receipt (internal evidence excluded from this public snapshot)
 checks bundle-only execution, publication LaTeX and saved output/event readback
 after worker reset. The final source passed 3,837 selected network, packaging and
 editor-catalog cases (including 53 multigraph cases), plus 578 interface cases.
@@ -389,7 +389,7 @@ with six topology families, separate result-table/JSON/artifact/browser phases,
 fresh-process repetitions, profiled controls, and matched full/selected displays.
 It includes a runnable installed-app example and scoped CPU/browser/native receipts.
 
-The [2026-10-06 benchmark receipt](evidence/network-1m-2026-10-06.json) records a
+The 2026-10-06 benchmark receipt (internal evidence excluded from this public snapshot) records a
 controlled CPU run on an Apple M3 Pro with two Torch threads: 1,000,000 physical
 Parquet rows, 100,000 nodes and 999,294 unique undirected weighted edges. Import
 took 6.37 seconds, PageRank 0.24 seconds, degree 0.03 seconds and weak components
@@ -398,7 +398,7 @@ input creation and every phase, separately from the 256 MiB planned graph/buffer
 budget. Library import and Parquet creation are excluded from operation timings.
 These figures describe this input and machine, rather than every graph topology.
 
-The [Mac 0.3.36 delivery receipt](evidence/desktop-0.3.36.json) separates selected
+The Mac 0.3.36 delivery receipt (internal evidence excluded from this public snapshot) separates selected
 source/UI tests, approved frozen code, packaged graph execution/reopen, installer
 comparison, browser export checks and preservation of the existing project.
 Physical CUDA and native desktop image downloads were not separately exercised.
@@ -511,7 +511,7 @@ budget errors, and static-file round trips. These are method-level validation,
 not a blanket claim of external network-application parity.
 
 
-The [advanced CPU benchmark receipt](evidence/network-advanced-2026-10-06.json)
+The advanced CPU benchmark receipt (internal evidence excluded from this public snapshot)
 pins the measured source bytes and seeded physical Parquet inputs. On Apple M3
 Pro / two Torch threads, 1,000,000 rows and 100,000 nodes produced 999,347 unique
 directed edges: import 5.59 s, strong components 0.55 s, core numbers 0.88 s,
@@ -524,7 +524,7 @@ found 100 groups with modularity 0.906436. Entire-process peak RSS was 522 MiB;
 the explicitly allowed owned working budget was 1 GiB. These are measurements
 of the documented workloads, not a guarantee for every topology.
 
-The [Mac 0.3.37 delivery receipt](evidence/desktop-0.3.37.json) records the
+The Mac 0.3.37 delivery receipt (internal evidence excluded from this public snapshot) records the
 advanced analysis release separately from the earlier 0.3.36 release: selected
 source/UI tests, all approved frozen module fingerprints, 27 packaged network
 operations and static formats, chart rendering/export, installer comparison,
@@ -701,7 +701,7 @@ learned predictors. Directed link scoring is explicitly refused.
 
 ### Measured setup and graph-scale operations
 
-The [CSR comparison receipt](evidence/network-csr-2026-10-06.json) measures the
+The CSR comparison receipt (internal evidence excluded from this public snapshot) measures the
 same canonical directed forward graph before/after eliminating redundant sorts
 and copies. Forward CSR reuses immutable COO columns/weights and allocates
 offsets. Its new numeric owned storage falls from 16,790,168 to 800,008 bytes
@@ -717,7 +717,7 @@ warmup and concerns setup of that canonical directed graph only.
 
 `benchmarks/network_paths_scale.py` creates seeded physical weighted undirected
 Parquet data, releases creation tensors, imports the full graph in batches and
-times exact cuts/forest operations. Its [graph-scale receipt](evidence/network-paths-2026-10-06.json)
+times exact cuts/forest operations. Its graph-scale receipt (internal evidence excluded from this public snapshot)
 records a 100,000-node / 1,000,000-row run with two CPU threads, a 1 GiB allowed
 owned budget and an explicitly raised `max_work=200_000_000`. The timings exclude
 library import and Parquet creation; process lifetime RSS includes both. Source
@@ -729,7 +729,7 @@ forest 0.69 s. The forest had 99,999 edges in one component and total cost
 645,091. Whole-process lifetime peak RSS was about 434 MiB, separately from the
 1 GiB planned graph/buffer allowance.
 
-The [workflow-scale receipt](evidence/network-workflows-2026-10-06.json) separately
+The workflow-scale receipt (internal evidence excluded from this public snapshot) separately
 measures flow and matching on its documented physical fixtures. An input's
 topology, degree distribution, convergence and output size affect work as much
 as its row count. Independent tests use rational Floyd closure, cut deletion,
@@ -740,7 +740,7 @@ validation layers.
 ## Triad census, global cuts and network association (SDK 0.3.15a1 / Mac 0.3.39)
 
 These three methods ship in SDK 0.3.15a1 and Mac 0.3.39. The
-[installed delivery receipt](evidence/desktop-0.3.39.json) separately records
+installed delivery receipt (internal evidence excluded from this public snapshot) separately records
 source tests, frozen execution and installed application checks. The methods use
 CPU execution, the complete resident sparse snapshot and explicit work/memory
 budgets.
@@ -909,11 +909,11 @@ including interpreter, imports and input construction; it is separate from
 the 376,096 graph-owned bytes and the graph memory budget. This is a full-graph
 CPU measurement, with no sampling or out-of-core claim. The default 50,000,000
 work budget is insufficient for this measured request. The
-[scale receipt](evidence/market-69-directed-global-cut/scale500.json) records
+scale receipt (internal evidence excluded from this public snapshot) records
 environment and source hashes; the
-[test receipt](evidence/market-69-directed-global-cut/source-tests.json) records
+test receipt (internal evidence excluded from this public snapshot) records
 the complete network regression run and independent partition oracles.
-The [frozen desktop receipt](evidence/market-69-directed-global-cut/frozen-desktop.json)
+The frozen desktop receipt (internal evidence excluded from this public snapshot)
 separately verifies the example against a freshly built ARM64 Mac runtime,
 without injecting the source checkout or accessing human projects. It checks
 both publication tables, the full graph payload, terminal/undirected cut
@@ -982,7 +982,7 @@ or `max_memory_mb` is an explicit allowance rather than a performance guarantee.
 
 ### Physical-fixture measurement and installed delivery
 
-The [6 October 2026 measurement](evidence/network-inference-2026-10-06.json)
+The 6 October 2026 measurement (internal evidence excluded from this public snapshot)
 uses physical Parquet files on an Apple M3 Pro with two CPU threads. Each method
 was measured once, without warmups; runtime startup and graph import are excluded
 from the method timings below.
@@ -1083,7 +1083,7 @@ algorithm or device fallback is substituted.
 The quota reserves two-thirds of `max_disk_mb` for staging/journal overhead;
 completed database pages use at most one-third. Input parser/runtime allocations
 and caller-owned inputs are outside the graph workspace estimate. SQLite's page
-cache is bounded and memory mapping is disabled. The [measurement record](evidence/market-51-disk-storage-2026-10-06.json)
+cache is bounded and memory mapping is disabled. The measurement record (internal evidence excluded from this public snapshot)
 reports source size, database bytes, batch size, indexing/reopen time and whole
 process peak RSS separately. It covers synthetic chains, not every topology.
 The [code-panel example](examples/network_disk_storage.py) exercises creation,
@@ -1129,7 +1129,7 @@ remaining workspace. Results expose `exact=True`, `sampled=False`, `device`,
 `graph_materialized=False`, scan counts, logical bytes, work used and planned
 owned memory. Disk PageRank rejects CUDA/Metal requests explicitly.
 
-The [analysis measurement record](evidence/market-52-disk-analysis-2026-10-06.json)
+The analysis measurement record (internal evidence excluded from this public snapshot)
 records fresh-process peak RSS, database size, kernel disk-byte counters and
 logical edge reads for 50,000/250,000/1,000,000 edges with a declared 8 MiB graph
 workspace. All exceed resident admission and match closed-form degree, rank
@@ -1142,10 +1142,10 @@ four ordered tables with LaTeX. It computes complete 200-node results and explic
 displays their first ten rows. The [storage example](examples/network_disk_storage.py)
 builds and reopens a 30,000-edge chain with an isolate and an 8 MiB graph workspace.
 Both examples work in source or installed Mac panels and report the actual runtime.
-The [isolated frozen ARM64 Mac receipt](evidence/market-52-frozen-desktop-2026-10-06.json)
+The isolated frozen ARM64 Mac receipt (internal evidence excluded from this public snapshot)
 records the earlier bundled-kernel, worker-reset and temporary-data checks.
 
-The [installed Mac acceptance receipt](evidence/market-51-52-installed-desktop-2026-10-07.json)
+The installed Mac acceptance receipt (internal evidence excluded from this public snapshot)
 completes the native-panel check: both exact saved examples produce six ordered
 tables, and their output/event hashes survive a full application restart. A
 separate owned fixture reopens its persistent 30,000-edge physical-CSV graph and
@@ -1157,7 +1157,7 @@ This is a local Mac runtime maintenance update with the current renderer; the
 native shell is retained and existing user files are unchanged. It does not
 deliver a public release installer or establish CUDA support.
 
-The [Mac 0.3.38 delivery receipt](evidence/desktop-0.3.38.json) records 1,989
+The Mac 0.3.38 delivery receipt (internal evidence excluded from this public snapshot) records 1,989
 selected Python tests, 24 editor-catalog tests and 470 interface tests as
 separate suites. All 377 owned frozen modules match their committed source;
 the 304 econometrics modules are a subset, not additional coverage. The frozen
@@ -1355,7 +1355,7 @@ an out-of-core graph-algorithm claim.
 
 ### Fourth-wave physical-fixture measurement
 
-The [6 October 2026 model-workflow receipt](evidence/network-models-2026-10-06.json)
+The 6 October 2026 model-workflow receipt (internal evidence excluded from this public snapshot)
 uses physical Parquet files, an Apple M3 Pro and two CPU threads. Each method was
 measured once with no warmups; Python/Torch startup, fixture creation and graph
 imports are separate from the following method times.
@@ -1380,7 +1380,7 @@ These fixtures are not a universal throughput or maximum-size guarantee.
 
 ### Previous Mac 0.3.40 verification
 
-The [fresh delivery receipt](evidence/desktop-0.3.40.json) records 2,575 selected
+The fresh delivery receipt (internal evidence excluded from this public snapshot) records 2,575 selected
 Python passes, 26 editor-catalog passes and 472 interface passes as separate
 suites. Three physical CUDA checks were skipped because this Mac has no CUDA
 device. All 383 owned frozen modules match committed source; the 304 econometrics
@@ -1400,7 +1400,7 @@ this delivery does not claim GPU hardware validation or universal Stata parity.
 
 ### Count-model physical-fixture measurement
 
-The [6 October 2026 count-model receipt](evidence/network-count-models-2026-10-06.json)
+The 6 October 2026 count-model receipt (internal evidence excluded from this public snapshot)
 uses physical Parquet and CSV files with 10,000 nodes, 80,176 positive stored
 dyads, varying integer multiplicities and 176 observed loops. On an Apple M3 Pro
 with two Torch CPU threads, each method was measured once, with no warmups;
@@ -1423,7 +1423,7 @@ these generated fixtures are not a universal throughput or maximum-size guarante
 
 ### Installed Mac 0.3.41 verification
 
-The [fresh delivery receipt](evidence/desktop-0.3.41.json) records 3,401 selected
+The fresh delivery receipt (internal evidence excluded from this public snapshot) records 3,401 selected
 Python passes, 27 editor-catalog passes and 472 interface passes as separate
 suites. Three CUDA checks were skipped because this Mac has no CUDA device.
 All 386 owned frozen modules match approved source; 304 econometrics modules

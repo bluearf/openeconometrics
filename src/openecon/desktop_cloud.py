@@ -11,6 +11,7 @@ import hmac
 import json
 import re
 from uuid import uuid4
+from typing import Literal
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
@@ -26,6 +27,10 @@ class LoginBegin(BaseModel):
 class LoginExchange(BaseModel):
     model_config = ConfigDict(extra="forbid", strict=True)
     verifier: str = Field(pattern=r"^[0-9a-f]{64}$")
+
+
+class AccountLinkBegin(LoginBegin):
+    target: Literal["google.com", "password"]
 
 
 class DesktopResult(BaseModel):
@@ -87,6 +92,8 @@ def attach_desktop_cloud_routes(app, *, store, storage, token_issuer=None):
     def authorize(request_id: str, request: Request):
         def approve(db):
             path, grant = active(db, request_id)
+            if grant.get("kind", "login") != "login":
+                raise TeamError("LOGIN_KIND", "This request is for account linking, not sign-in.", 409)
             if grant["uid"] is not None:
                 raise TeamError("LOGIN_ALREADY_AUTHORIZED", "This sign-in request has already been approved.", 409)
             grant["uid"] = request.state.user.uid
@@ -99,6 +106,8 @@ def attach_desktop_cloud_routes(app, *, store, storage, token_issuer=None):
         digest = hashlib.sha256(body.verifier.encode("ascii")).hexdigest()
         def consume(db):
             path, grant = active(db, request_id)
+            if grant.get("kind", "login") != "login":
+                raise TeamError("LOGIN_KIND", "This request cannot issue a sign-in token.", 409)
             if not hmac.compare_digest(grant["challenge"], digest):
                 raise TeamError("INVALID_LOGIN_PROOF", "The sign-in request could not be verified.", 403)
             if grant["uid"] is None:
@@ -109,6 +118,107 @@ def attach_desktop_cloud_routes(app, *, store, storage, token_issuer=None):
         if uid is None:
             return JSONResponse({"pending": True}, status_code=202)
         return {"custom_token": issuer(uid)}
+
+    def account_grant(db, request_id, uid):
+        path, grant = active(db, request_id)
+        if grant.get("kind") != "account-link":
+            raise TeamError("LOGIN_KIND", "This request is not for account linking.", 409)
+        if grant["uid"] != uid:
+            raise TeamError(
+                "ACCOUNT_LINK_UID",
+                "Sign in to the same account shown in the app. A different account cannot approve this change.",
+                403,
+            )
+        return path, grant
+
+    @app.post("/api/desktop/account-link", status_code=201)
+    def begin_account_link(body: AccountLinkBegin, request: Request):
+        request_id = uuid4().hex
+        now = datetime.now(timezone.utc)
+        expires = now + timedelta(minutes=5)
+
+        def create(db):
+            # A small per-UID quota also bounds authenticated handoff storage.
+            quota_path = f"oe_limits/account-link-{request.state.user.uid}-{now:%Y%m%d}"
+            quota = db.get(quota_path) or {"count": 0}
+            if quota["count"] >= 32:
+                raise TeamError(
+                    "LOGIN_LIMIT",
+                    "The account verification limit has been reached. Try again later.",
+                    429,
+                )
+            quota["count"] += 1
+            db.put(quota_path, quota)
+            db.put(
+                login_path(request_id),
+                {
+                    "id": request_id,
+                    "kind": "account-link",
+                    "challenge": body.challenge,
+                    "expires_at": expires,
+                    "uid": request.state.user.uid,
+                    "target": body.target,
+                    "completed": False,
+                },
+            )
+
+        store.db.atomic(create)
+        return {
+            "request_id": request_id,
+            "expires_at": expires.isoformat(),
+            "code": request_id[:8].upper(),
+        }
+
+    @app.get("/api/desktop/login/{request_id}")
+    def inspect_login(request_id: str, request: Request):
+        def inspect(db):
+            _, grant = active(db, request_id)
+            if grant.get("kind") == "account-link":
+                account_grant(db, request_id, request.state.user.uid)
+                return {"kind": "account-link", "target": grant["target"], "uid": grant["uid"]}
+            return {"kind": "login"}
+
+        return store.db.atomic(inspect)
+
+    @app.post("/api/desktop/account-link/{request_id}/complete")
+    def complete_account_link(request_id: str, request: Request):
+        def complete(db):
+            path, grant = account_grant(db, request_id, request.state.user.uid)
+            # This is only a same-UID acknowledgement, never a credential or
+            # authorization upgrade. The native client independently reloads
+            # Firebase providerData and requires the target before success.
+            grant["completed"] = True
+            db.put(path, grant)
+
+        store.db.atomic(complete)
+        return {"completed": True}
+
+    @app.post("/api/desktop/account-link/{request_id}/exchange")
+    def exchange_account_link(request_id: str, body: LoginExchange, request: Request):
+        digest = hashlib.sha256(body.verifier.encode("ascii")).hexdigest()
+
+        def consume(db):
+            path, grant = account_grant(db, request_id, request.state.user.uid)
+            if not hmac.compare_digest(grant["challenge"], digest):
+                raise TeamError(
+                    "INVALID_LOGIN_PROOF", "The account request could not be verified.", 403
+                )
+            if not grant["completed"]:
+                return None
+            db.delete(path)
+            return {"linked": True, "uid": grant["uid"], "target": grant["target"]}
+
+        result = store.db.atomic(consume)
+        return result if result is not None else JSONResponse({"pending": True}, status_code=202)
+
+    @app.delete("/api/desktop/account-link/{request_id}")
+    def cancel_account_link(request_id: str, request: Request):
+        def cancel(db):
+            path, _ = account_grant(db, request_id, request.state.user.uid)
+            db.delete(path)
+
+        store.db.atomic(cancel)
+        return {"cancelled": True}
 
     @app.post("/api/projects/{project_id}/workspace/desktop/results", status_code=201)
     def publish_result(project_id: str, body: DesktopResult, request: Request):

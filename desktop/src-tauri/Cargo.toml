@@ -1,6 +1,6 @@
 [package]
 name = "openecon-desktop"
-version = "0.3.43"
+version = "0.3.45"
 description = "OpenEconometrics local Python desktop workspace"
 authors = ["OpenEconometrics contributors"]
 edition = "2021"

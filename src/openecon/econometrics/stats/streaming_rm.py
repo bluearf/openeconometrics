@@ -114,7 +114,7 @@ def rm_anova(data,y,subject,within,between,alpha,missing):
                     described.append([*[levels[name][code] for name,code in zip(between,group,strict=True)],
                         *combo,state.n,float(state.location[0]),math.sqrt(float(state.sscp[0,0])/(state.n-1)) if state.n > 1 else None])
         result = _finish(model,y,within,between,cells,columns,subjects,total_ss,described,
-            sample.n,sample.dropped,alpha)
+            sample.n,sample.dropped,alpha,contrast_geometry=(transforms,levels))
         result.attrs.update(sample.attrs(),full_source_collected=False,
             subject_cell_validation="owned SQLite unique typed subject/cell records; complete subjects",
             repeated_resource_plan=geometry.record(),tsqr_resource_plan=model.resource_plan.record(),

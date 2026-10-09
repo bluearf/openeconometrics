@@ -101,10 +101,10 @@ def iv(frame, **options):
 
 
 def test_manifest_registers_the_family_and_public_functions():
-    assert [info.name for info in ESTIMATORS] == ["ivregress", "xtivreg", "ivreghdfe"]
+    assert [info.name for info in ESTIMATORS] == ["ivregress", "xtivreg", "ivreghdfe", "ivcue"]
     assert all(info.family == "iv" for info in ESTIMATORS)
-    assert set(EXPORTS) == {"iv_weak_test", "iv_ar_confidence_set", "stock_yogo"}
-    for name in ("ivregress", "xtivreg", "ivreghdfe"):
+    assert set(EXPORTS) == {"iv_weak_test", "iv_ar_confidence_set", "stock_yogo", "effective_f", "iv_saved_weak_test", "iv_saved_ar_confidence_set"}
+    for name in ("ivregress", "xtivreg", "ivreghdfe", "ivcue"):
         assert callable(getattr(oe, name)) and name in dir(oe)
     info = registry.get("ivregress")
     assert info.covariances == ("nonrobust", "robust", "cluster", "hac")

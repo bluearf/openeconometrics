@@ -5,25 +5,25 @@ analysis. It provides model fitting, persistent JSON results, saved prediction,
 LaTeX tables and offline charts. The package is an alpha with bounded method and
 option coverage; full Stata or other vendor parity has not been established.
 
-## Install
+## Install this package version
 
 ```sh
-python -m pip install 'openecon==0.3.18a4' 'openecon-charts==0.3.0a2'
+python -m pip install 'openecon==0.3.19a1' 'openecon-charts==0.3.1a1'
 python -m pip check
 ```
 
-Python must be at least 3.11 and below 3.15. The reviewed Linux package checks
-cover Python 3.11 and 3.13. The SDK pins charts `0.3.0a2` exactly. Charts also
-works as a standalone, dependency-free package:
+Python must be at least 3.11 and below 3.15. The SDK pins charts `0.3.1a1`
+exactly. Charts also works as a standalone package with no required Python
+dependencies:
 
 ```sh
-python -m pip install 'openecon-charts==0.3.0a2'
+python -m pip install 'openecon-charts==0.3.1a1'
 ```
 
 The base SDK installation does not require the web server, CLI, MCP service or
 additional Excel/Stata file readers. Optional application layers are described
 in the [distribution guide](https://github.com/bluearf/openeconometrics/blob/main/docs/distribution.md).
-For example, Excel and Stata readers use `python -m pip install 'openecon[files]==0.3.18a4'`.
+For example, Excel and Stata readers use `python -m pip install 'openecon[files]==0.3.19a1'`.
 
 ## Fit and save a result
 
@@ -54,16 +54,16 @@ a browser or open a user's existing profile.
 
 ## Scope and provenance
 
-SDK `0.3.18a4` corrects package documentation and metadata. Its estimation,
-parser and chart implementations remain those of the reviewed SDK `0.3.18a3`
-and charts `0.3.0a2` source. Charts `0.3.0a2` is reused without rebuilding its
-published files. Numerical tests, installed-package checks, public releases and
-registry installation are separate evidence layers.
+SDK `0.3.19a1` and charts `0.3.1a1` form one source-based package pair. The
+corresponding public source snapshot records the frozen source commit and file
+inventory in `SOURCE-MANIFEST.json`. Release provenance identifies the exact
+wheel/sdist hashes and the scope of their installation checks. Numerical tests,
+installed-package checks, public release access and registry installation are
+separate evidence layers.
 
-The Mac desktop release `v0.3.43-alpha.1` embeds SDK `0.3.18a1`; installing this
-Python package does not rebuild that application. Physical CUDA, Windows,
-Developer ID signing and notarization acceptance are separate from these package
-checks.
+Installing these Python packages does not rebuild a native desktop installer.
+Device support follows each method's recorded contract; physical CUDA, installed
+desktop acceptance, Developer ID signing and notarization have separate evidence.
 
 - [Public repository and releases](https://github.com/bluearf/openeconometrics)
 - [Estimator and resource scope](https://github.com/bluearf/openeconometrics/blob/main/docs/capabilities.md)

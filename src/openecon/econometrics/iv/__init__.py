@@ -108,8 +108,26 @@ ESTIMATORS: tuple[EstimatorInfo, ...] = (
     ),
 )
 
+ESTIMATORS = ESTIMATORS + (
+    EstimatorInfo(
+        name="ivcue", title="Continuously updated IV GMM", family="iv",
+        entry="openecon.econometrics.iv.cue:fit_ivcue", function="ivcue",
+        covariances=("HC0", "cluster"), default_covariance="HC0",
+        predictors="optional", categorical=False, inference="z",
+        roles=(_ENDOGENOUS, _INSTRUMENTS), cluster_dimensions=1,
+        options=(Option("center", "bool", False),
+                 Option("max_iterations", "int", 300, minimum=1, maximum=5000),
+                 Option("tolerance", "float", 1e-8, minimum=1e-12, maximum=0.01),
+                 Option("max_work", "int", 100_000_000, minimum=1)),
+        description="Linear numeric unweighted CUE with parameter-dependent HC0 or one-way cluster moment covariance; exact autodiff optimization and full asymptotic efficient covariance. Resident CPU only.",
+    ),
+)
+
 # Extra public functions exported as oe.<name>: {"name": "package.module:function"}.
 EXPORTS: dict[str, str] = {
+    "iv_saved_weak_test": "openecon.econometrics.iv.saved_weak:iv_saved_weak_test",
+    "iv_saved_ar_confidence_set": "openecon.econometrics.iv.saved_weak:iv_saved_ar_confidence_set",
+    "effective_f": "openecon.econometrics.iv.cue:effective_f",
     "stock_yogo": "openecon.econometrics.iv.weak_inference:stock_yogo",
     "iv_weak_test": "openecon.econometrics.iv.weak_inference:iv_weak_test",
     "iv_ar_confidence_set": "openecon.econometrics.iv.weak_inference:iv_ar_confidence_set",

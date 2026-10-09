@@ -105,7 +105,7 @@ The current `publication-v2` presentation upgrades automatic `publication-v1`
 history on read without rewriting the stored execution. Plain `latex_notes`
 are the same notes included in TeX; they remain visible beside the math preview.
 
-The [7 October validation matrix](evidence/market-110-publication/README.md)
+The 7 October validation matrix (internal evidence excluded from this public snapshot)
 covers 22 real fits across all 18 registered result families, plus wide, long,
 multi-model and Unicode layout fixtures. This is representative publication
 coverage, not estimator parity for every one of the 80 registered specifications.

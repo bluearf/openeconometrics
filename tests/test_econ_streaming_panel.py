@@ -8,7 +8,7 @@ from openecon.econometrics.panel.xtreg import fit_xtreg
 from openecon.econometrics.streaming_linear import fit_streaming_linear
 from openecon.models import ModelSpec
 
-from test_econ_streaming_linear import assert_parity, frame
+from test_econ_streaming_linear import assert_parity, assert_group_state_parity, frame
 
 
 def panel_spec(model, covariance="nonrobust", cluster=None, weight_type=None, wls=False):
@@ -39,7 +39,9 @@ def test_fixed_effects_all_supported_weights_covariances(covariance, cluster, we
     dense = fit_xtreg(spec, data)
     result = fit_streaming_linear(spec, Dataset.from_frame(data), batch_rows=17)
     assert_parity(dense, result)
-    assert result.extra == pytest.approx(dense.extra)
+    assert {k: v for k, v in result.extra.items() if k != "group_state"} == pytest.approx(
+        {k: v for k, v in dense.extra.items() if k != "group_state"})
+    assert_group_state_parity(dense.extra["group_state"], result.extra["group_state"])
     predictions = {item["row"]: item["fitted"] for item in dense.predictions}
     for item in result.predictions:
         assert item["fitted"] == pytest.approx(predictions[item["row"]], rel=1e-10, abs=1e-10)

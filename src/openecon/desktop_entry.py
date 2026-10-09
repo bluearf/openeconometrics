@@ -10,6 +10,29 @@ import sys
 import threading
 
 
+def _isolate_shutdown_input() -> None:
+    if sys.platform != "win32":
+        return
+    import ctypes
+
+    kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+    set_std_handle = kernel32.SetStdHandle
+    set_std_handle.argtypes = [ctypes.c_uint32, ctypes.c_void_p]
+    set_std_handle.restype = ctypes.c_int
+    get_std_handle = kernel32.GetStdHandle
+    get_std_handle.argtypes = [ctypes.c_uint32]
+    get_std_handle.restype = ctypes.c_void_p
+    # Keep Python's existing stdin stream and its CRT file descriptor open for
+    # the shell shutdown reader. Clear only the process default inherited by
+    # new workers: CPython's buffered-stdin initialization queries the pipe's
+    # position, which blocks behind the server's pending shutdown read.
+    std_input_handle = ctypes.c_uint32(-10).value
+    if not set_std_handle(std_input_handle, None):
+        raise ctypes.WinError(ctypes.get_last_error())
+    if get_std_handle(std_input_handle) is not None:
+        raise OSError("The desktop shutdown input handle could not be isolated.")
+
+
 def main(argv: list[str] | None = None) -> int:
     multiprocessing.freeze_support()
     effective_argv = sys.argv[1:] if argv is None else argv
@@ -43,6 +66,8 @@ def main(argv: list[str] | None = None) -> int:
     environment = worker_environment()
     os.environ.clear()
     os.environ.update(environment)
+    shutdown_stream = sys.stdin.buffer
+    _isolate_shutdown_input()
     import uvicorn
 
     app = create_desktop_app(arguments.data_root, qa_metrics=arguments.qa_metrics)
@@ -74,7 +99,7 @@ def main(argv: list[str] | None = None) -> int:
             # accepts this protocol, and oversized/malformed lines are ignored.
             while True:
                 try:
-                    line = sys.stdin.buffer.readline(4097)
+                    line = shutdown_stream.readline(4097)
                 except (OSError, ValueError, AttributeError):
                     return
                 if not line:

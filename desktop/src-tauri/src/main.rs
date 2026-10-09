@@ -1,5 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 mod broker;
+mod data_transfer;
+mod export;
 mod runtime;
 mod suggestions;
 
@@ -19,6 +21,7 @@ struct DesktopState {
     runtime: Mutex<Option<runtime::LocalRuntime>>,
     local_origin: Mutex<Option<String>>,
     exiting: AtomicBool,
+    export_busy: AtomicBool,
     data_root: PathBuf,
     root: Dir,
     client: reqwest::Client,
@@ -46,6 +49,45 @@ fn trusted_window(window: &WebviewWindow, state: &DesktopState) -> Result<(), St
         return Err("Only the local OpenEconometrics window can use this operation.".into());
     }
     Ok(())
+}
+
+fn diagnostic_native_title(enabled: bool, title: &str) -> Option<&'static str> {
+    if !enabled {
+        return None;
+    }
+    match title {
+        "OpenEconometrics diagnostics: IPC pending" => Some("OpenEconometrics diagnostics: IPC pending"),
+        "OpenEconometrics diagnostics: IPC unavailable" => Some("OpenEconometrics diagnostics: IPC unavailable"),
+        "OpenEconometrics diagnostics: IPC failed" => Some("OpenEconometrics diagnostics: IPC failed"),
+        "OpenEconometrics diagnostics: IPC verified" => Some("OpenEconometrics diagnostics: IPC verified"),
+        _ => None,
+    }
+}
+
+#[tauri::command]
+async fn save_text_export(
+    window: WebviewWindow,
+    state: State<'_, DesktopState>,
+    filename: String,
+    content: String,
+) -> Result<export::ExportReceipt, String> {
+    trusted_window(&window, &state)?;
+    export::validate(&filename, &content)?;
+    if state.export_busy.swap(true, Ordering::AcqRel) {
+        return Err("Finish or cancel the open export dialog first.".into());
+    }
+    struct BusyGuard<'a>(&'a AtomicBool);
+    impl Drop for BusyGuard<'_> {
+        fn drop(&mut self) { self.0.store(false, Ordering::Release); }
+    }
+    let _guard = BusyGuard(&state.export_busy);
+    let selected = rfd::AsyncFileDialog::new().set_parent(&window)
+        .set_title("Save export").set_file_name(&filename).save_file().await;
+    trusted_window(&window, &state)?;
+    let Some(selected) = selected else { return Ok(export::cancelled()); };
+    let path = selected.path().to_path_buf();
+    tauri::async_runtime::spawn_blocking(move || export::write_selected(&path, &content))
+        .await.map_err(|_| "The export operation could not finish.")?
 }
 
 #[tauri::command]
@@ -114,7 +156,21 @@ async fn upload_project_file(
     let origin = state.local_origin.lock()
         .map_err(|_| "The local workspace is unavailable.")?
         .clone().ok_or("The local workspace is starting.")?;
-    broker::upload(&state.client, &project_id, &token, &origin).await
+    broker::upload(&state.client, &state.root, &project_id, &token, &origin).await
+}
+
+#[tauri::command]
+async fn project_transfer_action(
+    window: WebviewWindow,
+    state: State<'_, DesktopState>,
+    project_id: String,
+    request_id: Option<String>,
+    token: String,
+    action: String,
+) -> Result<broker::CloudResponse, String> {
+    trusted_window(&window, &state)?;
+    data_transfer::transfer_action(&state.client, &state.root, &project_id,
+                                   request_id.as_deref(), &token, &action).await
 }
 
 #[tauri::command]
@@ -273,7 +329,7 @@ fn main() {
     }
     let diagnostic_window = std::env::args().any(|arg| arg == "--diagnostic-window");
     let app = tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![desktop_info, cloud_request, download_project_file, download_project_files, upload_project_file, open_desktop_login, suggestions_status, suggestions_install, suggestions_configure, suggestions_complete, suggestions_cancel])
+        .invoke_handler(tauri::generate_handler![desktop_info, save_text_export, cloud_request, download_project_file, download_project_files, upload_project_file, project_transfer_action, open_desktop_login, suggestions_status, suggestions_install, suggestions_configure, suggestions_complete, suggestions_cancel])
         .setup(move |app| {
             let resources = app.path().resource_dir()?;
             let data_root = app.path().app_data_dir()?;
@@ -283,7 +339,7 @@ fn main() {
             }
             let root = Dir::open_ambient_dir(&data_root, cap_std::ambient_authority())?;
             app.manage(suggestions::Manager::new(&resources, &data_root).map_err(std::io::Error::other)?);
-            app.manage(DesktopState { runtime: Mutex::new(None), local_origin: Mutex::new(None), exiting: AtomicBool::new(false), data_root: data_root.clone(), root, client: broker::client().map_err(std::io::Error::other)? });
+            app.manage(DesktopState { runtime: Mutex::new(None), local_origin: Mutex::new(None), exiting: AtomicBool::new(false), export_busy: AtomicBool::new(false), data_root: data_root.clone(), root, client: broker::client().map_err(std::io::Error::other)? });
             let navigation_app = app.handle().clone();
             let window = WebviewWindowBuilder::new(app, "main", WebviewUrl::App("index.html".into()))
                 .title("OpenEconometrics").inner_size(1280.0, 820.0).min_inner_size(800.0, 600.0)
@@ -299,9 +355,21 @@ fn main() {
                         || (matches!(url.scheme(), "http" | "https") && url.host_str() == Some("tauri.localhost"))
                 })
                 .on_new_window(|_, _| tauri::webview::NewWindowResponse::Deny)
+                .on_document_title_changed(move |window, title| {
+                    if let Some(title) = diagnostic_native_title(diagnostic_window, &title) {
+                        let state = window.state::<DesktopState>();
+                        if trusted_window(&window, &state).is_ok() {
+                            let _ = window.set_title(title);
+                        }
+                    }
+                })
                 .on_page_load(move |window, payload| {
-                    if diagnostic_window && payload.event() == tauri::webview::PageLoadEvent::Finished && payload.url().host_str() == Some("127.0.0.1") {
-                        let _ = window.eval("document.title='OpenEconometrics diagnostics: internal='+Boolean(window.__TAURI_INTERNALS__)+', invoke='+typeof window.__TAURI__?.core?.invoke; if(window.__TAURI__?.core?.invoke){window.__TAURI__.core.invoke('desktop_info').then(()=>document.title='OpenEconometrics diagnostics: IPC verified').catch(error=>document.title='OpenEconometrics diagnostics: '+String(error))}");
+                    if diagnostic_window && payload.event() == tauri::webview::PageLoadEvent::Finished {
+                        let state = window.state::<DesktopState>();
+                        let origin = state.local_origin.lock().ok().and_then(|value| value.clone());
+                        if origin.as_deref() == Some(payload.url().origin().ascii_serialization().as_str()) && trusted_window(&window, &state).is_ok() {
+                            let _ = window.eval("document.title='OpenEconometrics diagnostics: IPC pending'; if(typeof window.__TAURI__?.core?.invoke==='function'){window.__TAURI__.core.invoke('desktop_info').then(()=>document.title='OpenEconometrics diagnostics: IPC verified').catch(()=>document.title='OpenEconometrics diagnostics: IPC failed')}else{document.title='OpenEconometrics diagnostics: IPC unavailable'}");
+                        }
                     }
                 })
                 .build()?;
@@ -314,7 +382,7 @@ fn main() {
                     let state = handle.state::<DesktopState>();
                     if state.exiting.load(Ordering::Acquire) { local.stop(); return Ok(()); }
                     let origin = local.ready.url.trim_end_matches('/').to_string();
-                    let capability = json!({"identifier":"local-workspace","windows":["main"],"local":false,"remote":{"urls":[format!("{origin}/*")]},"permissions":["allow-desktop-info","allow-cloud-request","allow-download-project-file","allow-download-project-files","allow-upload-project-file","allow-open-desktop-login","allow-suggestions-status","allow-suggestions-install","allow-suggestions-configure","allow-suggestions-complete","allow-suggestions-cancel"]});
+                    let capability = json!({"identifier":"local-workspace","windows":["main"],"local":false,"remote":{"urls":[format!("{origin}/*")]},"permissions":["allow-desktop-info","allow-save-text-export","allow-cloud-request","allow-download-project-file","allow-download-project-files","allow-upload-project-file","allow-project-transfer-action","allow-open-desktop-login","allow-suggestions-status","allow-suggestions-install","allow-suggestions-configure","allow-suggestions-complete","allow-suggestions-cancel"]});
                     handle.add_capability(capability.to_string()).map_err(|_| "The local workspace permission could not start.")?;
                     *state.local_origin.lock().map_err(|_| "The local workspace is unavailable.")? = Some(origin.clone());
                     *state.runtime.lock().map_err(|_| "The local workspace is unavailable.")? = Some(local);
@@ -352,4 +420,22 @@ fn main() {
             }
         }
     });
+}
+
+#[cfg(test)]
+mod diagnostic_tests {
+    use super::diagnostic_native_title;
+
+    #[test]
+    fn normal_windows_do_not_adopt_diagnostic_document_titles() {
+        assert_eq!(diagnostic_native_title(false, "OpenEconometrics diagnostics: IPC verified"), None);
+    }
+
+    #[test]
+    fn diagnostic_titles_require_exact_fixed_statuses() {
+        assert_eq!(diagnostic_native_title(true, "OpenEconometrics diagnostics: IPC verified"), Some("OpenEconometrics diagnostics: IPC verified"));
+        for title in ["OpenEconometrics", "OpenEconometrics diagnostics: arbitrary error", "OpenEconometrics diagnostics: IPC verified\n", "OpenEconometrics diagnostics: IPC verified - forged"] {
+            assert_eq!(diagnostic_native_title(true, title), None);
+        }
+    }
 }

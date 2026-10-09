@@ -196,7 +196,8 @@ def _classification(scores: Tensor, codes: Tensor, counts: Tensor, labels: list[
 
 @c.procedure
 def discrim(data: Any, group: str, columns: list[str], *, method: str = "lda",
-            priors: Any = "equal", loo: bool = False, missing: str = "drop") -> TableSet:
+            priors: Any = "equal", loo: bool = False, missing: str = "drop",
+            weights: str | None = None, weight_type: str = "fweight") -> TableSet:
     """Linear and quadratic discriminant analysis with canonical functions.
 
     ``method="lda"`` assumes a common covariance matrix (the pooled within-groups
@@ -217,6 +218,11 @@ def discrim(data: Any, group: str, columns: list[str], *, method: str = "lda",
         Stata ``estat classtable, loo``).
     missing : ``"drop"`` (listwise deletion over the group and the variables) or
         ``"raise"``.
+    weights : optional resident-data frequency-weight column. Exact nonnegative
+        integers represent repeated observations without expanding rows. ``loo``
+        removes one repeated copy, with the full-fit priors held fixed.
+    weight_type : only ``"fweight"`` is supported. Other weight domains and
+        weighted Dataset inputs are refused.
 
     Returns
     -------
@@ -266,6 +272,11 @@ def discrim(data: Any, group: str, columns: list[str], *, method: str = "lda",
     >>> result.attrs["percent_correct"]
     100.0
     """
+    c.check_choice(weight_type, "weight_type", ("fweight",))
+    if weights is not None:
+        from .discrim_options import frequency_discrim
+        return frequency_discrim(data, group, columns, method=method, priors=priors,
+                                 loo=loo, missing=missing, weights=weights)
     group = c.check_name(group, "group")
     names = c.name_list(columns, "columns", minimum=1)
     c.check_choice(method, "method", ("lda", "qda"))
@@ -442,6 +453,32 @@ def discrim(data: Any, group: str, columns: list[str], *, method: str = "lda",
 
 
 @c.procedure
+def discrim_summary(group_means: pd.DataFrame, group_covariances: Any, counts: Any, *,
+                    method: str = "lda", priors: Any = "equal",
+                    columns: list[str] | None = None, group: str = "group") -> TableSet:
+    """Fit LDA/QDA from declared group means, sample covariances and integer counts.
+
+    ``group_means`` is a DataFrame with unique group labels in its index and
+    ordered variable names in its columns. ``group_covariances`` maps those labels
+    to covariance matrices (labelled matrices must use the same variable order).
+    Each covariance uses divisor ``count - 1``. ``counts`` is an aligned Series,
+    a mapping by group label, or a positional integer vector in mean-index order.
+    Counts and their sum must not exceed 2**53. Summary inputs are checked for
+    covariance symmetry, positive semidefiniteness and feasible sample rank.
+
+    LDA requires positive definite pooled within-group covariance; individual
+    groups may be singular. QDA requires positive definite covariance in every
+    group. Gaussian inference follows the same declared sample assumptions as
+    ``discrim``. No training observations are constructed: training accuracy,
+    confusion tables and leave-one-out classification are unavailable. Saved
+    results can classify resident new rows through ``discrim_predict``.
+    """
+    from .discrim_options import summary_discrim
+    return summary_discrim(group_means, group_covariances, counts, method=method,
+                           priors=priors, columns=columns, group=group)
+
+
+@c.procedure
 def discrim_predict(result: TableSet, data: Any) -> pd.DataFrame:
     """Predicted group and posterior probabilities for the rows of ``data``.
 
@@ -473,6 +510,10 @@ def discrim_predict(result: TableSet, data: Any) -> pd.DataFrame:
     ['a', 'b']
     """
     c.check_result(result, "discrim", "discrim_predict")
+    if "discriminant_state" in result.attrs or result.attrs.get("input_kind") in {
+            "resident_frequency_data", "group_summary"}:
+        from .discrim_options import predict_options
+        return predict_options(result, data)
     names = list(result.attrs["variables"])
     labels = list(result["groups"].index)
     frame = c.source(data)

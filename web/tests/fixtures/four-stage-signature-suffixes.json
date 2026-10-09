@@ -1,0 +1,242 @@
+[
+  {
+    "token": 7,
+    "suffix": "(*, data: Any, y: str, x: Sequence[str], panel: str, time: str | None=None, model: str='re', covariance: str | None=None, cluster: str | None=None, intpoints: int | None=None, intmethod: str | None=None, corr: str | None=None, corr_order: int | None=None, force: bool=False, offset: str | None=None, categorical: Sequence[str] | None=None, missing: str='raise', alpha: float=0.05)"
+  },
+  {
+    "token": 8,
+    "suffix": "(*, data: Any, y: str, x: Sequence[str], inflate: Sequence[str], inflate_link: str='logit', covariance: str | None=None, cluster: str | Sequence[str] | None=None, weights: str | None=None, weight_type: str | None=None, offset: str | None=None, exposure: str | None=None, categorical: Sequence[str] | None=None, intercept: bool=True, missing: str='raise', alpha: float=0.05)"
+  },
+  {
+    "token": 9,
+    "suffix": "(low, indicator, *, low_periods, high_periods, low_frequency='Y', high_frequency='Q', aggregation='sum', as_of=None, low_releases=None, high_releases=None, device='cpu', weights=None)"
+  },
+  {
+    "token": 10,
+    "suffix": "(*, data, y, x, categorical=None, weights=None, weight_type='aweight', intercept=True, missing='raise', l1_ratio=0.5, selection='cv', penalty=None, lambda_path=None, n_lambdas=20, lambda_ratio=0.001, folds=5, seed=1729, standardize=True, penalty_factors=None, forced_controls=None, max_iterations=200, tolerance=1e-08, max_work=2000000000, device='cpu')"
+  },
+  {
+    "token": 11,
+    "suffix": "(data, design, outcomes, *, domain=None, missing='raise', alpha=0.05, null=0.0)"
+  },
+  {
+    "token": 12,
+    "suffix": "(*, data, items: list[str], points: int=41, max_iter: int=200, max_eval: int=400, tolerance: float=1e-06, level: float=0.95)"
+  },
+  {
+    "token": 13,
+    "suffix": "(*, data: Any, y: str, x: Sequence[str] | None=None, group: str, random: Sequence[str] | None=None, intpoints: int=7, intmethod: str='mvaghermite', covariance: str | None=None, cluster: str | None=None, categorical: Sequence[str] | None=None, intercept: bool=True, missing: str='raise', alpha: float=0.05)"
+  },
+  {
+    "token": 14,
+    "suffix": "(*, data: Any, y: str, x: Sequence[str], covariance: str | None=None, cluster: str | Sequence[str] | None=None, weights: str | None=None, weight_type: str | None=None, offset: str | None=None, categorical: Sequence[str] | None=None, missing: str='raise', alpha: float=0.05)"
+  },
+  {
+    "token": 15,
+    "suffix": "(result: TableSet, data: Any, *, missing: str='raise', max_work: int=DEFAULT_WORK, max_bytes: int=DEFAULT_BYTES, device: str='cpu')"
+  },
+  {
+    "token": 16,
+    "suffix": "(data: Any, raters: list[str], *, categories: list, agreement_weights: Any='unweighted', inference: str='none', level: float=0.95, missing: str='drop', device: str='cpu', weights: Any=None, max_fits: int=1024, max_work: int=100000000)"
+  },
+  {
+    "token": 17,
+    "suffix": "(low, indicator, *, rho, low_periods, high_periods, low_frequency='Y', high_frequency='Q', aggregation='sum', as_of=None, low_releases=None, high_releases=None, device='cpu', weights=None, intercept=True, alpha=0.05)"
+  },
+  {
+    "token": 18,
+    "suffix": "(*, data, x: str, y: str | Sequence[str], title: str | None=None, unit: str='', palette=None, aggregate: str | None=None, **options)"
+  },
+  {
+    "token": 19,
+    "suffix": "(*, data: Any, y: str, x: Sequence[str], covariance: str | None=None, categorical: Sequence[str] | None=None, intercept: bool=True, cluster: str | None=None, missing: str='raise', alpha: float=0.05)"
+  },
+  {
+    "token": 20,
+    "suffix": "(data, design, numerators, denominators, *, domain=None, missing='raise', alpha=0.05, null=0.0)"
+  },
+  {
+    "token": 21,
+    "suffix": "(data, design, outcome, *, categories=None, domain=None, missing='raise', alpha=0.05, null=0.0)"
+  },
+  {
+    "token": 22,
+    "suffix": "(result: ResultBundle, *, data, variable: str, order=1, interval=False, alpha=0.05, missing='raise', max_work=2000000000)"
+  },
+  {
+    "token": 23,
+    "suffix": "(result: ResultBundle, *, data, variable: str, order=1, interval=True, alpha=0.05, missing='raise', max_work=2000000000)"
+  },
+  {
+    "token": 24,
+    "suffix": "(**data: Any)"
+  },
+  {
+    "token": 25,
+    "suffix": "(data, dimensions, count, *, levels, design, terms=None, structural=None, offset=None, max_iter=200, tol=1e-09, level=0.95, max_work=300000000, max_bytes=128 * 1024 ** 2)"
+  },
+  {
+    "token": 26,
+    "suffix": "(lower, upper, *, times=None, level=0.95, device='cpu', weights=None, maxiter=500)"
+  },
+  {
+    "token": 27,
+    "suffix": "(*, max_work=50000000)"
+  },
+  {
+    "token": 28,
+    "suffix": "(*, data, y, x, panel, time, p=1, q=1, trend='c', max_iterations=500, missing='raise', alpha=0.05)"
+  },
+  {
+    "token": 29,
+    "suffix": "(*, data, y, x, missing='raise', alpha=0.05, **options)"
+  },
+  {
+    "token": 30,
+    "suffix": "(result: ResultBundle, steps: int, *, data: Any=None, exog: Any=None, alpha: float=0.05)"
+  },
+  {
+    "token": 31,
+    "suffix": "(*, objective='weight', max_component_nodes=24, max_states=1000000, max_work=50000000)"
+  },
+  {
+    "token": 32,
+    "suffix": "(partition=None, *, objective='weight', max_matrix_entries=1000000, max_work=50000000)"
+  },
+  {
+    "token": 33,
+    "suffix": "(*, data, y, x, intercept=True, missing='raise', **options)"
+  },
+  {
+    "token": 34,
+    "suffix": "(*, data, y, x, time=None, trend='c', kernel='bartlett', bandwidth=4, df_adjust=False, missing='raise', alpha=0.05)"
+  },
+  {
+    "token": 35,
+    "suffix": "(data, *, kind='response', missing='raise', alpha=None)"
+  },
+  {
+    "token": 36,
+    "suffix": "(*, data, y, x, missing='raise', **options)"
+  },
+  {
+    "token": 37,
+    "suffix": "(data, outcome, predictors, *, key, spatial_weights, **options)"
+  },
+  {
+    "token": 38,
+    "suffix": "(data, design, outcomes, *, domain=None, missing='raise', alpha=0.05, null=0.0, deff=False)"
+  },
+  {
+    "token": 39,
+    "suffix": "(groups, *, initial=None, seed=0, starts=4, max_iter=100, tol=1e-09, max_work=50000000)"
+  },
+  {
+    "token": 40,
+    "suffix": "(result, *, device='cpu', weights=None, max_work=DEFAULT_WORK, max_bytes=DEFAULT_BYTES)"
+  },
+  {
+    "token": 41,
+    "suffix": "(time, event, *, causes=None, times=None, level=0.95, device='cpu', weights=None)"
+  },
+  {
+    "token": 42,
+    "suffix": "(coefficients, *, null=0.0, alpha=None)"
+  },
+  {
+    "token": 43,
+    "suffix": "(result, *args, **kwargs)"
+  },
+  {
+    "token": 44,
+    "suffix": "(path, *, format=None, max_memory_mb=256, batch_rows=65536, max_file_mb=512)"
+  },
+  {
+    "token": 45,
+    "suffix": "(*, nodes=None, edges=None, graph_attributes=None)"
+  },
+  {
+    "token": 46,
+    "suffix": "(*, data, y, treatment, x, **options)"
+  },
+  {
+    "token": 47,
+    "suffix": "(result: TableSet, data: Any)"
+  },
+  {
+    "token": 48,
+    "suffix": "(data, columns, *, bounds, sampling_model, alpha=0.05, missing='raise')"
+  },
+  {
+    "token": 49,
+    "suffix": "(coefficients, *, null=0.0)"
+  },
+  {
+    "token": 50,
+    "suffix": "(path, *, overwrite=False)"
+  },
+  {
+    "token": 51,
+    "suffix": "(data: Any, y: str, *, missing: str='drop')"
+  },
+  {
+    "token": 52,
+    "suffix": "(*, direction='out', disconnected='infinite', max_work=50000000)"
+  },
+  {
+    "token": 53,
+    "suffix": "(data, columns, *, sampling_model, alpha=0.05, missing='raise')"
+  },
+  {
+    "token": 54,
+    "suffix": "(*, attributes=True)"
+  },
+  {
+    "token": 55,
+    "suffix": "(*, data, x: str, y: str, title: str | None=None, **options)"
+  },
+  {
+    "token": 56,
+    "suffix": "()"
+  },
+  {
+    "token": 57,
+    "suffix": "(result, *, data, alignment=None, alpha=None, kind='mean')"
+  },
+  {
+    "token": 58,
+    "suffix": "(source, target, *, max_work=50000000)"
+  },
+  {
+    "token": 59,
+    "suffix": "(restrictions, *, null=None)"
+  },
+  {
+    "token": 60,
+    "suffix": "(data, columns, *, max_iterations=500, tolerance=1e-08)"
+  },
+  {
+    "token": 61,
+    "suffix": "(**options)"
+  },
+  {
+    "token": 62,
+    "suffix": "(*, add=(), remove=(), weights=None, attributes=None)"
+  },
+  {
+    "token": 63,
+    "suffix": "(max_nodes=1000, max_edges=5000, seed=0, groups=None)"
+  },
+  {
+    "token": 64,
+    "suffix": "(buf=None, **kwargs)"
+  },
+  {
+    "token": 65,
+    "suffix": "(data: Any, a: str, b: str, *, missing: str='drop')"
+  },
+  {
+    "token": 66,
+    "suffix": "(result: ResultBundle, *, data, max_work=200000000)"
+  }
+]

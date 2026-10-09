@@ -84,9 +84,9 @@
     return Array.from(value).map(raw => {
       if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new Error('Each annotation must be an object.');
       const a = { ...raw }, type = a.type, label = type === 'text' || type === 'arrow', band = type === 'vspan' || type === 'hspan';
-      if (!['text', 'arrow', 'vline', 'hline', 'vspan', 'hspan'].includes(type)) throw new Error('Unsupported annotation type.');
+      if (!['text', 'arrow', 'vline', 'hline', 'vspan', 'hspan', 'segment'].includes(type)) throw new Error('Unsupported annotation type.');
       const keys = new Set(['type', 'coords', 'color', 'opacity']);
-      (label ? ['text', 'x', 'y'] : type === 'vline' ? ['x', 'text'] : type === 'hline' ? ['y', 'text'] : type === 'vspan' ? ['x0', 'x1', 'text'] : ['y0', 'y1', 'text']).forEach(key => keys.add(key));
+      (label ? ['text', 'x', 'y'] : type === 'segment' ? ['x0', 'y0', 'x1', 'y1', 'text'] : type === 'vline' ? ['x', 'text'] : type === 'hline' ? ['y', 'text'] : type === 'vspan' ? ['x0', 'x1', 'text'] : ['y0', 'y1', 'text']).forEach(key => keys.add(key));
       const hasText = label || Object.hasOwn(a, 'text');
       if (hasText) ['font_size', 'align', 'dx', 'dy'].forEach(key => keys.add(key));
       if (!band && type !== 'text') ['line_width', 'dash'].forEach(key => keys.add(key));
@@ -110,7 +110,10 @@
         if (!['solid', 'dashed', 'dotted'].includes(a.dash)) throw new Error('Annotation dash must be solid, dashed, or dotted.');
       }
       if (label) { a.x = coordinate(a.x, 'x', a.coords); a.y = coordinate(a.y, 'y', a.coords); }
-      else {
+      else if (type === 'segment') {
+        if (!hasAxes || !numeric.includes('x') || !numeric.includes('y')) throw new Error('Segments require two numeric axes.');
+        ['x0', 'y0', 'x1', 'y1'].forEach(key => { a[key] = coordinate(a[key], key[0], 'data'); });
+      } else {
         const axis = type[0] === 'v' ? 'x' : 'y';
         if (!hasAxes || !numeric.includes(axis)) throw new Error(`Annotation ${type} requires a numeric ${axis} axis.`);
         if (band) {
@@ -437,6 +440,10 @@
               line(target, a, px + a.dx, py + a.dy, px, py).attr('marker-end', `url(#${id})`);
             }
             label(target, a, px, py);
+          } else if (a.type === 'segment') {
+            const target = group(foreground, a, index);
+            line(target, a, x(a.x0), y(a.y0), x(a.x1), y(a.y1));
+            label(target, a, x(a.x1), y(a.y1));
           } else if (a.type === 'vline' || a.type === 'hline') {
             const vertical = a.type === 'vline', position = vertical ? x(a.x) : y(a.y);
             if (!finite(position) || position < 0 || position > (vertical ? w : h)) return;

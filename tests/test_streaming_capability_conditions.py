@@ -36,7 +36,14 @@ def test_native_option_catalogue_exposes_completed_replay_methods():
     covariances = capabilities()['streaming']['covariances_by_estimator']
     assert 'hac' in covariances['ivregress']
     assert 'driscoll_kraay' in covariances['xtreg']
-    assert set(supported['xtreg']['model']) == set(registry.get('xtreg').option('model').choices)
+    # CRE has a validated resident route; it has no replay estimator. The public
+    # registry describes both routes, so their option sets must remain distinct.
+    replay_panel_models = {'fe', 'be', 're', 'fd', 'pooled', 'mle'}
+    assert set(supported['xtreg']['model']) == replay_panel_models
+    assert set(registry.get('xtreg').option('model').choices) == replay_panel_models | {'cre'}
+    assert set(supported['xtreg']['model']) == set(registry.get('xtreg').option('model').choices) - {'cre'}
+    assert not supports_spec(ModelSpec(estimator='xtreg', outcome='y', predictors=['x'],
+                                       panel='id', options={'model': 'cre'}))
     for name in ['ivregress', 'ivreghdfe', 'heckman', 'ivprobit', 'ivtobit']:
         assert set(supported[name]['method']) == set(registry.get(name).option('method').choices)
     assert set(supported['teffects']['method']) == set(registry.get('teffects').option('method').choices)
@@ -108,6 +115,7 @@ def test_capability_conditions_remain_torch_free_in_fresh_process():
     )
     result = json.loads(process.stdout)
     assert result["torch"] is False
-    assert result["stream"] == 80
-    assert result["models"] == 80 + len(result["eager"])
+    from openecon.econometrics.streaming_registry import estimators
+    assert result["stream"] == 3 + len(estimators())
+    assert result["models"] == result["stream"] + len(result["eager"])
     assert result["conditions"]["xtprobit"]["fixed_effects"] is False

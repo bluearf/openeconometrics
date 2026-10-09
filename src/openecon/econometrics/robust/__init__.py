@@ -111,4 +111,7 @@ ESTIMATORS = (
     ),
 )
 
-EXPORTS = {}
+EXPORTS = {
+    "panel_mmqr_bootstrap": "openecon.econometrics.robust.panel_resampling:panel_mmqr_bootstrap",
+    "panel_mmqr_resampled_predict": "openecon.econometrics.robust.panel_resampling:panel_mmqr_resampled_predict",
+}

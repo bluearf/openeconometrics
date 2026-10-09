@@ -1,0 +1,117 @@
+{
+  "status": "passed",
+  "gate_predeclared": [
+    0.91,
+    0.99
+  ],
+  "method": "REML+hksj",
+  "level": 0.95,
+  "grid": [
+    {
+      "seed": 730194,
+      "k": 10,
+      "tau2_true": 0.0,
+      "vi": 0.2,
+      "planned": 400,
+      "completed": 400,
+      "failed": 0,
+      "failure_codes": {},
+      "coverage_including_failures_as_misses": 0.9475,
+      "binomial_mcse": 0.01115165346484547,
+      "passed": true
+    },
+    {
+      "seed": 730194,
+      "k": 10,
+      "tau2_true": 0.3,
+      "vi": 0.2,
+      "planned": 400,
+      "completed": 400,
+      "failed": 0,
+      "failure_codes": {},
+      "coverage_including_failures_as_misses": 0.9475,
+      "binomial_mcse": 0.01115165346484547,
+      "passed": true
+    },
+    {
+      "seed": 730194,
+      "k": 30,
+      "tau2_true": 0.0,
+      "vi": 0.2,
+      "planned": 400,
+      "completed": 400,
+      "failed": 0,
+      "failure_codes": {},
+      "coverage_including_failures_as_misses": 0.9675,
+      "binomial_mcse": 0.008866192813152663,
+      "passed": true
+    },
+    {
+      "seed": 730194,
+      "k": 30,
+      "tau2_true": 0.3,
+      "vi": 0.2,
+      "planned": 400,
+      "completed": 400,
+      "failed": 0,
+      "failure_codes": {},
+      "coverage_including_failures_as_misses": 0.9425,
+      "binomial_mcse": 0.01163977555625537,
+      "passed": true
+    },
+    {
+      "seed": 910197,
+      "k": 10,
+      "tau2_true": 0.0,
+      "vi": 0.2,
+      "planned": 400,
+      "completed": 400,
+      "failed": 0,
+      "failure_codes": {},
+      "coverage_including_failures_as_misses": 0.95,
+      "binomial_mcse": 0.010897247358851688,
+      "passed": true
+    },
+    {
+      "seed": 910197,
+      "k": 10,
+      "tau2_true": 0.3,
+      "vi": 0.2,
+      "planned": 400,
+      "completed": 400,
+      "failed": 0,
+      "failure_codes": {},
+      "coverage_including_failures_as_misses": 0.9525,
+      "binomial_mcse": 0.010635289135702893,
+      "passed": true
+    },
+    {
+      "seed": 910197,
+      "k": 30,
+      "tau2_true": 0.0,
+      "vi": 0.2,
+      "planned": 400,
+      "completed": 400,
+      "failed": 0,
+      "failure_codes": {},
+      "coverage_including_failures_as_misses": 0.93,
+      "binomial_mcse": 0.01275735082217307,
+      "passed": true
+    },
+    {
+      "seed": 910197,
+      "k": 30,
+      "tau2_true": 0.3,
+      "vi": 0.2,
+      "planned": 400,
+      "completed": 400,
+      "failed": 0,
+      "failure_codes": {},
+      "coverage_including_failures_as_misses": 0.93,
+      "binomial_mcse": 0.01275735082217307,
+      "passed": true
+    }
+  ],
+  "scope": "Independent normal studies with known equal sampling variances; 8 cells, no broad coverage claim.",
+  "oracles": "Published BCG author display and independent NumPy QR/SciPy likelihood are separate tests."
+}

@@ -1,0 +1,11 @@
+{
+  "identifier": "org.openecon.qa.meta",
+  "version": "0.3.43",
+  "minimum_macos": "26.0.0",
+  "payload_sha256": "8346fe0f459be432c66eca44636f157769d01e797708505a41b765886b048a82",
+  "regular_files": 5047,
+  "aliases": 19,
+  "macho_files": 218,
+  "minimum_os_violations": [],
+  "scope": "Dedicated local QA profile; minimum raised to actual bundled Mach-O requirements; not a public release"
+}

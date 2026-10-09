@@ -223,7 +223,10 @@ def test_public_exports_and_editor_catalogue_discovery():
     from pathlib import Path
     assert oe.bccaustest is bccaustest
     assert oe.dhcausality is dhcausality
-    entries = json.loads((Path(__file__).resolve().parents[1] / "web/src/editor-api.json").read_text())
+    import runpy
+    root = Path(__file__).resolve().parents[1]
+    decode = runpy.run_path(str(root / "scripts/generate_editor_api.py"))["decode_catalog"]
+    entries = decode(json.loads((root / "web/src/editor-api.json").read_text()))
     by_name = {entry["name"]: entry for entry in entries}
     assert "bccaustest" in str(by_name)
     assert "dhcausality" in str(by_name)

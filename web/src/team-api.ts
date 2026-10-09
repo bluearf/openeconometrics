@@ -1,5 +1,9 @@
 import { ApiError, decodeResponse, type TokenGetter } from "./api.ts";
-import { desktopCloudFetch, isDesktop, isTransientDesktopFailure } from "./desktop.ts";
+import {
+  desktopCloudFetch,
+  isDesktop,
+  isTransientDesktopFailure,
+} from "./desktop.ts";
 
 export type ProjectRole = "owner" | "editor" | "viewer";
 export interface Project {
@@ -34,6 +38,7 @@ export interface TeamProfile {
 }
 export interface TeamAuthConfig {
   mode: "teams";
+  account_link_available?: boolean;
   firebase: {
     apiKey: string;
     authDomain: string;
@@ -103,26 +108,38 @@ export async function loadAuthConfig(
       ? await desktopCloudFetch("/api/auth/config", "", { signal })
       : await fetch("/api/auth/config", { signal });
   } catch (error) {
-    if (!isDesktop() || signal?.aborted || !isTransientDesktopFailure(error)) throw error;
+    if (!isDesktop() || signal?.aborted || !isTransientDesktopFailure(error))
+      throw error;
     const cached = localStorage.getItem("openecon-desktop-auth-config");
     if (!cached) throw error;
-    response = new Response(cached, { status: 200, headers: { "Content-Type": "application/json" } });
+    response = new Response(cached, {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   }
   if (isDesktop() && response.status >= 500) {
     try {
       const cached = localStorage.getItem("openecon-desktop-auth-config");
-      if (cached) response = new Response(cached, { status: 200, headers: { "Content-Type": "application/json" } });
-    } catch { /* The original service response stays authoritative. */ }
+      if (cached)
+        response = new Response(cached, {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+    } catch {
+      /* The original service response stays authoritative. */
+    }
   }
   if (response.status === 404) {
-    if (isDesktop()) throw new ApiError("Could not configure the cloud connection.", 404);
+    if (isDesktop())
+      throw new ApiError("Could not configure the cloud connection.", 404);
     return "local";
   }
   const value = await decodeResponse<TeamAuthConfig | { mode: "local" }>(
     response,
   );
   if (value.mode === "local") {
-    if (isDesktop()) throw new Error("The desktop cloud configuration is invalid.");
+    if (isDesktop())
+      throw new Error("The desktop cloud configuration is invalid.");
     return "local";
   }
   if (
@@ -132,9 +149,18 @@ export async function loadAuthConfig(
     !value.firebase.authDomain ||
     !value.firebase.appId
   )
-    throw new Error("Sign-in configuration is missing. Contact the administrator.");
+    throw new Error(
+      "Sign-in configuration is missing. Contact the administrator.",
+    );
   if (isDesktop()) {
-    try { localStorage.setItem("openecon-desktop-auth-config", JSON.stringify(value)); } catch { /* No auth secrets. */ }
+    try {
+      localStorage.setItem(
+        "openecon-desktop-auth-config",
+        JSON.stringify(value),
+      );
+    } catch {
+      /* No auth secrets. */
+    }
   }
   return value;
 }

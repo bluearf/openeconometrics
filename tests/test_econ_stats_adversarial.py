@@ -240,7 +240,21 @@ def test_documentation_covers_every_function_and_the_manifest_is_light():
         assert heading in page
     import openecon.econometrics.stats as manifest
 
-    assert manifest.ESTIMATORS == () and set(manifest.EXPORTS) == set(_EXPORTS)
+    planning = {"power_mean", "power_proportion", "power_correlation", "precision_mean",
+                "power_paired_mean", "power_two_proportions", "power_two_correlations", "power_slope", "power_logrank", "power_mcnemar", "precision_mean_unknown", "precision_variance"}
+    power_designs = {"power_tmean", "power_ttwomeans", "power_tpaired", "power_anova",
+                     "power_regression", "power_cluster_mean", "power_gof", "power_independence"}
+    assert manifest.ESTIMATORS == () and set(manifest.EXPORTS) == (
+        set(_EXPORTS) | planning | power_designs | {"planning_scenarios", "planning_plot"}
+    )
+    designs_page = (Path(manifest.__file__).resolve().parents[4]
+                    / "docs" / "econometrics" / "power-designs.md").read_text()
+    for name in power_designs:
+        assert f"{name}(" in designs_page
+    planning_page = (Path(manifest.__file__).resolve().parents[4]
+                     / "docs" / "econometrics" / "planning.md").read_text()
+    for name in planning:
+        assert f"oe.{name}" in planning_page
     source = Path(manifest.__file__).read_text()
     assert "import torch" not in source and "import pandas" not in source
 

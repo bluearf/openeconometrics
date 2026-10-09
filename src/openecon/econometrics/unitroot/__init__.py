@@ -27,6 +27,8 @@ ESTIMATORS: tuple[EstimatorInfo, ...] = ()
 
 # Extra public functions exported as oe.<name>: {"name": "package.module:function"}.
 EXPORTS: dict[str, str] = {
+    "ols_cusum": "openecon.econometrics.unitroot.ols_stability:ols_cusum",
+    "fisher_johansen": "openecon.econometrics.unitroot.fisher_johansen:fisher_johansen",
     "ngperron": "openecon.econometrics.unitroot.advanced_series:ngperron",
     "kss": "openecon.econometrics.unitroot.advanced_series:kss",
     "bai_perron": "openecon.econometrics.unitroot.bai_perron:bai_perron",

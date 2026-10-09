@@ -11,6 +11,7 @@ import { createNamedScriptSync, type DesktopSyncState, type SyncStateUpdate } fr
 import { createFileLayoutSync } from "./file-layout-sync.ts";
 import type { FileLayout } from "./file-layout.ts";
 import { createResultSharing } from "./result-sharing.ts";
+import { createProjectTransferActions, validateProjectTransfer, type ProjectTransferDependencies } from "./project-transfers.ts";
 
 type SyncState = DesktopSyncState;
 type LocalDataset = DatasetProfile & { local_only?: boolean };
@@ -21,6 +22,8 @@ interface Dependencies {
   cacheFile(file: DatasetProfile): Promise<CachedCloudFile>;
   cacheFiles?(files: DatasetProfile[]): Promise<CachedCloudFile[]>;
   chooseAndUpload?: () => Promise<DatasetProfile | null>;
+  transferInvoke?: ProjectTransferDependencies["invoke"];
+  cancelFileDownload?: (fileId: string) => Promise<void>;
 }
 const recoverable = isTransientDesktopFailure;
 function canonicalManifest(value: unknown): string {
@@ -78,6 +81,15 @@ export function createHybridWorkspace(projectId: string, role: SyncState["role"]
   const scriptRefreshDirty = new Set<string>();
   const layoutListeners = new Set<(layout: FileLayout) => void>();
   const scriptListeners = new Set<(value: ScriptSyncNotification) => void>();
+  const downloadListeners = new Set<(file: {id: string; name: string} | null) => void>();
+  let downloading: {id: string; name: string} | null = null;
+  function notifyDownload(file: typeof downloading) {
+    if (closed) return;
+    downloading = file;
+    for (const listener of downloadListeners) {
+      try { listener(file ? {...file} : null); } catch { /* Detached panels cannot fail a download. */ }
+    }
+  }
   const local = deps.local;
   const syncState = () => authorizationDenied && state ? { ...state, access_denied: true } : state;
   const scripts = createNamedScriptSync({ local, cloud: deps.cloud, state: syncState, persist: persistState, closed: () => closed });
@@ -94,6 +106,11 @@ export function createHybridWorkspace(projectId: string, role: SyncState["role"]
     archive: cloudArchiveRecord,
     deny: async () => { await persistState((latest) => ({ ...latest, access_denied: true })); },
   });
+  const transferActions = deps.transferInvoke ? createProjectTransferActions({
+    invoke: deps.transferInvoke,
+    assertAccess: accessible,
+    importReady: (file, assertCurrent) => importFile(file as unknown as DatasetProfile, undefined, assertCurrent),
+  }) : undefined;
   function resumeResultSharing() {
     if (closed) return;
     if (state?.role === "viewer") {
@@ -306,7 +323,8 @@ export function createHybridWorkspace(projectId: string, role: SyncState["role"]
     if (!state) state = await local.request<SyncState | null>("/desktop-sync-state");
     return session;
   }
-  async function importFile(file: DatasetProfile, prefetched?: CachedCloudFile) {
+  async function importFile(file: DatasetProfile, prefetched?: CachedCloudFile, assertCurrent?: () => void) {
+    assertCurrent?.();
     if ((file as LocalDataset).local_only === true) {
       // Native imports are already owned by this local project. Never send
       // their UUIDs through the cloud cache/download path.
@@ -315,11 +333,28 @@ export function createHybridWorkspace(projectId: string, role: SyncState["role"]
       const saved = await local.request<LocalDataset>(`/datasets/${file.id}`);
       if (saved.local_only !== true || saved.id !== file.id || saved.data_hash !== file.data_hash)
         throw new Error("Could not verify the local-only dataset record.");
-      return saved;
+      const pending = (file as LocalDataset & { sharing_pending_transfer?: unknown }).sharing_pending_transfer;
+      return pending === undefined ? saved : { ...saved, sharing_pending_transfer: validateProjectTransfer(pending) };
     }
-    const cached = prefetched ?? await deps.cacheFile(file);
+    let cached = prefetched;
+    if (!cached) {
+      accessible();
+      const cancellable = Boolean(deps.cancelFileDownload && (file as DatasetProfile & {transfer?: string}).transfer === "chunked-v1");
+      if (cancellable) notifyDownload({id: file.id, name: file.name});
+      try { cached = await deps.cacheFile(file); }
+      catch (error) {
+        if (error === "OPENECON_DOWNLOAD_CANCELLED") throw new DOMException("Download cancelled. Existing local files and verified transfer parts are preserved.", "AbortError");
+        throw error;
+      }
+      finally { if (cancellable) notifyDownload(null); }
+      accessible();
+    }
     if (cached.sha256 !== file.data_hash || cached.cloud_id !== file.id)
       throw new Error("Could not verify the downloaded data version.");
+    if ((file as DatasetProfile & {transfer?: string}).transfer === "chunked-v1" &&
+        (cached.name !== file.name || cached.size_bytes !== file.size_bytes))
+      throw new ApiError("Could not verify the downloaded file metadata.", 0, "DATA_INTEGRITY");
+    assertCurrent?.();
     const imported = await local.request<DatasetProfile>("/datasets/import-cached", {
       method: "POST", body: JSON.stringify({ name: cached.name, expected_sha256: cached.sha256, cloud_id: file.id }),
     });
@@ -537,6 +572,18 @@ export function createHybridWorkspace(projectId: string, role: SyncState["role"]
   }
   return {
     projectId, teams: true, desktop: true,
+    transferActions,
+    cancelFileDownload: deps.cancelFileDownload ? async (id) => {
+      accessible();
+      if (downloading?.id !== id) throw new ApiError("This file is no longer downloading.", 409);
+      await deps.cancelFileDownload!(id);
+      accessible();
+    } : undefined,
+    subscribeFileDownload: deps.cancelFileDownload ? (listener) => {
+      if (closed) return () => {};
+      downloadListeners.add(listener); listener(downloading ? {...downloading} : null);
+      return () => { downloadListeners.delete(listener); };
+    } : undefined,
     connect: ready,
     readScriptConflict: async (id: string): Promise<ScriptConflictSnapshot> => {
       accessible();
@@ -641,6 +688,8 @@ export function createHybridWorkspace(projectId: string, role: SyncState["role"]
     },
     cancelPending: () => {
       closed = true;
+      transferActions?.dispose();
+      downloadListeners.clear();
       layoutSyncDirty = false;
       scriptSyncDirty.clear();
       scriptRefreshDirty.clear();
@@ -834,6 +883,7 @@ export function createDesktopWorkspaceClient(projectId: string, getToken: TokenG
                                               role: SyncState["role"], actorUid: string): WorkspaceClient {
   const local = createWorkspaceClient(null, undefined, `/api/desktop/projects/${encodeURIComponent(projectId)}/workspace`);
   const cloudPrefix = `/api/projects/${encodeURIComponent(projectId)}/workspace`;
+  const transferInvoke = createNativeTransferInvoke(projectId, getToken);
   const cloud = async <T>(path: string, options: RequestInit = {}): Promise<T> => {
     try { return await desktopCloudRequest<T>(cloudPrefix + path, await getToken(), options); }
     catch (error) {
@@ -843,11 +893,15 @@ export function createDesktopWorkspaceClient(projectId: string, getToken: TokenG
   };
   return createHybridWorkspace(projectId, role, {
     actorUid, local, cloud,
+    transferInvoke,
+    cancelFileDownload: async (fileId) => {
+      const response = await transferInvoke("cancel_download", fileId);
+      if (response.status !== 200) throw new ApiError("Could not request download cancellation.", response.status);
+      const body = response.body as {cancel_requested?: unknown; file_id?: unknown} | null;
+      if (!body || body.cancel_requested !== true || body.file_id !== fileId) throw new ApiError("Could not verify download cancellation.", 0, "DATA_INTEGRITY");
+    },
     cacheFile: async (file) => nativeInvoke<CachedCloudFile>("download_project_file", {
       projectId, fileId: file.id, token: await getToken(),
-    }),
-    cacheFiles: async () => nativeInvoke<CachedCloudFile[]>("download_project_files", {
-      projectId, token: await getToken(),
     }),
     chooseAndUpload: async () => {
       const response = await nativeInvoke<{ status: number; body: DatasetProfile }>("upload_project_file", {
@@ -858,4 +912,42 @@ export function createDesktopWorkspaceClient(projectId: string, getToken: TokenG
       return response.body;
     },
   });
+}
+
+/** Authentication remains in the project client, never in a React component. */
+export function createNativeTransferInvoke(
+  projectId: string,
+  getToken: TokenGetter,
+  bridge: typeof nativeInvoke = nativeInvoke,
+): ProjectTransferDependencies["invoke"] {
+  return async (action, requestId) => {
+    const invoke = async (forceRefresh = false) => {
+      try {
+        return await bridge<{ status: number; body: unknown }>(
+          "project_transfer_action",
+          {
+            projectId,
+            requestId: requestId ?? null,
+            token: await getToken(forceRefresh),
+            action,
+          },
+        );
+      } catch (error) {
+        if (error === "OPENECON_TRANSFER_COMPLETE")
+          throw new ApiError(
+            "Sharing is already complete.",
+            409,
+            "TRANSFER_COMPLETE",
+          );
+        throw error;
+      }
+    };
+    try {
+      const response = await invoke();
+      return response.status === 401 ? invoke(true) : response;
+    } catch (error) {
+      if (!(error instanceof ApiError) || error.status !== 401) throw error;
+      return invoke(true);
+    }
+  };
 }

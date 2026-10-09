@@ -1072,7 +1072,10 @@ def nn_residual_sets(x, y, J):
         while count < target:
             dist = np.array([abs(v - x[i]) for v in remaining])
             nearest = dist.min()
-            add = [v for v, dv in zip(remaining, dist) if dv == nearest]
+            # rdrobust's NN definition treats floating point equidistance with
+            # a relative sqrt(eps) tolerance; rounded mass points need this too.
+            add = [v for v, dv in zip(remaining, dist)
+                   if abs(dv-nearest) <= max(dv, nearest)*np.sqrt(np.finfo(float).eps)]
             for v in add:
                 chosen.add(v)
                 count += np.sum(x == v)

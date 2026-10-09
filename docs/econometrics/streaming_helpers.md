@@ -73,7 +73,7 @@ remain shared with these adapters.
 Grouped descriptive plans also charge the requested statistic/percentile column
 count and retained result cells before creating the corresponding group state.
 
-The reproducible [million-row probe](../evidence/external-helpers-million-2026-10-07.json)
+The reproducible million-row probe (internal evidence excluded from this public snapshot)
 records actual Parquet size, two/three source passes, kernel digest, wall time,
 fresh-process peak RSS and owned scratch removal. It measures CPU source kernels;
 its workspace budget excludes imports/readers and is not a total-RSS promise.

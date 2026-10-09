@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING
 # function export with that module as a side effect of normal Python imports.
 from openecon.latex import Latex, latex, regression_table, to_latex
 
-__version__ = "0.3.18a4"
+__version__ = "0.3.19a1"
 
 if TYPE_CHECKING:
     from openecon.analysis import AnalysisError, capabilities, fit, ols, logit, probit
@@ -50,8 +50,55 @@ __all__ += ["network_embedding", "network_gnn", "EmbeddingResult", "GNNResult"]
 __all__ += ["MultilayerNetwork", "multilayer_network", "read_multilayer_network"]
 __all__ += ["Hypergraph", "hypergraph", "read_hypergraph"]
 __all__ += ["NetworkMatchingResult"]
+__all__ += ["SurveyDesign", "survey_design", "SurveyResult", "IRTResult", "MIResult", "MIDiagnosticResult", "MIPoolResult", "MIJointResult"]
+__all__ += ["MIDiscreteResult", "MIDeltaResult", "MIPassiveResult", "MILincomResult"]
+
+__all__ += ["SurveyRegressionResult", "SurveyReplicateMarginsResult"]
+__all__ += ["SurveyTwoStageDesign", "survey_two_stage_design", "SurveyTwoStageResult", "SurveyTwoStageRegressionResult"]
+__all__ += ["SurveyThreeStageDesign", "survey_three_stage_design", "SurveyThreeStageResult", "SurveyThreeStageRegressionResult"]
+
+__all__ += ['SurveyStratifiedThreeStageDesign', 'survey_stratified_three_stage_design', 'SurveyStratifiedThreeStageResult', 'SurveyStratifiedThreeStageRegressionResult']
+__all__ += ['SurveyFullyStratifiedThreeStageDesign', 'survey_fully_stratified_three_stage_design', 'SurveyFullyStratifiedThreeStageResult', 'SurveyFullyStratifiedThreeStageRegressionResult']
+
+
+__all__ += ["SurveyFourStageDesign", "survey_four_stage_design", "SurveyFourStageResult", "SurveyFourStageRegressionResult"]
 
 _EXPORTS = {
+    "SurveyFourStageDesign": ("openecon.survey_four_stage", "SurveyFourStageDesign"),
+    "survey_four_stage_design": ("openecon.survey_four_stage", "survey_four_stage_design"),
+    "SurveyFourStageResult": ("openecon.econometrics.survey.four_stage_targets", "SurveyFourStageResult"),
+    "SurveyFourStageRegressionResult": ("openecon.econometrics.survey.four_stage_regression_state", "SurveyFourStageRegressionResult"),
+    "SurveyFullyStratifiedThreeStageDesign": ("openecon.survey_fully_stratified_three_stage", "SurveyFullyStratifiedThreeStageDesign"),
+    "survey_fully_stratified_three_stage_design": ("openecon.survey_fully_stratified_three_stage", "survey_fully_stratified_three_stage_design"),
+    "SurveyFullyStratifiedThreeStageResult": ("openecon.econometrics.survey.fully_stratified_three_stage_targets", "SurveyFullyStratifiedThreeStageResult"),
+    "SurveyFullyStratifiedThreeStageRegressionResult": ("openecon.econometrics.survey.fully_stratified_three_stage_regression_state", "SurveyFullyStratifiedThreeStageRegressionResult"),
+    "SurveyStratifiedThreeStageDesign": ("openecon.survey_stratified_three_stage", "SurveyStratifiedThreeStageDesign"),
+    "survey_stratified_three_stage_design": ("openecon.survey_stratified_three_stage", "survey_stratified_three_stage_design"),
+    "SurveyStratifiedThreeStageResult": ("openecon.econometrics.survey.stratified_three_stage_targets", "SurveyStratifiedThreeStageResult"),
+    "SurveyStratifiedThreeStageRegressionResult": ("openecon.econometrics.survey.stratified_three_stage_regression_state", "SurveyStratifiedThreeStageRegressionResult"),
+
+    "SurveyThreeStageDesign": ("openecon.survey_three_stage", "SurveyThreeStageDesign"),
+    "survey_three_stage_design": ("openecon.survey_three_stage", "survey_three_stage_design"),
+    "SurveyThreeStageResult": ("openecon.econometrics.survey.three_stage_targets", "SurveyThreeStageResult"),
+    "SurveyThreeStageRegressionResult": ("openecon.econometrics.survey.three_stage_regression_state", "SurveyThreeStageRegressionResult"),
+    "SurveyTwoStageDesign": ("openecon.survey_two_stage", "SurveyTwoStageDesign"),
+    "survey_two_stage_design": ("openecon.survey_two_stage", "survey_two_stage_design"),
+    "SurveyTwoStageResult": ("openecon.econometrics.survey.two_stage_targets", "SurveyTwoStageResult"),
+    "SurveyTwoStageRegressionResult": ("openecon.econometrics.survey.two_stage_regression_state", "SurveyTwoStageRegressionResult"),
+    "MIDiscreteResult": ("openecon.econometrics.mi.discrete", "MIDiscreteResult"),
+    "MIDeltaResult": ("openecon.econometrics.mi.sensitivity", "MIDeltaResult"),
+    "MIPassiveResult": ("openecon.econometrics.mi.passive", "MIPassiveResult"),
+    "MILincomResult": ("openecon.econometrics.mi.lincom", "MILincomResult"),
+    "MIResult": ("openecon.econometrics.mi.common", "MIResult"),
+    "MIDiagnosticResult": ("openecon.econometrics.mi.diagnostics", "MIDiagnosticResult"),
+    "MIPoolResult": ("openecon.econometrics.mi.joint", "MIPoolResult"),
+    "MIJointResult": ("openecon.econometrics.mi.joint", "MIJointResult"),
+    "SurveyReplicateMarginsResult": ("openecon.econometrics.survey.replicate_margins_state", "SurveyReplicateMarginsResult"),
+    "SurveyRegressionResult": ("openecon.econometrics.survey.regression_common", "SurveyRegressionResult"),
+    "SurveyResult": ("openecon.econometrics.survey.common", "SurveyResult"),
+    "IRTResult": ("openecon.econometrics.irt.models", "IRTResult"),
+    "SurveyDesign": ("openecon.survey", "SurveyDesign"),
+    "survey_design": ("openecon.survey", "survey_design"),
     "network_embedding": ("openecon._network_learning", "network_embedding"),
     "network_gnn": ("openecon._network_learning", "network_gnn"),
     "EmbeddingResult": ("openecon._network_learning", "EmbeddingResult"),

@@ -1,4 +1,4 @@
-import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import {
   createFileFolder,
   fileEntryKey,
@@ -45,6 +45,7 @@ export interface FilesSidebarProps {
   pendingSync?: boolean;
   layout?: readonly FileLayoutEntry[];
   onLayoutChange?: (entries: FileLayoutEntry[]) => Promise<void>;
+  footer?: ReactNode;
 }
 
 type FileDropPosition = "before" | "after" | "into";
@@ -232,6 +233,7 @@ export default function FilesSidebar({
   pendingSync = false,
   layout,
   onLayoutChange,
+  footer,
 }: FilesSidebarProps) {
   const contentId = useId();
   const toggleLabel = collapsed ? "Show files" : "Hide files";
@@ -1187,6 +1189,7 @@ export default function FilesSidebar({
             Root folder
           </button>
         )}
+        {footer}
       </div>
       <span className="files-sidebar__status" role="status">
         {saving

@@ -1,0 +1,560 @@
+[
+  {
+    "token": 15,
+    "parameters": [
+      {
+        "kind": "keyword-only",
+        "name": "data"
+      },
+      {
+        "kind": "keyword-only",
+        "name": "y"
+      },
+      {
+        "kind": "keyword-only",
+        "name": "x"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "categorical"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "weights"
+      },
+      {
+        "default": "'aweight'",
+        "kind": "keyword-only",
+        "name": "weight_type"
+      },
+      {
+        "default": "True",
+        "kind": "keyword-only",
+        "name": "intercept"
+      },
+      {
+        "default": "'raise'",
+        "kind": "keyword-only",
+        "name": "missing"
+      },
+      {
+        "default": "0.5",
+        "kind": "keyword-only",
+        "name": "l1_ratio"
+      },
+      {
+        "default": "'cv'",
+        "kind": "keyword-only",
+        "name": "selection"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "penalty"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "lambda_path"
+      },
+      {
+        "default": "20",
+        "kind": "keyword-only",
+        "name": "n_lambdas"
+      },
+      {
+        "default": "0.001",
+        "kind": "keyword-only",
+        "name": "lambda_ratio"
+      },
+      {
+        "default": "5",
+        "kind": "keyword-only",
+        "name": "folds"
+      },
+      {
+        "default": "1729",
+        "kind": "keyword-only",
+        "name": "seed"
+      },
+      {
+        "default": "True",
+        "kind": "keyword-only",
+        "name": "standardize"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "penalty_factors"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "forced_controls"
+      },
+      {
+        "default": "200",
+        "kind": "keyword-only",
+        "name": "max_iterations"
+      },
+      {
+        "default": "1e-08",
+        "kind": "keyword-only",
+        "name": "tolerance"
+      },
+      {
+        "default": "2000000000",
+        "kind": "keyword-only",
+        "name": "max_work"
+      },
+      {
+        "default": "'cpu'",
+        "kind": "keyword-only",
+        "name": "device"
+      }
+    ]
+  },
+  {
+    "token": 16,
+    "parameters": [
+      {
+        "kind": "keyword-only",
+        "name": "data"
+      },
+      {
+        "kind": "keyword-only",
+        "name": "y"
+      },
+      {
+        "kind": "keyword-only",
+        "name": "x"
+      },
+      {
+        "kind": "keyword-only",
+        "name": "panel"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "time"
+      },
+      {
+        "default": "'re'",
+        "kind": "keyword-only",
+        "name": "model"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "covariance"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "cluster"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "intpoints"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "intmethod"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "corr"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "corr_order"
+      },
+      {
+        "default": "False",
+        "kind": "keyword-only",
+        "name": "force"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "offset"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "categorical"
+      },
+      {
+        "default": "'raise'",
+        "kind": "keyword-only",
+        "name": "missing"
+      },
+      {
+        "default": "0.05",
+        "kind": "keyword-only",
+        "name": "alpha"
+      }
+    ]
+  },
+  {
+    "token": 17,
+    "parameters": [
+      {
+        "kind": "positional-or-keyword",
+        "name": "low"
+      },
+      {
+        "kind": "positional-or-keyword",
+        "name": "indicator"
+      },
+      {
+        "kind": "keyword-only",
+        "name": "rho"
+      },
+      {
+        "kind": "keyword-only",
+        "name": "low_periods"
+      },
+      {
+        "kind": "keyword-only",
+        "name": "high_periods"
+      },
+      {
+        "default": "'Y'",
+        "kind": "keyword-only",
+        "name": "low_frequency"
+      },
+      {
+        "default": "'Q'",
+        "kind": "keyword-only",
+        "name": "high_frequency"
+      },
+      {
+        "default": "'sum'",
+        "kind": "keyword-only",
+        "name": "aggregation"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "as_of"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "low_releases"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "high_releases"
+      },
+      {
+        "default": "'cpu'",
+        "kind": "keyword-only",
+        "name": "device"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "weights"
+      },
+      {
+        "default": "True",
+        "kind": "keyword-only",
+        "name": "intercept"
+      },
+      {
+        "default": "0.05",
+        "kind": "keyword-only",
+        "name": "alpha"
+      }
+    ]
+  },
+  {
+    "token": 20,
+    "parameters": [
+      {
+        "kind": "keyword-only",
+        "name": "data"
+      },
+      {
+        "kind": "keyword-only",
+        "name": "y"
+      },
+      {
+        "kind": "keyword-only",
+        "name": "x"
+      },
+      {
+        "kind": "keyword-only",
+        "name": "inflate"
+      },
+      {
+        "default": "'logit'",
+        "kind": "keyword-only",
+        "name": "inflate_link"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "covariance"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "cluster"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "weights"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "weight_type"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "offset"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "exposure"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "categorical"
+      },
+      {
+        "default": "True",
+        "kind": "keyword-only",
+        "name": "intercept"
+      },
+      {
+        "default": "'raise'",
+        "kind": "keyword-only",
+        "name": "missing"
+      },
+      {
+        "default": "0.05",
+        "kind": "keyword-only",
+        "name": "alpha"
+      }
+    ]
+  },
+  {
+    "token": 21,
+    "parameters": [
+      {
+        "kind": "positional-or-keyword",
+        "name": "data"
+      },
+      {
+        "kind": "positional-or-keyword",
+        "name": "dimensions"
+      },
+      {
+        "kind": "positional-or-keyword",
+        "name": "count"
+      },
+      {
+        "kind": "keyword-only",
+        "name": "levels"
+      },
+      {
+        "kind": "keyword-only",
+        "name": "design"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "terms"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "structural"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "offset"
+      },
+      {
+        "default": "200",
+        "kind": "keyword-only",
+        "name": "max_iter"
+      },
+      {
+        "default": "1e-09",
+        "kind": "keyword-only",
+        "name": "tol"
+      },
+      {
+        "default": "0.95",
+        "kind": "keyword-only",
+        "name": "level"
+      },
+      {
+        "default": "300000000",
+        "kind": "keyword-only",
+        "name": "max_work"
+      },
+      {
+        "default": "128 * 1024 ** 2",
+        "kind": "keyword-only",
+        "name": "max_bytes"
+      }
+    ]
+  },
+  {
+    "token": 22,
+    "parameters": [
+      {
+        "kind": "keyword-only",
+        "name": "data"
+      },
+      {
+        "kind": "keyword-only",
+        "name": "y"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "x"
+      },
+      {
+        "kind": "keyword-only",
+        "name": "group"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "random"
+      },
+      {
+        "default": "7",
+        "kind": "keyword-only",
+        "name": "intpoints"
+      },
+      {
+        "default": "'mvaghermite'",
+        "kind": "keyword-only",
+        "name": "intmethod"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "covariance"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "cluster"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "categorical"
+      },
+      {
+        "default": "True",
+        "kind": "keyword-only",
+        "name": "intercept"
+      },
+      {
+        "default": "'raise'",
+        "kind": "keyword-only",
+        "name": "missing"
+      },
+      {
+        "default": "0.05",
+        "kind": "keyword-only",
+        "name": "alpha"
+      }
+    ]
+  },
+  {
+    "token": 23,
+    "parameters": [
+      {
+        "kind": "keyword-only",
+        "name": "data"
+      },
+      {
+        "kind": "keyword-only",
+        "name": "y"
+      },
+      {
+        "kind": "keyword-only",
+        "name": "x"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "ll"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "ul"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "covariance"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "cluster"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "weights"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "weight_type"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "offset"
+      },
+      {
+        "default": "None",
+        "kind": "keyword-only",
+        "name": "categorical"
+      },
+      {
+        "default": "True",
+        "kind": "keyword-only",
+        "name": "intercept"
+      },
+      {
+        "default": "'raise'",
+        "kind": "keyword-only",
+        "name": "missing"
+      },
+      {
+        "default": "0.05",
+        "kind": "keyword-only",
+        "name": "alpha"
+      }
+    ]
+  }
+]

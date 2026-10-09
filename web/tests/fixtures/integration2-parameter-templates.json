@@ -1,0 +1,102 @@
+[
+  {
+    "token": 37,
+    "parameters": [
+      {
+        "name": "data",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "design",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "outcomes",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "domain",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "missing",
+        "kind": "keyword-only",
+        "default": "'raise'"
+      },
+      {
+        "name": "alpha",
+        "kind": "keyword-only",
+        "default": "0.05"
+      },
+      {
+        "name": "null",
+        "default": "0.0",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "deff",
+        "kind": "keyword-only",
+        "default": "False"
+      }
+    ]
+  },
+  {
+    "token": 38,
+    "parameters": [
+      {
+        "name": "data",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "outcome",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "predictors",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "key",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "spatial_weights",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "options",
+        "kind": "var-keyword"
+      }
+    ]
+  },
+  {
+    "token": 39,
+    "parameters": [
+      {
+        "name": "path",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "format",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "max_memory_mb",
+        "default": "256",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "batch_rows",
+        "default": "65536",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "max_file_mb",
+        "default": "512",
+        "kind": "keyword-only"
+      }
+    ]
+  }
+]

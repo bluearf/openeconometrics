@@ -161,7 +161,7 @@ The [283 independent interval cases](../tests/test_network_dynamic.py) compare r
 rational membership and window coverage, not production interval helpers, and
 cover typed identities, changing weights/attributes, XML defaults, resource
 refusals and unchanged snapshot route order. After integrating GPU/sharing main,
-[4,179 Python cases and 630 web cases passed](evidence/market-58-validation-2026-10-07.json),
+4,179 Python cases and 630 web cases passed (internal evidence excluded from this public snapshot),
 with seven optional physical CUDA checks skipped; the UI build, source lint and
 393-entry committed-source catalog verification passed. These totals describe
 the network, editor-catalog and packaging subset, not the entire Python project.
@@ -171,7 +171,7 @@ their distinct scopes are recorded in the validation receipt. The final MCP-job
 integration additionally passed 352 dynamic/workflow/catalog/packaging/MCP cases;
 its workspace changes leave the checked network/SDK modules unchanged.
 
-The [fresh-process scale receipt](evidence/market-58-dynamic-2026-10-07.json)
+The fresh-process scale receipt (internal evidence excluded from this public snapshot)
 checks complete ordered typed-record fingerprints before and after native GEXF
 read/write, with one spell and two timed attribute values per edge. Independent
 scalar arithmetic checks point membership/degree and whole-window coverage.
@@ -186,7 +186,7 @@ one Torch thread, so they do not establish arbitrary-topology performance.
 | 100,000 | 3.95 s | 1.58 s | 0.74 s | 2.29 s | 26.76 s | 501.5 MiB |
 
 Installed application delivery, browser pixels and a public release require
-separate verification. The [isolated frozen ARM64 proof](evidence/market-58-frozen-desktop-2026-10-07.json)
+separate verification. The isolated frozen ARM64 proof (internal evidence excluded from this public snapshot)
 executed the runnable example from the bundled SDK/modules, generated five
 ordered tables with publication LaTeX in 7.164 seconds, and read identical stored
 outputs/events after resetting the worker. It checks compiled-code parity for
@@ -197,7 +197,7 @@ application were untouched in that isolated check. It was packaged
 computation/persistence evidence, with installed distribution and rendering
 outside its scope.
 
-The subsequent [installed Mac acceptance](evidence/market-58-installed-native-2026-10-07/README.md)
+The subsequent installed Mac acceptance (internal evidence excluded from this public snapshot)
 used the frozen runtime already installed for MARKET-59 without another update.
 Native Run generated five complete tables in 1.909 seconds; exact boundaries,
 typed identity, explicit window loss, ordered temporal routes and full GEXF

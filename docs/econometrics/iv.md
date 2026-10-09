@@ -1,5 +1,8 @@
 # Instrumental variables: `ivregress`, `xtivreg`, `ivreghdfe`
 
+Continuously updated IV GMM and effective-F diagnostics have separate
+[supported-domain documentation](capability-closures-2026-10-07.md#cue-and-effective-f).
+
 Linear models with endogenous regressors,
 
     y = X1 b1 + X2 b2 + u,        E[Z'u] = 0,   Z = [X1 Z2],

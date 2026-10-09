@@ -1,0 +1,138 @@
+[
+  {
+    "token": 72,
+    "parameters": [
+      {
+        "name": "data",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "variables",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "knots",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "components",
+        "default": "2",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "n_starts",
+        "default": "3",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "seed",
+        "kind": "keyword-only",
+        "default": "0"
+      },
+      {
+        "name": "maxiter",
+        "default": "500",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "tol",
+        "default": "1e-08",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "missing",
+        "kind": "keyword-only",
+        "default": "'drop'"
+      },
+      {
+        "name": "max_work",
+        "default": "WORK",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "max_bytes",
+        "default": "BYTES",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "device",
+        "kind": "keyword-only",
+        "default": "'cpu'"
+      }
+    ]
+  },
+  {
+    "token": 73,
+    "parameters": [
+      {
+        "name": "data",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "outcome",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "predictors",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "knots",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "missing",
+        "kind": "keyword-only",
+        "default": "'drop'"
+      },
+      {
+        "name": "max_bytes",
+        "default": "c.LIMIT_BYTES",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "max_work",
+        "default": "c.WORK",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "device",
+        "kind": "keyword-only",
+        "default": "'cpu'"
+      }
+    ]
+  },
+  {
+    "token": 74,
+    "parameters": [
+      {
+        "name": "result",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "data",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "missing",
+        "kind": "keyword-only",
+        "default": "'raise'"
+      },
+      {
+        "name": "max_work",
+        "default": "WORK",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "max_bytes",
+        "default": "BYTES",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "device",
+        "kind": "keyword-only",
+        "default": "'cpu'"
+      }
+    ]
+  }
+]

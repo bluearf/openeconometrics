@@ -45,6 +45,9 @@ class VersionedStaticFiles(StaticFiles):
 
 
 def request_body_limit(path: str) -> int:
+    if re.fullmatch(r'/api/projects/[0-9a-f]{32}/workspace/transfers/[0-9a-f]{32}/parts/[0-9]+', path):
+        from openecon.team_transfer import PART_BYTES
+        return PART_BYTES
     if path.endswith('/datasets/upload'):
         return MAX_TRANSFER_BYTES + 65536
     if re.fullmatch(r'/api/projects/[0-9a-f]{32}/workspace/desktop/results', path):
@@ -343,10 +346,13 @@ def create_team_app(*, store, storage, auth, runner, public_origin, firebase_con
 
     @app.get('/api/auth/config')
     def config():
-        return {'mode': 'teams', 'firebase': firebase_config, 'desktop_login_available': True}
+        return {'mode': 'teams', 'firebase': firebase_config, 'desktop_login_available': True,
+                'account_link_available': True, 'dataset_transfer_available': True}
 
     from openecon.desktop_cloud import attach_desktop_cloud_routes
     attach_desktop_cloud_routes(app, store=store, storage=storage, token_issuer=desktop_token_issuer)
+    from openecon.team_transfer import attach_transfer_routes
+    attach_transfer_routes(app, store=store, storage=storage)
 
     @app.get('/api/me')
     def me(request: Request):
@@ -482,6 +488,13 @@ def create_team_app(*, store, storage, auth, runner, public_origin, firebase_con
         try:
             store.add_file(project_id, user, metadata)
         except Exception:
+            # Firestore may have committed before a transport acknowledgement
+            # was lost. Never delete the generation a published file references.
+            saved = store.db.get(f'oe_projects/{project_id}')
+            committed = next((f for f in (saved or {}).get('files', []) if f['id'] == file_id), None)
+            if committed and committed.get('blob') == reference:
+                store.project(project_id, user, 'editor')
+                return file_public(committed)
             storage.delete(reference)
             raise
         return file_public(metadata)
@@ -513,6 +526,8 @@ def create_team_app(*, store, storage, auth, runner, public_origin, firebase_con
         item = next((f for f in project['files'] if f['id'] == file_id), None)
         if item is None:
             raise TeamError('NOT_FOUND', 'File not found.', 404)
+        if item.get('transfer') == 'chunked-v1':
+            raise TeamError('CHUNKED_DOWNLOAD', 'Download this data through the verified manifest and parts.', 409)
         data = storage.get(item['blob'])
         store.project(project_id, request.state.user)
         return Response(data, media_type='application/octet-stream',

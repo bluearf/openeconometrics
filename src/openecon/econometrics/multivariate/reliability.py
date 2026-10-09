@@ -79,7 +79,8 @@ def _guttman(cov: Tensor) -> dict[str, float | None]:
 @c.procedure
 def alpha(data: Any, columns: list[str], *, standardized: bool = False,
           reverse: list[str] | None = None, model: str = "alpha",
-          missing: str = "drop") -> TableSet:
+          missing: str = "drop", weights: str | None = None,
+          weight_type: str = "fweight") -> TableSet:
     """Cronbach's alpha and item analysis of a summated scale.
 
     With k items, item covariance matrix C (divisor n - 1) and scale variance
@@ -111,6 +112,12 @@ def alpha(data: Any, columns: list[str], *, standardized: bool = False,
         lambda-6 lower bounds.
     missing : ``"drop"`` (listwise deletion, as SPSS; Stata's ``casewise``) or
         ``"raise"``.
+    weights : optional nonnegative integer frequency-count column. Weighted
+        anchored moments use divisor sum(weights)-1 without expanding rows;
+        zero counts are excluded, and missing values are deleted over items
+        plus the count column. Counts and total must be <=2**53. Resident and
+        bounded Dataset inputs are supported. Only weight_type="fweight";
+        these descriptive coefficients have no sampling SE or CI.
 
     Returns
     -------
@@ -154,21 +161,33 @@ def alpha(data: Any, columns: list[str], *, standardized: bool = False,
     names = c.name_list(columns, "columns", minimum=2)
     c.check_flag(standardized, "standardized")
     c.check_choice(model, "model", MODELS)
+    c.check_choice(weight_type, "weight_type", ("fweight",))
     flipped = c.name_list(reverse, "reverse", minimum=0)
     unknown = [name for name in flipped if name not in names]
     if unknown:
         raise AnalysisError("invalid_spec", f"reverse names column(s) that are not items: "
                             f"{', '.join(unknown)}.")
-    sample, _, dropped = c.select(data, names, missing=missing)
-    x = c.matrix(sample, names)
-    n, k = x.shape
-    if n < 2:
-        raise AnalysisError("insufficient_observations", "Reliability analysis needs at least "
-                            "two complete observations.")
-    if flipped:
-        sign = torch.tensor([-1.0 if name in flipped else 1.0 for name in names], dtype=c.FLOAT)
-        x = x * sign
-    mean, sscp, _ = c.moments(x, names)
+    diagnostics: dict[str, Any] = {}
+    if weights is None:
+        sample, _, dropped = c.select(data, names, missing=missing)
+        x = c.matrix(sample, names)
+        n, k = x.shape
+        if n < 2:
+            raise AnalysisError("insufficient_observations", "Reliability analysis needs at least "
+                                "two complete observations.")
+        if flipped:
+            sign = torch.tensor([-1.0 if name in flipped else 1.0 for name in names], dtype=c.FLOAT)
+            x = x * sign
+        mean, sscp, _ = c.moments(x, names)
+    else:
+        from .weighted import frequency_moments
+        mean, sscp, n, dropped, diagnostics = frequency_moments(data, names, weights, missing)
+        k = len(names)
+        if flipped:
+            sign = torch.tensor([-1.0 if name in flipped else 1.0 for name in names], dtype=c.FLOAT)
+            mean = mean * sign
+            sscp = sscp * torch.outer(sign, sign)
+        diagnostics["inference"] = "descriptive reliability coefficients; sampling SE and CI unavailable; no survey inference"
     covariance = sscp / (n - 1)
     corr = c.correlation(sscp)
     cov = corr if standardized else covariance
@@ -232,4 +251,4 @@ def alpha(data: Any, columns: list[str], *, standardized: bool = False,
         tables, title=f"Reliability analysis of {', '.join(names)}", procedure="alpha",
         n=n, n_missing=dropped, alpha=coefficient, standardized_alpha=standardized_alpha,
         n_items=k, model=model, standardized=standardized, reversed=flipped, notes=notes,
-        missing="listwise")
+        missing="listwise", **diagnostics)

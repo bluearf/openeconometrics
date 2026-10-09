@@ -209,7 +209,9 @@ def _fit(ordered):
     result = _result(facade, terms=[f"{name}:{term}" for name in names for term in terms],
                    beta=parameters, covariance=covariance,
                    info={"covariance": spec.covariance, "df_resid": df, "df_inference": df if small else None,
-                         "small": small, "dfk": dfk, "correction": "global VAR system covariance"},
+                         "small": small, "dfk": dfk, "correction": "global VAR system covariance",
+                         "reference": ("Student t and F with T - m degrees of freedom (small)"
+                                       if small else "standard normal and chi-squared")},
                    metrics=metrics, notes=notes, predictions=predictions, tests=tests,
                    solver="global_tsqr_disk_ordered_var", diagnostics={"equations": k, "regressors_per_equation": m},
                    extra=extra, resource=lagged.plan.record(), title="Vector autoregression", use_t=small)
@@ -366,7 +368,7 @@ def _extras(spec, lagged, terms, coefficients, covariance, sigma, sigma_ml, inve
              "sigma": sigma, "sigma_ml": sigma_ml, "stability": {"eigenvalues": roots, "stable": stable,
                  "convention": "eigenvalues of the companion matrix; stable when every modulus is below1"},
              "granger": granger, "lag_exclusion": exclusion,
-             "forecast": {"last_values": torch.tensor(lagged.last_levels.to_numpy(), dtype=torch.float64),
+             "forecast": {"last_values": torch.tensor(lagged.last_levels.to_numpy(dtype="float64"), dtype=torch.float64),
                           "last_period": lagged.ordered.last_period, "last_trend": n,
                           "moment": diagnostics["moment"] if m <= MAX_STORED_MOMENT else None,
                           "means": diagnostics["means"]}}

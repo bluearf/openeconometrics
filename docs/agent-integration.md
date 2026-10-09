@@ -1,12 +1,18 @@
 # CLI and agent integration
 
+<!-- BEGIN source-generated capability scope -->
+Current source: **157 registered fit names**, **92 Dataset fit routes**, **74 common saved predict/margins adapters**. The [generated method/option inventory](capabilities.md) states conditions, exclusions and devices.
+
+Fit routes, common prediction adapters and family-specific helpers/forecasts have separate contracts. Source implementation does not establish independent scientific validation, installed-package verification or public shipment for a method/option. Those require their own dated, source-pinned evidence; historical measurements retain their original scope.
+<!-- END source-generated capability scope -->
+
 Current source scope and versions are recorded in the [generated capability inventory](capabilities.md). Dated build, client and installation records below retain their original verification scope.
 
 OpenEconometrics's command line, local web application and MCP tools call the same Python
 analysis engine. The capability response reports the current estimator registry
 and supported covariance options; implementation does not establish full Stata parity.
 
-The current release has one required PyTorch float64 CPU core. ModelSpec contains
+The current source has one required PyTorch float64 CPU core. ModelSpec contains
 statistical choices only; obsolete backend/device selector fields are rejected.
 Convenience functions such as `oe.ols(data=rows, y="outcome", x=["predictor"])`
 accept DataFrames, dictionaries of columns and record lists. Runtime provenance

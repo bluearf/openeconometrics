@@ -58,9 +58,28 @@ ESTIMATORS = (
     _estimator("sem", "Spatial error model"),
     _estimator("sac", "Spatial autoregressive combined model"),
     _estimator("sdm", "Spatial Durbin model"),
+    EstimatorInfo(
+        name="sar_iv",
+        title="SAR with explicit instrumental variables",
+        family="spatial",
+        entry="openecon.econometrics.spatial.iv:fit_sar_iv",
+        function="sar_iv",
+        covariances=("nonrobust", "HC0"),
+        default_covariance="nonrobust",
+        categorical=False,
+        roles=(
+            Role("key", required=True, kind="label"),
+            Role("instruments", required=True, many=True),
+        ),
+        options=_OPTIONS[:2],
+        description="Cross-sectional SAR QR 2SLS with supplied excluded instruments; iid/HC0 full covariance, saved reduced means and delta impacts. Fixed exogenous keyed W; no panel or weak-ID guarantee.",
+    ),
 )
 EXPORTS = {
     "spatial_weights": "openecon.econometrics.spatial.weights:spatial_weights",
     "moran": "openecon.econometrics.spatial.moran:moran",
     "spatial_impacts": "openecon.econometrics.spatial.estimators:spatial_impacts",
+    "sar_iv_predict": "openecon.econometrics.spatial.iv:sar_iv_predict",
+    "spatial_predict": "openecon.econometrics.spatial.prediction:spatial_predict",
+    "spatial_diagnostics": "openecon.econometrics.spatial.diagnostics:spatial_diagnostics",
 }

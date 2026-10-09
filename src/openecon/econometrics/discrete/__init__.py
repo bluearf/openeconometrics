@@ -111,4 +111,17 @@ ESTIMATORS: tuple[EstimatorInfo, ...] = (
 )
 
 # Extra public functions exported as oe.<name>: {"name": "package.module:function"}.
-EXPORTS: dict[str, str] = {}
+EXPORTS: dict[str, str] = {
+    "mprobit": "openecon.econometrics.discrete.mprobit:mprobit",
+    "mprobit_restore": "openecon.econometrics.discrete.mprobit:mprobit_restore",
+    "mprobit_predict": "openecon.econometrics.discrete.mprobit_postestimation:mprobit_predict",
+    "mprobit_margins": "openecon.econometrics.discrete.mprobit_postestimation:mprobit_margins",
+    "nlogit": "openecon.econometrics.discrete.nested_logit:nlogit",
+    "nlogit_restore": "openecon.econometrics.discrete.nested_logit:nlogit_restore",
+    "nlogit_predict": "openecon.econometrics.discrete.nested_logit_postestimation:nlogit_predict",
+    "nlogit_margins": "openecon.econometrics.discrete.nested_logit_postestimation:nlogit_margins",
+    "rologit": "openecon.econometrics.discrete.rank_ordered:rologit",
+    "rologit_restore": "openecon.econometrics.discrete.rank_ordered:rologit_restore",
+    "rologit_predict": "openecon.econometrics.discrete.rank_ordered_postestimation:rologit_predict",
+    "rologit_margins": "openecon.econometrics.discrete.rank_ordered_postestimation:rologit_margins",
+}

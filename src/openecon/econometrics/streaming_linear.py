@@ -836,9 +836,11 @@ def _fit_areg(spec: ModelSpec, source: Dataset, *, batch_rows=None, panel_model=
         def fitted_blocks():
             for batch in sample.batches():
                 raw = torch.cat((centered_y(batch)[:,None],batch.designs['mean'][:,1:]),1)
-                within = raw-store.lookup(encode_cluster_labels(batch.frame[absorb]))
+                means = store.lookup(encode_cluster_labels(batch.frame[absorb]))
+                within = raw-means
                 x = torch.cat((torch.ones((len(raw),1),dtype=torch.float64),within[:,[i+1 for i in kept_slopes]]),1)
-                yield batch.frame,batch.numeric(spec.outcome)-y_scale*(within[:,0]-x@beta)
+                effect = y_scale*(means[:,0]-beta[0]-means[:,[i+1 for i in kept_slopes]]@beta[1:])
+                yield batch.frame,batch.numeric(spec.outcome)-y_scale*(within[:,0]-x@beta),effect
         from .postest.group_state import capture_fixed_replay
         result.extra['group_state'] = capture_fixed_replay(result,fitted_blocks)
         return result
@@ -906,9 +908,11 @@ def _finish_fixed_effects(spec, sample, design, selected, store, notes, resource
     def fitted_blocks():
         for batch in sample.batches():
             raw = torch.cat((centered_y(batch)[:,None],batch.designs['mean'][:,1:]),1)
-            within = raw-store.lookup(encode_cluster_labels(batch.frame[spec.panel]))
+            means = store.lookup(encode_cluster_labels(batch.frame[spec.panel]))
+            within = raw-means
             x = torch.cat((torch.ones((len(raw),1),dtype=torch.float64),within[:,selected[1:]]),1)
-            yield batch.frame,batch.numeric(spec.outcome)-y_scale*(within[:,0]-x@beta)
+            effect = y_scale*(means[:,0]-beta[0]-means[:,selected[1:]]@beta[1:])
+            yield batch.frame,batch.numeric(spec.outcome)-y_scale*(within[:,0]-x@beta),effect
     from .postest.group_state import capture_fixed_replay
     result.extra['group_state'] = capture_fixed_replay(result,fitted_blocks)
     return result
@@ -1000,6 +1004,8 @@ def fit_streaming_linear(spec: ModelSpec, source: Dataset, *, batch_rows: int | 
                 return fit_iv_replay(spec, source, batch_rows=batch_rows)
             if spec.estimator == "xtreg":
                 model = spec.options.get("model", "fe")
+                if model == "cre":
+                    raise AnalysisError("streaming_unsupported", "CRE requires guarded in-memory actual-sample Mundlak means; Dataset is not collected.")
                 if model == "re":
                     from .streaming_re import fit_streaming_re
                     return fit_streaming_re(spec, source, batch_rows=batch_rows)

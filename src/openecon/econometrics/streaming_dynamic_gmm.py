@@ -783,8 +783,9 @@ def _fit(spec, source, *, batch_rows):
             )
             take = min(400 - len(predictions), len(observed))
             predictions.extend(
-                {"observed": float(y), "predicted": float(mu), "residual": float(y - mu)}
-                for y, mu in zip(observed[:take], fitted[:take], strict=True)
+                {"row": int(positions[int(row)]), "observed": float(y), "fitted": float(mu),
+                 "predicted": float(mu), "residual": float(y - mu)}
+                for row, y, mu in zip(rows[:take], observed[:take], fitted[:take], strict=True)
             )
         store.db.commit()
         digest = hashlib.sha256()

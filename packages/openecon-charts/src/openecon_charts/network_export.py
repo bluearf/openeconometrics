@@ -17,6 +17,7 @@ import signal
 import socket
 import struct
 import subprocess
+import sys
 import tempfile
 import time
 from urllib.parse import urlsplit
@@ -31,25 +32,194 @@ class NetworkExportError(RuntimeError):
     """A controlled browser, layout or export failure; no output was published."""
 
 
+def _browser_environment():
+    """Keep Chromium's Linux singleton socket within the AF_UNIX path limit.
+
+    Chromium creates its own private socket directory below TMPDIR. The export
+    document and explicit browser profile still use the caller-owned directory.
+    A long Python temporary root must not become the native socket root.
+    """
+    if not sys.platform.startswith("linux"):
+        return None
+    environment = dict(os.environ)
+    environment.update(TMPDIR="/tmp", TMP="/tmp", TEMP="/tmp")
+    return environment
+
+
+def _supervise_browser(command, state, parent, log_path, create_session):
+    """Keep an owned leader alive until teardown, in Python and frozen runtimes."""
+    if create_session:
+        os.setsid()
+    state = Path(state)
+    browser = None
+
+    def record(phase, code=None):
+        temporary = state.with_suffix(".tmp")
+        temporary.write_text(json.dumps({
+            "anchor_pid": os.getpid(), "pgid": os.getpgrp(),
+            "browser_pid": browser.pid if browser else None,
+            "phase": phase, "returncode": code,
+        }))
+        os.replace(temporary, state)
+
+    try:
+        if os.getppid() != parent:
+            return
+        record("group-started")
+        # This new supervisor has no application threads. Spawn the native
+        # executable with default TERM, then protect its still-owned leader.
+        # No Python flags are ever passed to a frozen runtime or to Chrome.
+        signal.signal(signal.SIGTERM, signal.SIG_DFL)
+        with Path(log_path).open("ab") as log:
+            browser = subprocess.Popen(command, stdin=subprocess.DEVNULL,
+                                       stdout=log, stderr=log, env=_browser_environment())
+            signal.signal(signal.SIGTERM, signal.SIG_IGN)
+            record("browser-started")
+            while True:
+                if os.getppid() != parent:
+                    return
+                try:
+                    code = browser.wait(timeout=.1)
+                except subprocess.TimeoutExpired:
+                    continue
+                record("native-exited", code)
+                break
+            while os.getppid() == parent:
+                time.sleep(.1)
+    finally:
+        # Parent death or a supervisor/status-file failure cannot orphan native
+        # children. This live leader still reserves its own unique group ID.
+        os.killpg(os.getpgrp(), signal.SIGKILL)
+
+
+class _FrozenBrowserProcess:
+    """Popen-like owned handle for freeze_support's multiprocessing dispatch."""
+
+    def __init__(self, process):
+        self._process = process
+        self.pid = process.pid
+        self.returncode = None
+
+    def poll(self):
+        if self.returncode is None:
+            self.returncode = self._process.exitcode
+            if self.returncode is not None:
+                self._process.close()
+        return self.returncode
+
+    def wait(self, timeout):
+        if self.returncode is None:
+            self._process.join(timeout)
+            code = self._process.exitcode
+            if code is None:
+                raise subprocess.TimeoutExpired("owned browser supervisor", timeout)
+            self.returncode = code
+            self._process.close()
+        return self.returncode
+
+    def kill(self):
+        self._process.kill()
+
+
+_PYTHON_BROWSER_BOOTSTRAP = (
+    "import json, sys; sys.path.insert(0, sys.argv[1]); "
+    "from openecon_charts.network_export import _supervise_browser; "
+    "_supervise_browser(json.loads(sys.argv[2]), sys.argv[3], int(sys.argv[4]), sys.argv[5], False)"
+)
+
+
+def _start_browser(command, log, state):
+    """Own a reserved POSIX group identity even after the native launcher exits."""
+    if os.name != "posix":
+        return subprocess.Popen(command, stdin=subprocess.DEVNULL, stdout=log, stderr=log)
+    if getattr(sys, "frozen", False):
+        # The desktop entry calls freeze_support before its app dispatcher.
+        # Its executable is an application, not a Python -I/-c interpreter.
+        import multiprocessing
+        worker = multiprocessing.get_context("spawn").Process(
+            target=_supervise_browser,
+            args=(command, str(state), os.getpid(), str(log.name), True),
+        )
+        worker.start()
+        process = _FrozenBrowserProcess(worker)
+    else:
+        # Ordinary library users need no multiprocessing __main__ guard. The
+        # explicit package path is this installed module's root, never cwd.
+        process = subprocess.Popen(
+            [sys.executable, "-I", "-c", _PYTHON_BROWSER_BOOTSTRAP,
+             str(Path(__file__).resolve().parents[1]), json.dumps(command),
+             str(state), str(os.getpid()), str(log.name)],
+            stdin=subprocess.DEVNULL, stdout=log, stderr=log, start_new_session=True,
+        )
+    process._openecon_group_anchor = True
+    process._openecon_browser_state = state
+    return process
+
+
+def _browser_state(process):
+    state = getattr(process, "_openecon_browser_state", None)
+    if state is None:
+        return None
+    try:
+        record = json.loads(state.read_text())
+    except FileNotFoundError:
+        return None
+    if record["anchor_pid"] != process.pid or record["pgid"] != process.pid:
+        raise NetworkExportError("Disposable browser group identity changed.")
+    if record["phase"] not in {"group-started", "browser-started", "native-exited"}:
+        raise NetworkExportError("Invalid disposable browser phase.")
+    code = record["returncode"]
+    if code is not None and (isinstance(code, bool) or not isinstance(code, int)):
+        raise NetworkExportError("Invalid disposable browser exit status.")
+    return record
+
+
+def _browser_exit_code(process):
+    """Read the native browser status without reaping the owned group leader."""
+    record = _browser_state(process)
+    return record["returncode"] if record else None
+
+
 def _stop_browser(process):
     """Stop every owned POSIX browser child, including after its launcher exits."""
     if os.name == "posix":
-        # Popen owns a new session, so its PID is a dedicated process-group ID.
-        # Waiting for the launcher alone does not stop Chrome's profile writers.
+        if not getattr(process, "_openecon_group_anchor", False):
+            raise NetworkExportError("Disposable browser group leader is not owned.")
+        # multiprocessing's global cleanup may already have reaped this child
+        # while another worker started. Admit ownership only after one poll;
+        # never poll/reap again between group admission and the final signal.
+        if process.poll() is not None:
+            # A startup poll already reaped this failed supervisor. Its finally
+            # block stops its group; never mask the original startup failure or
+            # signal a numeric PGID that could now identify another browser.
+            return
         try:
-            os.killpg(process.pid, signal.SIGTERM)
+            group = os.getpgid(process.pid)
         except ProcessLookupError:
-            pass
-        if process.poll() is None:
+            process.wait(timeout=5)
+            return
+        if group != process.pid:
+            # Frozen spawn has not entered its own session yet. Kill only this
+            # unreaped owned child; signalling its inherited group is forbidden.
+            process.kill()
+            process.wait(timeout=5)
+            return
+        try:
+            record = _browser_state(process)
+            if record and record["phase"] != "group-started":
+                os.killpg(process.pid, signal.SIGTERM)
+                deadline = time.monotonic() + 5
+                while _browser_exit_code(process) is None and time.monotonic() < deadline:
+                    time.sleep(.01)
+        finally:
+            # No poll/reap occurs between group ownership and escalation. The
+            # live/unreaped leader reserves its PID until this final wait.
+            # Permission failures propagate, rather than declaring cleanup.
             try:
-                process.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                pass  # Escalate the same owned group, never an unrelated browser.
-        try:
-            os.killpg(process.pid, signal.SIGKILL)
-        except ProcessLookupError:
-            pass
-        process.wait(timeout=5)
+                os.killpg(process.pid, signal.SIGKILL)
+            except ProcessLookupError:
+                pass
+            process.wait(timeout=5)
     elif process.poll() is None:
         process.terminate()
         try:
@@ -99,6 +269,31 @@ def _browser(explicit):
             return candidate
     raise NetworkExportError("Install Chrome, Chromium or Edge, or pass browser_executable. "
                              "Network export does not download a browser.")
+
+
+def _wait_for_debugging_port(descriptor, process, deadline):
+    """Read a completed Chromium descriptor within the existing startup budget."""
+    browser_path = "/devtools/browser/"
+    while True:
+        if process.poll() is not None or _browser_exit_code(process) is not None:
+            raise NetworkExportError("Disposable browser could not start.")
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise NetworkExportError("Browser startup exceeded the export timeout.")
+        try:
+            lines = descriptor.read_text(encoding="ascii").splitlines()
+        except (FileNotFoundError, UnicodeDecodeError):
+            lines = []
+        # Chromium creates the file before writing its port and browser path.
+        # The second line proves that the entire numeric port line was written.
+        if (len(lines) == 2 and 1 <= len(lines[0]) <= 5 and lines[0].isdecimal()
+                and lines[1].startswith(browser_path) and len(lines[1]) > len(browser_path)
+                and lines[1].isprintable() and not any(char.isspace() for char in lines[1])
+                and "?" not in lines[1] and "#" not in lines[1]):
+            port = int(lines[0])
+            if 1 <= port <= 65535:
+                return port
+        time.sleep(min(.05, remaining))
 
 
 class _CDP:
@@ -235,23 +430,16 @@ def export_network(plot, path, format, *, width=960, height=600, scale=1,
         page, profile = root / "network.html", root / "profile"
         page.write_text(document, encoding="utf-8")
         with (root / "browser.log").open("wb") as log:
-            process = subprocess.Popen([browser, "--headless", "--no-first-run", "--no-default-browser-check",
+            process = _start_browser([browser, "--headless", "--no-first-run", "--no-default-browser-check",
                 "--disable-background-networking", "--disable-component-update", "--disable-sync",
                 "--disable-extensions", "--disable-crash-reporter", "--remote-debugging-address=127.0.0.1",
                 "--remote-debugging-port=0", f"--user-data-dir={profile}", "about:blank"],
-                stdin=subprocess.DEVNULL, stdout=log, stderr=log,
-                start_new_session=os.name == "posix")
+                log, root / "browser-state.json")
             cdp = None
             try:
                 descriptor = profile / "DevToolsActivePort"
                 opener = build_opener(ProxyHandler({}))
-                while not descriptor.exists():
-                    if process.poll() is not None:
-                        raise NetworkExportError("Disposable browser could not start.")
-                    if time.monotonic() >= deadline:
-                        raise NetworkExportError("Browser startup exceeded the export timeout.")
-                    time.sleep(.05)
-                port = int(descriptor.read_text().splitlines()[0])
+                port = _wait_for_debugging_port(descriptor, process, deadline)
                 with opener.open(f"http://127.0.0.1:{port}/json/list", timeout=max(.01, deadline-time.monotonic())) as response:
                     pages = json.loads(response.read(65536))
                 endpoint = next(item["webSocketDebuggerUrl"] for item in pages if item.get("type") == "page")

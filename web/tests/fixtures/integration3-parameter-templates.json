@@ -1,0 +1,154 @@
+[
+  {
+    "token": 40,
+    "name": "openecon.ols",
+    "parameters": [
+      {
+        "description": "A DataFrame, column dictionary, row records or batch Dataset source.",
+        "name": "data",
+        "kind": "keyword-only"
+      },
+      {
+        "description": "Outcome column name; cannot be combined with formula.",
+        "name": "y",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "description": "Predictor column names; cannot be combined with formula.",
+        "name": "x",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "description": "Example: 'wage ~ education + experience + C(region)'.",
+        "name": "formula",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "description": "Standard error method, such as 'nonrobust', 'HC3', 'cluster' or 'hac'.",
+        "name": "covariance",
+        "choices": [
+          "'nonrobust'",
+          "'HC0'",
+          "'HC1'",
+          "'HC2'",
+          "'HC3'",
+          "'cluster'",
+          "'cluster_hc2'",
+          "'cluster_hc3'",
+          "'hac'",
+          "'bootstrap'",
+          "'jackknife'"
+        ],
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "description": "Predictor names to encode as categorical variables.",
+        "name": "categorical",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "description": "Include an intercept.",
+        "name": "intercept",
+        "kind": "keyword-only",
+        "default": "True"
+      },
+      {
+        "description": "Column name or names for clustered standard errors.",
+        "name": "cluster",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "description": "Column name containing the weights.",
+        "name": "weights",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "description": "'aweight', 'fweight', 'pweight' or 'iweight'.",
+        "name": "weight_type",
+        "choices": [
+          "'aweight'",
+          "'fweight'",
+          "'pweight'",
+          "'iweight'"
+        ],
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "description": "'drop' removes observations with missing values; 'raise' reports an error.",
+        "name": "missing",
+        "choices": [
+          "'raise'",
+          "'drop'"
+        ],
+        "kind": "keyword-only",
+        "default": "'drop'"
+      },
+      {
+        "description": "Inference significance level; 0.05 gives a 95% confidence interval.",
+        "name": "alpha",
+        "kind": "keyword-only",
+        "default": "0.05"
+      },
+      {
+        "description": "Time column used for HAC or lagged formulas.",
+        "name": "time",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "description": "HAC lag count or a supported automatic selection name.",
+        "name": "lags",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "description": "HAC weighting kernel.",
+        "name": "kernel",
+        "choices": [
+          "'bartlett'",
+          "'parzen'",
+          "'quadratic_spectral'",
+          "'truncated'"
+        ],
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "description": "Replication option for bootstrap or jackknife.",
+        "name": "reps",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "description": "Random seed for resampling.",
+        "name": "seed",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "dfadjust",
+        "kind": "keyword-only",
+        "default": "False"
+      },
+      {
+        "name": "hansen",
+        "kind": "keyword-only",
+        "default": "False"
+      },
+      {
+        "description": "'auto', 'cpu', 'cuda', 'cuda:<index>' or 'mps'. CUDA uses float64; Metal preconditions bounded factors with checked CPU float64 refinement.",
+        "name": "device",
+        "kind": "keyword-only",
+        "default": "'auto'"
+      }
+    ]
+  }
+]

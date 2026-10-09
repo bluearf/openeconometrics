@@ -731,9 +731,15 @@ class TeamStore:
     def add_file(self, project_id, user, metadata):
         def add(db):
             project = self._project(db, project_id, user, 'editor')
-            if any(f['name'] == metadata['name'] for f in project['files']):
+            reservations = list(project.get('transfer_reservations', {}).values())
+            if any(f['name'].casefold() == metadata['name'].casefold()
+                   for f in [*project['files'], *reservations]):
                 raise TeamError('FILE_EXISTS', 'This filename is already in use. Rename the file.', 409)
-            if len(project['files']) >= 20 or sum(f['size_bytes'] for f in project['files']) + metadata['size_bytes'] > 64 * 1024**2:
+            if (sum(f['size_bytes'] for f in project['files'])
+                    + sum(f['size_bytes'] for f in reservations) + metadata['size_bytes'] > 8 * 1024**3):
+                raise TeamError('FILE_LIMIT', 'The project transfer budget is 8 GiB.', 429)
+            if len(project['files']) + len(project.get('transfer_reservations', {})) >= 20 or sum(
+                    f['size_bytes'] for f in project['files'] if f.get('transfer') != 'chunked-v1') + metadata['size_bytes'] > 64 * 1024**2:
                 raise TeamError('FILE_LIMIT', 'Each project can have up to 20 files with a combined size of 64 MiB.', 429)
             project['files'].append(metadata)
             project['updated_at'] = now()
@@ -751,6 +757,8 @@ class TeamStore:
             + _RUN_TASK_OVERHEAD_SECONDS)).isoformat()
         def begin(db):
             project = self._project(db, project_id, user, 'editor')
+            if any(f.get('transfer') == 'chunked-v1' for f in project['files']):
+                raise TeamError('LOCAL_COMPUTE_REQUIRED', 'Run large shared datasets on the desktop.', 409)
             if project.get('active_run'):
                 raise TeamError('CONSOLE_BUSY', 'A run is already in progress in this project.', 409)
             # A durable daily quota and project lock bound parallel work/cost.

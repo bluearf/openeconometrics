@@ -75,7 +75,7 @@ measurement. A separate PyTorch Profiler call records the twelve operators with
 largest CPU total time and their device time. Profiling is outside timed calls.
 
 On this Apple Silicon Mac, CUDA is unavailable. The
-[CPU measurement receipt](evidence/market-53-devices-2026-10-07.json) records that
+CPU measurement receipt (internal evidence excluded from this public snapshot) records that
 limitation explicitly. MARKET-53 remains open until the real CUDA comparison and
 installed application device-recognition evidence are collected. The runnable
 [Mac example](examples/network_devices.py) displays the five supported tables and

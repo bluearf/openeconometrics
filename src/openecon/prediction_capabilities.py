@@ -17,12 +17,14 @@ LINEAR_ESTIMATORS = frozenset({
     "areg", "reghdfe", "ivreghdfe", "xtreg", "xtivreg", "xtgls", "xtpcse",
     "xtfmb", "prais", "rreg", "qreg", "bsqreg", "iqreg", "sqreg", "xtgee",
     "ppmlhdfe", "mixed", "xtlogit", "xtprobit", "xtpoisson",
+    "sreg", "mmreg", "ivcue", "mixedflex",
 })
 COUNT_ESTIMATORS = frozenset({"zip", "zinb", "hurdle", "tpoisson", "tnbreg"})
 GROUP_ESTIMATORS = frozenset({'melogit', 'meprobit', 'mepoisson', 'menbreg'})
 ADVANCED_ESTIMATORS = frozenset({"nl", "sureg", "mvreg", "reg3", "threshold", "biprobit",
     "heckman", "heckprobit", "churdle", "ivprobit", "ivtobit", "frontier"})
-SAVED_ESTIMATORS = DIRECT_ESTIMATORS | LINEAR_ESTIMATORS | COUNT_ESTIMATORS | ADVANCED_ESTIMATORS | GROUP_ESTIMATORS
+CONTROL_ESTIMATORS = frozenset({"cfregress", "cflogit", "cfprobit", "cfcloglog", "cfpoisson", "cfgamma", "cfinvgauss", "cffraclogit"})
+SAVED_ESTIMATORS = DIRECT_ESTIMATORS | LINEAR_ESTIMATORS | COUNT_ESTIMATORS | ADVANCED_ESTIMATORS | GROUP_ESTIMATORS | CONTROL_ESTIMATORS
 
 
 def describe(registered: Iterable[str]) -> dict:
@@ -46,6 +48,7 @@ def describe(registered: Iterable[str]) -> dict:
             "fd": {"supported": False, "reason": "raw levels omit the fitted difference transformation"},
             "re": {"response": "population linear mean; no group-conditioned BLUP"},
             **({"pooled": {"response": "pooled linear mean"},
+                "cre": {"supported": False, "specialized_api": "cre_predict", "response": "saved actual-estimation-sample panel means; unknown panels rejected; common margins unavailable"},
                 "mle": {"response": "population linear mean; no group-conditioned BLUP"}}
                if name == "xtreg" else {}),
         }
@@ -57,6 +60,14 @@ def describe(registered: Iterable[str]) -> dict:
         for name in ("xtlogit", "xtprobit", "xtpoisson")
     })
     conditions.update({
+        **{name: {"response": "conditional mean at observed endogenous/exogenous/instrument covariates; reconstruct d-Z gamma",
+                  "inference": "full generated-control Gamma/Beta HC0/CR0 covariance; asymptotic normal delta",
+                  "predict_kinds": ["response", "xb", "stdp", "derivative"],
+                  "margins_methods": ["ame", "mem"], "at": "declared covariate grid",
+                  "requires_instruments": True, "requires_observed_endogenous": True,
+                  "structural_effects_identified": False, "semantic_replay": "once before query batches",
+                  "dataset": "bounded projected full-row evaluation; fit remains resident <=5000",
+                  "observation_interval": False} for name in CONTROL_ESTIMATORS},
         **{name: {'response': 'normal population integral with full variance/covariance delta gradient',
                   'targets': ['population', 'conditional'], 'conditional': 'explicit effects held fixed',
                   'posterior': 'complete fitted group normal posterior' if name != 'menbreg' else False,
@@ -75,6 +86,18 @@ def describe(registered: Iterable[str]) -> dict:
         "frontier": {"outcome":["frontier","mean","u","te"],"posterior_requires_observed_outcome":["u","te"]},
         "mixed": {"response": "population linear mean; group-conditioned BLUP uses mixed_predict"},
         "rreg": {"response": "robust fitted linear location"},
+        **{name: {"response": "saved bisquare robust fitted linear location",
+                  "inference": "saved coefficient covariance includes S scale estimation; asymptotic robust inference",
+                  "fit_domain": "unweighted; saved treatment coding supported"}
+           for name in ("sreg", "mmreg")},
+        "ivcue": {"response": "structural X beta at explicit endogenous covariates",
+                  "inference": "strong-identification asymptotics; no weak-IV guarantee",
+                  "requires_endogenous_covariates": True, "requires_evaluation_instruments": False,
+                  "fit_domain": "numeric unweighted; K <= 24, L <= 48"},
+        "mixedflex": {"response": "population fixed X beta integrating mean-zero Gaussian random effects",
+                      "inference": "full saved fixed/variance observed-information covariance; variance gradients are zero for this mean",
+                      "requires_group_labels": False, "group_conditioned_blup": False,
+                      "fit_domain": "numeric unweighted Gaussian joint ML"},
         "qreg": {"response": "saved conditional quantile"},
         "bsqreg": {"response": "saved conditional quantile"},
         "iqreg": {"response": "saved interquantile difference"},
@@ -126,6 +149,27 @@ def describe(registered: Iterable[str]) -> dict:
             "domains_document": "docs/econometrics/prediction-domains.md",
         },
         "specialized_saved_targets": {
+            "spatial_predict": {"api": "spatial_predict", "estimators": ["sar", "sem", "sac", "sdm"],
+                                "refits": False, "sample": "resident numeric unweighted CPU float64",
+                                "maximum_network_rows": 512, "maximum_parameters": 128,
+                                "target": "unconditional reduced-form mean on the complete saved fixed keyed graph",
+                                "uncertainty": "asymptotic normal full joint parameter delta; full N-by-N query mean covariance; no observation interval",
+                                "output": "complete keyed mean, gradients, parameter covariance and query mean covariance tables",
+                                "state": "saved effective weights with checked graph hashes; complete source/query identity; full summary_state restoration",
+                                "dataset_support": False, "graph_replacement": False, "row_drop": False,
+                                "document": "docs/econometrics/saved-target-extensions.md"},
+            "causal_learning": {"api": "causal_predict", "estimators": ["dmlcate", "causalforest"],
+                                "refits": False, "sample": "resident numeric CPU float64",
+                                "output": "row-preserving DataFrame and complete query covariance",
+                                "target": "declared CATE basis projection or honest DR forest local average",
+                                "uncertainty": "joint influence covariance; forest approximation bias excluded",
+                                "state": "versioned complete basis/forest state with SHA-256 integrity",
+                                "document": "docs/econometrics/causal-learning.md"},
+            "pls": {"api": "regularized_predict", "component_api": "regularized_table", "refits": False,
+                    "sample": "in-memory numeric unweighted CPU float64", "inference": False,
+                    "components": "fixed or training-fold-only CV; no future evaluation labels in preprocessing"},
+            "htaylor_moment": {"api": "htaylor_predict", "refits": False, "sample": "in-memory numeric unweighted CPU float64",
+                          "target": "population linear mean; no group BLUP", "common_margins": False},
             "common_scalar_dispatch": False,
             "refits": False,
             "output": "owned indexed temporary Parquet Dataset",

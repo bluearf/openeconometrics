@@ -1,5 +1,9 @@
 # Time-series selection, refits, MIDAS, general state space and ETS
 
+Reverse, incremental OLS and panel calendar windows, plus training-window
+selection and forecast evaluation, are documented in the
+[extended workflow domain](capability-closures-2026-10-07.md#window-workflows).
+
 These public Python routes use native CPU float64 Torch computations. They accept
 resident tables within explicit model/workspace/operation budgets. Registration
 does not imply a Dataset fitting route, GPU execution, automatic collection, or
@@ -32,8 +36,12 @@ fit failures. Future outcome rows never enter estimation. Optional forecasts
 reuse family handlers; future regressors must be supplied separately in an
 origin-keyed `exog` mapping. MIDAS windows slice/rebind the original dated alignment
 metadata. Prediction-only fits require a separate predictive validation workflow;
-no artificial coefficients/SEs are generated. Interior missing periods and
-irregular calendars are rejected. Datetime strings are parsed before sorting.
+no artificial coefficients/SEs are generated. The original forward physical
+kernels reject interior missing periods and irregular calendars and parse
+datetime strings before sorting.
+
+The separate reverse/calendar panel modes and `rolling_predict` preserve gaps
+under their declared timeline domains; see [panel-prediction-extensions.md](panel-prediction-extensions.md).
 
 ## Release-aware MIDAS
 

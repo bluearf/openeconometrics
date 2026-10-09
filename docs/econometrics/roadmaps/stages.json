@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "audited_source": "40add891378f404135706b1fe4f07ed64f65ce48",
+  "audited_date": "2026-10-07",
+  "planning_only": [
+    "MARKET-144",
+    "MARKET-186",
+    "MARKET-188"
+  ],
+  "original_implementation_issues_open": [
+    30,
+    74,
+    76
+  ],
+  "evidence": {
+    "independent_numerical_for_planned_methods": false,
+    "vendor_runs": false,
+    "new_frozen_estimators": false,
+    "installed_native_estimators": false,
+    "stata_parity_validated": false
+  },
+  "candidate": {
+    "pr": 91,
+    "head": "830b9c387fe980ebae159a0babad45b8c0370948",
+    "state": "OPEN",
+    "path": "src/openecon/econometrics/tsworkflows/sspace.py",
+    "scope": "missing measurements advertised only; eight docstring lines, no mask implementation",
+    "diff_kind": "docstring_only"
+  },
+  "implemented_stage": {
+    "key": "S0",
+    "id": "MARKET-202",
+    "scope": "single-stage declaration only; estimation=false,inference=false",
+    "paths": [
+      "src/openecon/survey.py",
+      "tests/test_survey_design.py"
+    ],
+    "guide": "../survey-design.md"
+  },
+  "stages": [
+    {
+      "key": "S1",
+      "issue": "MARKET-210",
+      "parent": "MARKET-144",
+      "url": "https://linear.app/bluearf/issue/MARKET-210",
+      "status": "Backlog",
+      "support": "planned",
+      "priority": 2,
+      "title": "Survey Taylor means/proportions/totals/ratios ve domain inference çekirdeğini ekle",
+      "acceptance": "MARKET-144 roadmap S1. MARKET-202 single-stage declaration'i yeniden kullan. CPU float64 PSU influence sums: complete stratum universe preserved when domain indicator is zero; cov=sum_h (1-f_h)*m_h/(m_h-1)*sum_j(u_hj-u_hbar)(u_hj-u_hbar)'. Full multivariate covariance; t(df=PSUs-strata) intervals; categorical proportions fixed category metadata, explicit listwise/outcome missing policy. Weighted total, Hájek mean and ratio denominators/null/degenerate cases separate. No outcome-based filtering of design PSUs. Hand-calculated 2 strata x 2 PSUs, Stata survey manual fixture, singleton census, FPC census zero covariance, empty domains, denominator zero, weight-scale invariances. Declaration bounds retained; no Dataset fallback. Readbacks include design + target + sample digest + table/covariance/LaTeX.",
+      "guide": "survey.md"
+    },
+    {
+      "key": "S2",
+      "issue": "MARKET-211",
+      "parent": "MARKET-144",
+      "url": "https://linear.app/bluearf/issue/MARKET-211",
+      "status": "Backlog",
+      "support": "planned",
+      "priority": 2,
+      "title": "Multistage survey design ve linearized regression kabul aşamalarını tamamla",
+      "acceptance": "MARKET-144 roadmap S2. Split: recursive within-stage PSU/SSU nesting, stage sampling fractions/counts and actual stage weights; then WLS/GLM score linearization with full design covariance and domain df. One-stage MARKET-202 is not a multistage shortcut. Stage-specific FPC; distinguish ultimate-cluster approximation from full multistage estimator; policies singleton raise/certainty/centered/scaled require individual references. Independent two-stage finite-population enumeration and design-based regression oracle, design effects with declared SRS denominator, missing outcomes without dropping out-of-domain PSU geometry, rank/separation and invalid nested design failures. Persistence retains every stage/equation/parameter order. Calibration/poststratification are deferred subgates, not silently estimated.",
+      "guide": "survey.md"
+    },
+    {
+      "key": "S3",
+      "issue": "MARKET-212",
+      "parent": "MARKET-144",
+      "url": "https://linear.app/bluearf/issue/MARKET-212",
+      "status": "Backlog",
+      "support": "planned",
+      "priority": 3,
+      "title": "Survey BRR/Fay, jackknife ve replicate-bootstrap varyans aşamalarını ekle",
+      "acceptance": "MARKET-144 roadmap S3. Separate gates for supplied/generated balanced two-PSU BRR and Fay rho with explicit variance multipliers; stratum-aware delete-one jackknife; supplied design-consistent bootstrap replicate weights. Persist replicate IDs, design/scale/rscales/centering/MSE convention, seed if generated, count/df and complete failures. Never substitute ordinary row bootstrap or generic leave-one-out. Compare independently enumerated replicates and official survey reference output, census/singleton/domain behavior and missing/incompatible/negative replicate weights. Full covariance, design effects with named reference, replicate-work budget, no silent deletion of failing replicates.",
+      "guide": "survey.md"
+    },
+    {
+      "key": "Q1",
+      "issue": "MARKET-213",
+      "parent": "MARKET-186",
+      "url": "https://linear.app/bluearf/issue/MARKET-213",
+      "status": "Backlog",
+      "support": "planned",
+      "priority": 3,
+      "title": "IV quantile regression ve weak-ID test inversion aşamalarını ekle",
+      "acceptance": "MARKET-186 roadmap Q1. Initial scalar endogenous regressor + declared exogenous regressors/instruments, fixed interior tau, i.i.d. resident sample. Record CH rank similarity/exclusion/monotonicity assumptions. Moment E[Z*(tau-I(Y<=D*alpha+X*beta))]=0, inverse QR profiles with independent solver/objective/moment audit; inference and weak-ID confidence-set inversion separate gates. Joint covariance and density/bandwidth conventions only for identified interior solution. Disconnected/unbounded/empty grid acceptance sets retained with grid boundaries; no fake Wald CI under weak identification. CH author PDF and Stata IVQR official examples are planned independent fixtures; author reproduction/license access and actual vendor output pending. Initial clustered/panel/weights unsupported until individually validated. Existing 2SLS AR/CLR is not IVQR inference.",
+      "guide": "specialized-quantiles.md"
+    },
+    {
+      "key": "Q2",
+      "issue": "MARKET-214",
+      "parent": "MARKET-186",
+      "url": "https://linear.app/bluearf/issue/MARKET-214",
+      "status": "Backlog",
+      "support": "planned",
+      "priority": 3,
+      "title": "QARDL için author replication, lag/sample ve cointegration inference ekle",
+      "acceptance": "MARKET-186 roadmap Q2. Evaluate Cho/Kim/Shin 2015 author-provided GAUSS distribution before implementation; acquire exact file hashes/license without copying unlicensed assets. Dedicated quantile-specific levels/CEC/EC conventions, common-sample bounded lag search, short-/long-run transforms with full cross-covariance and denominator checks; source-paper cointegration/Wald scaling and quantile-process tests, not mean ARDL bounds values. Fixed interior finite tau-grid CPU float64 first; disclose model-selection conditioning. Original author demo and independent algebra/solver/Monte-Carlo reference, then licensed EViews14 QARDL run using exactly matching sample/lags/deterministics/density. QNARDL/weights/panel and continuous-process bands remain later gates. Native frozen/restart readback and LaTeX preserve tau and lag metadata.",
+      "guide": "specialized-quantiles.md"
+    },
+    {
+      "key": "Q3",
+      "issue": "MARKET-215",
+      "parent": "MARKET-186",
+      "url": "https://linear.app/bluearf/issue/MARKET-215",
+      "status": "Backlog",
+      "support": "planned",
+      "priority": 4,
+      "title": "Quantile VAR/cointegration, QQ ve QTE için ayrı araştırma protokolleri hazırlayıp doğrula",
+      "acceptance": "MARKET-186 roadmap Q3. Preserve existing qreg/sqreg/ARDL/VAR/MMQR; do not advertise lagged qreg as QVAR or sqreg bands as cointegration certification. Stage A source-paper identification and innovation/dynamic target conventions for quantile VAR/cointegration; Stage B local-linear quantile-on-quantile bandwidth/support and joint uncertainty; Stage C unconditional vs conditional/rank-preserving QTE, identification and influence/resampling protocol. Each gets author fixture/source/license + independent uncertainty check before public registration, licensed command vs community/add-in distinction, explicit grid/support/extrapolation rejection. Prior Sonra/kapsam dışı decisions preserved; no implementation promise until method proposal passes.",
+      "guide": "specialized-quantiles.md"
+    },
+    {
+      "key": "T1",
+      "issue": "MARKET-216",
+      "parent": "MARKET-188",
+      "url": "https://linear.app/bluearf/issue/MARKET-216",
+      "status": "Backlog",
+      "support": "planned",
+      "priority": 3,
+      "title": "State-space partial missing, time-varying/exogenous ve exact diffuse kapılarını ekle",
+      "acceptance": "MARKET-188 roadmap T1. PR91 head830b9c3 differs from main40add89 by eight docstring lines only; neither compared filter implements missing measurements. Extend the existing shared kernel in place. Separate gates: proper-prior per-date observed masks and all-missing transition-only periods + full smoother; declared T/Z/H/Q/c/d schedules/exogenous paths; exact diffuse P_inf/P_star rank recursions and likelihood normalization. Keep time periods rather than deleting partial measurements. Validate against closed-form joint Gaussian conditioning and KFAS author's exact-diffuse reference, UCM/general equivalent specification, PSD/rank failures. Persist matrix/equation schedules, missing masks, normalization and smoothed/forecast full covariance; distinguish state/process/parameter uncertainty and require future exog. Native CPU float64 bounded state/measurement/parameter/derivative work first; Dataset/GPU/nonlinear disabled until separate evidence.",
+      "guide": "state-space.md"
+    },
+    {
+      "key": "T2",
+      "issue": "MARKET-217",
+      "parent": "MARKET-188",
+      "url": "https://linear.app/bluearf/issue/MARKET-217",
+      "status": "Backlog",
+      "support": "planned",
+      "priority": 4,
+      "title": "Identified dynamic-factor ve ragged/mixed-frequency forecast protokolünü uygula",
+      "acceptance": "MARKET-188 roadmap T2 after T1. Declare factor count/loadings rotation/sign normalizations, factor and idiosyncratic AR orders, releases/vintages and temporal aggregation equations. Bańbura/Modugno arbitrary-missing EM likelihood reference; each partial observation keeps its date. Separate serial idiosyncratic, mixed-frequency aggregation and news decomposition gates. EM likelihood path/restarts, Hessian identification/full covariance, convergence/failure, nowcast/forecast assumptions and process vs parameter uncertainty. Original-author fixture with data/license/hash and independent Kalman likelihood/smoother/finite-difference covariance gates before registration. Large factor matrices explicit CPU/workspace/iteration limits; no automatic unlimited streaming or lookahead. Sonra recommendation remains unchanged.",
+      "guide": "state-space.md"
+    },
+    {
+      "key": "T3",
+      "issue": "MARKET-218",
+      "parent": "MARKET-188",
+      "url": "https://linear.app/bluearf/issue/MARKET-218",
+      "status": "Backlog",
+      "support": "planned",
+      "priority": 4,
+      "title": "DSGE determinacy/solution ve estimation için bağımsız feasibility kabulünü tamamla",
+      "acceptance": "MARKET-188 roadmap T3 research only; original Hayır/kapsam dışı decision preserved. Linear rational-expectations equations/equilibrium errors/orderings -> generalized eigenvalue/QZ existence+uniqueness audit using Sims original equations/code as development-only oracle; return no unique solution for indeterminate/inconsistent cases. Native Torch strategy for required decompositions must be explicit, never hidden SciPy integration. Only after deterministic solution reproduction: observation map/Kalman likelihood and structural identification/covariance; then nonlinear perturbation/local solution and Bayesian posterior as separate approval of scope stages. Author fixtures/licensing, timing/eigenvalue threshold sensitivity, unit roots and near-singularity cases required. Persist equations, steady state, normalization, solution residuals/status, shock mappings; no native estimator yet.",
+      "guide": "state-space.md"
+    }
+  ],
+  "common_promotion_gates": "README.md#shared-promotion-gates"
+}

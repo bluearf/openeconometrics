@@ -161,7 +161,8 @@ def _oblimin_value(pattern: Tensor, gamma: float) -> tuple[float, Tensor]:
     return float((squares * other).sum()) / 4.0, pattern * other
 
 
-def oblimin_matrix(a: Tensor, gamma: float, max_iter: int) -> tuple[Tensor, int, bool]:
+def oblimin_matrix(a: Tensor, gamma: float, max_iter: int, *, criterion=None,
+                   what: str = "oblimin") -> tuple[Tensor, int, bool]:
     """M = T'^{-1} minimizing the oblimin criterion by gradient projection (Jennrich 2002)."""
     m = a.shape[1]
     t = torch.eye(m, dtype=a.dtype)
@@ -169,7 +170,7 @@ def oblimin_matrix(a: Tensor, gamma: float, max_iter: int) -> tuple[Tensor, int,
     def evaluate(trial: Tensor) -> tuple[Tensor, float, Tensor]:
         inverse = torch.linalg.inv(trial)
         pattern = a @ inverse.T
-        value, gq = _oblimin_value(pattern, gamma)
+        value, gq = _oblimin_value(pattern, gamma) if criterion is None else criterion(pattern)
         return pattern, value, -(pattern.T @ gq @ inverse).T
 
     _, value, gradient = evaluate(t)
@@ -178,7 +179,7 @@ def oblimin_matrix(a: Tensor, gamma: float, max_iter: int) -> tuple[Tensor, int,
     while True:
         projected = gradient - t * (t * gradient).sum(0)
         size = float(torch.linalg.matrix_norm(projected))
-        done = _stopped(size, iteration, max_iter, "oblimin")
+        done = _stopped(size, iteration, max_iter, what)
         if done is not None:
             return torch.linalg.inv(t).T, iteration, done
         step *= 2.0
@@ -203,7 +204,7 @@ def oblimin_matrix(a: Tensor, gamma: float, max_iter: int) -> tuple[Tensor, int,
         else:
             # No decrease at any step length: the projected gradient is at the
             # rounding level of the criterion.
-            _stopped(size, max_iter, max_iter, "oblimin")
+            _stopped(size, max_iter, max_iter, what)
             return torch.linalg.inv(t).T, iteration, False
         t, value, gradient = trial, new_value, new_gradient
         iteration += 1
@@ -221,8 +222,59 @@ def promax_matrix(varimax: Tensor, target_base: Tensor, power: float) -> Tensor:
     return u * scale.sqrt()
 
 
+def geomin_value(pattern: Tensor, epsilon: float) -> tuple[float, Tensor]:
+    """Row geometric-mean simplicity criterion and analytic gradient."""
+    adjusted = pattern.square() + epsilon
+    means = adjusted.log().mean(1).exp()
+    gradient = (2 / pattern.shape[1]) * means[:, None] * pattern / adjusted
+    return float(means.sum()), gradient
+
+
+def geomin_orthogonal(a: Tensor, epsilon: float, max_iter: int):
+    m = a.shape[1]
+    matrix = torch.eye(m, dtype=a.dtype)
+    step = 1.0
+    for iteration in range(max_iter + 1):
+        value, slope = geomin_value(a @ matrix, epsilon)
+        gradient = a.T @ slope
+        inner = matrix.T @ gradient
+        projected = gradient - matrix @ ((inner + inner.T) / 2)
+        size = float(torch.linalg.matrix_norm(projected))
+        done = _stopped(size, iteration, max_iter, "geomin")
+        if done is not None:
+            return matrix, iteration, done
+        step *= 2
+        for _ in range(60):
+            u, _, vh = torch.linalg.svd(matrix - step * projected)
+            trial = u @ vh
+            new_value, new_slope = geomin_value(a @ trial, epsilon)
+            required = .5 * step * size**2
+            if value - new_value > required:
+                break
+            if required <= 64 * torch.finfo(a.dtype).eps * max(abs(value), 1):
+                g = a.T @ new_slope
+                h = trial.T @ g
+                if float(torch.linalg.matrix_norm(g - trial @ ((h + h.T) / 2))) < size:
+                    break
+            step /= 2
+        else:
+            _stopped(size, max_iter, max_iter, "geomin")
+            return matrix, iteration, False
+        matrix = trial
+    raise AssertionError("unreachable")
+
+
+def target_matrix(a: Tensor, target: Tensor) -> Tensor:
+    """Full-target orthogonal Procrustes, with uniquely identified orientation."""
+    u, singular, vh = torch.linalg.svd(a.T @ target)
+    if float(singular.min()) <= 1e-12 * float(singular.max().clamp_min(1e-300)):
+        raise KernelError("singular_matrix", "The complete target does not identify a unique factor orientation.")
+    return u @ vh
+
+
 def rotate(loadings: Tensor, method: str, *, normalize: bool = True, power: float = 4.0,
-           gamma: float = 0.0, max_iter: int = 1000) -> Rotation:
+           gamma: float = 0.0, max_iter: int = 1000, target=None,
+           epsilon: float = .01, geomin_oblique: bool = False) -> Rotation:
     """Rotate a [p, m] loading matrix; factors are then ordered and signed.
 
     The rotated factors are ordered by decreasing sum of squared pattern loadings
@@ -230,8 +282,9 @@ def rotate(loadings: Tensor, method: str, *, normalize: bool = True, power: floa
     """
     p, m = loadings.shape
     identity = torch.eye(m, dtype=loadings.dtype)
-    if m < 2:
-        return Rotation(loadings.clone(), identity, identity, 0, True, method in OBLIQUE)
+    oblique = method in OBLIQUE or (method == "geomin" and geomin_oblique)
+    if m < 2 and method != "target":
+        return Rotation(loadings.clone(), identity, identity, 0, True, oblique)
     scale = _row_scale(loadings, normalize)
     a = loadings / scale[:, None]
     if method in ORTHOGONAL or method == "promax":
@@ -246,16 +299,40 @@ def rotate(loadings: Tensor, method: str, *, normalize: bool = True, power: floa
             matrix = matrix @ promax_matrix(rotated, a @ matrix, power)
     elif method == "oblimin":
         matrix, iterations, converged = oblimin_matrix(a, gamma, max_iter)
+    elif method == "target":
+        try:
+            shape = tuple(target.shape) if hasattr(target, "shape") else (len(target), len(target[0]))
+        except (TypeError, IndexError) as exc:
+            raise KernelError("invalid_spec", "Target must match the loadings shape.") from exc
+        if shape != tuple(loadings.shape):
+            raise KernelError("invalid_spec", "Target must match the loadings shape.")
+        if (isinstance(target, Tensor) and target.is_complex()) or getattr(getattr(target, "dtype", None), "kind", None) == "c":
+            raise KernelError("invalid_spec", "Target must be real-valued.")
+        try:
+            target = torch.as_tensor(target, dtype=loadings.dtype)
+        except (TypeError, ValueError, RuntimeError) as exc:
+            raise KernelError("invalid_spec", "Target must be a finite complete loading matrix.") from exc
+        if target.device.type != "cpu" or target.shape != loadings.shape or not bool(torch.isfinite(target).all()):
+            raise KernelError("invalid_spec", "Target must be a finite CPU matrix matching the loadings shape.")
+        matrix = target_matrix(a, target / scale[:, None])
+        iterations, converged = 1, True
+    elif method == "geomin":
+        if geomin_oblique:
+            matrix, iterations, converged = oblimin_matrix(a, 0, max_iter,
+                criterion=lambda z: geomin_value(z, epsilon), what="geomin")
+        else:
+            matrix, iterations, converged = geomin_orthogonal(a, epsilon, max_iter)
     else:
         raise KernelError("invalid_option", f"Unknown rotation '{method}'.")
     pattern = loadings @ matrix
-    order = torch.argsort(pattern.square().sum(0), descending=True, stable=True)
-    pattern, matrix = pattern[:, order], matrix[:, order]
-    pivot = pattern.abs().argmax(0)
-    sign = torch.sign(pattern[pivot, torch.arange(m)])
-    sign = torch.where(sign == 0, torch.ones_like(sign), sign)
-    pattern, matrix = pattern * sign, matrix * sign
-    if method in ORTHOGONAL:
+    if method != "target":
+        order = torch.argsort(pattern.square().sum(0), descending=True, stable=True)
+        pattern, matrix = pattern[:, order], matrix[:, order]
+        pivot = pattern.abs().argmax(0)
+        sign = torch.sign(pattern[pivot, torch.arange(m)])
+        sign = torch.where(sign == 0, torch.ones_like(sign), sign)
+        pattern, matrix = pattern * sign, matrix * sign
+    if not oblique:
         phi = identity
     else:
         phi = torch.linalg.inv(matrix.T @ matrix)
@@ -263,4 +340,4 @@ def rotate(loadings: Tensor, method: str, *, normalize: bool = True, power: floa
         phi.diagonal().fill_(1.0)
     if not bool(torch.isfinite(pattern).all()) or not bool(torch.isfinite(phi).all()):
         raise KernelError("numerical_failure", "The rotation produced non-finite loadings.")
-    return Rotation(pattern, matrix, phi, iterations, converged, method in OBLIQUE)
+    return Rotation(pattern, matrix, phi, iterations, converged, oblique)

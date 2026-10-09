@@ -155,6 +155,11 @@ ESTIMATORS = ESTIMATORS + (
 
 # Extra public functions exported as oe.<name>: {"name": "package.module:function"}.
 EXPORTS: dict[str, str] = {
+    "repeated_gls": "openecon.econometrics.mixed.repeated:repeated_gls",
+    "restore_repeated_gls": "openecon.econometrics.mixed.repeated:restore_repeated_gls",
+    "repeated_gls_predict": "openecon.econometrics.mixed.repeated:repeated_gls_predict",
+    "repeated_gls_contrast": "openecon.econometrics.mixed.repeated:repeated_gls_contrast",
+    "mixed_satterthwaite": "openecon.econometrics.mixed.contrasts:mixed_satterthwaite",
     "mixed_predict": "openecon.econometrics.mixed.predict:mixed_predict",
 }
 

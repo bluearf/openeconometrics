@@ -119,6 +119,12 @@ def test_dense_full_sample_coefficient_covariance_likelihood_parity(name, mixed)
     assert replay.provenance['streaming']['maximum_batch_rows'] <= 73
     assert replay.sample_positions == []
     assert len(replay.predictions) <= 400
+    # Include response means, physical positions, equation labels, every fit
+    # metric and inference policy. Coefficient-only parity missed these bugs.
+    from test_native_model_matrix import module
+    checked = module().compare(dense.model_dump(), replay.model_dump(),
+                               relative=2e-5, absolute=2e-7)
+    assert checked['status'] == 'passed', checked['errors'][:8]
     restored = ResultBundle.model_validate_json(replay.model_dump_json())
     assert restored.coefficients == replay.coefficients
     assert '\\begin{tabular}' in restored.to_latex()

@@ -1,5 +1,10 @@
 # Panel-data linear models: `xtreg`, `hausman`, `xtfmb`
 
+CRE/Mundlak, Hausman–Taylor and saved structural prediction have separate
+[supported-domain documentation](capability-closures-2026-10-07.md#cremundlak-and-hausmantaylor).
+
+For the actual-sample `xtreg(model="cre")`, Mundlak test and the explicitly named equal-panel `htaylor_moment` convention, see [panel-prediction-extensions.md](panel-prediction-extensions.md). The existing `cre`/`xthtaylor` APIs retain their previously declared conventions.
+
 Linear models for data observed on `n` panels (firms, people, countries) over
 `T_i` periods, `N = sum_i T_i` observations in all. Everything on this page is
 implemented in OpenEconometrics on float64 PyTorch tensors: group means are one

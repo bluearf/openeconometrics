@@ -10,7 +10,7 @@ not arbitrary-precision bit operations or wall-clock time.
 [Run the synthetic example](examples/network_five_methods.py) in the Mac code
 panel. It asserts hand-checkable results and displays eleven complete tables.
 The independent tests and separately measured scale fixtures are described in
-[the acceptance evidence](evidence/network-five-2026-10-07/README.md).
+the acceptance evidence (internal evidence excluded from this public snapshot).
 
 ## Typed hypergraphs · MARKET-60
 
@@ -19,7 +19,7 @@ See [sparse hyperedges and bounded paths](network-hypergraph-paths.md) for typed
 record inputs, directed tail/head incidence, nonnegative/zero edge weights,
 explicit projection reducers, lossless JSON persistence and admitted budgets.
 Its independent and installed-native acceptance is pinned under
-[MARKET-60/67 evidence](evidence/market-60-67/README.md).
+MARKET-60/67 evidence (internal evidence excluded from this public snapshot).
 
 ## DSP and joint MRQAP · MARKET-64
 

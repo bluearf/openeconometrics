@@ -7,9 +7,10 @@ import multiprocessing
 import os
 from pathlib import Path
 import pickle
-import select
+import queue
 import subprocess
 import sys
+import threading
 
 from fastapi.testclient import TestClient
 import pytest
@@ -356,17 +357,33 @@ def test_explicit_close_cleans_running_worker_and_keeps_history(tmp_path):
         assert len(client.get(prefix() + "/console", headers=headers).json()["history"]) == 1
 
 
-@pytest.mark.skipif(os.name != "posix", reason="Pipe readiness uses POSIX select")
 @pytest.mark.parametrize("termination", ["shutdown", "eof"])
 def test_entry_announces_ephemeral_port_and_stdin_shutdown(tmp_path, termination):
     import httpx
     process = subprocess.Popen([sys.executable, "-m", "openecon.desktop_entry", "--port", "0",
                                 "--data-root", str(tmp_path)], stdin=subprocess.PIPE,
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    worker_handle = None
+    kernel32 = None
     try:
-        ready, _, _ = select.select([process.stdout], [], [], 30)
-        assert ready, "Desktop runtime did not announce startup"
-        descriptor = json.loads(process.stdout.readline())
+        announcements = queue.Queue(maxsize=1)
+
+        def read_ready():
+            try:
+                record = process.stdout.readline(16385)
+                if len(record) > 16384 or not record.endswith(b"\n"):
+                    raise RuntimeError("Desktop runtime readiness is absent or oversized")
+                announcements.put(json.loads(record))
+            except BaseException as error:
+                announcements.put(error)
+
+        threading.Thread(target=read_ready, daemon=True).start()
+        try:
+            descriptor = announcements.get(timeout=30)
+        except queue.Empty as error:
+            raise AssertionError("Desktop runtime did not announce startup") from error
+        if isinstance(descriptor, BaseException):
+            raise descriptor
         assert descriptor["type"] == "ready"
         assert descriptor["port"] > 0
         assert descriptor["url"] == f"http://127.0.0.1:{descriptor['port']}"
@@ -374,8 +391,26 @@ def test_entry_announces_ephemeral_port_and_stdin_shutdown(tmp_path, termination
         with httpx.Client(base_url=descriptor["url"], trust_env=False, timeout=30) as client:
             headers = connect(client)
             result = client.post(prefix() + "/console/execute", headers=headers, json={"code": "6 * 7"}).json()
+            assert result["status"] == "ok", result
             assert result["outputs"][0]["data"] == "42"
             worker_pid = client.get(prefix() + "/console", headers=headers).json()["status"]["pid"]
+        if os.name == "nt":
+            import ctypes
+            from ctypes import wintypes
+
+            kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+            kernel32.OpenProcess.argtypes = [wintypes.DWORD, wintypes.BOOL, wintypes.DWORD]
+            kernel32.OpenProcess.restype = wintypes.HANDLE
+            kernel32.WaitForSingleObject.argtypes = [wintypes.HANDLE, wintypes.DWORD]
+            kernel32.WaitForSingleObject.restype = wintypes.DWORD
+            kernel32.CloseHandle.argtypes = [wintypes.HANDLE]
+            kernel32.CloseHandle.restype = wintypes.BOOL
+            # Hold this exact owned worker before shutdown, so PID reuse cannot
+            # turn the exit assertion into a query or signal of another process.
+            worker_handle = kernel32.OpenProcess(0x00100000, False, worker_pid)
+            if not worker_handle:
+                raise ctypes.WinError(ctypes.get_last_error())
+            assert kernel32.WaitForSingleObject(worker_handle, 0) == 258
         if termination == "shutdown":
             process.stdin.write(b'{"type":"shutdown"}\n')
             process.stdin.flush()
@@ -384,9 +419,14 @@ def test_entry_announces_ephemeral_port_and_stdin_shutdown(tmp_path, termination
         process.wait(timeout=10)
         assert process.returncode == 0
         assert process.stdout.read() == b""
-        with pytest.raises(ProcessLookupError):
-            os.kill(worker_pid, 0)
+        if os.name == "nt":
+            assert kernel32.WaitForSingleObject(worker_handle, 5000) == 0
+        else:
+            with pytest.raises(ProcessLookupError):
+                os.kill(worker_pid, 0)
     finally:
         if process.poll() is None:
             process.kill()
             process.wait(timeout=5)
+        if worker_handle:
+            kernel32.CloseHandle(worker_handle)

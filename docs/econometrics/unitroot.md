@@ -324,7 +324,9 @@ dummy that switches on later), the recursion starts at the first sample that
 does and a note says so. Recursive residuals agree with refitting the
 regression at every date and with
 `statsmodels.stats.diagnostic.recursive_olsresiduals`. Stata's OLS-residual
-CUSUM (`estat sbcusum, ols`) is not implemented.
+CUSUM has a separate `oe.ols_cusum` route, with fixed-design iid Gaussian
+conditional simulation rather than a vendor asymptotic critical-value claim;
+see [the inference/stability guide](next-eight-inference-stability.md).
 
 ## `xtunitroot`: panel unit-root tests
 
@@ -508,7 +510,8 @@ p-values of 1994 stop at six), so `egranger` accepts at most five regressors.
 - `sbsingle`: classical Wald only (no robust VCE, no LR variants, no tests on
   a subset of coefficients); approximate sup-Wald p-value instead of Hansen's
   (1997); no p-values or critical values for average / exponential Wald.
-- `cusum`: recursive residuals only (no OLS-residual CUSUM).
+- `cusum`: recursive residuals only; separate `ols_cusum` uses declared
+  conditional fixed-design iid Gaussian OLS-residual CUSUM/CUSUMSQ calibration.
 - `xtunitroot`: IPS `t-tilde-bar` statistics and exact critical values and the
   Breitung-Das robust statistic are not implemented; LLC, Hadri, Breitung and
   HT need balanced panels; no Fisher `drift` variant.

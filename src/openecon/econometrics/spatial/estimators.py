@@ -242,7 +242,7 @@ def fit_spatial(spec, data):
 
 def spatial_impacts(result):
     """Publication tables of persisted direct/indirect/total effects and delta CIs."""
-    if not isinstance(result, ResultBundle) or result.spec.estimator not in {"sar", "sdm", "sac"}:
+    if not isinstance(result, ResultBundle) or result.spec.estimator not in {"sar", "sdm", "sac", "sar_iv"}:
         raise AnalysisError(
             "unsupported_spatial_impacts", "Pass a fitted SAR, SDM or SAC ResultBundle."
         )

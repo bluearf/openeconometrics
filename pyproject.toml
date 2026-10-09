@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "openecon"
-version = "0.3.18a4"
+version = "0.3.19a1"
 description = "An open-source Python workspace for reproducible statistics and econometrics"
 readme = "PYPI-README.md"
 requires-python = ">=3.11,<3.15"
@@ -14,7 +14,7 @@ authors = [{name = "OpenEconometrics contributors"}]
 dependencies = [
   "torch>=2.6,<3", "pandas>=2.2,<3",
   "pyarrow>=18,<24", "pydantic>=2.9,<3",
-  "threadpoolctl>=3.5,<4", "packaging>=24,<27", "openecon-charts==0.3.0a2"
+  "threadpoolctl>=3.5,<4", "packaging>=24,<27", "openecon-charts==0.3.1a1"
 ]
 
 [project.urls]
@@ -48,6 +48,7 @@ packages = ["src/openecon"]
 artifacts = ["src/openecon/static/**"]
 
 [tool.hatch.build.targets.sdist]
+exclude = ["docs/evidence/**"]
 include = [
   "src/openecon", "web/src", "web/tests", "web/package.json", "web/package-lock.json",
   "web/tsconfig.json", "web/vite.config.ts", "web/index.html", "tests", "docs",

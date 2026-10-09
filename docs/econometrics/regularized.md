@@ -1,12 +1,25 @@
 # Regularized prediction and orthogonal PLR inference
 
-This family supplies eight distinct `ModelSpec`/`ResultBundle` estimators:
-`ridge`, `lasso`, `elasticnet`, `kernelreg`, `localreg`, `postdouble`,
+This family supplies nine distinct `ModelSpec`/`ResultBundle` estimators:
+`ridge`, `lasso`, `elasticnet`, `pls`, `kernelreg`, `localreg`, `postdouble`,
 `partiallingout` and `dmlplr`. Numerical estimation uses native CPU float64
 PyTorch. There is no SciPy, statsmodels or scikit-learn runtime dependency.
 These methods have independent algebraic verification; this is not Stata
 parity evidence, a release validation, or a claim that every causal model is
 identified.
+
+Separate `elasticnet_logit` and `elasticnet_poisson` predictive estimators add
+Bernoulli/Poisson paths, training-only CV, frequency/empirical-loss weights,
+categorical maps, forced controls and literal feature penalty factors. Their
+complete state and explicit uncertainty/domain boundaries are documented in
+[regularized-glm.md](regularized-glm.md). The numeric unweighted Gaussian/PLS
+contracts below remain method-specific. Weighted/category Gaussian and scalar
+partial PLS1 fixed/CV routes are documented in
+[regularized-all-family.md](regularized-all-family.md); they retain the existing
+numeric IID route and do not extend unvalidated score plug-in inference.
+
+Scalar PLS1, saved component selection and the remaining GLM/weight/category
+option stages are described in [panel-prediction-extensions.md](panel-prediction-extensions.md).
 
 ```python
 import openecon as oe
@@ -35,10 +48,12 @@ effect.to_latex("effect.tex")
 Direct specs use `predictors` for the predictor/control columns,
 `columns={"treatment": "participation"}` for inferential methods and
 `options={...}` for tuning. The public convenience APIs follow the existing
-`data=`, `y=`, `x=` convention. All methods accept only continuous numeric
-predictors and IID, unweighted samples; categorical predictors, weights,
-cluster covariance, panels and time-series dependence are explicitly
-unsupported. Missing inputs raise by default; `missing="drop"` records the
+`data=`, `y=`, `x=` convention. The local and inferential methods described here
+retain their method-specific numeric/unweighted restrictions. Gaussian/PLS
+predictive methods additionally admit explicit weighted/category fixed/CV
+routes under the separate contract above; cluster covariance, panels and
+time-series dependence remain unsupported for those prediction targets.
+Missing inputs raise by default; `missing="drop"` records the
 original positional estimation sample, dropped count and input/sample hashes.
 Prediction from saved state rejects incomplete inputs and preserves row indices.
 
@@ -68,12 +83,17 @@ never standardized. The minimized objective is
 
 \[
  \frac{1}{2n}\sum_i(y_i-\bar y-z_i'\beta)^2
- +\lambda\left[\rho\sum_j \ell_j|\beta_j|
-       +\frac{1-\rho}{2}\sum_j\beta_j^2\right].
+ +\lambda\left[\rho\sum_j q_j\ell_j|\beta_j|
+       +\frac{1-\rho}{2}\sum_j q_j\beta_j^2\right].
 \]
 
 `rho=0` is ridge; `rho=1` is Lasso; elastic net exposes `l1_ratio=rho`.
-The intercept is unpenalized. Original-unit coefficients are `beta/scale`
+The intercept is unpenalized. Literal nonnegative `penalty_factors` are `q_j` (default one; no factor
+normalization). Named `forced_controls` set their factor to zero; their block
+must be identified in every training fold. Nonunit factors or forced controls
+refuse `selection="plugin"`; fixed/CV factor paths preserve their own complete
+fold state. See [factor conventions and validation](next-eight-regularized-prediction.md).
+Original-unit coefficients are `beta/scale`
 and the reported predictive constant is `mean(y)-center @ (beta/scale)`.
 Ridge uses a direct linear solve (SVD least squares for a zero penalty);
 Lasso/elastic net use cyclic residual coordinate descent. Each path point
@@ -97,9 +117,13 @@ penalties on a sum rather than a mean of squared residuals.
   centering/scaling on its own training rows. A local generator records
   reproducible `seed` and fold assignments;
   the global random state is untouched. Ties select the largest lambda.
-  The path reference is `max(abs(z.T @ yc/n))/max(rho,0.01)`, bounded below
+  With unit factors, the path reference is `max(abs(z.T @ yc/n))/max(rho,0.01)`, bounded below
   by `1e-8`; for ridge this is a numerical reference scale, because ridge
   has no finite penalty at which all coefficients vanish.
+  With zero-factor controls, the automatic reference first residualizes y and
+  penalized predictors against the identified unpenalized training block,
+  and divides each penalized score by its literal factor. Validation outcomes
+  still cannot enter that fold's grid.
 * `selection="plugin"` estimates heteroskedastic score loadings iteratively.
   Under the half-MSE objective, `lambda = c * Phi^-1(1-gamma/(2p)) /
   (sqrt(n)*rho)` and `ell_j=sqrt(mean(z_j^2*residual^2))`, with configurable

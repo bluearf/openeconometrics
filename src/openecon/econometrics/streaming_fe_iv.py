@@ -405,7 +405,9 @@ def _fit(spec, source, *, batch_rows=None):
         info.update({"covariance": spec.covariance, "nobs": n, "df_resid": actual_df,
                      "df_inference": reference_df, "small": small, "method": method,
                      "k_total": k+absorbed, "absorbed_degrees_of_freedom": absorbed,
-                     "residual_definition": "projected outcome minus observed endogenous X b"})
+                     "residual_definition": "observed minus fitted response"})
+        if not panel:
+            info["error_variance"] = "RSS/(N-K)" if small else "RSS/N"
         if model == "fe" and spec.covariance == "robust":
             info["correction"] = "vce(robust) = vce(cluster panel); "+info["correction"]
         diagnostics = {"joint_TSQR_depth": tree.depth, "first_stage_condition_number": est.proj.first.condition_number,

@@ -670,3 +670,5 @@ comparison can confirm or correct them (confidence in brackets):
   observations (medium); `R^2` of a Prais-Winsten fit is that of the
   transformed regression with a centred total sum of squares (low);
   `independent` uses `sigma^2 = e'e/N` (medium).
+
+Shared smooth mean parameters with full joint Gaussian ML uncertainty are available through [nonlinear SUR](nonlinear-sur.md).

@@ -129,7 +129,7 @@ papers' simulation counts: 20,000 Wiener paths/5,000 steps for Ng–Perron;
 finite-sample grid records unconditional rejection rates, failures and Wilson
 intervals for iid and AR(.4) unit roots, and linear/ESTAR alternatives at
 100/250 levels. It is a bounded diagnostic, not universal size/power validation.
-See [the acceptance evidence](../evidence/unitroot-methods-2026-10-07/README.md).
+See the acceptance evidence (internal evidence excluded from this public snapshot).
 
 MARKET-137 covers calibrated KSS; MARKET-136 retains the unresolved Ng–Perron
 calibration. Parent MARKET-125 retains

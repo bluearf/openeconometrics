@@ -61,6 +61,27 @@ def assert_parity(dense, replay, *, rtol=2e-9, atol=2e-10):
     assert "\\begin{tabular}" in restored.to_latex()
 
 
+def assert_group_state_parity(expected, actual, path=()):
+    """Compare all saved numerical state, retaining adapter description scope."""
+    if isinstance(expected, dict):
+        allowed = {"capture"} if not path else set()
+        assert expected.keys() == actual.keys() - allowed
+        if not path:
+            assert actual["capture"] == "actual fitted means on complete verified projected replays; no row collection"
+        for key, value in expected.items():
+            assert_group_state_parity(value, actual[key], (*path, key))
+    elif isinstance(expected, list):
+        assert len(expected) == len(actual)
+        for left, right in zip(expected, actual, strict=True):
+            assert_group_state_parity(left, right, path)
+    elif isinstance(expected, (int, float)) and not isinstance(expected, bool):
+        assert actual == pytest.approx(expected, rel=2e-9, abs=2e-10)
+    elif path[-1] in {"basis", "inference_domain"}:
+        assert isinstance(actual, str) and actual
+    else:
+        assert actual == expected
+
+
 @pytest.mark.parametrize("estimator", ["areg", "cnsreg"])
 @pytest.mark.parametrize("covariance,cluster", [("nonrobust", None), ("HC1", None),
                           ("cluster", "cluster"), ("cluster", ["cluster", "group"])])
@@ -76,7 +97,12 @@ def test_all_linear_covariance_weight_dense_parity(estimator, covariance, cluste
     replay = fit_streaming_linear(spec, Dataset.from_frame(data), batch_rows=17)
     assert_parity(dense, replay)
     if estimator == "areg":
-        assert replay.extra == dense.extra
+        assert {k: v for k, v in replay.extra.items() if k != "group_state"} == {
+            k: v for k, v in dense.extra.items() if k != "group_state"}
+        # Saved group effects and nuisance information are numerical results,
+        # and different QR partitions need not produce identical float bits.
+        # The two adapters also describe their information basis differently.
+        assert_group_state_parity(dense.extra["group_state"], replay.extra["group_state"])
 
 
 @pytest.mark.parametrize("intercept", [True, False])
@@ -256,6 +282,18 @@ def test_absorbed_large_offsets_preserve_within_variation(covariance, cluster):
     np.testing.assert_allclose(np.array(replay.covariance_matrix)[1:, 1:], expected_covariance, rtol=2e-11, atol=2e-12)
     np.testing.assert_allclose(np.array(dense.covariance_matrix)[1:, 1:], expected_covariance, rtol=2e-7, atol=5e-10)
     assert replay.metrics["r_squared_within"] == pytest.approx(dense.metrics["r_squared_within"], abs=2e-8)
+    # The result must survive persistence and evaluate the actual level-space
+    # means, not merely pass slope/covariance tests while dropping group state.
+    import openecon as oe
+    level_prediction = x@beta
+    for value in np.unique(group):
+        selected = group == value
+        level_prediction[selected] += np.mean(y[selected] - x[selected]@beta)
+    for result in (dense, replay):
+        restored = ResultBundle.model_validate_json(result.model_dump_json())
+        actual = oe.predict(restored, data, kind="response")
+        np.testing.assert_allclose(actual.response, data.y.iloc[0]+level_prediction,
+                                   rtol=0, atol=1e-6)
 
 
 @pytest.mark.parametrize("intercept", [True, False])

@@ -43,7 +43,8 @@ def eigen_table(eigenvalues: Tensor, prefix: str, total: float | None = None) ->
 @c.procedure
 def pca(data: Any, columns: list[str], *, matrix: str = "correlation",
         components: int | None = None, mineigen: float | None = None,
-        missing: str = "drop") -> TableSet:
+        missing: str = "drop", weights: str | None = None,
+        weight_type: str = "fweight") -> TableSet:
     """Principal component analysis of a correlation or covariance matrix.
 
     Model. With C the correlation matrix R (default) or the covariance matrix S
@@ -111,6 +112,11 @@ def pca(data: Any, columns: list[str], *, matrix: str = "correlation",
     if components is not None:
         components = c.check_count(components, "components")
     cutoff = _MINEIGEN if mineigen is None else c.check_number(mineigen, "mineigen", minimum=0.0)
+    c.check_choice(weight_type, "weight_type", ("fweight",))
+    if weights is not None:
+        from .weighted import frequency_moments
+        mean, sscp, n, dropped, extra = frequency_moments(data, names, weights, missing)
+        return _from_moments(mean, sscp, n, names, matrix, components, cutoff, dropped, extra)
     from openecon.dataset import Dataset
     if isinstance(data, Dataset):
         from .replay import moments as replay_moments
@@ -178,7 +184,11 @@ def standardize(result: TableSet, data: Any, names: list[str], *, scale: bool,
     mean = torch.as_tensor(stats.loc[names, "mean"].to_numpy(dtype="float64").copy())
     std = torch.as_tensor(stats.loc[names, "std_dev"].to_numpy(dtype="float64").copy())
     if centre:
+        if result.attrs.get("training_means_supplied") is False:
+            raise AnalysisError("missing_training_moments", "Supply the actual training means to score a summary-matrix result.")
         x = x - mean
+    if scale and result.attrs.get("training_sds_supplied") is False:
+        raise AnalysisError("missing_training_moments", "Supply the actual training standard deviations to score a correlation-matrix result.")
     return (x / std if scale else x), keep
 
 

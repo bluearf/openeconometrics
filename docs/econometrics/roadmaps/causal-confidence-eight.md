@@ -1,0 +1,37 @@
+# Eight predeclared causal confidence, multiarm and effect-distribution scopes
+
+Declared in Linear on 9 October 2026 before implementation, as child scopes of MARKET-187 / GitHub #157. Initial main was `4594f4be041265fb52a5197373ff7aca21c3e437`; the owned branch is `codex/causal-confidence-next-eight`. Existing completed scopes are preserved and are not recounted.
+
+## MARKET-723 — `randomization_confidence_set`
+
+Declared complete fixed-treated-count binary assignment; exact full universe and two-sided constant-additive sharp-null test inversion over a fixed finite predeclared candidate grid. Preserve candidate order, every candidate×assignment statistic/extreme/p-value, complete assignment topology and actual empty/disconnected/all-grid acceptance set C_G={theta in G:p_theta>alpha}. Exact coverage only when the true constant effect is in G; no interpolation/hull/whole-real-line interval or heterogeneous ATE claim. Recompute/certify original-row sums and ties; refuse unrepresentable null imputation and ambiguous numeric comparisons. Independent full support and coverage enumeration; preflight grid×support work and complete-state workspace before allocation.
+
+## MARKET-724 — `paired_randomization_confidence_set`
+
+Declared independent fair two-unit pair assignment, one unit per arm within every original typed pair; exact full 2^M assignment universe and finite predeclared constant-additive sharp-null candidate inversion. Preserve pair membership/original rows and every candidate×assignment result, candidate order and empty/disconnected/all-grid sets. Exact coverage only for true effects in supplied G, with p>alpha acceptance; no continuous interval/hull or weak-ATE claim. Original-row/pair expansion and certified comparisons must not inherit unsafe ordinary mean/tolerance arithmetic. Independent weighted coverage enumeration, RNG restoration and multiplicative resource preflight.
+
+## MARKET-725 — `cluster_randomization_confidence_set`
+
+Declared complete assignment of intact typed clusters with fixed treated-cluster count; exact full cluster universe, individual-average HT-scaled cluster-total statistic and fixed finite predeclared constant-effect candidate inversion. Preserve unequal cluster sizes, all original row membership, every candidate×cluster assignment statistic/extreme/p-value, candidate order and actual accepted set. Exact coverage conditional on true effect belonging to G; no hull/continuous or heterogeneous ATE interval. Mixed cluster treatment/deletion refused; stable original-row aggregation and certified ties; independent enumeration and multiplicative work/workspace admission.
+
+## MARKET-726 — `bernoulli_neyman_ate`
+
+Independent externally known true probabilities0<pi_i<1 and fixed original finite population; raw HT mean0/mean1/ATE targets, including all-zero/all-one observed assignment support. Full3x3 conservative covariance bound from diagonal original-row arm second moments, without HC1 or IID sample covariance; E(bound)-true covariance is N^-2 sum_i L y_i y_i' L' PSD. HT is not location invariant; constant outcomes with unequal probabilities may produce genuine realized nonzero contrasts. Restore actual anchor coefficients, retain negative outcomes and exact original positions. Zero SE has explicitly unavailable z/p inference, no fabricated precision. Normal weak-null inference requires stated unconditional fixed-potential Lindeberg/variance-consistency/positivity asymptotics, not finite exact coverage. Exhaust all2^N assignments to verify unbiased vector and full covariance identity/PSD; missing/estimated probabilities/clipping/weights refused.
+
+## MARKET-727 — `multiarm_neyman_ate`
+
+Declared complete fixed-count design with explicit ordered typed arm labels,3..8 arms and at least2 observations per arm. Full arm means plus fixed declared zero-sum contrasts and complete shared covariance: arm bounddiag(s_a^2/n_a), transformed jointly; expectation gap S_potential/N is PSD. Preserve arm/contrast order, source rows, all group summaries and full off-diagonal contrast covariance. Pointwise asymptotic normal inference only, no invented exact/joint-Wald law. Strict original-row common-location aggregation prevents rounded arm means inventing nonzero constant-outcome contrasts. Independent3-arm90/210 full universes, full covariance expectation identity/PSD, overlapping contrasts, typed labels and saved-state acceptance.
+
+## MARKET-728 — `stratified_multiarm_neyman_ate`
+
+Prespecified typed strata with independent within-stratum complete fixed arm counts; explicit shared ordered3..8 arm labels and at least2 observations in every original arm×stratum cell. Fixed target weightsN_h/N, full arm means and declared zero-sum contrasts, complete bound sum_h (N_h/N)^2 diag(s_ha^2/n_ha) and shared transformed covariance. No silent dropping of empty/missing cells or reweighting. Covariance bound and normal inference are conservative/asymptotic, not exact finite-sample coverage. Preserve all original topology, weights, typed labels and group summaries; cancellation-safe original-row aggregation. Independent Cartesian assignment laws, vector unbiasedness and exact full expected bound-minus-true covariance identity/PSD.
+
+## MARKET-729 — `treatment_effect_cdf_bounds`
+
+Pointwise sharp bounds on individual Delta=Y1-Y0 conditional on empirical potential-outcome PMFs from explicitly declared randomized binary arms, under unrestricted coupling. Finite prespecified outcome support<=8 with finite exactly representable binary64 pairwise differences; other subtraction domains refused before numerical allocation. Complete exact Torch-int64 capacity flow with denominatorN0*N1<=1e10, float64 outcomes/probabilities; every threshold lower/upper bound retains full feasible joint coupling, exact margins/objective and residual/min-cut optimality certificate. Pointwise extrema need not form one jointly attainable entire CDF; no population sampling covariance/CI or observational identification claim. Independent full integer-coupling enumeration and test-only scipy.linprog plus certificate/marginal/artifact-tamper checks.
+
+## MARKET-730 — `treatment_effect_quantile_bounds`
+
+Pointwise sharp left-quantile bounds for individual Delta=Y1-Y0 under the same finite empirical marginal coupling law, distinct from marginal quantile treatment effects. Fixed support<=8 and exactly representable binary64 differences; quantileq in(0,1) uses exact integer mass crossing from q.as_integer_ratio. Qmin witness from maximumCDF at first crossing; Qmax witness from minimumCDF at predecessor of first lowerCDF crossing, with minimal-support case handled. Retain every full extremizing coupling, Delta PMF and below/at crossing counts, all supporting flow/min-cut proofs and original inputs. Each quantile separately attainable, no joint quantile-vector/whole-curve or sampling-CI claim. Independent coupling/LP oracles and exact boundary/adjacent-float quantile cases, full artifact and tamper checks.
+
+All eight require strict resident/role/missing/weight/device/resource admission, complete typed checksummed tables and state, independent mathematical fixtures, isolated wheel and frozen process proof, actual native Run plus full Quit/reopen readback, and a hosted gate on the exact final head and current main before merge and tracker closure. Native continuous kernels are CPU float64 Torch; the declared finite coupling solver uses exact int64 capacities. Randomization and identification assumptions are explicit caller declarations. Broader parents stay open.

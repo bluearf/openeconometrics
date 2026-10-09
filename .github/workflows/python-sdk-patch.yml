@@ -1,4 +1,4 @@
-name: Verify Python SDK patch
+name: Verify Python SDK and charts pair
 
 on:
   pull_request:
@@ -13,11 +13,70 @@ concurrency:
   group: python-sdk-patch-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+env:
+  SDK_VERSION: '0.3.19a1'
+  CHARTS_VERSION: '0.3.1a1'
+
 jobs:
-  package:
-    name: Verify SDK patch package (${{ matrix.python }})
+  build:
+    name: Build one fixed SDK and charts pair
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Build source-pinned frontend and exactly four distributions
+        run: |
+          npm --prefix web ci --no-audit --no-fund
+          npm --prefix web run build
+          python -m pip install 'build==1.3.0' 'twine==7.0.0'
+          python -m build packages/openecon-charts --outdir dist
+          python -m build --outdir dist
+          python scripts/verify_public_package_pair.py --dist dist \
+            --sdk-version "$SDK_VERSION" --charts-version "$CHARTS_VERSION" \
+            --output pair-build/package-pair-provenance.json
+          python -m twine check --strict dist/*
+      - name: Record immutable build execution and retain its exact bytes
+        shell: python
+        run: |
+          import json
+          import os
+          from pathlib import Path
+          import shutil
+          manifest = json.loads(Path('SOURCE-MANIFEST.json').read_text())
+          record = {
+              'public_checkout_commit': os.environ['GITHUB_SHA'],
+              'private_source_commit': manifest['source_commit'],
+              'source_files_sha256': manifest['source_files_sha256'],
+              'event': os.environ['GITHUB_EVENT_NAME'],
+              'run_id': os.environ['GITHUB_RUN_ID'],
+              'run_attempt': os.environ['GITHUB_RUN_ATTEMPT'],
+              'sdk_version': os.environ['SDK_VERSION'],
+              'charts_version': os.environ['CHARTS_VERSION'],
+          }
+          Path('pair-build/build-execution.json').write_text(json.dumps(record, indent=2) + '\n')
+          shutil.copytree('dist', 'pair-build/dist')
+          shutil.copytree('src/openecon/static', 'pair-build/frontend')
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: fixed-sdk-charts-build-${{ github.run_id }}-${{ github.run_attempt }}
+          path: pair-build/
+          if-no-files-found: error
+          retention-days: 7
+
+  package:
+    # Public main ruleset requires these exact Python-version check names.
+    name: Verify SDK patch package (${{ matrix.python }})
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
@@ -27,36 +86,21 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: ${{ matrix.python }}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: fixed-sdk-charts-build-${{ github.run_id }}-${{ github.run_attempt }}
+          path: pair-build
+      - name: Verify the same four distributions against source and build execution
+        run: |
+          python -m pip install 'packaging>=24.2,<27'
+          python .github/scripts/verify_shared_package_pair.py \
+            --build pair-build --output "$RUNNER_TEMP/pair-execution.json"
       - name: Select provisioned Chrome with its sandbox enabled
         run: |
           browser_path="$(command -v google-chrome || command -v google-chrome-stable)"
           test -n "$browser_path"
           "$browser_path" --version
           printf 'OPENECON_BROWSER_EXECUTABLE=%s\n' "$browser_path" >> "$GITHUB_ENV"
-      - name: Build the local public SDK metadata patch
-        run: |
-          python -m pip install 'build==1.3.0' 'twine==7.0.0'
-          python -m build --outdir dist
-          python -m twine check --strict dist/*
-      - name: Download exact already-published charts distributions
-        shell: python
-        run: |
-          import hashlib
-          from pathlib import Path
-          import urllib.request
-          base = 'https://github.com/bluearf/openeconometrics/releases/download/python-v0.3.18a3/'
-          hashes = {
-              'openecon_charts-0.3.0a2-py3-none-any.whl': 'f61491cfbc026b9e558ee04f97f57edd8cf6974871c9cb3132f68becd8683639',
-              'openecon_charts-0.3.0a2.tar.gz': 'b96168e4dd24560ff54e6041490ad68f1d47a7890c5d928883ddcb79d4e7e47e',
-          }
-          for name, expected in hashes.items():
-              with urllib.request.urlopen(base + name, timeout=60) as response:
-                  data = response.read()
-              if hashlib.sha256(data).hexdigest() != expected:
-                  raise SystemExit(f'Published charts SHA256 mismatch: {name}')
-              Path('dist', name).write_bytes(data)
-      - name: Check SDK and unchanged published charts metadata
-        run: python -m twine check --strict dist/*
       - name: Install and verify dependency-free charts wheel and sdist
         shell: bash
         run: |
@@ -64,14 +108,21 @@ jobs:
             chart_python="$RUNNER_TEMP/charts-$mode/bin/python"
             python -m venv "$RUNNER_TEMP/charts-$mode"
             if [ "$mode" = wheel ]; then
-              "$chart_python" -m pip install dist/openecon_charts-0.3.0a2-py3-none-any.whl
+              "$chart_python" -m pip install "pair-build/dist/openecon_charts-$CHARTS_VERSION-py3-none-any.whl"
             else
-              "$chart_python" -m pip install dist/openecon_charts-0.3.0a2.tar.gz
+              "$chart_python" -m pip install "pair-build/dist/openecon_charts-$CHARTS_VERSION.tar.gz"
             fi
             "$chart_python" -m pip check
-            python scripts/verify_charts_distribution.py --python "$chart_python" --output "$RUNNER_TEMP/charts-$mode-smoke.json"
+            python .github/scripts/verify_installed_package_pair.py --python "$chart_python" \
+              --provenance pair-build/package-pair-provenance.json --package openecon-charts \
+              --output "$RUNNER_TEMP/charts-$mode-installed.json"
+            python scripts/verify_charts_distribution.py --python "$chart_python" \
+              --charts-version "$CHARTS_VERSION" --output "$RUNNER_TEMP/charts-$mode-smoke.json"
+            python .github/scripts/verify_package_readme.py --python "$chart_python" \
+              --name openecon-charts --readme packages/openecon-charts/PYPI-README.md \
+              --output "$RUNNER_TEMP/charts-$mode-readme.json"
           done
-      - name: Install and test fresh wheel and sdist environments
+      - name: Install and test fresh SDK wheel and sdist environments
         shell: bash
         run: |
           for mode in wheel sdist; do
@@ -79,32 +130,60 @@ jobs:
             python -m venv "$RUNNER_TEMP/sdk-$mode"
             "$package_python" -m pip install --index-url https://download.pytorch.org/whl/cpu 'torch>=2.6,<3'
             if [ "$mode" = wheel ]; then
-              "$package_python" -m pip install dist/openecon_charts-0.3.0a2-py3-none-any.whl dist/openecon-0.3.18a4-py3-none-any.whl
+              "$package_python" -m pip install "pair-build/dist/openecon_charts-$CHARTS_VERSION-py3-none-any.whl" "pair-build/dist/openecon-$SDK_VERSION-py3-none-any.whl"
             else
-              "$package_python" -m pip install dist/openecon_charts-0.3.0a2.tar.gz dist/openecon-0.3.18a4.tar.gz
+              "$package_python" -m pip install "pair-build/dist/openecon_charts-$CHARTS_VERSION.tar.gz" "pair-build/dist/openecon-$SDK_VERSION.tar.gz"
             fi
             "$package_python" -m pip check
+            python .github/scripts/verify_installed_package_pair.py --python "$package_python" \
+              --provenance pair-build/package-pair-provenance.json \
+              --package openecon --package openecon-charts \
+              --output "$RUNNER_TEMP/sdk-$mode-installed.json"
             "$package_python" scripts/generate_capability_docs.py --check
-            python scripts/verify_sdk_distribution.py --python "$package_python" --output "$RUNNER_TEMP/sdk-$mode-smoke.json"
+            python scripts/verify_sdk_distribution.py --python "$package_python" \
+              --sdk-version "$SDK_VERSION" --charts-version "$CHARTS_VERSION" \
+              --output "$RUNNER_TEMP/sdk-$mode-smoke.json"
+            python .github/scripts/verify_package_readme.py --python "$package_python" \
+              --name openecon --readme PYPI-README.md --output "$RUNNER_TEMP/sdk-$mode-readme.json"
           done
-      - name: Run bounded parser and OLS guard regressions
+      - name: Run bounded metadata, parser and OLS guard regressions
         run: |
-          python -m pip install 'pytest>=8,<10' 'statsmodels>=0.14.4,<0.15'
           "$RUNNER_TEMP/sdk-wheel/bin/python" -m pip install 'pytest>=8,<10' 'statsmodels>=0.14.4,<0.15'
-          "$RUNNER_TEMP/sdk-wheel/bin/python" -m pytest tests/test_dataset.py tests/test_streaming_ols_engine.py
-      - name: Verify real sandboxed Chrome exports and owned profile cleanup
+          "$RUNNER_TEMP/sdk-wheel/bin/python" -I -m pytest .github/tests/test_installed_package_pair.py --junitxml="$RUNNER_TEMP/installed-inventory-guards.xml"
+          "$RUNNER_TEMP/sdk-wheel/bin/python" -I -m pytest tests/test_public_package_pair_metadata.py tests/test_dataset.py tests/test_streaming_ols_engine.py --junitxml="$RUNNER_TEMP/sdk-regressions.xml"
+      - name: Verify standalone wheel and sdist sandboxed Chrome exports
+        shell: bash
         run: |
-          "$RUNNER_TEMP/sdk-wheel/bin/python" -c 'from openecon_charts.network_export import _browser; print(_browser(None))'
-          "$RUNNER_TEMP/sdk-wheel/bin/python" -m pytest packages/openecon-charts/tests/test_network_export.py --junitxml="$RUNNER_TEMP/network-export.xml"
-          python -c 'from pathlib import Path; import os; import xml.etree.ElementTree as ET; root = ET.parse(Path(os.environ["RUNNER_TEMP"]) / "network-export.xml").getroot(); assert not root.findall(".//skipped"), "Real browser export acceptance cannot be skipped"'
+          for mode in wheel sdist; do
+            chart_python="$RUNNER_TEMP/charts-$mode/bin/python"
+            "$chart_python" -m pip install 'pytest>=8,<10'
+            "$chart_python" -I -c 'from openecon_charts.network_export import _browser; print(_browser(None))'
+            "$chart_python" -I -m pytest packages/openecon-charts/tests/test_network_export.py --junitxml="$RUNNER_TEMP/network-export-$mode.xml"
+          done
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          for name in ('installed-inventory-guards.xml', 'sdk-regressions.xml', 'network-export-wheel.xml', 'network-export-sdist.xml'):
+              root = ET.parse(Path(os.environ['RUNNER_TEMP']) / name).getroot()
+              assert root.findall('.//testcase'), f'Empty acceptance suite: {name}'
+              assert not root.findall('.//skipped'), f'Acceptance cannot be skipped: {name}'
+              assert not root.findall('.//failure') and not root.findall('.//error'), name
+          PY
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
-          name: sdk-patch-package-${{ matrix.python }}
+          name: sdk-charts-pair-${{ matrix.python }}
           path: |
-            dist/*
+            pair-build/build-execution.json
+            pair-build/package-pair-provenance.json
+            ${{ runner.temp }}/pair-execution.json
             ${{ runner.temp }}/sdk-*-smoke.json
             ${{ runner.temp }}/charts-*-smoke.json
-            ${{ runner.temp }}/network-export.xml
+            ${{ runner.temp }}/*-installed.json
+            ${{ runner.temp }}/installed-inventory-guards.xml
+            ${{ runner.temp }}/*-readme.json
+            ${{ runner.temp }}/sdk-regressions.xml
+            ${{ runner.temp }}/network-export-*.xml
           if-no-files-found: warn
           retention-days: 7

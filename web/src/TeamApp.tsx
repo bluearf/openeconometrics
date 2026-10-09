@@ -63,6 +63,8 @@ import {
 } from "./email-verification";
 import "./team-styles.css";
 import LocalProjects from "./LocalProjects";
+import AccountLinking, { refreshLinkedUser } from "./AccountLinking";
+import type { AccountMethod } from "./account-linking";
 
 const App = lazy(() => import("./App"));
 
@@ -545,6 +547,8 @@ function TeamShell({
   const [notice, setNotice] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
   const [membersOpen, setMembersOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [accountBusy, setAccountBusy] = useState(false);
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
   const [leaveFailure, setLeaveFailure] = useState<{
@@ -927,7 +931,8 @@ function TeamShell({
     return (
       <DesktopLoginApproval
         requestId={desktopLogin}
-        email={user.email || ""}
+        auth={auth}
+        user={user}
         api={api}
       />
     );
@@ -979,6 +984,14 @@ function TeamShell({
           <span className="team-user-email" title={user.email || ""}>
             {user.displayName || user.email}
           </span>
+          {verified && (
+            <button
+              className="team-secondary"
+              onClick={() => setAccountOpen(true)}
+            >
+              Account
+            </button>
+          )}
           <button className="team-logout" onClick={() => void logout()}>
             Sign out
           </button>
@@ -1199,6 +1212,37 @@ function TeamShell({
           close={() => setMembersOpen(false)}
         />
       )}
+      {accountOpen && verified && (
+        <Modal
+          title="Sign-in methods"
+          close={() => {
+            if (!accountBusy) setAccountOpen(false);
+          }}
+        >
+          <AccountLinking
+            key={user.uid}
+            auth={auth}
+            user={user}
+            nativeAvailable={config.account_link_available === true}
+            onBusy={setAccountBusy}
+            onLinked={async () => {
+              await refreshLinkedUser(auth, user);
+              const next = await api<TeamProfile>("/me");
+              if (
+                next.user.uid !== user.uid ||
+                auth.currentUser?.uid !== user.uid
+              )
+                throw new Error("The signed-in account changed.");
+              // Provider linking makes no membership writes. Reconcile the
+              // live UID-scoped profile without remounting the workbench.
+              const canonical = projectNames.current.reconcile(next);
+              profileSnapshot.current = canonical;
+              setProfile(canonical);
+              if (isDesktop()) cacheDesktopProfile(canonical);
+            }}
+          />
+        </Modal>
+      )}
       {leaveFailure && (
         <Modal title="Keep your draft" close={() => setLeaveFailure(null)}>
           <div className="team-modal-body">
@@ -1236,16 +1280,49 @@ function TeamShell({
 
 function DesktopLoginApproval({
   requestId,
-  email,
+  auth,
+  user,
   api,
 }: {
   requestId: string;
-  email: string;
+  auth: Auth;
+  user: User;
   api: ReturnType<typeof createTeamApi>;
 }) {
   const [busy, setBusy] = useState(false);
   const [approved, setApproved] = useState(false);
   const [error, setError] = useState("");
+  const [grant, setGrant] = useState<{
+    kind: "login" | "account-link";
+    target?: AccountMethod;
+    uid?: string;
+  } | null>(null);
+  useEffect(() => {
+    let current = true;
+    setGrant(null);
+    setError("");
+    void api<{
+      kind: "login" | "account-link";
+      target?: AccountMethod;
+      uid?: string;
+    }>(`/desktop/login/${requestId}`)
+      .then((value) => {
+        if (!current) return;
+        if (
+          value.kind === "account-link" &&
+          (value.uid !== user.uid ||
+            !["password", "google.com"].includes(value.target || ""))
+        )
+          throw new Error("Sign in to the same account shown in the app.");
+        setGrant(value);
+      })
+      .catch((failure) => {
+        if (current) setError(message(failure));
+      });
+    return () => {
+      current = false;
+    };
+  }, [api, requestId, user.uid]);
   async function approve() {
     setBusy(true);
     setError("");
@@ -1265,28 +1342,58 @@ function DesktopLoginApproval({
           <Brand />
           <h1>
             {approved
-              ? "Sign-in complete"
-              : "Sign in to the OpenEconometrics app"}
+              ? grant?.kind === "account-link"
+                ? "Account method added"
+                : "Sign-in complete"
+              : grant?.kind === "account-link"
+                ? "Add a sign-in method to your app account"
+                : "Sign in to the OpenEconometrics app"}
           </h1>
           {approved ? (
             <p>You can return to the app.</p>
           ) : (
             <>
-              <p>{email}</p>
+              <p>{user.email}</p>
               <p>
                 This must match the code shown in the app:{" "}
                 <strong>{requestId.slice(0, 8).toUpperCase()}</strong>
               </p>
-              <button
-                className="team-primary"
-                disabled={busy}
-                onClick={() => void approve()}
-              >
-                {busy ? "Signing in…" : "Approve sign-in"}
-              </button>
+              {grant?.kind === "account-link" ? (
+                <AccountLinking
+                  auth={auth}
+                  user={user}
+                  target={grant.target}
+                  onBusy={setBusy}
+                  refreshFailureMessage="The method was added, but the app could not confirm the handoff. Return to the app and reopen Account to check."
+                  onLinked={async () => {
+                    await refreshLinkedUser(auth, user);
+                    await api(`/desktop/account-link/${requestId}/complete`, {
+                      method: "POST",
+                    });
+                    setApproved(true);
+                  }}
+                />
+              ) : (
+                <button
+                  className="team-primary"
+                  disabled={busy || !grant}
+                  onClick={() => void approve()}
+                >
+                  {busy ? "Signing in…" : "Approve sign-in"}
+                </button>
+              )}
             </>
           )}
           <Notice error>{error}</Notice>
+          {!approved && (
+            <button
+              className="team-text-button"
+              disabled={busy}
+              onClick={() => void signOut(auth)}
+            >
+              Use another account
+            </button>
+          )}
         </div>
       </section>
     </main>

@@ -2,7 +2,7 @@
 
 ## Advanced publication matrix - 7 October 2026
 
-[MARKET-110 evidence](evidence/market-110-publication/README.md) validates 22
+MARKET-110 evidence (internal evidence excluded from this public snapshot) validates 22
 real fits across all 18 registered result families, saved JSON readback,
 KaTeX preview/copy/download and 22 compiled/visually reviewed PDF pages.
 It records version scope, inference disclosures, numerical preservation,

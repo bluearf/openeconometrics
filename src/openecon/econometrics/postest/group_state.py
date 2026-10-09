@@ -30,9 +30,24 @@ _DISK = 256 * 1024**2
 
 
 def keys(frame, columns):
-    if len(columns) == 1:
-        return encode_cluster_labels(frame[columns[0]])
-    return encode_cluster_labels(pd.Series(list(frame[columns].itertuples(index=False, name=None))))
+    # Resident saved-state callers can have millions of rows. The label codec
+    # has a bounded *batch* contract, so encode complete data in batches and
+    # guard the accumulating resident output separately before retaining it.
+    output = []
+    retained = len(frame) * 8
+    plan_workspace("resident saved group keys", {"encoded_keys": retained})
+    for start in range(0, len(frame), 8192):
+        block = frame.iloc[start : start + 8192]
+        labels = (
+            block[columns[0]]
+            if len(columns) == 1
+            else pd.Series(list(block[columns].itertuples(index=False, name=None)))
+        )
+        encoded = encode_cluster_labels(labels)
+        retained += sum(len(key) + 40 for key in encoded)
+        plan_workspace("resident saved group keys", {"encoded_keys": retained})
+        output.extend(encoded)
+    return output
 
 
 def checksum(path):
@@ -300,17 +315,27 @@ def capture_fixed(result, frame, fitted, x, terms):
         if not spec.weights
         else torch.tensor(frame[spec.weights].to_numpy(dtype=float), dtype=torch.float64)
     )
-    if spec.estimator in {"xtreg", "xtivreg"}:
-        residual = (
-            torch.tensor(frame[spec.outcome].to_numpy(dtype=float), dtype=torch.float64) - index
-        )
+    if not nonlinear and len(columns) == 1:
+        # A one-way fitted effect is the weighted mean of y-Xb in its
+        # group. Form differences before the dot product: computing fitted-Xb
+        # separately on every row loses ulps at large predictor/outcome levels
+        # and can falsely declare the same group inconsistent. The within
+        # normal equations (also for absorbed IV) make the group residual mean
+        # zero; this captures the actual level-space effect without chart rows.
+        outcome = torch.tensor(frame[spec.outcome].to_numpy(dtype=float), dtype=torch.float64)
+        reference = outcome[0] - x[0] @ beta
+        residual = (outcome - outcome[0]) - (x - x[0]) @ beta
         codes, _ = pd.factorize(frame[columns[0]], sort=False)
         codes = torch.tensor(codes, dtype=torch.int64)
         count = int(codes.max()) + 1
         mass = torch.zeros(count, dtype=torch.float64).index_add(0, codes, weights)
         effect = (
-            torch.zeros(count, dtype=torch.float64).index_add(0, codes, residual * weights) / mass
-        )[codes]
+            reference
+            + (
+                torch.zeros(count, dtype=torch.float64).index_add(0, codes, residual * weights)
+                / mass
+            )[codes]
+        )
     else:
         fitted = torch.as_tensor(fitted, dtype=torch.float64)
         effect = (fitted.log() - offset if nonlinear else fitted) - index
@@ -353,14 +378,21 @@ def capture_fixed(result, frame, fitted, x, terms):
         }
     builder = Builder(columns, "fixed_effect_sum")
     try:
-        labels = list(frame[columns].itertuples(index=False, name=None))
-        for i, key in enumerate(keys(frame, columns)):
-            record = {"effect": float(effect[i]), "label": encode(labels[i])}
-            if joint:
-                record.update(
-                    projection=projection[i].tolist(), nuisance=[int(codes[i]) for codes in maps]
-                )
-            builder.add(key, record)
+        # The key codec enforces a per-batch memory bound even for resident
+        # fits. A large resident estimation sample must not be encoded as one
+        # enormous batch merely to persist its complete fixed-effect map.
+        for start in range(0, len(frame), 8192):
+            block = frame.iloc[start : start + 8192]
+            labels = list(block[columns].itertuples(index=False, name=None))
+            for offset, key in enumerate(keys(block, columns)):
+                i = start + offset
+                record = {"effect": float(effect[i]), "label": encode(labels[offset])}
+                if joint:
+                    record.update(
+                        projection=projection[i].tolist(), nuisance=[int(codes[i]) for codes in maps]
+                    )
+                builder.add(key, record)
+            builder.flush()
         return builder.finish(
             full_inference=joint,
             response_scale="log" if nonlinear else "identity",
@@ -456,8 +488,10 @@ def _mean_design(result, frame):
 def capture_fixed_replay(result, factory):
     """Capture actual fitted means and level-space full inference in replay blocks.
 
-    factory yields (retained raw frame, actual full fitted response). No row
-    collection occurs. Only bounded nuisance-level moments become resident.
+    factory yields (retained raw frame, actual full fitted response), optionally
+    with its already fitted effect in the third slot. Centered one-way kernels
+    supply that effect directly to avoid subtracting large raw levels again.
+    No row collection occurs. Only bounded nuisance-level moments become resident.
     """
     spec = result.spec
     raw = spec.panel if spec.estimator in {"xtreg", "xtivreg"} else spec.columns["absorb"]
@@ -466,7 +500,8 @@ def capture_fixed_replay(result, factory):
     nonlinear = spec.estimator == "ppmlhdfe"
     beta = torch.tensor([c.estimate for c in result.coefficients], dtype=torch.float64)
     try:
-        for frame, fitted in factory():
+        for block in factory():
+            frame, fitted = block[:2]
             x = _mean_design(result, frame)
             effect = torch.as_tensor(fitted, dtype=torch.float64)
             if nonlinear:
@@ -476,7 +511,11 @@ def capture_fixed_replay(result, factory):
                     if name:
                         val = torch.tensor(frame[name].to_numpy(dtype=float), dtype=torch.float64)
                         effect = effect - (val.log() if role == "exposure" else val)
-            effect = effect - x @ beta
+            effect = (
+                torch.as_tensor(block[2], dtype=torch.float64)
+                if len(block) == 3
+                else effect - x @ beta
+            )
             labels = list(frame[columns].itertuples(index=False, name=None))
             for i, key in enumerate(keys(frame, columns)):
                 builder.add(key, {"effect": float(effect[i]), "label": encode(labels[i])})
@@ -509,7 +548,8 @@ def capture_fixed_replay(result, factory):
                 )
                 gram = torch.zeros((width, width), dtype=torch.float64)
                 cross = torch.zeros((width, k), dtype=torch.float64)
-                for frame, fitted in factory():
+                for block in factory():
+                    frame, fitted = block[:2]
                     for start in range(0, len(frame), rows):
                         block = frame.iloc[start : start + rows]
                         x = _mean_design(result, block)

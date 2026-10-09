@@ -152,7 +152,7 @@ outcome series; full covariance/correlation paths are in the persisted extras.
 ## Independent scientific evidence
 
 Run `scripts/validate_mgarch_market131.py` with the repository source on
-PYTHONPATH. [The receipt](../evidence/market-131-mgarch/oracle.json) records local
+PYTHONPATH. The receipt (internal evidence excluded from this public snapshot) records local
 test output, complete Gaussian density checks, finite-difference scores and full
 observed-information covariance checks, real joint fits, constraint diagnostics,
 JSON replay, timing on the actual host, and LaTeX exports. The NumPy oracle uses
@@ -160,7 +160,7 @@ physical-unit matrix equations, separate from the production parameter map and
 optimizer. Tests include 2D CCC/DCC/full BEKK, all off-diagonal BEKK entries, and
 3D CCC/DCC with jointly estimated constant means.
 
-[The published reference fixture](../evidence/market-131-mgarch/published-reference.json)
+The published reference fixture (internal evidence excluded from this public snapshot)
 was generated in actual R 4.6.0 through development-only WebR 0.6.0. The
 [reproduction script](../../scripts/validate_mgarch_webr.mjs) downloads and verifies
 the exact BEKKs CRAN-mirror commit

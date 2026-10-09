@@ -4,9 +4,9 @@ build-backend = "hatchling.build"
 
 [project]
 name = "openecon-charts"
-version = "0.3.0a2"
+version = "0.3.1a1"
 description = "Portable offline charts for Python tables and statistical models"
-readme = "README.md"
+readme = "PYPI-README.md"
 requires-python = ">=3.10"
 license = "Apache-2.0"
 license-files = ["LICENSE", "NOTICE"]
@@ -15,6 +15,13 @@ dependencies = []
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/openecon_charts"]
+
+[tool.hatch.build.targets.sdist]
+# Select package-local source, including its own cache/build exclusion policy.
+include = [
+  "/src/openecon_charts", "/tests", "/examples",
+  "/README.md", "/PYPI-README.md", "/LICENSE", "/NOTICE", "/pyproject.toml", "/.gitignore"
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

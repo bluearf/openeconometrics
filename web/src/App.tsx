@@ -40,6 +40,8 @@ import InlineSuggestionsSettings, {
 } from "./InlineSuggestionsSettings";
 import { createLocalSuggestionProvider } from "./local-suggestions";
 import FilesSidebar from "./FilesSidebar";
+import ProjectTransfers from "./ProjectTransfers";
+import ProjectFileDownload from "./ProjectFileDownload";
 import ExecutionHistory from "./ExecutionHistory";
 import {
   mergeFileLayout,
@@ -595,6 +597,13 @@ function App({
     [variables, setVariables] = useState<ConsoleVariable[]>([]),
     [datasets, setDatasets] = useState<DatasetProfile[]>([]);
   const [sharingSnapshot, setSharingSnapshot] = useState<ResultSharingSnapshot | null>(null);
+  const [fileDownload, setFileDownload] = useState<{
+    id: string; name: string;
+  } | null>(null);
+  useEffect(() => {
+    setFileDownload(null);
+    return client.subscribeFileDownload?.(setFileDownload);
+  }, [client]);
   const sharingRecords = useMemo(
     () => new Map(sharingSnapshot?.records.map((record) => [record.id, record]) ?? []),
     [sharingSnapshot],
@@ -676,6 +685,11 @@ function App({
   const [outputChoice, setOutputChoice] = useState("all");
   const [latexCopied, setLatexCopied] = useState(false);
   const [latexCopyError, setLatexCopyError] = useState(false);
+  useEffect(() => {
+    const failed = (event: Event) => setError(String((event as CustomEvent).detail));
+    window.addEventListener("openecon-export-error", failed);
+    return () => window.removeEventListener("openecon-export-error", failed);
+  }, []);
   const [mobilePane, setMobilePane] = useState<"editor" | "output">("editor"),
     [cursor, setCursor] = useState([1, 1]),
     [selectedId, setSelectedId] = useState<string | null>(null);
@@ -1338,6 +1352,7 @@ function App({
         ...(client.desktop ? {} : { body: f }),
       });
       setDatasets((items) => [d, ...items.filter((x) => x.id !== d.id)]);
+      void client.transferActions?.refresh().catch(() => {});
       addSnippet(
         d.python_path
           ? `df = oe.read(${JSON.stringify(d.python_path)})\ndisplay(df.head())`
@@ -1414,12 +1429,14 @@ function App({
     setFileBusy(true);
     setError("");
     const identity = activeScriptRef.current;
-    download(
-      editor.current?.getCode() ?? codeRef.current,
-      localCopyName(activeScriptName),
-      documentMimeType(activeScriptName),
-    );
     try {
+      const exported = await download(
+        editor.current?.getCode() ?? codeRef.current,
+        localCopyName(activeScriptName),
+        documentMimeType(activeScriptName),
+      );
+      if (["cancelled", "failed"].includes(exported.status))
+        throw new Error("Keep the local draft until its copy has been exported.");
       const draft = await loadScriptFile(client, identity.id, {
         headers: { "X-OpenEcon-Resolve-Conflict": "remote" },
       });
@@ -1758,11 +1775,13 @@ function App({
     if (!fileLayoutRef.current || fileBusyRef.current) return;
     fileBusyRef.current = true;
     setFileBusy(true);
-    download(
-      JSON.stringify(fileLayoutRef.current, null, 2),
-      "file-layout-local.json",
-    );
     try {
+      const exported = await download(
+        JSON.stringify(fileLayoutRef.current, null, 2),
+        "file-layout-local.json",
+      );
+      if (["cancelled", "failed"].includes(exported.status))
+        throw new Error("Keep the local file layout until its copy has been exported.");
       const fresh = await readFileLayout({
         headers: { "X-OpenEcon-Resolve-Conflict": "remote" },
       });
@@ -1987,6 +2006,33 @@ function App({
             }
             readOnly={cannotEdit}
             uploading={uploading}
+            footer={
+              <>
+                {fileDownload && client.cancelFileDownload && (
+                  <ProjectFileDownload
+                    key={fileDownload.id}
+                    file={fileDownload}
+                    cancel={client.cancelFileDownload}
+                  />
+                )}
+                {ready && client.transferActions && (
+                  <ProjectTransfers
+                    actions={client.transferActions}
+                    readOnly={cannotEdit}
+                    disabled={!ready || fileBusy || layoutBusy || uploading || running}
+                    onReady={async (file) => {
+                      if (!mounted.current) return;
+                      setDatasets((items) => [file, ...items.filter((item) => item.id !== file.id)]);
+                      try {
+                        await organizeCreatedFile("dataset", file.id, null);
+                      } catch (failure) {
+                        if (mounted.current) setError(errorMessage(failure));
+                      }
+                    }}
+                  />
+                )}
+              </>
+            }
             onOpenScript={(file) => void openScript(file.id)}
             onCreateScript={(parent, name) =>
               createScript(undefined, parent, name)
