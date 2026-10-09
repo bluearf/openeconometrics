@@ -13,7 +13,7 @@ import venv
 
 import pytest
 
-HELPER = Path(__file__).resolve().parents[1] / "scripts/verify_installed_package_pair.py"
+HELPER = Path(__file__).resolve().parent / "verify_installed_package_pair.py"
 VERIFY = runpy.run_path(str(HELPER))["verify"]
 VERSIONS = {"openecon": "0.3.19a1", "openecon-charts": "0.3.1a1"}
 

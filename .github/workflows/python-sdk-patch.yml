@@ -93,7 +93,7 @@ jobs:
       - name: Verify the same four distributions against source and build execution
         run: |
           python -m pip install 'packaging>=24.2,<27'
-          python .github/scripts/verify_shared_package_pair.py \
+          python .github/checks/verify_shared_package_pair.py \
             --build pair-build --output "$RUNNER_TEMP/pair-execution.json"
       - name: Select provisioned Chrome with its sandbox enabled
         run: |
@@ -113,12 +113,12 @@ jobs:
               "$chart_python" -m pip install "pair-build/dist/openecon_charts-$CHARTS_VERSION.tar.gz"
             fi
             "$chart_python" -m pip check
-            python .github/scripts/verify_installed_package_pair.py --python "$chart_python" \
+            python .github/checks/verify_installed_package_pair.py --python "$chart_python" \
               --provenance pair-build/package-pair-provenance.json --package openecon-charts \
               --output "$RUNNER_TEMP/charts-$mode-installed.json"
             python scripts/verify_charts_distribution.py --python "$chart_python" \
               --charts-version "$CHARTS_VERSION" --output "$RUNNER_TEMP/charts-$mode-smoke.json"
-            python .github/scripts/verify_package_readme.py --python "$chart_python" \
+            python .github/checks/verify_package_readme.py --python "$chart_python" \
               --name openecon-charts --readme packages/openecon-charts/PYPI-README.md \
               --output "$RUNNER_TEMP/charts-$mode-readme.json"
           done
@@ -135,7 +135,7 @@ jobs:
               "$package_python" -m pip install "pair-build/dist/openecon_charts-$CHARTS_VERSION.tar.gz" "pair-build/dist/openecon-$SDK_VERSION.tar.gz"
             fi
             "$package_python" -m pip check
-            python .github/scripts/verify_installed_package_pair.py --python "$package_python" \
+            python .github/checks/verify_installed_package_pair.py --python "$package_python" \
               --provenance pair-build/package-pair-provenance.json \
               --package openecon --package openecon-charts \
               --output "$RUNNER_TEMP/sdk-$mode-installed.json"
@@ -143,13 +143,13 @@ jobs:
             python scripts/verify_sdk_distribution.py --python "$package_python" \
               --sdk-version "$SDK_VERSION" --charts-version "$CHARTS_VERSION" \
               --output "$RUNNER_TEMP/sdk-$mode-smoke.json"
-            python .github/scripts/verify_package_readme.py --python "$package_python" \
+            python .github/checks/verify_package_readme.py --python "$package_python" \
               --name openecon --readme PYPI-README.md --output "$RUNNER_TEMP/sdk-$mode-readme.json"
           done
       - name: Run bounded metadata, parser and OLS guard regressions
         run: |
           "$RUNNER_TEMP/sdk-wheel/bin/python" -m pip install 'pytest>=8,<10' 'statsmodels>=0.14.4,<0.15'
-          "$RUNNER_TEMP/sdk-wheel/bin/python" -I -m pytest .github/tests/test_installed_package_pair.py --junitxml="$RUNNER_TEMP/installed-inventory-guards.xml"
+          "$RUNNER_TEMP/sdk-wheel/bin/python" -I -m pytest .github/checks/test_installed_package_pair.py --junitxml="$RUNNER_TEMP/installed-inventory-guards.xml"
           "$RUNNER_TEMP/sdk-wheel/bin/python" -I -m pytest tests/test_public_package_pair_metadata.py tests/test_dataset.py tests/test_streaming_ols_engine.py --junitxml="$RUNNER_TEMP/sdk-regressions.xml"
       - name: Verify standalone wheel and sdist sandboxed Chrome exports
         shell: bash
