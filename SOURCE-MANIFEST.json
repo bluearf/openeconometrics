@@ -1048,9 +1048,9 @@
     {
       "path": "docs/econometrics/capabilities.generated.json",
       "bytes": 696411,
-      "sha256": "182f9d2aaa401544d5c157fd6f3785107f2152f25e868ace99cc01a3f4b24096",
+      "sha256": "7bd761f84d57f534ef759f5b852e3670f63e026cd2bd55f47f4a8ffa60a790c6",
       "original_sha256": "182f9d2aaa401544d5c157fd6f3785107f2152f25e868ace99cc01a3f4b24096",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "docs/econometrics/capability-closures-2026-10-07.md",
@@ -22385,5 +22385,14 @@
     "tests/fixtures/stata/reproduce-auto-reference.do",
     "tests/fixtures/structural-macro.csv"
   ],
-  "source_files_sha256": "544b5a79f67320dd178c18f02d4fa5ed28e332b5b5d6d5787f915ec85011a0d7"
+  "source_files_sha256": "0b9c5d741ee15397f0b0db157d812a7bd49f5371cde6fcc5d59dd25663424c29",
+  "public_build_configuration_fingerprint_updates": [
+    {
+      "document": "docs/econometrics/capabilities.generated.json",
+      "field": "source_fingerprints.pyproject.toml",
+      "original": "741fea8d7de6fb920735a5871bce150a36783ef237385bd6011492f438a22da4",
+      "published": "4a84862c2482a7d3ffe5065fd7a48dadbe6b9962b6737863c96de2fb5ccba3e3",
+      "reason": "exact derived fingerprint of the recorded public-only private-fixture omission; all capability fields and production source retained"
+    }
+  ]
 }

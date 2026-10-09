@@ -19246,7 +19246,7 @@
   "source_fingerprints": {
     "desktop/src-tauri/tauri.conf.json": "cbfd14146cc23a1f99dd636ff9a1f5d9c84629ee153382287e665b3eeeadfb95",
     "packages/openecon-charts/pyproject.toml": "3249b552be4343f1dd0f127d46b130d4a7a50a940ff182e0383b7ed97c91798e",
-    "pyproject.toml": "741fea8d7de6fb920735a5871bce150a36783ef237385bd6011492f438a22da4",
+    "pyproject.toml": "4a84862c2482a7d3ffe5065fd7a48dadbe6b9962b6737863c96de2fb5ccba3e3",
     "src/openecon/analysis_contracts.py": "469ad696266b03402557faf8bba79da69016e4a225b42632106fcfb0fb0708d1",
     "src/openecon/dataset.py": "cfc19b714a6807ab33b3e8264cdda2d92e9418bfd909ca9532082fcd1b516616",
     "src/openecon/dataset_prepare.py": "180aca26fddac9276f7706bb539b20c9851dddc9e9c37eef569b8bb26cd76cdb",

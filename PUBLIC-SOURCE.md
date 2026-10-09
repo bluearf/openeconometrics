@@ -9,3 +9,5 @@ Links to internal evidence omitted by the publication policy are replaced with a
 The public source build configuration omits force-include mappings for the internal replay fixtures that this snapshot excludes. The manifest records those exact identity mappings and original/transformed configuration hashes. Package metadata, dependencies and all other build settings are retained.
 
 The archive records the prepared source snapshot. Its presence alone does not prove public GitHub access, PyPI publication, a public Mac download, Developer ID signing or notarization. Verify those delivery layers separately.
+
+The generated capability inventory records the exact public build configuration fingerprint after the declared private-fixture omission. The original and published configuration hashes and the sole updated JSON field are recorded in SOURCE-MANIFEST.json; method contracts and numerical source remain identical.
