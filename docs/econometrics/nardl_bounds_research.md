@@ -1,6 +1,6 @@
 # NARDL bounds calibration: research decision and acceptance specification
 
-Research checked on 2026-10-05. This document specifies work that remains open;
+Research checked on 2026-10-07. This document specifies work that remains open;
 it does not introduce a testing API or validated critical values.
 
 ## Current decision
@@ -320,3 +320,137 @@ argument or independently justified alternative. Serial dynamics, multiple
 raw regressors, symmetry constraints, other deterministic cases and automated
 lag selection remain outside this experiment. **NARDL automatic cointegration
 calibration remains partial; no public bounds decision has been enabled.**
+
+## Full calibration follow-up, 2026-10-07
+
+The full experiment is separate from the old 12/99 smoke. The
+frozen protocol (internal evidence excluded from this public snapshot) pins the
+numeric sources, all 15 cells, 500 outer samples and 999 inner draws **per null**,
+nominal levels 1%, 5% and 10%, and two independent seed streams. Both the
+fixed-prefix/pool-centering/df-scaled convention and the original-block/
+draw-centering/unscaled convention are run under both seeds. These are bundled
+sensitivity contrasts; they do not identify the effect of any single convention,
+and the best-looking convention is not selected after observing outcomes.
+
+[`nardl_bounds_calibration.py`](../../benchmarks/research/nardl_bounds_calibration.py)
+records every planned outer index, successful-call tail count and probability,
+sample/index/draw-statistic fingerprints, and complete failures. All failures
+remain in the planned denominator. Rejection-rate bounds and Wilson intervals
+are shown with failed calls treated as either all rejections or none. The
+discrete decision uses inclusive tails and `(1 + extreme)/(999 + 1) <= alpha`;
+an empirical quantile is not substituted for that rule. The pre-existing
+size gate requires every maintained-class true-null 95% Wilson upper endpoint
+to be at most 8% at nominal 5%, including the all-three intersection in full-null
+cells. Strong asymmetric T160 power requires a 95% Wilson lower endpoint of
+at least 70%. One failed whole call fails the numerical screen.
+
+**Full result: the candidate fails all four predeclared calibration runs.**
+All 30,000 planned outer calls completed, with zero whole-call failures or
+replaced draws, and 89,910,000 inner unrestricted refits. The runs have
+15, 14, 14 and 14 marginal-size gate violations, respectively. Strong asymmetric
+T160 power is 500/500 in every run, with a Wilson 95% lower endpoint of 99.238%;
+passing power does not offset failed size. The full-null T80 adjustment result
+alone fails under every prespecified seed/convention:
+
+| Native outer seed | Convention | Adjustment rejections / calls | Rate | Wilson 95% interval |
+|---|---|---:|---:|---:|
+| 364729 | fixed / pool / df | 41 / 500 | 8.2% | 6.102%–10.935% |
+| 1719533379 | fixed / pool / df | 40 / 500 | 8.0% | 5.930%–10.711% |
+| 364729 | block / draw / none | 45 / 500 | 9.0% | 6.794%–11.831% |
+| 1719533379 | block / draw / none | 37 / 500 | 7.4% | 5.416%–10.033% |
+
+The audited review receipt (internal evidence excluded from this public snapshot)
+links all four complete compressed result files and their checksums. Its
+[rebuild script](../../benchmarks/research/nardl_bounds_receipt.py) independently
+recomputes every planned-call denominator, seed, tail probability from its saved
+integer count, all nominal-level rates and all gates, verifies source pins, and
+checks that the convention contrasts use the same outer samples. The focused
+research/oracle/guard suite has **133 passing tests**; exact compressed test,
+lint and formatting logs are retained. **MARKET-112 remains incomplete; public
+critical values, p-values and decisions remain disabled.**
+
+This full run has explicit CPU float64 limits: two Torch threads per process,
+512 requested draws per batch, a 128 MiB tensor workspace estimate per outer
+call, the existing 300-million per-call refit proxy, and a 150-billion aggregate
+refit proxy per complete 7,500-call run. The tensor estimate excludes private
+BLAS workspace, Python objects and allocator overhead. This is a small resident
+research experiment, without a process-RSS guarantee, streaming, GPU, CUDA or
+native-install validation claim.
+
+An independently written
+[NumPy oracle](../../benchmarks/research/nardl_bounds_numpy_oracle.py) uses SVD
+in the complete affine parameter space, instead of Torch's profiled/scaled QR.
+It generates outcomes through a **difference ECM**, instead of the levels AR
+filter. Eight complete calls, with 999 draws under each of the three separate
+nulls, reproduce both conventions, fixed/differing lag shapes, full-null,
+stationary-outcome and asymmetric cells. All 24 tail counts are identical;
+the largest absolute discrepancy over every stored refit statistic is less
+than `4.6e-11`. The outer nonlinear DGP also matches the independent difference
+recursion. The saved receipt (internal evidence excluded from this public snapshot)
+explicitly calls this **numerical replication**, not independent size validation.
+
+After the first full-null T80 size failure, a separate
+[independent diagnostic](../../benchmarks/research/nardl_bounds_independent_size.py)
+was specified for that cell. It uses new NumPy PCG64 outer and inner streams,
+an independent nonlinear DGP, full affine SVD and difference recursion,
+500 outer samples and 999 inner draws, two new seeds and both conventions.
+This cell selection is explicitly post hoc. Its results can corroborate a
+failed candidate; they cannot replace the frozen matrix or tune a new procedure.
+
+The independent diagnostic completed all 2,000 planned calls, without failed
+calls or replaced inner draws. At nominal 5%, its full-null T80 adjustment test
+gave the following results. Every interval's upper endpoint exceeds the
+predeclared 8% size-screen limit; even every lower endpoint exceeds 5%.
+
+| Independent outer seed | Convention | Rejections / planned calls | Rate | Wilson 95% interval |
+|---|---|---:|---:|---:|
+| 9164927 | fixed / pool / df | 39 / 500 | 7.8% | 5.758%–10.485% |
+| 9164927 | block / draw / none | 36 / 500 | 7.2% | 5.246%–9.807% |
+| 1295130197 | fixed / pool / df | 42 / 500 | 8.4% | 6.274%–11.160% |
+| 1295130197 | block / draw / none | 44 / 500 | 8.8% | 6.621%–11.608% |
+
+The complete diagnostic records (internal evidence excluded from this public snapshot)
+include all three nominal levels, observed statistics, new sample/index hashes,
+seeds, all planned-call denominators and the source pins. This independent
+failure diagnosis supports keeping the candidate private; it establishes no
+valid replacement calibration.
+
+### Why preserving signs is necessary but insufficient
+
+For raw iid increments `v`, the generated regressor increments are
+`(max(v,0), min(v,0))`. Their sum is the raw increment exactly, while they
+are dependent. For a standard-normal raw innovation their means are
+`(+1/sqrt(2*pi), -1/sqrt(2*pi))`, and their covariance matrix has diagonal
+`1/2 - 1/(2*pi)` and off-diagonal `1/(2*pi)`. Thus a zero-drift raw path
+still generates signed partial sums with opposing deterministic drifts.
+Splitting independently resampled expanded regressors would lose this law.
+Reconstructing signs from the resampled raw path preserves it, but does not
+alone prove the distribution of the fitted test statistics.
+
+There is also a composite-null difficulty. Under zero adjustment, nonzero
+lagged signed-level forcing generally makes the outcome I(2); that is why the
+levels-present/no-adjustment cell is excluded. An adjustment-only restricted
+sample fit can nevertheless retain nonzero fitted explanatory-level
+coefficients. Correctly imposing the adjustment restriction does not by itself
+show that the resulting bootstrap reproduces the maintained I(0)/I(1) null
+law. This is a diagnostic concern, not a newly asserted inconsistency theorem.
+The [linear conditional-ARDL construction](https://arxiv.org/pdf/2204.04939),
+section 3, motivates the separate restrictions and conditional resampling;
+it supplies no proof for these dependent sign-generated regressors. Numerical
+replication and simulation therefore cannot be relabeled as that missing proof.
+
+Reproduce the existing frozen experiment from the repository root with the
+development environment and `PYTHONPATH=.:src:packages/openecon-charts/src`:
+
+```text
+python benchmarks/research/nardl_bounds_calibration.py --protocol docs/evidence/nardl-bounds-protocol-2026-10-07.json --run 0 --output run-0.json.gz
+python benchmarks/research/nardl_bounds_numpy_oracle.py --output independent-oracle.json
+OPENBLAS_NUM_THREADS=2 python benchmarks/research/nardl_bounds_independent_size.py --output independent-size.json.gz
+python benchmarks/research/nardl_bounds_receipt.py --output review.json
+```
+
+Repeat the first command with run indices 1, 2 and 3 and fresh output paths.
+Outputs refuse to overwrite existing records. The frozen source hashes must
+match before a full run starts. The protocol generator's `--protocol-only`
+mode writes a new protocol only to a caller-selected, nonexistent path; it
+does not replace the saved protocol or make its research conclusions public.

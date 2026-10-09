@@ -6,6 +6,7 @@ Set-Location $DesktopRoot
 if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) { throw 'Rust with the x86_64-pc-windows-msvc target and Visual Studio C++ Build Tools is required to build.' }
 if ([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture -ne 'X64') { throw 'Run the Windows build on a Windows x64 host.' }
 python -m venv "$DesktopRoot\.build-venv"
+if ($LASTEXITCODE -ne 0) { throw 'Build environment creation failed.' }
 $BuildPython = "$DesktopRoot\.build-venv\Scripts\python.exe"
 & $BuildPython -m pip install --upgrade pip
 if ($LASTEXITCODE -ne 0) { throw 'Build environment initialization failed.' }

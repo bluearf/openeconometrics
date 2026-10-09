@@ -31,7 +31,7 @@ criterion; the cap and numerical tolerance are never relaxed based on held-out
 scores. Small explicit overrides such as the four-sweep example below can still
 return a correctly labelled nonconverged fit.
 
-The [source-runtime validation record](../evidence/market-55-convergence-2026-10-06.json)
+The source-runtime validation record (internal evidence excluded from this public snapshot)
 captures the complete 2,400-node run and persisted readback of all 18 outputs.
 The selected Poisson and degree-corrected fits converge in 11 and 7 sweeps,
 respectively. Aggregate held-out MAE still favors the zero baseline; the record

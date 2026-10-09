@@ -1,0 +1,592 @@
+[
+  {
+    "token": 42,
+    "parameters": [
+      {
+        "name": "coefficients",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "null",
+        "default": "0.0",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "alpha",
+        "kind": "keyword-only",
+        "default": "None"
+      }
+    ]
+  },
+  {
+    "token": 43,
+    "parameters": [
+      {
+        "name": "time",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "event",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "causes",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "times",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "level",
+        "kind": "keyword-only",
+        "default": "0.95"
+      },
+      {
+        "name": "device",
+        "kind": "keyword-only",
+        "default": "'cpu'"
+      },
+      {
+        "name": "weights",
+        "kind": "keyword-only",
+        "default": "None"
+      }
+    ]
+  },
+  {
+    "token": 44,
+    "parameters": [
+      {
+        "name": "nodes",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "edges",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "graph_attributes",
+        "kind": "keyword-only",
+        "default": "None"
+      }
+    ]
+  },
+  {
+    "token": 45,
+    "parameters": [
+      {
+        "name": "coefficients",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "null",
+        "default": "0.0",
+        "kind": "keyword-only"
+      }
+    ]
+  },
+  {
+    "token": 46,
+    "parameters": [
+      {
+        "name": "add",
+        "default": "()",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "remove",
+        "default": "()",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "weights",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "attributes",
+        "kind": "keyword-only",
+        "default": "None"
+      }
+    ]
+  },
+  {
+    "token": 47,
+    "parameters": [
+      {
+        "name": "max_work",
+        "kind": "keyword-only",
+        "default": "50000000"
+      }
+    ]
+  },
+  {
+    "token": 48,
+    "parameters": [
+      {
+        "name": "data",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "columns",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "bounds",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "sampling_model",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "alpha",
+        "kind": "keyword-only",
+        "default": "0.05"
+      },
+      {
+        "name": "missing",
+        "kind": "keyword-only",
+        "default": "'raise'"
+      }
+    ]
+  },
+  {
+    "token": 49,
+    "parameters": [
+      {
+        "name": "data",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "y",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "description": "``n_dropped``) or \"raise\".",
+        "name": "missing",
+        "kind": "keyword-only",
+        "default": "'drop'"
+      }
+    ]
+  },
+  {
+    "token": 50,
+    "parameters": [
+      {
+        "name": "result",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "data",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "alignment",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "alpha",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "kind",
+        "kind": "keyword-only",
+        "default": "'mean'"
+      }
+    ]
+  },
+  {
+    "token": 51,
+    "parameters": [
+      {
+        "name": "path",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "overwrite",
+        "kind": "keyword-only",
+        "default": "False"
+      }
+    ]
+  },
+  {
+    "token": 52,
+    "parameters": [
+      {
+        "name": "result",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "args",
+        "kind": "var-positional"
+      },
+      {
+        "name": "kwargs",
+        "kind": "var-keyword"
+      }
+    ]
+  },
+  {
+    "token": 53,
+    "parameters": [
+      {
+        "name": "buf",
+        "default": "None",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "kwargs",
+        "kind": "var-keyword"
+      }
+    ]
+  },
+  {
+    "token": 54,
+    "parameters": [
+      {
+        "name": "direction",
+        "kind": "keyword-only",
+        "default": "'out'"
+      },
+      {
+        "name": "disconnected",
+        "kind": "keyword-only",
+        "default": "'infinite'"
+      },
+      {
+        "name": "max_work",
+        "kind": "keyword-only",
+        "default": "50000000"
+      }
+    ]
+  },
+  {
+    "token": 55,
+    "parameters": [
+      {
+        "name": "result",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "device",
+        "kind": "keyword-only",
+        "default": "'cpu'"
+      },
+      {
+        "name": "weights",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "max_work",
+        "kind": "keyword-only",
+        "default": "DEFAULT_WORK"
+      },
+      {
+        "name": "max_bytes",
+        "kind": "keyword-only",
+        "default": "DEFAULT_BYTES"
+      }
+    ]
+  },
+  {
+    "token": 56,
+    "parameters": [
+      {
+        "name": "data",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "x",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "y",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "title",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "options",
+        "kind": "var-keyword"
+      }
+    ]
+  },
+  {
+    "token": 57,
+    "parameters": [
+      {
+        "name": "attributes",
+        "kind": "keyword-only",
+        "default": "True"
+      }
+    ]
+  },
+  {
+    "token": 58,
+    "parameters": [
+      {
+        "name": "restrictions",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "null",
+        "kind": "keyword-only",
+        "default": "None"
+      }
+    ]
+  },
+  {
+    "token": 59,
+    "parameters": [
+      {
+        "name": "data",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "columns",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "sampling_model",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "alpha",
+        "kind": "keyword-only",
+        "default": "0.05"
+      },
+      {
+        "name": "missing",
+        "kind": "keyword-only",
+        "default": "'raise'"
+      }
+    ]
+  },
+  {
+    "token": 60,
+    "parameters": [
+      {
+        "name": "add",
+        "default": "()",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "remove",
+        "default": "()",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "rename",
+        "kind": "keyword-only",
+        "default": "None"
+      }
+    ]
+  },
+  {
+    "token": 61,
+    "parameters": [
+      {
+        "name": "max_nodes",
+        "default": "1000",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "max_edges",
+        "default": "5000",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "seed",
+        "default": "0",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "groups",
+        "default": "None",
+        "kind": "positional-or-keyword"
+      }
+    ]
+  },
+  {
+    "token": 62,
+    "parameters": [
+      {
+        "name": "options",
+        "kind": "var-keyword"
+      }
+    ]
+  },
+  {
+    "token": 63,
+    "parameters": [
+      {
+        "name": "source",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "target",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "max_work",
+        "kind": "keyword-only",
+        "default": "50000000"
+      }
+    ]
+  },
+  {
+    "token": 64,
+    "parameters": [
+      {
+        "name": "path",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "format",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "overwrite",
+        "kind": "keyword-only",
+        "default": "False"
+      }
+    ]
+  },
+  {
+    "token": 65,
+    "parameters": [
+      {
+        "name": "restricted",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "full",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "max_bytes",
+        "default": "128 * 1024 ** 2",
+        "kind": "keyword-only"
+      }
+    ]
+  },
+  {
+    "token": 66,
+    "parameters": [
+      {
+        "name": "data",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "columns",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "max_iterations",
+        "default": "500",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "tolerance",
+        "default": "1e-08",
+        "kind": "keyword-only"
+      }
+    ]
+  },
+  {
+    "token": 67,
+    "parameters": [
+      {
+        "name": "result",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "path",
+        "default": "None",
+        "kind": "positional-or-keyword"
+      }
+    ]
+  },
+  {
+    "token": 68,
+    "parameters": [
+      {
+        "name": "result",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "coefficient",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "max_work",
+        "kind": "keyword-only",
+        "default": "100000000"
+      }
+    ]
+  },
+  {
+    "token": 69,
+    "parameters": [
+      {
+        "name": "result",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "level",
+        "kind": "keyword-only",
+        "default": "None"
+      }
+    ]
+  },
+  {
+    "token": 70,
+    "parameters": [
+      {
+        "name": "result",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "null",
+        "default": "0.0",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "max_work",
+        "kind": "keyword-only",
+        "default": "100000000"
+      }
+    ]
+  },
+  {
+    "token": 71,
+    "parameters": [
+      {
+        "name": "data",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "series",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "options",
+        "kind": "var-keyword"
+      }
+    ]
+  }
+]

@@ -1,0 +1,70 @@
+{
+  "commands": [
+    "python scripts/generate_capability_docs.py --check",
+    "PYTHONPATH=src:packages/openecon-charts/src python -m pytest tests/test_capability_docs.py tests/test_public_distribution.py tests/test_prediction_capabilities.py tests/test_streaming_capability_conditions.py",
+    "python scripts/prepare_public_source.py --output <new ignored output directory>",
+    "in prepared source: PYTHONPATH=src:packages/openecon-charts/src python -m pytest tests/test_capability_docs.py tests/test_public_distribution.py -k \"not notice_generator\""
+  ],
+  "drift_canaries": [
+    "actual registry addition of eager-only estimator without Dataset/prediction adapters",
+    "actual removal of OLS saved-prediction adapter",
+    "changed xtreg resident option metadata",
+    "handwritten universal Dataset claim outside generated scope",
+    "manual generated Markdown edit"
+  ],
+  "historical_measurements": "original records and dated claims unchanged; public output names excluded internal evidence boundaries",
+  "integrated_main": "76fcbc211f86cf78c1a27812dd0b4538c6aa09ff",
+  "issue": "MARKET-516",
+  "limits": [
+    "Source tests use existing development dependencies, not a fresh resolver or application installation.",
+    "Prepared archive tests omit the notice generator because its installed node dependency tree is not in the archive; notice check passed in source.",
+    "No new scientific numerical validation, physical CUDA run, installed application update, public upload, signing or notarization.",
+    "Narrow universal wording guard is not a semantic documentation proof; exact generated/source comparisons are primary."
+  ],
+  "public_preparation": {
+    "archive": "OpenEconometrics-source.tar.gz",
+    "archive_bytes": 9902261,
+    "archive_sha256": "def0c6088a03d0d2c0ff03cd0b3263053603823bacd9b4d3d639a8742b571519",
+    "excluded_count": 1966,
+    "external_fixture_test_modules": 36,
+    "file_count": 1916,
+    "internal_evidence_links_replaced": 94,
+    "published": false,
+    "source_commit": "e7d7e9b224757ddd6e89a5ecdf5bf31b2a5657b1",
+    "source_files_sha256": "0a9018212edd9cedb5773e7667ebc8811529982ae35ac448851f4594e22b74e0"
+  },
+  "schema": 1,
+  "scope_counts": {
+    "common_saved_prediction": 66,
+    "dataset_fit": 80,
+    "registered_fit": 148
+  },
+  "sha256": {
+    "README.md": "44dcd3816ba678be6b67df888b401170585ccc739eaf9a5708c3a5f4aa642aae",
+    "desktop/README.md": "1271d1ea46a4e7210c3edd01f2b1e2da0db96218284585055674d638c9d76719",
+    "docs/agent-integration.md": "a2fcd150e989084663fa7cd3dbc8f843bbb980e57a7824d74f8f6125c1d9ee29",
+    "docs/architecture.md": "7b3b20ec256f62928c046121a40929c236be12effbe02474a06e2a325835d5e0",
+    "docs/econometrics/coverage.md": "fcfc1b36ddc3cf74328fc6d0557b983c7244ef4b145fb5fc65b6bbbff490e50e",
+    "docs/streaming.md": "39612431a6ac22c9d259dc1b1153fefc657e6d982aa40009576695d6eb417acf",
+    "scripts/generate_capability_docs.py": "112fce21a3304cf5ef008222d231441952ea0583f166bdf65209aaf7a1c6d24e",
+    "scripts/prepare_public_source.py": "fff27ae6eaf13451329f27ea674cdcaceda1434bff6c427aacf18bc5c13606a2",
+    "tests/test_capability_docs.py": "0ba8766b0c369fe7d636ce093bfca7462ad6a44c43b54492f90a40f3fdfe570d",
+    "tests/test_public_distribution.py": "33fa564dc93970405a7e0bfae9fe75883cf71998eae5c0b935d6d6e925a5f217",
+    "tests/test_streaming_capability_conditions.py": "9bd9e9ea57365be7cf62ee3941272736dccbcee317464180f3c0966b830b2128"
+  },
+  "source_revision": "e7d7e9b224757ddd6e89a5ecdf5bf31b2a5657b1",
+  "tests": {
+    "prepared_archive": {
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "9"
+    },
+    "source": {
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "63"
+    }
+  }
+}

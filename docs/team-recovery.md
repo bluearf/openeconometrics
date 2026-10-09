@@ -173,5 +173,5 @@ Owned temporary drill directories are removed after completion.
 
 The persistent report records per-stage time/peak process RSS, all hash checks,
 source preservation, history count, role denials and exact proof limits. See
-[MARKET-88 evidence](evidence/market-88-team-recovery/README.md). This report
+MARKET-88 evidence (internal evidence excluded from this public snapshot). This report
 does not establish production-size recovery time or a live Firebase/GCS result.

@@ -393,5 +393,10 @@ def ca(data: Any, row: str, column: str, *, weights: str | None = None, dimensio
         tables, title=f"Correspondence analysis of {row} by {column}", procedure="ca",
         n=total, n_missing=dropped, chi2=chi2, df=df, p_value=c.chi2_upper(chi2, df),
         total_inertia=total_inertia, dimensions=k, notes=notes, missing="listwise",
+        projection_state={"version": 1, "row_labels": row_labels, "column_labels": col_labels,
+                          "row_mass": r.tolist(), "column_mass": cm.tolist(),
+                          "row_standard": (u[:, :k] / r.sqrt()[:, None]).tolist(),
+                          "column_standard": (v[:, :k] / cm.sqrt()[:, None]).tolist(),
+                          "singular_values": singular[:k].tolist()},
         sign_convention="largest absolute row singular-vector entry of each dimension is "
                         "positive")

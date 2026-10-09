@@ -209,7 +209,7 @@ def _fit(spec, source, *, batch_rows):
         covariance, info, ssr, predictions = _covariance(sample, scores, working, bread,
             df=n-p, k=p, notes=notes, kind=kind, cluster_columns=clusters,
             score_basis=torch.linalg.inv(design.transform))
-        info.update({"df_inference": None, "df_resid": n-p, "covariance": spec.covariance})
+        info.update({"df_inference": None, "df_resid": n-p, "covariance": spec.covariance, "k_small_sample": p})
         if spec.covariance=="nonrobust":
             info["correction"] = "GLS: rmse^2 (X*'X*)^-1 with rmse^2 = RSS*/(N-K) of the transformed regression (Stata's e(rmse))"
         pooled_beta, _, _ = _solve(pooled, p)

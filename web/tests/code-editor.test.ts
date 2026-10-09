@@ -385,9 +385,14 @@ test("OpenEcon member completion inserts one member and remains undoable", async
     React.act(() => {
       fixture.view.dispatch({ effects: setSelectedCompletion(olsIndex) });
     });
+    // The completion request may finish near the end of the first delay.
+    // CodeMirror guards acceptance for 75 ms after the dropdown opens.
+    await delay(120);
+    let accepted = false;
     React.act(() => {
-      acceptCompletion(fixture.view);
+      accepted = acceptCompletion(fixture.view);
     });
+    assert.equal(accepted, true);
     assert.match(fixture.view.state.doc.toString(), /oe\.ols(?:\(|$)/);
     assert.equal(fixture.runs.length, 0);
     React.act(() => {
@@ -599,6 +604,8 @@ test("typing a known call opens required parameter suggestions without running c
     );
     await delay(220);
     assert.equal(currentCompletions(fixture.view.state)[0]?.label, "data=");
+    // Measure the acceptance guard from the observed menu, not from typing.
+    await delay(120);
     fixture.key("Enter");
     assert.equal(fixture.view.state.doc.toString(), `${code}(data=`);
     assert.equal(fixture.runs.length, 0);
@@ -650,6 +657,10 @@ test("quoted choices accept with Enter, preserve suffixes and stay undoable", as
         (option) => option.label === "HC3",
       );
       assert.ok(index >= 0);
+      // CodeMirror ignores acceptance for 75 ms after opening. Start this
+      // wait from the observed menu, since background parsing can finish
+      // near the end of the request delay on a busy host.
+      await delay(100);
       React.act(() =>
         fixture.view.dispatch({ effects: setSelectedCompletion(index) }),
       );

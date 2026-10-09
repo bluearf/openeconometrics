@@ -22,10 +22,11 @@ from openecon.analysis_contracts import AnalysisError, _MAX_DESIGN_BYTES
 from openecon.econometrics.glm.families import CANONICAL_LINK, FAMILY_LINKS, make_link
 from openecon.econometrics.postest.inference import _Parameters, _alpha, _parameters, _scalar
 from openecon.econometrics.postest.limited_prediction import ESTIMATORS, LimitedNormal, saved_normal
-from openecon.econometrics.postest.linear_prediction import ESTIMATORS as LINEAR_ESTIMATORS, configure as configure_linear
+from openecon.econometrics.postest.linear_prediction import ESTIMATORS as LINEAR_ESTIMATORS, configure as configure_linear, validate_snapshot as validate_linear_snapshot
 from openecon.econometrics.postest.mixture_prediction import ESTIMATORS as MIXTURE_ESTIMATORS, configure as configure_mixture
 from openecon.econometrics.postest.group_response import ESTIMATORS as GROUP_ESTIMATORS, configure as configure_group, fixed_config
 from openecon.econometrics.postest.advanced_prediction import ESTIMATORS as ADVANCED_ESTIMATORS, configure as configure_advanced
+from openecon.econometrics.postest.control_prediction import ESTIMATORS as CONTROL_ESTIMATORS, configure as configure_control
 from openecon.econometrics.postest.heteroskedastic_prediction import (
     HeteroskedasticProbit, check_workspace as check_heteroskedastic_workspace,
     parameter_uncertainty, predict_heteroskedastic, saved_heteroskedastic, variance_roles,
@@ -43,9 +44,9 @@ from openecon.resources import plan_workspace, workspace_budget_bytes
 # Explicit allow-list: absence of a response adapter is never treated as identity.
 SUPPORTED = frozenset({"ols", "cnsreg", "ivregress", "logit", "probit", "glm", "poisson",
                        "nbreg", "cloglog", "fracreg", "betareg", "gnbreg", "cpoisson", "cnbreg",
-                       "hetprobit", *ESTIMATORS, *CATEGORY_ESTIMATORS, *LINEAR_ESTIMATORS, *MIXTURE_ESTIMATORS, *GROUP_ESTIMATORS, *ADVANCED_ESTIMATORS})
+                       "hetprobit", *ESTIMATORS, *CATEGORY_ESTIMATORS, *LINEAR_ESTIMATORS, *MIXTURE_ESTIMATORS, *GROUP_ESTIMATORS, *ADVANCED_ESTIMATORS, *CONTROL_ESTIMATORS})
 _LINEAR = {"ols", "cnsreg", "ivregress"}
-_PROVENANCE_FIELDS = {"estimator", "model", "postestimation", "categorical_encoding", "omitted_terms"}
+_PROVENANCE_FIELDS = {"estimator", "model", "postestimation", "categorical_encoding", "omitted_terms", "design_terms"}
 _EXTRA_FIELDS = {
     "constrained_terms", "link", "family", "model", "quantiles", "equations", "limits",
     "inflate_link", "zero_link", "dist", "dispersion", "alpha", "truncation_column", "truncation_point",
@@ -54,8 +55,11 @@ _EXTRA_FIELDS = {
     "group_state", "random_effects", "random_terms", "covstructure",
     "method", "select_link", "ll", "thresholds", "threshold_variable", "regions", "common",
     "distribution", "cost",
+    "loss", "scale_equation_target", "scale_fixed_during_mm", "joint_estimating_equation_order",
+    "exogenous", "endogenous", "instruments", "grouping", "levels", "jacobian_rank", "center",
 }
-_INFERENCE_FIELDS = {"use_t", "distribution", "df_inference", "df_resid", "alpha", "dfadjust", "hansen"}
+_INFERENCE_FIELDS = {"use_t", "distribution", "df_inference", "df_resid", "alpha", "dfadjust", "hansen",
+                     "covariance", "n_parameters", "scale_uncertainty", "cluster_count"}
 
 
 def _error(code, message):
@@ -124,6 +128,19 @@ def _model(result, outcome=None, *, dataset=False):
         "covariance_validation_and_snapshot": 96 * k * k,
         "coefficient_vector_and_reporting": 64 * k,
     }, budget_bytes=min(128 * 1024**2, workspace_budget_bytes()) if dataset else None)
+    validate_linear_snapshot(result)
+    if estimator in CONTROL_ESTIMATORS:
+        state = _parameters(result)
+        config = configure_control(result, state, outcome=outcome)
+        # Full original state has been semantically replayed. Keep only compact
+        # query roles and reporting fields; never revalidate/refit per batch.
+        fields = {name: getattr(result, name) for name in ResultBundle.model_fields}
+        fields.update(predictions=[], sample_positions=[], tests={}, warnings=[], extra={},
+                      provenance={"estimator": estimator})
+        result = ResultBundle.model_construct(**deepcopy(fields))
+        adapter = config.pop("adapter")
+        return _Model(result=result, state=state, normal=None, choice=None,
+                      heteroskedastic=None, response_adapter=adapter, **config)
     # Freeze prediction roles/parameters, excluding row-sized fitted samples,
     # diagnostics, random effects and private caller frames. They are neither
     # needed nor valid substitutes for explicit new evaluation rows.
@@ -137,7 +154,8 @@ def _model(result, outcome=None, *, dataset=False):
         fields[name] = {key: record[key] for key in needed if key in record}
     if estimator not in GROUP_ESTIMATORS:
         fields['extra'].pop('random_effects', None)
-        fields['extra'].pop('random_terms', None)
+        if estimator != 'mixedflex':
+            fields['extra'].pop('random_terms', None)
         fields['extra'].pop('covariance_structure', None)
     result = ResultBundle.model_construct(**deepcopy(fields))
     if (estimator == "frontier" and result.inference.get("use_t") is False
@@ -263,12 +281,17 @@ def _data(model, data, *, weights=False):
     if data is None:
         _error("prediction_data_required", "Pass evaluation data explicitly; a saved chart sample is not an estimation dataset.")
     frame = _coerce_frame(data)
+    if model.result.spec.estimator in {"sreg", "mmreg", "ivcue", "mixedflex", *CONTROL_ESTIMATORS}:
+        plan_workspace("saved linear target evaluation", {
+            "encoded_design_features_and_delta_buffers": 48 * len(frame) * max(1, len(model.state.terms)),
+            "row_values_inference_positions_and_scatter": 128 * len(frame),
+        })
     if frame.columns.has_duplicates:
         _error("duplicate_columns", "Prediction data must have unique column names.")
     required = model.required(weights)
     missing = [name for name in required if name not in frame.columns]
     if missing:
-        _error("missing_columns", "Prediction data lack: " + ", ".join(missing) + ". The outcome and instruments are not required.")
+        _error("missing_columns", "Prediction data lack required fitted covariates: " + ", ".join(missing) + ".")
     keep = ~frame.loc[:, required].isna().any(axis=1)
     if not bool(keep.all()) and model.result.spec.missing == "raise":
         _error("missing_values", "Prediction inputs contain missing values; this fit records missing='raise'.")
@@ -428,7 +451,8 @@ def _kind(kind, model):
 def predict(result, data=None, kind="response", alpha=None, *, interval=None, term=None, outcome=None, batch_rows=None, target=None, random_effects=None, max_group_rows=100000, max_disk_bytes=1073741824):
     """Predict scalar means/linear indexes, optionally with delta-method mean CIs.
 
-    No outcome or instrument columns are needed. Missing='drop' preserves the
+    Required covariates depend on the saved target (CF includes instruments).
+    Missing='drop' preserves the
     input index and fills excluded rows with NaN. Observation/prediction bands,
     residuals, latent classifications and random/fixed effects are separate.
     """

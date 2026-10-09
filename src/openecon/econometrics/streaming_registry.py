@@ -12,7 +12,13 @@ _LIKELIHOODS = ("glm", "poisson", "cloglog", "fracreg", "nbreg", "betareg", "het
                 "heckman", "heckprobit", "ivprobit", "ivtobit", "cpoisson", "cnbreg",
                 "tpoisson", "tnbreg", "zip", "zinb", "gnbreg", "hurdle", "churdle", "frontier", "streg")
 
+_CF_ADAPTERS = ("cfregress", "cflogit", "cfprobit", "cfcloglog", "cfpoisson", "cfgamma", "cfinvgauss", "cffraclogit")
+
 _ADAPTERS = {
+    **{name: "openecon.econometrics.control_function.commands:fit_stream_control_function"
+       for name in _CF_ADAPTERS},
+    **{name: "openecon.econometrics.streaming_smoothing:fit_streaming"
+       for name in ("bspline_regress", "rcs_regress", "fp_regress", "mfp_regress")},
     "areg": "openecon.econometrics.streaming_linear:fit_streaming_linear",
     "reghdfe": "openecon.econometrics.streaming_hdfe:fit_streaming_hdfe",
     "ppmlhdfe": "openecon.econometrics.streaming_ppml:fit_streaming",
@@ -59,6 +65,12 @@ _ADAPTERS = {
 }
 
 _ALGORITHMS = {
+    **{name: "Global first-stage TSQR, full conditional-mean optimization and complete nonsymmetric stacked HC0/CR0 replay; compact source-bound saved state"
+       for name in ("cfregress", "cflogit", "cfprobit", "cfcloglog", "cfpoisson", "cfgamma", "cfinvgauss", "cffraclogit")},
+    **{name: "Exact disk training order statistics; global transformed augmented TSQR/SVD and complete-source iid covariance replay"
+       for name in ("bspline_regress", "rcs_regress")},
+    "fp_regress": "Global fixed FP augmented TSQR/SVD and complete-source iid covariance replay",
+    "mfp_regress": "One global FP master TSQR; all45 complete-sample candidate objectives, approximate closed F selection and conditional iid covariance replay",
     "areg": "SQLite group moments, global within TSQR and covariance replays",
     "reghdfe": "Disk row vectors, SQLite group projections, global conjugate gradients and exact singleton/connected-component degrees of freedom",
     "ppmlhdfe": "Full-source native IRLS, changing-weight disk FE projections, global deviance and actual-row covariance",
@@ -113,7 +125,22 @@ def algorithms():
 
 
 def conditions():
-    return {"xtreg": {"model": ["fe", "be", "re", "fd", "pooled", "mle"],
+    return {**{name: {"covariance": ["robust", "cluster"], "correction": "HC0/CR0; factor one",
+                     "weights": ["unweighted"], "categorical": False, "cluster_dimensions": 1,
+                     "first_stage": "one scalar continuous endogenous regressor; linear projection",
+                     "devices": ["cpu"], "precision": "float64", "max_work": True,
+                     "saved_state": "compact; unchanged estimation source required for semantic replay",
+                     "saved_dataset_helpers": ["predict", "margins", "cf_restore"]}
+               for name in ("cfregress", "cflogit", "cfprobit", "cfcloglog", "cfpoisson", "cfgamma", "cfinvgauss", "cffraclogit")},
+            **{name: {"covariance": ["nonrobust"], "weights": ["unweighted"], "categorical": False,
+                     **({"training_knots": "exact disk order statistics or explicit fixed knots"}
+                        if name in {"bspline_regress", "rcs_regress"} else
+                        {"powers": "fixed FP1/FP2"} if name == "fp_regress" else
+                        {"power_search": "45 null/FP1/FP2 candidates for one nonlinear predictor; approximate closed F selection"}),
+                     "inference": "Gaussian iid selected-model conditional t; MFP closed F tests approximate",
+                     "max_work": True, "saved_dataset_helpers": ["smoothing_predict", "smoothing_margins"]}
+               for name in ("bspline_regress", "rcs_regress", "fp_regress", "mfp_regress")},
+            "xtreg": {"model": ["fe", "be", "re", "fd", "pooled", "mle"],
                       "covariance": ["nonrobust", "robust", "cluster", "driscoll_kraay"],
                       "driscoll_kraay": True, "driscoll_kraay_models": ["fe", "pooled"]},
             "xtdpd": {"complete_panel_budget": True, "difference_system": True,
@@ -246,7 +273,10 @@ def fit(spec, source):
     from .core import kernel_call
     from openecon.engines.execution import execution_scope
     import torch
-    with torch.no_grad(), torch.device("cpu"), execution_scope("auto") as trace:
+    # These stacked-score contracts explicitly require CPU float64; generic
+    # replay adapters may still inherit an automatic accelerator preference.
+    requested_device = "cpu" if spec.estimator in _CF_ADAPTERS else "auto"
+    with torch.no_grad(), torch.device("cpu"), execution_scope(requested_device) as trace:
         result = kernel_call(getattr(import_module(module), name), spec, source)
     execution = trace.metadata()
     result.provenance.update({"execution": execution, "device": execution["device"]})

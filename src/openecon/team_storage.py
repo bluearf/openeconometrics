@@ -58,6 +58,18 @@ class TeamStorage:
         except NotFound:
             raise TeamError('NOT_FOUND', 'File not found.', 404) from None
 
+    def find(self, key, maximum=MAX_TRANSFER_BYTES):
+        """Inspect one exact immutable key after an ambiguous upload acknowledgement."""
+        from google.api_core.exceptions import NotFound
+        blob = self.bucket.blob(key)
+        try:
+            blob.reload(timeout=15)
+        except NotFound:
+            return None
+        if blob.size is None or blob.size > maximum:
+            raise TeamError('RESULT_LIMIT', 'The file exceeds the size limit.', 413)
+        return {'key': key, 'generation': int(blob.generation), 'size': int(blob.size)}
+
     def delete(self, reference):
         from google.api_core.exceptions import NotFound
         try:
@@ -132,6 +144,14 @@ class MemoryStorage:
         if len(value) > maximum:
             raise TeamError('RESULT_LIMIT', 'The file exceeds the size limit.', 413)
         return value
+
+    def find(self, key, maximum=MAX_TRANSFER_BYTES):
+        value = self.objects.get(key)
+        if value is None:
+            return None
+        if len(value) > maximum:
+            raise TeamError('RESULT_LIMIT', 'The file exceeds the size limit.', 413)
+        return {'key': key, 'generation': 1, 'size': len(value)}
 
     def delete(self, reference):
         self.objects.pop(reference['key'], None)

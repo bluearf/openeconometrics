@@ -231,10 +231,11 @@ def rm_anova(data: Any, y: str, subject: str, within: list[str], *,
         if n > 0:
             described.append([*combo, int(n), mean, math.sqrt(var) if n > 1 else None])
     return _finish(model, y, within, between, cells, columns, subjects, total_ss, described,\
-                   len(values), dropped, alpha)
+                   len(values), dropped, alpha, contrast_geometry=(transform, levels))
 
 
-def _finish(model, y, within, between, cells, columns, subjects, total_ss, described, n, dropped, alpha):
+def _finish(model, y, within, between, cells, columns, subjects, total_ss, described, n, dropped, alpha,
+            contrast_geometry=None):
     terms = model.terms
     names = [*between, *within]
     df_error = model.df_error
@@ -315,7 +316,16 @@ def _finish(model, y, within, between, cells, columns, subjects, total_ss, descr
                            index=[*between_labels, "error"]),
         "descriptives": c.frame(described, columns=[*names, "n", "mean", "std_dev"]),
     }
-    return TableSet(tables, title=f"Repeated-measures ANOVA of {y}", n_subjects=subjects,
+    result = TableSet(tables, title=f"Repeated-measures ANOVA of {y}", n_subjects=subjects,
                     n=n, n_missing=dropped, within=within, between=between,
                     within_cells=cells, df_error_between=df_error, alpha=alpha,
                     ss_type=3, notes=notes, missing="listwise")
+    if contrast_geometry is not None:
+        from .rm_contrast import save_geometry
+        transform, levels = contrast_geometry
+        state = save_geometry(model, transform, within, levels)
+        result.attrs["rm_contrast_state"] = state
+        result.attrs["rm_contrast_available"] = state is not None
+        if state is None:
+            result.attrs["notes"].append("Saved scalar RM contrasts are limited to 128 within cells and 128 between-design parameters.")
+    return result

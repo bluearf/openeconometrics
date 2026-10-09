@@ -35,7 +35,53 @@ def run_pyinstaller(command: list[str]) -> None:
     # Never clean that shared directory, including an inherited cache override.
     with tempfile.TemporaryDirectory(prefix="pyinstaller-config-", dir=build) as cache:
         environment = dict(os.environ, PYINSTALLER_CONFIG_DIR=cache)
-        subprocess.run(command, check=True, cwd=ROOT, env=environment)
+        launch = command
+        if sys.platform == "win32":
+            # Windows CreateProcess limits the entire command line to 32,767
+            # characters. Keep every frozen-module option in an owned UTF-8
+            # file and pass the list directly to PyInstaller inside the child.
+            # This changes only argument transport, not collection or flags.
+            if command[1:3] != ["-m", "PyInstaller"]:
+                raise ValueError("Expected the Python PyInstaller module invocation")
+            arguments = Path(cache) / "arguments.json"
+            arguments.write_text(json.dumps(command[3:]), encoding="utf-8", newline="")
+            launcher = (
+                "import json,sys; from pathlib import Path; "
+                "from PyInstaller.__main__ import run; "
+                "run(json.loads(Path(sys.argv[1]).read_text(encoding='utf-8')))"
+            )
+            launch = [command[0], "-c", launcher, str(arguments)]
+        subprocess.run(launch, check=True, cwd=ROOT, env=environment)
+
+
+def stdlib_inspection_sources() -> dict[str, Path]:
+    """Retain stdlib source inspected by Torch's lazy JVP JIT compilation.
+
+    PyInstaller freezes enum as bytecode. Torch's forward-AD decompositions
+    inspect Enum methods at runtime, requiring the matching enum.py beside it.
+    """
+    import enum
+    import inspect
+
+    filename = inspect.getsourcefile(enum.Enum._generate_next_value_)
+    source = Path(filename).resolve() if filename else None
+    if source is None or source.name != "enum.py" or not source.is_file():
+        raise RuntimeError("The desktop build requires the selected interpreter's enum.py source")
+    return {"enum": source}
+
+
+def inspection_source_manifest(directory: Path, sources: dict[str, Path]) -> dict:
+    """Fail on omitted/stale JIT sources and bind their exact bundled bytes."""
+    manifest = {}
+    for name, source in sources.items():
+        relative = Path("_internal") / source.name
+        target = directory / relative
+        payload = source.read_bytes()
+        if not target.is_file() or target.read_bytes() != payload:
+            raise RuntimeError(f"Bundled {name} source differs from the selected interpreter")
+        manifest[name] = {"path": relative.as_posix(), "sha256": hashlib.sha256(payload).hexdigest(),
+                          "bytes": len(payload)}
+    return manifest
 
 
 def uv_bundle_inputs() -> tuple[Path, list[tuple[Path, str]], dict]:
@@ -123,17 +169,21 @@ def prepare_distribution_notices(directory: Path) -> None:
             license_root.mkdir(exist_ok=True)
             for name in names:
                 shutil.copyfile(project / name, license_root / name)
-            metadata = (distribution / "METADATA").read_text()
+            # Wheel metadata is UTF-8 even when Windows uses a legacy locale.
+            # Preserve its description and the bytes authenticated by RECORD.
+            metadata = (distribution / "METADATA").read_text(encoding="utf-8")
             header, separator, body = metadata.partition("\n\n")
             for name in names:
                 field = "License-File: " + name
                 if field not in header.splitlines():
                     header += "\n" + field
-            (distribution / "METADATA").write_text(header + separator + body)
+            (distribution / "METADATA").write_text(
+                header + separator + body, encoding="utf-8", newline=""
+            )
         record_path = distribution / "RECORD"
         if not record_path.is_file():
             continue
-        rows = list(csv.reader(io.StringIO(record_path.read_text())))
+        rows = list(csv.reader(io.StringIO(record_path.read_text(encoding="utf-8"))))
         rows = [row for row in rows if row[0] not in {distribution.name + "/" + name for name in removed}]
         rows_by_name = {row[0]: row for row in rows}
         refreshed = [distribution / "METADATA", *sorted((distribution / "licenses").rglob("*"))]
@@ -146,7 +196,7 @@ def prepare_distribution_notices(directory: Path) -> None:
         rows_by_name[distribution.name + "/RECORD"] = [distribution.name + "/RECORD", "", ""]
         output = io.StringIO()
         csv.writer(output, lineterminator="\n").writerows(rows_by_name[name] for name in sorted(rows_by_name))
-        record_path.write_text(output.getvalue())
+        record_path.write_text(output.getvalue(), encoding="utf-8", newline="")
 
 def library_fingerprint(path: Path) -> tuple[int, str]:
     """Hash compiled Mach-O payload plus load commands, ignoring only aliases.
@@ -278,7 +328,7 @@ def main():
         "openecon.desktop_entry", "openecon.desktop_runtime", "openecon.server",
         "openecon.mcp_launcher", "openecon.mcp_server", "openecon.mcp_jobs", "mcp.server.fastmcp",
         "mcp.server.stdio",
-        "openecon.console_worker", "openecon.analysis", "openecon.data",
+        "openecon.console_worker", "openecon.analysis", "openecon.data", "openecon.survey",
         "openecon.project_packages", "openecon.package_installer", "openecon.script_packages",
         "openecon.package_requirements", "openecon.uv_runtime", "uv", "packaging.requirements",
         sysconfig._get_sysconfigdata_name() if os.name != "nt" else "sysconfig",
@@ -328,6 +378,9 @@ def main():
     ]
     from openecon.project_packages import PROTECTED_DISTRIBUTIONS
     uv_binary, uv_licenses, uv_metadata = uv_bundle_inputs()
+    inspection_sources = stdlib_inspection_sources()
+    for source in inspection_sources.values():
+        command.extend(["--add-data", str(source) + os.pathsep + "."])
     command.extend(["--add-binary", str(uv_binary) + os.pathsep + "tools"])
     for license_path, destination in uv_licenses:
         command.extend(["--add-data", str(license_path) + os.pathsep + destination])
@@ -355,6 +408,7 @@ def main():
         shutil.rmtree(static)
     shutil.copytree(ROOT / "src" / "openecon" / "static", static)
     optimization = optimize_runtime(runtime)
+    inspection_manifest = inspection_source_manifest(runtime, inspection_sources)
     packages = {}
     for name in ["openecon", "openecon-charts", "torch", "pandas", "pyarrow", "fastapi", "uvicorn", "uv", "pydantic", "PyInstaller"]:
         try:
@@ -372,8 +426,11 @@ def main():
         "startup_extraction": False, "requires_system_python": False,
         "optimization": optimization,
         "tools": {"uv": uv_metadata},
+        "inspection_sources": inspection_manifest,
     }
-    (DESKTOP / "runtime" / "runtime-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+    (DESKTOP / "runtime" / "runtime-manifest.json").write_text(
+        json.dumps(manifest, indent=2) + "\n", encoding="utf-8", newline=""
+    )
     print(json.dumps({"runtime": str(DESKTOP / "runtime" / "openecon-runtime"), "manifest": manifest}))
 
 if __name__ == "__main__":

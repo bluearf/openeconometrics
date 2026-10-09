@@ -281,7 +281,9 @@ def _fit(spec, source, *, batch_rows):
             extra["notes"] = ["theta_std_error is model-based; the reported covariance is robust.", "No LR test vs. the linear model under robust/cluster covariance."]
         info = {"covariance": spec.covariance, "correction": covariance_text, "df_inference": None, "df_resid": None}
         if acc:
-            info.update({"n_clusters": g, "cluster_column": clusters[0] if clusters else group})
+            info.update({"n_clusters": g, "cluster_column": clusters[0] if clusters else group,
+                         "cluster_columns": clusters or [group], "cluster_count": g,
+                         "cluster_df": g-1, "small_sample_correction": g/(g-1)})
         bundle = _result(sample, terms=[*design.terms, *terms], beta=params, covariance=covariance,
                   info=info, metrics=metrics, notes=notes, predictions=predictions, tests=tests,
                   solver="native_global_profiled_mixed_disk_group_moments", diagnostics={**factor_info, "converged": True,

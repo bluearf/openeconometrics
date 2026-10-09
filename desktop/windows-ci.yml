@@ -1,37 +1,190 @@
-# Copy into .github/workflows/openecon-desktop.yml to enable the Windows runner.
 name: OpenEconometrics Windows desktop
 on:
   workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: windows-desktop-${{ github.ref }}
+  cancel-in-progress: false
 jobs:
   windows-x64:
-    runs-on: windows-latest
+    runs-on: windows-2025
+    timeout-minutes: 100
+    env:
+      PYTHONUTF8: '1'
+      PYTHONNOUSERSITE: '1'
+      PIP_DISABLE_PIP_VERSION_CHECK: '1'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Preserve source bytes during Windows checkout
+        shell: pwsh
+        run: |
+          git config --global core.autocrlf false
+          if ($LASTEXITCODE -ne 0) { throw 'Source line-ending configuration failed.' }
+          git config --global core.eol lf
+          if ($LASTEXITCODE -ne 0) { throw 'Source LF line-ending configuration failed.' }
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '24'
-      - uses: actions/setup-python@v5
+          cache: npm
+          cache-dependency-path: |
+            web/package-lock.json
+            desktop/package-lock.json
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
         with:
           python-version: '3.13'
           architecture: 'x64'
-      - uses: dtolnay/rust-toolchain@stable
+          cache: pip
+          cache-dependency-path: uv.lock
+      - uses: dtolnay/rust-toolchain@89b12181fb390509a0842a86cc55eeb8eb928c1d
         with:
+          toolchain: stable
           targets: x86_64-pc-windows-msvc
-      - name: Build CPU runtime and installer
-        shell: pwsh
-        run: ./desktop/scripts/build_windows.ps1
-      - name: Exercise bundled Python and spawned console worker
+      - name: Record immutable build inputs
         shell: pwsh
         run: |
-          $Executable = Resolve-Path ./desktop/src-tauri/target/release/openecon-desktop.exe
-          $Output = Join-Path $env:RUNNER_TEMP 'openecon-smoke.json'
-          $Errors = Join-Path $env:RUNNER_TEMP 'openecon-smoke.stderr'
-          $Process = Start-Process -FilePath $Executable -ArgumentList '--smoke-test' -Wait -PassThru -RedirectStandardOutput $Output -RedirectStandardError $Errors
-          if ($Process.ExitCode -ne 0) { Get-Content $Errors; throw 'Bundled runtime smoke test failed.' }
-          $Result = Get-Content $Output -Raw | ConvertFrom-Json
-          if ($Result.status -ne 'ok' -or -not $Result.bundled -or -not $Result.stable_origin) { throw 'Bundled runtime verification failed.' }
-          Write-Output "Bundled CPU runtime verified; first startup $($Result.ready_seconds) s, repeat startup $($Result.warm_ready_seconds) s."
-      - uses: actions/upload-artifact@v4
+          $ErrorActionPreference = 'Stop'
+          New-Item -ItemType Directory -Force artifacts/windows | Out-Null
+          git diff --exit-code
+          if ($LASTEXITCODE -ne 0) { throw 'The source checkout differs from its commit.' }
+          $RecordScript = @'
+          import hashlib, json, os, platform, subprocess, sys, tomllib
+          from pathlib import Path
+          root = Path.cwd()
+          config = json.loads((root / 'desktop/src-tauri/tauri.conf.json').read_text(encoding='utf-8'))
+          sdk = tomllib.loads((root / 'pyproject.toml').read_text(encoding='utf-8'))['project']['version']
+          charts = tomllib.loads((root / 'packages/openecon-charts/pyproject.toml').read_text(encoding='utf-8'))['project']['version']
+          paths = ['uv.lock', 'pyproject.toml', 'packages/openecon-charts/pyproject.toml', 'desktop/src-tauri/Cargo.lock', 'desktop/src-tauri/tauri.conf.json', 'web/package-lock.json', 'desktop/package-lock.json']
+          record = {'source_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(), 'versions': {'desktop': config['version'], 'sdk': sdk, 'charts': charts}, 'os': platform.platform(), 'machine': platform.machine(), 'build_python': sys.version, 'rustc': subprocess.check_output(['rustc', '--version'], text=True).strip(), 'node': subprocess.check_output(['node', '--version'], text=True).strip(), 'runner_image': os.environ.get('ImageOS'), 'runner_image_version': os.environ.get('ImageVersion'), 'run_id': os.environ['GITHUB_RUN_ID'], 'run_attempt': os.environ['GITHUB_RUN_ATTEMPT'], 'input_sha256': {path: hashlib.sha256((root / path).read_bytes()).hexdigest() for path in paths}}
+          assert record['source_commit'] == os.environ['GITHUB_SHA']
+          for path in paths:
+              assert (root / path).read_bytes() == subprocess.check_output(['git', 'show', record['source_commit'] + ':' + path]), 'Checkout bytes differ from the exact source blob: ' + path
+          (root / 'artifacts/windows/build-inputs.json').write_text(json.dumps(record, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps(record, indent=2))
+          '@
+          python -c $RecordScript
+          if ($LASTEXITCODE -ne 0) { throw 'Build provenance recording failed.' }
+      - name: Build CPU runtime and installer
+        id: build
+        shell: pwsh
+        run: ./desktop/scripts/build_windows.ps1
+      - name: Preserve the native bundle reference before tests
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $Original = 'desktop/src-tauri/target/release/openecon-desktop.exe'
+          $Reference = 'artifacts/windows/native-build-reference.exe'
+          Copy-Item -LiteralPath $Original -Destination $Reference
+          $Hash = (Get-FileHash -LiteralPath $Original -Algorithm SHA256).Hash.ToLowerInvariant()
+          if ((Get-FileHash -LiteralPath $Reference -Algorithm SHA256).Hash.ToLowerInvariant() -ne $Hash) { throw 'Native build reference copy differs from the producer.' }
+          $Lock = Get-Content -LiteralPath 'desktop/package-lock.json' -Raw | ConvertFrom-Json -AsHashtable
+          @{ source_sha = $env:GITHUB_SHA; source_sha256 = $Hash; bytes = (Get-Item -LiteralPath $Original).Length; tauri_cli_version = $Lock.packages.'node_modules/@tauri-apps/cli'.version; scope = 'Restored raw producer executable after NSIS bundle, before any tests; acceptance reference only' } | ConvertTo-Json | Set-Content -LiteralPath 'artifacts/windows/native-build-reference.json' -Encoding utf8NoBOM
+      - name: Test native boundaries on Windows
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          cargo test --release --locked --manifest-path desktop/src-tauri/Cargo.toml | Tee-Object -FilePath artifacts/windows/native-tests.log
+          if ($LASTEXITCODE -ne 0) { throw 'Windows native tests failed.' }
+      - name: Test distribution metadata on Windows
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $BuildPython = Join-Path $env:GITHUB_WORKSPACE 'desktop/.build-venv/Scripts/python.exe'
+          & $BuildPython -m pip install 'pytest==9.1.1'
+          if ($LASTEXITCODE -ne 0) { throw 'Packaging test runner installation failed.' }
+          & $BuildPython -m pytest tests/test_desktop_econometrics_packaging.py -q --junitxml=artifacts/windows/packaging-tests.xml
+          if ($LASTEXITCODE -ne 0) { throw 'Windows distribution metadata tests failed.' }
+      - name: Test worker startup and shell shutdown on Windows
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $BuildPython = Join-Path $env:GITHUB_WORKSPACE 'desktop/.build-venv/Scripts/python.exe'
+          & $BuildPython -m pytest tests/test_desktop_runtime.py -k entry_announces_ephemeral_port_and_stdin_shutdown -q --junitxml=artifacts/windows/shutdown-tests.xml
+          if ($LASTEXITCODE -ne 0) { throw 'Windows worker startup or shell shutdown tests failed.' }
+      - name: Acquire the exact previous public Windows installer
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PreviousScript = @'
+          import hashlib, json, os, uuid
+          from pathlib import Path
+          from urllib.request import Request, urlopen
+          url = 'https://github.com/bluearf/openeconometrics/releases/download/v0.3.44-windows-alpha.1/OpenEconometrics_0.3.44_x64-setup.exe'
+          expected = '6a6587e4b570f57ae783ce37cfbdc383d6862eadae0b74f648b08cd77a403938'
+          temporary = Path(os.environ['RUNNER_TEMP']).resolve(strict=True)
+          directory = temporary / ('previous-openecon-' + uuid.uuid4().hex)
+          directory.mkdir()
+          installer = directory / 'OpenEconometrics_0.3.44_x64-setup.exe'
+          checksum, size = hashlib.sha256(), 0
+          try:
+              with urlopen(Request(url, headers={'User-Agent': 'OpenEconometrics-hosted-migration'}), timeout=120) as response, installer.open('xb') as target:
+                  assert response.status == 200 and response.geturl().startswith('https://')
+                  while chunk := response.read(1024 * 1024):
+                      size += len(chunk)
+                      assert size <= 300 * 1024 * 1024, 'Previous installer exceeds its byte bound'
+                      checksum.update(chunk)
+                      target.write(chunk)
+              assert size == 191756254 and checksum.hexdigest() == expected, 'Previous public installer bytes changed'
+              record = {'version': '0.3.44', 'public_url': url, 'sha256': expected, 'bytes': size, 'source_sha': '8d844ef70a1f6c4ec78d3d3da6790c44591a36e9', 'authenticated_download': False}
+              Path('artifacts/windows/previous-installer.json').write_text(json.dumps(record, indent=2) + '\n', encoding='utf-8')
+              with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as environment:
+                  environment.write('PREVIOUS_WINDOWS_INSTALLER=' + str(installer) + '\n')
+              print(json.dumps(record))
+          except BaseException:
+              installer.unlink(missing_ok=True)
+              directory.rmdir()
+              raise RuntimeError('Pinned previous installer acquisition failed; remote redirect details omitted') from None
+          '@
+          python -I -c $PreviousScript
+          if ($LASTEXITCODE -ne 0) { throw 'The exact previous public installer is unavailable.' }
+      - name: Install and verify the isolated Windows application
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $Installers = @(Get-ChildItem desktop/src-tauri/target/release/bundle/nsis/*.exe)
+          if ($Installers.Count -ne 1) { throw 'Expected exactly one reviewed NSIS installer.' }
+          ./desktop/scripts/verify_windows_installation.ps1 -InstallerPath $Installers[0].FullName -PreviousInstallerPath $env:PREVIOUS_WINDOWS_INSTALLER -OutputDirectory artifacts/windows -SourceCommit $env:GITHUB_SHA
+      - name: Remove the owned previous installer input
+        if: always()
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:PREVIOUS_WINDOWS_INSTALLER) {
+            $File = [IO.Path]::GetFullPath($env:PREVIOUS_WINDOWS_INSTALLER)
+            $Temporary = [IO.Path]::GetFullPath($env:RUNNER_TEMP).TrimEnd('\') + '\'
+            $Directory = Split-Path -Parent $File
+            if (-not $File.StartsWith($Temporary, [StringComparison]::OrdinalIgnoreCase) -or (Split-Path -Leaf $Directory) -notmatch '^previous-openecon-[0-9a-f]{32}$' -or (Split-Path -Leaf $File) -ne 'OpenEconometrics_0.3.44_x64-setup.exe') { throw 'Previous installer cleanup scope is invalid.' }
+            if (Test-Path -LiteralPath $File) {
+              if (((Get-Item -LiteralPath $File -Force).Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) { throw 'Previous installer cleanup refuses a reparse point.' }
+              Remove-Item -LiteralPath $File -Force
+            }
+            Remove-Item -LiteralPath $Directory -Force
+          }
+      - name: Retain source-bound Windows installer
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: OpenEconometrics-Windows-x64-unsigned
+          name: OpenEconometrics-Windows-x64-unsigned-${{ github.run_id }}
           path: desktop/src-tauri/target/release/bundle/nsis/*.exe
+          if-no-files-found: error
+          retention-days: 30
+      - name: Retain unverified installer only for failed-run diagnosis
+        if: ${{ failure() && steps.build.outcome == 'success' }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Windows-built-unverified-${{ github.run_id }}
+          path: desktop/src-tauri/target/release/bundle/nsis/*.exe
+          if-no-files-found: error
+          retention-days: 7
+      - name: Retain Windows acceptance evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Windows-acceptance-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/windows/
+          if-no-files-found: error
+          retention-days: 30

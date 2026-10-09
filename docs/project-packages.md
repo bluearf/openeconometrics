@@ -167,7 +167,7 @@ compiled `polars` 1.44.2 wheels inside the shipped runtime. Team manifest
 persistence, concurrent-write rejection and anonymous-access rejection were
 checked against the deployed control service; role permissions passed local
 tests. See
-[`evidence/desktop-0.3.3.json`](evidence/desktop-0.3.3.json) for artifact identity,
+`evidence/desktop-0.3.3.json` (internal evidence excluded from this public snapshot) for artifact identity,
 source provenance, verification coverage and the separate cloud revision.
 
 The 0.3.5 Apple Silicon release verifies `oe.install(...)` and `%pip install`
@@ -175,7 +175,7 @@ against actual pure-Python and compiled wheels inside the read-only mounted
 installer, including preserved variables/imports, no-op installs, failed upgrade
 rollback, isolation and restart persistence. Its 2,290 Python tests include
 Stop, timeout and worker-crash cancellation. See
-[`evidence/desktop-0.3.5.json`](evidence/desktop-0.3.5.json).
+`evidence/desktop-0.3.5.json` (internal evidence excluded from this public snapshot).
 
 The 0.3.7 Apple Silicon release includes uv 0.9.26. Real `humanize`, native
 `polars` and `tabulate[widechars]` installations passed inside the mounted DMG,
@@ -183,7 +183,7 @@ including requirements files, cached wheels, retained pins, exact uv manifest
 restore and pip compatibility. The deployed collaboration service preserves
 schema 2 declarations, with authenticated owner/viewer readback, write denial,
 optimistic conflict and legacy manifest compatibility. See
-[`evidence/desktop-0.3.7.json`](evidence/desktop-0.3.7.json).
+`evidence/desktop-0.3.7.json` (internal evidence excluded from this public snapshot).
 
 
 ## Portable environment documents

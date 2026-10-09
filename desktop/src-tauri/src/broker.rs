@@ -57,6 +57,10 @@ pub fn hex_id(value: &str, length: usize) -> bool {
     value.len() == length && value.bytes().all(|c| c.is_ascii_hexdigit())
 }
 
+fn account_grant_id(value: &str) -> bool {
+    hex_id(value, 32) && !value.bytes().any(|c| c.is_ascii_uppercase())
+}
+
 /// Only the history read endpoint accepts a bounded, named query string.
 /// Path encodings, ambiguous normalization and compute endpoints stay rejected.
 pub fn allowed_route(method: &str, path: &str) -> bool {
@@ -101,8 +105,18 @@ pub fn allowed_route(method: &str, path: &str) -> bool {
     match p.as_slice() {
         ["", "api", "auth", "config"] | ["", "api", "me"] => method == "GET",
         ["", "api", "desktop", "login"] => method == "POST",
+        ["", "api", "desktop", "login", request] => {
+            method == "GET" && account_grant_id(request)
+        }
         ["", "api", "desktop", "login", request, "exchange"] => {
             method == "POST" && hex_id(request, 32)
+        }
+        ["", "api", "desktop", "account-link"] => method == "POST",
+        ["", "api", "desktop", "account-link", request] => {
+            method == "DELETE" && account_grant_id(request)
+        }
+        ["", "api", "desktop", "account-link", request, "exchange"] => {
+            method == "POST" && account_grant_id(request)
         }
         ["", "api", "projects"] => matches!(method, "GET" | "POST"),
         ["", "api", "projects", _] => method == "PATCH",
@@ -187,6 +201,34 @@ async fn json_response(mut response: reqwest::Response) -> Result<CloudResponse,
     Ok(CloudResponse { status, body })
 }
 
+/// Authenticated account linking is distinct from public sign-in exchanges.
+/// The native link bridge only accepts a target/challenge or a verifier; it
+/// cannot carry a password, Google credential, caller-selected UID or token.
+fn auth_request_policy(method: &str, path: &str, body: Option<&Value>) -> Result<bool, String> {
+    let parts: Vec<&str> = path.split('/').collect();
+    let (key, public, target) = match (method, parts.as_slice()) {
+        ("POST", ["", "api", "desktop", "login"]) => ("challenge", true, false),
+        ("POST", ["", "api", "desktop", "login", _, "exchange"]) => ("verifier", true, false),
+        ("POST", ["", "api", "desktop", "account-link"]) => ("challenge", false, true),
+        ("POST", ["", "api", "desktop", "account-link", _, "exchange"]) => ("verifier", false, false),
+        ("GET", ["", "api", "desktop", "login", _])
+        | ("DELETE", ["", "api", "desktop", "account-link", _]) => {
+            if body.is_some() { return Err("This account operation does not accept a body.".into()); }
+            return Ok(false);
+        }
+        _ => return Ok(false),
+    };
+    let object = body.and_then(Value::as_object).ok_or("Invalid account request.")?;
+    let valid_proof = object.get(key).and_then(Value::as_str).is_some_and(|value| {
+        value.len() == 64 && value.bytes().all(|c| c.is_ascii_digit() || (b'a'..=b'f').contains(&c))
+    });
+    if object.len() != (if target { 2 } else { 1 }) || !valid_proof
+        || (target && !object.get("target").and_then(Value::as_str).is_some_and(|value| matches!(value, "google.com" | "password"))) {
+        return Err("Invalid account request.".into());
+    }
+    Ok(public)
+}
+
 pub async fn request(
     client: &Client,
     method: &str,
@@ -200,31 +242,12 @@ pub async fn request(
     if matches!(method, "GET" | "DELETE") && body.is_some() {
         return Err("This cloud operation does not accept a body.".into());
     }
+    let public_login = auth_request_policy(method, path, body.as_ref())?;
     let method = Method::from_bytes(method.as_bytes()).map_err(|_| "Invalid cloud method.")?;
-    let login = path == "/api/desktop/login" || path.starts_with("/api/desktop/login/");
-    if login {
-        let key = if path == "/api/desktop/login" {
-            "challenge"
-        } else {
-            "verifier"
-        };
-        let object = body
-            .as_ref()
-            .and_then(Value::as_object)
-            .ok_or("Invalid sign-in request.")?;
-        if object.len() != 1
-            || !object
-                .get(key)
-                .and_then(Value::as_str)
-                .is_some_and(|value| hex_id(value, 64))
-        {
-            return Err("Invalid sign-in request.".into());
-        }
-    }
     let mut builder = authorize(
         client.request(method, format!("{CLOUD_ORIGIN}{path}")),
         token,
-        path == "/api/auth/config" || login,
+        path == "/api/auth/config" || public_login,
     )?;
     if let Some(value) = body {
         let bytes = serde_json::to_vec(&value).map_err(|_| "Invalid cloud request body.")?;
@@ -371,7 +394,11 @@ fn pinned_metadata(body: &Value, file_id: &str) -> Result<CachedFile, String> {
     if !safe_filename(name)
         || hash.len() != 64
         || !hash.bytes().all(|c| c.is_ascii_hexdigit())
-        || size > MAX_FILE_BYTES
+        || size > if item.get("transfer").and_then(Value::as_str) == Some("chunked-v1") {
+            crate::data_transfer::MAX_FILE_BYTES
+        } else { MAX_FILE_BYTES }
+        || (item.get("transfer").and_then(Value::as_str) == Some("chunked-v1")
+            && (!matches!(Path::new(name).extension().and_then(|x| x.to_str()).map(str::to_ascii_lowercase).as_deref(), Some("csv" | "parquet")) || size == 0))
     {
         return Err("The cloud file metadata is invalid.".into());
     }
@@ -399,7 +426,12 @@ pub async fn download(
     // Metadata is fetched from the authenticated project listing, never trusted
     // from JavaScript. The immutable object's content must match this pinned hash.
     let listing = file_listing(client, project, token).await?;
-    let metadata = pinned_metadata(&listing, file_id)?;
+    // Sequential UI downloads retain the same whole-project geometry check as
+    // the batch command; an individual call cannot bypass its resource budget.
+    let metadata = selected_project_metadata(&listing, file_id)?;
+    if chunked_file(&listing, file_id) {
+        return crate::data_transfer::download_chunked(client, root, project, file_id, token, &metadata).await;
+    }
     download_metadata(client, root, project, metadata, token).await
 }
 
@@ -416,7 +448,11 @@ pub async fn download_all(
     let items = project_metadata(&listing)?;
     let mut files = Vec::with_capacity(items.len());
     for metadata in items {
-        files.push(download_metadata(client, root, project, metadata, token).await?);
+        if chunked_file(&listing, &metadata.cloud_id) {
+            files.push(crate::data_transfer::download_chunked(client, root, project, &metadata.cloud_id, token, &metadata).await?);
+        } else {
+            files.push(download_metadata(client, root, project, metadata, token).await?);
+        }
     }
     Ok(files)
 }
@@ -444,6 +480,12 @@ async fn file_listing_response(response: reqwest::Response) -> Result<Value, Str
     Ok(json_response(response).await?.body)
 }
 
+fn chunked_file(body: &Value, id: &str) -> bool {
+    body.get("datasets").and_then(Value::as_array).is_some_and(|items| items.iter().any(|item|
+        item.get("id").and_then(Value::as_str) == Some(id)
+        && item.get("transfer").and_then(Value::as_str) == Some("chunked-v1")))
+}
+
 fn project_metadata(body: &Value) -> Result<Vec<CachedFile>, String> {
     let items = body
         .get("datasets")
@@ -454,6 +496,7 @@ fn project_metadata(body: &Value) -> Result<Vec<CachedFile>, String> {
     }
     let mut files = Vec::with_capacity(items.len());
     let mut size = 0u64;
+    let mut legacy_size = 0u64;
     let mut names = std::collections::HashSet::new();
     let mut ids = std::collections::HashSet::new();
     for item in items {
@@ -468,8 +511,11 @@ fn project_metadata(body: &Value) -> Result<Vec<CachedFile>, String> {
         size = size
             .checked_add(metadata.size_bytes)
             .ok_or("The project file size is invalid.")?;
-        if size > 64 * 1024 * 1024 {
-            return Err("The project exceeds the desktop limit of 64 MiB of input data.".into());
+        if !chunked_file(body, id) {
+            legacy_size = legacy_size.checked_add(metadata.size_bytes).ok_or("The project file size is invalid.")?;
+        }
+        if size > crate::data_transfer::MAX_PROJECT_BYTES || legacy_size > 64 * 1024 * 1024 {
+            return Err("The project exceeds 8 GiB of shared data or 64 MiB of legacy input data.".into());
         }
         if !names.insert(metadata.name.to_lowercase()) {
             return Err("The project contains conflicting input filenames.".into());
@@ -477,6 +523,11 @@ fn project_metadata(body: &Value) -> Result<Vec<CachedFile>, String> {
         files.push(metadata);
     }
     Ok(files)
+}
+
+fn selected_project_metadata(body: &Value, id: &str) -> Result<CachedFile, String> {
+    project_metadata(body)?.into_iter().find(|file| file.cloud_id == id)
+        .ok_or_else(|| "This cloud file is no longer available.".into())
 }
 
 async fn download_metadata(
@@ -630,7 +681,7 @@ async fn local_import(project: &str, origin: &str, file: tokio::fs::File,
     Ok(response)
 }
 
-pub async fn upload(client: &Client, project: &str, token: &str, local_origin: &str) -> Result<CloudResponse, String> {
+pub async fn upload(client: &Client, root: &Dir, project: &str, token: &str, local_origin: &str) -> Result<CloudResponse, String> {
     if !identifier(project) {
         return Err("Invalid project identifier.".into());
     }
@@ -669,7 +720,29 @@ pub async fn upload(client: &Client, project: &str, token: &str, local_origin: &
         if !editable_session(&permission.body) {
             return Err("You do not have permission to edit this project.".into());
         }
-        return local_import(project, local_origin, file, info.len(), &name).await;
+        if info.len() > crate::data_transfer::MAX_FILE_BYTES {
+            // Larger physical files remain usable locally under the existing
+            // local importer; the 2 GiB cap applies only to shared transfers.
+            return local_import(project, local_origin, file, info.len(), &name).await;
+        }
+        match crate::data_transfer::upload_selected(client, root, project, choice.path(), token).await? {
+            crate::data_transfer::UploadOutcome::Complete(body) => {
+                // Copy the selected source into a verified managed cache without a second
+                // network download. Cloud credentials never enter local Python imports.
+                crate::data_transfer::cache_uploaded(root, project, choice.path(), &body).await?;
+                return Ok(CloudResponse { status: 201, body });
+            },
+            crate::data_transfer::UploadOutcome::Pending(transfer) => {
+                let mut imported = local_import(project, local_origin, file, info.len(), &name).await?;
+                if let Some(object) = imported.body.as_object_mut() {
+                    object.insert("sharing_pending_transfer".into(), serde_json::to_value(transfer).map_err(|_| "The transfer status could not be saved.")?);
+                }
+                return Ok(imported);
+            },
+            crate::data_transfer::UploadOutcome::Unsupported => {
+                return local_import(project, local_origin, file, info.len(), &name).await;
+            },
+        }
     }
     let stream = tokio_util::io::ReaderStream::new(tokio::io::AsyncReadExt::take(file, info.len()));
     let part = reqwest::multipart::Part::stream_with_length(
@@ -697,6 +770,62 @@ pub async fn upload(client: &Client, project: &str, token: &str, local_origin: &
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn account_link_routes_are_canonical_and_do_not_allow_native_completion() {
+        let id = "a".repeat(32);
+        for (method, path) in [
+            ("POST", "/api/desktop/account-link".to_string()),
+            ("GET", format!("/api/desktop/login/{id}")),
+            ("DELETE", format!("/api/desktop/account-link/{id}")),
+            ("POST", format!("/api/desktop/account-link/{id}/exchange")),
+        ] {
+            assert!(allowed_route(method, &path));
+            for wrong in ["GET", "POST", "PUT", "PATCH", "DELETE"] {
+                if wrong != method { assert!(!allowed_route(wrong, &path)); }
+            }
+        }
+        for path in [
+            format!("/api/desktop/account-link/{id}/complete"),
+            format!("/api/desktop/account-link/{id}/authorize"),
+            format!("/api/desktop/account-link/{id}/exchange?host=evil"),
+            format!("/api/desktop/account-link/{}/exchange", "A".repeat(32)),
+            "/api/desktop/account-link/../exchange".to_string(),
+            "/api/desktop/account-link/short/exchange".to_string(),
+        ] {
+            for method in ["GET", "POST", "DELETE"] { assert!(!allowed_route(method, &path)); }
+        }
+    }
+
+    #[test]
+    fn account_link_policy_requires_auth_and_never_accepts_credentials_or_uid() {
+        let proof = "b".repeat(64);
+        let id = "a".repeat(32);
+        for target in ["google.com", "password"] {
+            let body = serde_json::json!({"challenge": proof, "target": target});
+            assert_eq!(auth_request_policy("POST", "/api/desktop/account-link", Some(&body)), Ok(false));
+        }
+        let exchange = serde_json::json!({"verifier": proof});
+        assert_eq!(auth_request_policy("POST", &format!("/api/desktop/account-link/{id}/exchange"), Some(&exchange)), Ok(false));
+        assert_eq!(auth_request_policy("GET", &format!("/api/desktop/login/{id}"), None), Ok(false));
+        assert_eq!(auth_request_policy("DELETE", &format!("/api/desktop/account-link/{id}"), None), Ok(false));
+        let login = serde_json::json!({"challenge": proof});
+        assert_eq!(auth_request_policy("POST", "/api/desktop/login", Some(&login)), Ok(true));
+        assert_eq!(auth_request_policy("POST", &format!("/api/desktop/login/{id}/exchange"), Some(&exchange)), Ok(true));
+        for body in [
+            serde_json::json!({"challenge": proof, "target": "google.com", "uid": "other"}),
+            serde_json::json!({"challenge": proof, "target": "password", "password": "not-for-transport"}),
+            serde_json::json!({"challenge": proof, "target": "github.com"}),
+            serde_json::json!({"challenge": "B".repeat(64), "target": "password"}),
+            serde_json::json!({"target": "password"}),
+            serde_json::json!([]),
+        ] {
+            assert_eq!(auth_request_policy("POST", "/api/desktop/account-link", Some(&body)), Err("Invalid account request.".to_string()));
+        }
+        let client = Client::new();
+        let public = auth_request_policy("POST", "/api/desktop/account-link", Some(&serde_json::json!({"challenge": proof, "target": "password"}))).unwrap();
+        assert!(authorize(client.post(CLOUD_ORIGIN), None, public).is_err());
+        assert!(auth_request_policy("GET", &format!("/api/desktop/login/{id}"), Some(&exchange)).is_err());
+    }
     #[test]
     fn large_local_upload_has_explicit_format_origin_and_role_boundaries() {
         assert!(!local_upload(MAX_FILE_BYTES, "wages.csv").unwrap());
@@ -1025,6 +1154,22 @@ mod tests {
     }
 
     #[test]
+    fn individual_download_metadata_cannot_bypass_project_geometry() {
+        let make = |count: usize, size: u64, chunked: bool| serde_json::json!({"datasets":(0..count).map(|index| {
+            let mut file = serde_json::json!({"id":format!("{index:032x}"),"name":format!("data{index}.csv"),"data_hash":"a".repeat(64),"size_bytes":size});
+            if chunked { file["transfer"] = serde_json::json!("chunked-v1"); }
+            file
+        }).collect::<Vec<_>>()});
+        let selected = "0".repeat(32);
+        assert!(selected_project_metadata(&make(21,1,true),&selected).is_err());
+        assert!(selected_project_metadata(&make(5,crate::data_transfer::MAX_FILE_BYTES,true),&selected).is_err());
+        assert!(selected_project_metadata(&make(3,MAX_FILE_BYTES,false),&selected).is_err());
+        let exact = make(4,crate::data_transfer::MAX_FILE_BYTES,true);
+        assert_eq!(selected_project_metadata(&exact,&selected).unwrap().size_bytes,crate::data_transfer::MAX_FILE_BYTES);
+        assert!(selected_project_metadata(&exact,&"f".repeat(32)).is_err());
+    }
+
+    #[test]
     fn batch_metadata_rejects_duplicate_names_and_excessive_input() {
         let item = serde_json::json!({"id":"a".repeat(32),"name":"wages.csv","data_hash":"f".repeat(64),"size_bytes":12});
         let valid = serde_json::json!({"datasets":[item.clone()]});
@@ -1053,6 +1198,9 @@ mod tests {
         assert!(!cache_matches(&dir, "wages.csv", 5, &hash).unwrap());
         dir.create_dir("bad.csv").unwrap();
         assert!(cache_matches(&dir, "bad.csv", 0, &hash).is_err());
+        // Windows retains directory handles until they are explicitly closed.
+        drop(dir);
+        drop(root);
         std::fs::remove_dir_all(path).unwrap();
     }
     #[cfg(unix)]
@@ -1067,6 +1215,8 @@ mod tests {
         let dir = project_dir(&root, "project1").unwrap();
         std::os::unix::fs::symlink("/etc/hosts", path.join("projects/project1/wages.csv")).unwrap();
         assert!(cache_matches(&dir, "wages.csv", 0, "").is_err());
+        drop(dir);
+        drop(root);
         std::fs::remove_dir_all(path).unwrap();
     }
 }

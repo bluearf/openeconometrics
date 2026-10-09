@@ -1,0 +1,68 @@
+.project-transfers {
+  border-top: 1px solid #e2e7ed;
+  padding: 14px 10px;
+  color: #23344b;
+}
+.project-transfers h3 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.project-transfers > p {
+  font-size: 11px;
+  line-height: 1.5;
+  margin: 0 0 10px;
+}
+.project-transfer {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+}
+.project-transfer strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+}
+.project-transfer progress {
+  width: 100%;
+  height: 5px;
+  accent-color: #23344b;
+}
+.project-transfer > span {
+  font-size: 10px;
+  color: #65758a;
+}
+.project-transfer > div {
+  display: flex;
+  gap: 8px;
+}
+.project-transfer button {
+  border: 1px solid #d2dae4;
+  background: white;
+  color: #23344b;
+  border-radius: 5px;
+  padding: 5px 9px;
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.project-transfer button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.project-download-cancel {
+  border: 1px solid #d2dae4;
+  background: white;
+  color: #23344b;
+  border-radius: 5px;
+  padding: 5px 9px;
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.project-download-cancel:disabled {
+  opacity: 0.45;
+  cursor: default;
+}

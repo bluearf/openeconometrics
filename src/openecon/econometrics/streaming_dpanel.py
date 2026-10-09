@@ -214,7 +214,7 @@ def _ah_covariances(sample, store, projection, estimate):
         first_groups = ClusterAccumulator(k, scratch_directory=_scratch_directory())
         stack.callback(score_groups.close)
         stack.callback(first_groups.close)
-        for keys, periods, value, _ in store.blocks():
+        for keys, periods, value, positions in store.blocks():
             y, lagged, excluded, x = value[:, 0], value[:, 1], value[:, 2], value[:, 3:]
             z = torch.cat((x, excluded[:, None]), 1)
             fitted_lag = z @ first.beta[:, 0]
@@ -241,8 +241,9 @@ def _ah_covariances(sample, store, projection, estimate):
             first_groups.add(keys, z * (lagged - fitted_lag)[:, None])
             take = min(400 - len(predictions), len(y))
             predictions.extend(
-                {"observed": float(a), "predicted": float(b), "residual": float(a - b)}
-                for a, b in zip(y[:take], mean[:take], strict=True)
+                {"row": int(position), "observed": float(a), "fitted": float(b),
+                 "predicted": float(b), "residual": float(a - b)}
+                for position, a, b in zip(positions[:take], y[:take], mean[:take], strict=True)
             )
         rss, total = float(ssr.value), float(tss.value)
         if not all(math.isfinite(value) for value in (rss, total)):
@@ -281,6 +282,7 @@ def _ah_covariances(sample, store, projection, estimate):
                 "df_inference": g - 1,
                 "cluster_count": g,
                 "cluster_column": sample.spec.panel,
+                "cluster_columns": [sample.spec.panel],
                 "cluster_df": g - 1,
                 "small_sample_correction": cr1,
                 "correction": "cluster sandwich: G/(G-1)*(N-1)/(N-K)",

@@ -16,6 +16,31 @@ def collect(source):
     return pd.concat(list(source.iter_batches(batch_rows=17)))
 
 
+@pytest.mark.parametrize("method", ["ra", "ipwra", "aipw"])
+def test_resident_and_physical_saved_categorical_nuisance_standardization(method, tmp_path):
+    from test_econ_streaming_teffects import specification
+    frame = make_data(n=250)
+    frame["cat"] = pd.Categorical(np.arange(len(frame)) % 3, categories=[0, 1, 2, 3])
+    path = tmp_path / "causal.parquet"
+    frame.to_parquet(path, index=False)
+    parsed = pd.read_parquet(path)
+    spec = specification(method, mixed=True)
+    reference = registry.load_entry(registry.get("teffects"))(spec, parsed)
+    physical = oe.fit(spec, data=oe.scan(path))
+    evaluation = parsed.dropna().head(17)
+    outputs = []
+    for result in (reference, physical):
+        restored = ResultBundle.model_validate_json(result.model_dump_json())
+        assert "cat" in restored.provenance["categorical_encoding"]
+        output = oe.causal_evaluate(restored, oe.Dataset.from_frame(evaluation),
+            target="standardized_outcome", treatment="1", population="fixed_evaluation")
+        try:
+            outputs.append(collect(output).select_dtypes("number"))
+        finally:
+            output.close()
+    np.testing.assert_allclose(outputs[0], outputs[1], rtol=3e-5, atol=3e-7)
+
+
 @pytest.mark.parametrize("streamed", [False, True])
 @pytest.mark.parametrize("method", ["ra", "ipw", "ipwra", "aipw"])
 def test_full_joint_nuisance_covariance_and_potential_outcome_identity(

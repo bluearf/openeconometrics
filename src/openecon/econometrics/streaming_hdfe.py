@@ -7,11 +7,13 @@ in bounded float64 Torch batches. No observation/level table is collected.
 from __future__ import annotations
 
 from contextlib import ExitStack
+from dataclasses import dataclass
 import hashlib
 import math
 from pathlib import Path
 import shutil
 import sqlite3
+import struct
 import tempfile
 
 import torch
@@ -21,6 +23,7 @@ from openecon.engines.contracts import KernelError
 from openecon.engines.linalg import collinear_columns
 from openecon.engines.streaming_ols import _CompensatedSum, _TSQRTree
 from openecon.linear_ols.streaming import _WeightedMoments
+from openecon.resources import plan_workspace
 from openecon.streaming_design import encode_cluster_labels
 
 from . import registry
@@ -248,6 +251,7 @@ def _fit(spec, source, batch_rows):
             raise AnalysisError("constant_outcome", "The absorbed outcome has no finite variation.")
         states = _Vectors(sample, width, len(absorb), selection.path.stat().st_size)
         stack.callback(states.close)
+        states.projection = _ProjectionReplay(sample, states, selection, absorb)
         before_ss, tss = _CompensatedSum((width-1,)), _CompensatedSum(())
         with states.writer("raw") as writer:
             for batch in sample.batches():
@@ -257,7 +261,7 @@ def _fit(spec, source, batch_rows):
                 before_ss.add((values[:, 1:].square()*weights[:, None]).sum(0))
                 tss.add((outcome.square()*weights).sum())
                 states.write(writer, values)
-        iterations, maximum_update, method = _absorb(states, sample, absorb, tolerance, maximum_iterations)
+        iterations, maximum_update, method = _absorb(states, states.projection, absorb, tolerance, maximum_iterations)
         tree, within_ss, within_tss = _TSQRTree(), _CompensatedSum((width-1,)), _CompensatedSum(())
         for batch, (values,) in states.batches(sample, "y"):
             weights = _weights(sample, batch)
@@ -334,6 +338,124 @@ def _fit(spec, source, batch_rows):
         return result
 
 
+@dataclass
+class _ProjectionBatch:
+    frame: range
+    weights: torch.Tensor
+    group_keys: dict[str, list[bytes]]
+
+
+class _ProjectionReplay:
+    """Reuse validated FE geometry inside disk-only projection operations.
+
+    Preserve every original numerical batch boundary and exact float64 weight.
+    Group keys come from the existing selected-row SQLite table. Later solve,
+    likelihood and covariance passes still replay and hash the original source;
+    this cache never replaces their sample/provenance verification.
+    """
+
+    def __init__(self, sample, states, selection, dimensions):
+        self.sample, self.states, self.selection = sample, states, selection
+        self.dimensions = tuple(dimensions)
+        self.replays = self.maximum_rows = 0
+        try:
+            with (
+                states.writer("projection_rows") as rows,
+                states.writer("projection_weights") as weights,
+            ):
+                for batch in sample.batches():
+                    count = len(batch.frame)
+                    label_bytes = sum(
+                        len(key) + 128
+                        for name in dimensions
+                        for key in encode_cluster_labels(batch.frame[name])
+                    )
+                    rows.write(struct.pack("<QQ", count, label_bytes))
+                    states.write(weights, batch.weights)
+        except OSError as error:
+            raise _Selection.failure() from error
+
+    def __getattr__(self, name):
+        return getattr(self.sample, name)
+
+    def batches(self):
+        self.source.assert_unchanged()
+        columns = ",".join(f"f{i}" for i in range(len(self.dimensions)))
+        cursor = None
+        total = 0
+        try:
+            cursor = self.selection.connection.execute(
+                f"SELECT {columns} FROM rows WHERE alive=1 ORDER BY position"
+            )
+            with (
+                self.states.file("projection_rows").open("rb") as rows,
+                self.states.file("projection_weights").open("rb") as weights,
+            ):
+                while header := rows.read(16):
+                    if len(header) != 16:
+                        raise AnalysisError(
+                            "source_changed", "Owned FE batch geometry is truncated."
+                        )
+                    count, label_bytes = struct.unpack("<QQ", header)
+                    if not 1 <= count <= self.sample.rows or total + count > self.sample.nrows:
+                        raise AnalysisError(
+                            "source_changed",
+                            "Owned FE batch geometry exceeds its validated sample.",
+                        )
+                    plan_workspace(
+                        "owned FE projection replay",
+                        {
+                            "encoded_retained_labels": label_bytes,
+                            "weight_and_weighted_rows": count * 24,
+                            "live_FE_vectors": count * self.states.width * 64,
+                            "group_SQLite_cache": 2 * 1024**2,
+                            "reporting_and_design_metadata": 2 * self.sample.reporting_bytes
+                            + 1024 * (self.states.width + 1) ** 2
+                            + self.sample._category_bytes,
+                        },
+                        budget_bytes=self.sample.working_bytes,
+                    )
+                    raw = bytearray(weights.read(count * 8))
+                    keys = cursor.fetchmany(count)
+                    if len(raw) != count * 8 or len(keys) != count:
+                        raise AnalysisError(
+                            "source_changed",
+                            "Owned FE weights/group keys are not aligned to retained rows.",
+                        )
+                    value = torch.frombuffer(raw, dtype=torch.float64)
+                    if not bool(torch.isfinite(value).all()) or bool((value <= 0).any()):
+                        raise AnalysisError(
+                            "source_changed", "Owned FE weights are not positive finite float64."
+                        )
+                    self.maximum_rows = max(self.maximum_rows, count)
+                    total += count
+                    yield _ProjectionBatch(
+                        range(count),
+                        value,
+                        {name: [row[i] for row in keys] for i, name in enumerate(self.dimensions)},
+                    )
+                if total != self.sample.nrows or weights.read(1) or cursor.fetchone():
+                    raise AnalysisError(
+                        "source_changed", "Owned FE geometry has missing or extra retained rows."
+                    )
+            self.source.assert_unchanged()
+            self.replays += 1
+        except OSError as error:
+            raise _Selection.failure() from error
+        except sqlite3.Error as error:
+            raise _Selection.failure() from error
+        finally:
+            if cursor is not None:
+                cursor.close()
+
+    def diagnostics(self):
+        return {
+            "FE_geometry_replays": self.replays,
+            "FE_geometry_maximum_rows": self.maximum_rows,
+            "FE_geometry_storage": "owned exact float64 weights and batch boundaries; selected group keys on existing SQLite; full original-source verification retained at solve/likelihood/covariance passes",
+        }
+
+
 class _Vectors:
     """Owned sequential vector files; never an mmap or whole-table tensor."""
 
@@ -343,7 +465,7 @@ class _Vectors:
         self.scratch = None
         self.bytes_per_file = self.rows*width*8
         self.maximum_files = 3 if dimensions == 1 else 12
-        self.required_bytes = self.bytes_per_file*self.maximum_files+metadata_bytes*2
+        self.required_bytes = self.bytes_per_file*self.maximum_files+metadata_bytes*2+self.rows*24
         self.io_passes = 0
         try:
             parent = _scratch_directory()
@@ -412,6 +534,7 @@ class _Vectors:
 
     def diagnostics(self):
         return {"FE_state_vector_IO_passes": self.io_passes,
+                **(self.projection.diagnostics() if hasattr(self, "projection") else {}),
                 "FE_state_estimated_scratch_bytes": self.required_bytes,
                 "FE_state_actual_scratch_bytes": sum(path.stat().st_size for path in self.path.iterdir()),
                 "FE_state_storage": "owned sequential float64 files; bounded reads, no mmap/full table",
@@ -429,13 +552,17 @@ def _project(states, sample, absorb, source, target, *, accumulated=None, added=
         groups = _GroupMeans(states.width, 0)
         stack.callback(groups.close)
         for batch, (values,) in states.batches(sample, source):
-            groups.add(encode_cluster_labels(batch.frame[absorb]), values, _weights(sample, batch), [])
+            labels = (batch.group_keys[absorb] if isinstance(batch, _ProjectionBatch)
+                      else encode_cluster_labels(batch.frame[absorb]))
+            groups.add(labels, values, _weights(sample, batch), [])
         groups.finish()
         output = stack.enter_context(states.writer(target))
         removed = stack.enter_context(states.writer(added)) if added else None
         inputs = (source, accumulated) if accumulated else (source,)
         for batch, blocks in states.batches(sample, *inputs):
-            means = groups.lookup(encode_cluster_labels(batch.frame[absorb]))
+            labels = (batch.group_keys[absorb] if isinstance(batch, _ProjectionBatch)
+                      else encode_cluster_labels(batch.frame[absorb]))
+            means = groups.lookup(labels)
             states.write(output, blocks[0]-means)
             if removed:
                 states.write(removed, means+(blocks[1] if accumulated else 0.))

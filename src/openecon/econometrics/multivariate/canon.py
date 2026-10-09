@@ -100,7 +100,8 @@ def _qr(x: Tensor, names: list[str], what: str) -> tuple[Tensor, Tensor]:
 
 
 @c.procedure
-def canon(data: Any, x: list[str], y: list[str], *, missing: str = "drop") -> TableSet:
+def canon(data: Any, x: list[str], y: list[str], *, missing: str = "drop",
+          weights: str | None = None, weight_type: str = "fweight") -> TableSet:
     """Canonical correlation analysis of two sets of variables.
 
     The first pair of canonical variates u_1 = x'a_1 and v_1 = y'b_1 are the unit-
@@ -114,6 +115,12 @@ def canon(data: Any, x: list[str], y: list[str], *, missing: str = "drop") -> Ta
     x : numeric columns of the first set (p variables).
     y : numeric columns of the second set (q variables), distinct from ``x``.
     missing : ``"drop"`` (listwise deletion over both sets) or ``"raise"``.
+    weights : optional nonnegative integer frequency-count column. The weighted
+        route uses joint moments without replicating observations, with n equal
+        to the frequency total and covariance divisor n-1. Probability levels
+        retain their Gaussian sampling assumptions; counts must represent
+        original independent observations, not repeated-measure amplification.
+    weight_type : only ``"fweight"`` is supported.
 
     Returns
     -------
@@ -158,6 +165,12 @@ def canon(data: Any, x: list[str], y: list[str], *, missing: str = "drop") -> Ta
     """
     x_names = c.name_list(x, "x", minimum=1)
     y_names = c.name_list(y, "y", minimum=1)
+    if set(x_names) & set(y_names):
+        raise AnalysisError("invalid_spec", "Canonical x and y sets must contain distinct variables.")
+    c.check_choice(weight_type, "weight_type", ("fweight",))
+    if weights is not None:
+        from .canon_options import weighted_canon
+        return weighted_canon(data, x_names, y_names, weights=weights, missing=missing)
     sample, _, dropped = c.select(data, [*x_names, *y_names], missing=missing)
     n = len(sample)
     p, q = len(x_names), len(y_names)
@@ -165,8 +178,8 @@ def canon(data: Any, x: list[str], y: list[str], *, missing: str = "drop") -> Ta
         raise AnalysisError("insufficient_observations", f"Canonical correlation of {p} and "
                             f"{q} variables needs at least {p + q + 2} complete observations, "
                             f"but {n} are available.")
-    _, x_sscp, xc = c.moments(c.matrix(sample, x_names), x_names)
-    _, y_sscp, yc = c.moments(c.matrix(sample, y_names), y_names)
+    x_mean, x_sscp, xc = c.moments(c.matrix(sample, x_names), x_names)
+    y_mean, y_sscp, yc = c.moments(c.matrix(sample, y_names), y_names)
     x_std = (x_sscp.diagonal() / (n - 1)).sqrt()
     y_std = (y_sscp.diagonal() / (n - 1)).sqrt()
     qx, rx = _qr(xc / x_std, x_names, "x")
@@ -185,6 +198,18 @@ def canon(data: Any, x: list[str], y: list[str], *, missing: str = "drop") -> Ta
     a_std, b_std = a_std * sign, b_std * sign
     x_load = (rx.T @ u[:, :s]) * sign / scale
     y_load = (ry.T @ vh.T[:, :s]) * sign / scale
+
+    return _result(rho, a_std, b_std, x_load, y_load, x_std, y_std,
+                   torch.cat((x_mean, y_mean)), n, dropped, x_names, y_names,
+                   {"input_kind": "resident_rows", "training_means_supplied": True,
+                    "training_sds_supplied": True, "algorithm": "raw-data Householder QR/SVD"})
+
+
+def _result(rho: Tensor, a_std: Tensor, b_std: Tensor, x_load: Tensor, y_load: Tensor,
+            x_std: Tensor, y_std: Tensor, mean: Tensor, n: int, dropped: int,
+            x_names: list[str], y_names: list[str], extra: dict) -> TableSet:
+    """Shared reporting; the original unweighted QR arithmetic is unchanged."""
+    p, q, s = len(x_names), len(y_names), len(rho)
 
     labels = c.numbered("Canon", s)
     rho2 = rho.square()
@@ -231,15 +256,67 @@ def canon(data: Any, x: list[str], y: list[str], *, missing: str = "drop") -> Ta
         "redundancy": c.frame(
             torch.stack([x_share, x_share * rho2, y_share, y_share * rho2], dim=1),
             columns=["x_variance", "x_redundancy", "y_variance", "y_redundancy"], index=labels),
+        "descriptives": c.frame([[kind, float(location), float(scale)] for kind, location, scale in zip(
+            sets, mean, torch.cat((x_std, y_std)), strict=True)],
+            columns=["set", "mean", "std_dev"], index=variables),
     }
     notes = []
     if bool((rho2 >= _PERFECT).any()):
         notes.append("A canonical correlation equals 1: a combination of the x variables is "
                      "an exact linear function of the y variables, so the tests that involve "
                      "it are undefined.")
+    unidentified = [labels[k] for k in range(s) if float(rho[k]) <= 1e-10
+                    or any(j != k and abs(float(rho[k] - rho[j])) <= 1e-10
+                           for j in range(s))]
+    if unidentified:
+        notes.append("Zero or repeated roots do not uniquely identify individual coefficient "
+                     f"axes ({', '.join(unidentified)}); the saved solution retains an arbitrary valid basis.")
+    notes.append("Canonical-correlation probability levels retain Gaussian sampling assumptions; "
+                 "coefficient SE/CI, survey or cluster inference are not provided.")
+    extra = {"precision": "float64", "device": "cpu", **extra}
     return TableSet(
         tables, title=f"Canonical correlations of ({', '.join(x_names)}) with "
                       f"({', '.join(y_names)})",
         procedure="canon", n=n, n_missing=dropped, x=x_names, y=y_names, notes=notes,
         missing="listwise",
-        sign_convention="largest absolute standardized x-coefficient of each pair is positive")
+        variables=variables, canonical_pairs=s, state_schema="openecon.canon.v1",
+        canonical_unidentified_axes=unidentified,
+        canonical_axis_identification="zero/repeated roots leave arbitrary valid coefficient axes",
+        canonical_saved_basis="the actual saved coefficient basis is used without refitting",
+        sign_convention="largest absolute standardized x-coefficient of each pair is positive", **extra)
+
+
+@c.procedure
+def canon_matrix(values: Any, *, n: int, x: list[str], y: list[str],
+                 matrix: str = "covariance", means: Any = None, sds: Any = None) -> TableSet:
+    """CCA of a declared joint covariance/correlation matrix and common sample n.
+
+    Matrix variable order must equal x followed by y. The matrix must describe
+    the same complete, centred sample, with covariance divisor n-1; pairwise
+    sample sizes, regularized/shrunk and uncentred moment matrices are outside
+    this contract. Probability levels retain their Gaussian sample assumptions.
+    Within-set blocks must be positive definite and numerically conditioned;
+    the full joint matrix may be singular because a canonical root equals one.
+    Actual training means are optional for fitting but required by canon_scores.
+    Correlation inputs also require actual training sds for raw-row projection.
+    Missing moments are never invented. Computation uses Cholesky whitening/SVD,
+    on CPU float64, at most 64 joint variables and a declared live-buffer budget.
+    """
+    from .canon_options import matrix_canon
+    return matrix_canon(values, n=n, x=x, y=y, matrix=matrix, means=means, sds=sds)
+
+
+@c.procedure
+def canon_scores(result: TableSet, data: Any):
+    """Project raw rows onto the stored canonical coefficient basis, without refitting.
+
+    Uses the actual saved training means and raw coefficients. Both sets are
+    scored over jointly complete rows; missing rows retain missing scores and
+    original index/order. Columns XCanon1..s and YCanon1..s have unit variance
+    in the original fit sample (weighted variance for a frequency fit).
+    For repeated/zero roots this projects the saved arbitrary valid basis and
+    makes no claim that individual axes are uniquely identified. Dataset score
+    sources are bounded and checked for content changes on complete replay.
+    """
+    from .canon_options import project
+    return project(result, data)

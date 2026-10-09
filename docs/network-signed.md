@@ -105,7 +105,7 @@ typed labels, isolates, missing data, cycle reachability, precision and budgets.
 The existing nonnegative network suite is run alongside them.
 
 Physical Parquet scale receipts are in
-[evidence/market-56-signed-networks](evidence/market-56-signed-networks/):
+evidence/market-56-signed-networks (internal evidence excluded from this public snapshot):
 
 | Fixture | Full nodes/edges | Independent check |
 | --- | ---: | --- |

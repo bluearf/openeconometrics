@@ -183,3 +183,42 @@ def maximum_likelihood(r: Tensor, smc: Tensor, m: int, *, max_iter: int) -> Extr
     loadings = loadings[:, order]
     return Extraction(loadings, loadings.square().sum(0), psi, result.iterations, True,
                       discrepancy, torch.nonzero(bound).flatten().tolist())
+
+
+def minres_objective(loadings: Tensor, r: Tensor) -> tuple[Tensor, Tensor]:
+    """Half the off-diagonal squared residual sum and its loading gradient."""
+    residual = loadings @ loadings.T - r
+    residual.diagonal().zero_()
+    return residual.square().sum() / 2, 2 * residual @ loadings
+
+
+def minimum_residual(r: Tensor, smc: Tensor, m: int, *, max_iter: int,
+                     tolerance: float = 1e-7) -> Extraction:
+    """Unweighted least-squares EFA; no ML fit test or hidden uniqueness bound."""
+    p = r.shape[0]
+    if (p - m) ** 2 < p + m:
+        raise KernelError("too_many_factors", "Minimum-residual EFA needs nonnegative model degrees of freedom.")
+    start = principal_factors(r, smc, m).loadings
+
+    def objective(theta: Tensor):
+        value, gradient = minres_objective(theta.reshape(p, m), r)
+        return -value, -gradient.flatten()
+
+    result = optimize.maximize_bfgs(objective, start.flatten(), max_iter=max_iter,
+                                    raise_on_failure=False)
+    loadings = result.theta.reshape(p, m)
+    value, gradient = minres_objective(loadings, r)
+    size = float(gradient.abs().max())
+    if not bool(torch.isfinite(loadings).all()) or not math.isfinite(float(value)):
+        raise KernelError("numerical_failure", "Minimum-residual EFA produced non-finite loadings.")
+    if size > tolerance:
+        raise KernelError("no_convergence", f"Minimum-residual EFA gradient {size:.2e} exceeds {tolerance:g}; raise max_iterations.")
+    if float(torch.linalg.eigvalsh(result.hessian).max()) > 1e-6:
+        raise KernelError("no_convergence", "Minimum-residual EFA reached a stationary saddle rather than a local minimum.")
+    # Principal axes identify the rotation-equivalent minimizer for reporting.
+    u, singular, _ = torch.linalg.svd(loadings, full_matrices=False)
+    loadings = u * singular
+    uniqueness = 1 - loadings.square().sum(1)
+    values = reduced_eigen(r, 1 - uniqueness)[0]
+    return Extraction(loadings, values, uniqueness, result.iterations, True, float(value),
+                      torch.nonzero(uniqueness <= 0).flatten().tolist())

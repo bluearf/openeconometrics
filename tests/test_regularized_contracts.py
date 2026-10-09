@@ -223,6 +223,15 @@ def test_unsupported_weights_covariance_categories_time_and_options_are_validate
         dict(options={"typo": 1}),
         dict(covariance="cluster", cluster="id"),
     ]:
+        if name == "dmlplr" and extras.get("covariance") == "cluster":
+            continue  # Whole-cluster cross-fitting/inference is now an explicit supported extension.
+        if name in {"ridge", "lasso", "elasticnet"} and (
+            "weights" in extras or "categorical" in extras
+        ):
+            ModelSpec(
+                **{**fields, **extras}
+            )  # Empirical weighted/category fixed/CV prediction is now supported.
+            continue
         with pytest.raises(ValidationError):
             ModelSpec(**{**fields, **extras})
 

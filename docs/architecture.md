@@ -1,5 +1,11 @@
 # OpenEconometrics workbench architecture
 
+<!-- BEGIN source-generated capability scope -->
+Current source: **157 registered fit names**, **92 Dataset fit routes**, **74 common saved predict/margins adapters**. The [generated method/option inventory](capabilities.md) states conditions, exclusions and devices.
+
+Fit routes, common prediction adapters and family-specific helpers/forecasts have separate contracts. Source implementation does not establish independent scientific validation, installed-package verification or public shipment for a method/option. Those require their own dated, source-pinned evidence; historical measurements retain their original scope.
+<!-- END source-generated capability scope -->
+
 OpenEconometrics's primary interaction is writing Python in a local, persistent session.
 The same statistical library also serves structured CLI, HTTP and MCP calls.
 Statistical specifications describe the model; there is one PyTorch float64 CPU
@@ -79,8 +85,9 @@ history must not be confused with immutable structured analysis records.
 ## Scientific and storage boundaries
 
 The library accepts pandas DataFrames, dictionaries of columns and lists of
-records. All registered estimator names have replayable CSV/Parquet Dataset fitting routes
-through `oe.scan()`, subject to their explicit option contracts. Large numeric
+records. The registered Dataset subset has replayable CSV/Parquet fitting routes
+through `oe.scan()`, subject to its explicit option contracts; other registered
+estimators require resident inputs. Large numeric
 DataFrames can route to the bounded TSQR estimator. See the source-generated
 [current capability inventory](capabilities.md) and [streaming contracts](streaming.md). Every fit
 uses the same public model checks and native statistical implementation.
@@ -123,7 +130,9 @@ and sampling metadata are retained. Dependency licenses ship with the package.
 Full process memory isolation and recovery of in-memory Python variables remain
 separate work. Panel, IV/GMM, weighted, time-series and survival estimators already
 have registered native routes; their documented restrictions remain explicit.
-Complex surveys, imputation and SEM are separate scope. Common saved prediction
+Survey and imputation procedures have separate resident helper/result contracts;
+registration alone does not establish their Dataset support. Broader SEM remains
+a separate scope. Common saved prediction
 currently covers a subset of estimator names; family-specific forecasts and helpers
 are separate. The [generated inventory](capabilities.md) is the current source of
 counts, options and devices. Full Stata coverage requires per-method sample,

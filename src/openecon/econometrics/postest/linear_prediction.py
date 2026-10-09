@@ -26,10 +26,12 @@ ESTIMATORS = frozenset({
     "areg", "reghdfe", "ivreghdfe", "xtreg", "xtivreg", "xtgls", "xtpcse",
     "xtfmb", "prais", "rreg", "qreg", "bsqreg", "iqreg", "sqreg", "xtgee",
     "ppmlhdfe", "mixed", "xtlogit", "xtprobit", "xtpoisson",
+    "sreg", "mmreg", "ivcue", "mixedflex",
 })
 _ABSORBED = {"areg", "reghdfe", "ivreghdfe", "ppmlhdfe"}
-_IV = {"ivreghdfe", "xtivreg"}
+_IV = {"ivreghdfe", "xtivreg", "ivcue"}
 _PANEL_LIKELIHOODS = {"xtlogit", "xtprobit", "xtpoisson"}
+_EXTENSIONS = {"sreg", "mmreg", "ivcue", "mixedflex"}
 
 
 def _error(code: str, message: str):
@@ -43,6 +45,171 @@ def _role(spec, name):
     if not isinstance(value, str) or not value:
         _error("invalid_result", f"Saved {name} must identify one column.")
     return value
+
+
+def validate_snapshot(result):
+    """Bound new adapter metadata before the common engine copies it.
+
+    Evaluation never copies row-sized S/MM case weights or mixed-model group
+    labels. The only additional lists are bounded parameter/role records.
+    """
+    estimator = result.spec.estimator
+    if estimator not in _EXTENSIONS:
+        return
+    record = result.extra
+    if not isinstance(record, Mapping):
+        _error("invalid_result", "Saved scalar target metadata are invalid.")
+    terms = result.provenance.get("design_terms")
+    if (not isinstance(terms, list) or len(terms) != len(result.coefficients)
+            or any(not isinstance(term, str) for term in terms)):
+        _error("invalid_result", "Saved fitted design-term metadata are malformed.")
+    limits = ({"joint_estimating_equation_order": 3} if estimator in {"sreg", "mmreg"}
+              else {"exogenous": 24, "endogenous": 24, "instruments": 48} if estimator == "ivcue"
+              else {"random_terms": 3, "levels": 8})
+    for name, maximum in limits.items():
+        values = record.get(name)
+        if not isinstance(values, list) or len(values) > maximum:
+            _error("invalid_result", f"Saved {estimator} {name} metadata exceed the fitted domain.")
+        if name == "levels":
+            if any(not isinstance(level, Mapping) or set(level) != {"columns", "n_groups"}
+                   or not isinstance(level["columns"], list) or len(level["columns"]) > 8
+                   or any(not isinstance(column, str) for column in level["columns"])
+                   or isinstance(level["n_groups"], bool) or not isinstance(level["n_groups"], int)
+                   for level in values):
+                _error("invalid_result", "Saved Gaussian grouping levels are malformed.")
+        elif any(not isinstance(value, str) for value in values):
+            _error("invalid_result", f"Saved {estimator} {name} metadata are malformed.")
+
+
+def _columns(spec, role):
+    value = spec.columns.get(role, [])
+    return [value] if isinstance(value, str) else list(value)
+
+
+def _extension_state(result, state, features, omitted):
+    """Validate actual fitted targets; variance nuisance parameters stay in V."""
+    spec, estimator = result.spec, result.spec.estimator
+    if estimator not in _EXTENSIONS:
+        return set(), None
+    fitted_terms = result.provenance.get("design_terms", [])
+    if (len(set(fitted_terms)) != len(fitted_terms) or set(fitted_terms) != set(state.terms)
+            or result.inference.get("n_parameters") != len(state.terms)
+            or result.inference.get("covariance") != spec.covariance):
+        _error("invalid_result", "Saved fitted design/covariance records disagree with the target specification.")
+    if (any(isinstance(value, bool) or not isinstance(value, int)
+            for value in (result.nobs, result.nobs_original, result.dropped_rows))
+            or result.nobs <= len(state.terms) or result.nobs_original < result.nobs
+            or result.dropped_rows != result.nobs_original - result.nobs):
+        _error("invalid_result", "Saved fitted observation counts disagree with the parameter/sample geometry.")
+    # A result's coefficient reporting and its covariance must refer to the
+    # same saved fit. In particular, replacing V alone cannot silently change
+    # every reported uncertainty after a JSON restore.
+    for index, coefficient in enumerate(result.coefficients):
+        error = coefficient.std_error
+        if (isinstance(error, bool) or not isinstance(error, (int, float))
+                or not math.isfinite(error) or error <= 0
+                or not math.isclose(error, float(state.covariance[index, index].sqrt()),
+                                    rel_tol=1e-10, abs_tol=0.)):
+            _error("invalid_result", "Saved coefficient standard errors and covariance disagree.")
+    if spec.weights is not None or spec.panel is not None or spec.time is not None:
+        _error("invalid_result", "This saved fitted target requires its unweighted non-panel design.")
+    if result.extra.get("group_state"):
+        _error("invalid_result", "This saved fitted target cannot contain an absorbed-effect response state.")
+    if any(coefficient.equation is not None for coefficient in result.coefficients):
+        _error("invalid_result", "Saved fitted scalar target coefficients cannot contain unrelated equation labels.")
+    if len(set(omitted)) != len(omitted) or set(omitted) - set(features):
+        _error("invalid_result", "Saved fitted omissions do not match the scalar design.")
+    if estimator in {"sreg", "mmreg"}:
+        mm = estimator == "mmreg"
+        expected = (["MM coefficients"] if mm else []) + ["S coefficients", "log S scale"]
+        scale = result.metrics.get("scale")
+        breakdown = spec.options.get("breakdown", .5)
+        if (result.extra.get("scale_fixed_during_mm") is not mm
+                or result.extra.get("joint_estimating_equation_order") != expected
+                or result.extra.get("loss") != "normalized Tukey bisquare; rho=1 outside c"
+                or result.extra.get("scale_equation_target") != breakdown
+                or isinstance(scale, bool) or not isinstance(scale, (int, float))
+                or not math.isfinite(scale) or scale <= 0 or state.df is None):
+            _error("invalid_result", "Saved S/MM loss, scale, joint-score state or inference are inconsistent.")
+        expected_scale = "orthogonal under symmetric errors" if spec.covariance == "nonrobust" else "joint S coefficient/scale scores"
+        if result.inference.get("scale_uncertainty") != expected_scale:
+            _error("invalid_result", "Saved S/MM coefficient covariance lacks its fitted scale-estimation record.")
+        clusters = result.inference.get("cluster_count")
+        if spec.covariance == "cluster" and (isinstance(clusters, bool) or not isinstance(clusters, int)
+                                             or not 2 <= clusters <= result.nobs):
+            _error("invalid_result", "Saved S/MM cluster-count inference is invalid.")
+        expected_df = clusters - 1 if spec.covariance == "cluster" else result.nobs - len(state.terms)
+        if state.df != expected_df or result.inference.get("df_resid") != result.nobs - len(state.terms):
+            _error("invalid_result", "Saved S/MM degrees of freedom disagree with the fitted sample/covariance.")
+        return set(), "robust fitted linear location X beta from saved " + ("fixed-S-scale MM" if mm else "bisquare S") + " coefficients"
+    if omitted or state.df is not None:
+        _error("invalid_result", "Saved CUE/Gaussian ML targets require the complete fitted design and normal inference.")
+    sd = state.covariance.diagonal().sqrt()
+    correlation = state.covariance / sd[:, None] / sd[None, :]
+    if float(torch.linalg.eigvalsh(correlation).min()) <= 0:
+        _error("invalid_result", "Saved CUE/Gaussian joint-ML parameter covariance must be nonsingular positive definite.")
+    if estimator == "ivcue":
+        endogenous, instruments = _columns(spec, "endogenous"), _columns(spec, "instruments")
+        exogenous = [name for name in features if name not in endogenous]
+        k, ell = len(state.terms), len(exogenous) + len(instruments)
+        if (len(set(endogenous)) != len(endogenous) or len(set(instruments)) != len(instruments)
+                or set(endogenous) & set(spec.predictors)
+                or set(instruments) & {*spec.predictors, *endogenous}
+                or spec.outcome in [*spec.predictors, *endogenous, *instruments]
+                or result.extra.get("method") != "cue"
+                or result.extra.get("exogenous") != exogenous
+                or result.extra.get("endogenous") != endogenous
+                or result.extra.get("instruments") != instruments
+                or set(state.terms) != {*exogenous, *endogenous}
+                or not 0 < k <= 24 or not k <= ell <= 48 or result.nobs <= ell
+                or result.metrics.get("n_instruments") != ell
+                or result.metrics.get("n_endogenous") != len(endogenous)
+                or result.extra.get("jacobian_rank") != k
+                or result.extra.get("center") is not spec.options.get("center", False)
+                or result.inference.get("df_resid") != result.nobs - k):
+            _error("invalid_result", "Saved CUE structural roles or parameter/moment geometry disagree with the fitted specification.")
+        return set(), "structural equation X beta at supplied endogenous covariates; strong-identification inference"
+    groups, random = _columns(spec, "group"), _columns(spec, "random")
+    grouping = spec.options.get("grouping", "crossed")
+    structure = spec.options.get("covstructure", "independent")
+    names = [*random, "_cons"]
+    if (not 1 <= len(groups) <= 8 or len(random) > 2
+            or len(set(groups)) != len(groups) or len(set(random)) != len(random)
+            or set(groups) & {spec.outcome, *spec.predictors, *random}
+            or "_cons" in random or result.extra.get("method") != "ml"
+            or result.extra.get("grouping") != grouping
+            or result.extra.get("covstructure") != structure
+            or result.extra.get("random_terms") != names):
+        _error("invalid_result", "Saved Gaussian mixed grouping/random-effect state disagrees with the fitted specification.")
+    levels = result.extra.get("levels")
+    if (not isinstance(levels, list) or len(levels) != len(groups)
+            or any(level["columns"] != (groups[:index + 1] if grouping == "nested" else [group])
+                   or isinstance(level["n_groups"], bool) or not isinstance(level["n_groups"], int)
+                   or not 2 <= level["n_groups"] <= result.nobs
+                   for index, (group, level) in enumerate(zip(groups, levels, strict=True)))):
+        _error("invalid_result", "Saved Gaussian grouping levels disagree with the fitted specification.")
+    variance_terms = [f"/var({name}[{groups[-1]}])" for name in names]
+    covariance_terms = [f"/cov({names[i]},{names[j]}[{groups[-1]}])"
+                        for i in range(len(names)) for j in range(i)] if structure == "unstructured" else []
+    auxiliary = {*variance_terms, *covariance_terms,
+                 *[f"/var(_cons[{group}])" for group in groups[:-1]], "/var(Residual)"}
+    if set(state.terms) != set(features) | auxiliary:
+        _error("invalid_result", "Saved Gaussian fixed and variance terms do not match the fitted design.")
+    values = {term: float(state.beta[state.terms.index(term)]) for term in auxiliary}
+    if any(value <= 0 for term, value in values.items() if term.startswith("/var(")):
+        _error("invalid_result", "Saved Gaussian variance components must be positive.")
+    # Fit-time random covariance is strictly positive definite. Scaling avoids
+    # large/small-unit eigenvalue checks and uses at most a 3 by 3 matrix.
+    sd = [math.sqrt(values[term]) for term in variance_terms]
+    correlation = torch.eye(len(names), dtype=torch.float64, device="cpu")
+    for i in range(len(names)):
+        for j in range(i):
+            value = values.get(f"/cov({names[i]},{names[j]}[{groups[-1]}])", 0.) / sd[i] / sd[j]
+            correlation[i, j] = correlation[j, i] = value
+    if (not bool(torch.isfinite(correlation).all())
+            or float(torch.linalg.eigvalsh(correlation).min()) <= 64 * torch.finfo(torch.float64).eps):
+        _error("invalid_result", "Saved Gaussian random-effect covariance must be positive definite.")
+    return auxiliary, "population response mean X beta, integrating mean-zero Gaussian crossed/nested random effects"
 
 
 @dataclass(frozen=True)
@@ -197,6 +364,8 @@ def _coding(result, predictors):
 
 def _panel_model(result):
     value = result.spec.options.get("model", "fe" if result.spec.estimator in {"xtreg", "xtivreg"} else "re")
+    if value == "cre":
+        _error("unsupported_prediction_design", "CRE predictions require saved Mundlak panel means; use cre_predict. Common margins are not available for this fitted design.")
     recorded = result.extra.get("model", result.provenance.get("model", value))
     if recorded != value:
         _error("invalid_result", "The saved panel model and fitted model disagree.")
@@ -265,6 +434,9 @@ def configure(result, state, outcome=None):
             if term.startswith("/var(") and float(state.beta[state.terms.index(term)]) < 0:
                 _error("invalid_result", "Saved Gaussian mixed variances must be nonnegative.")
         definition = "population response mean X beta, integrating mean-zero Gaussian random effects"
+    if estimator in _EXTENSIONS:
+        auxiliary, definition = _extension_state(result, state, features, omitted)
+        xb_definition = definition
     if estimator in {"qreg", "bsqreg"}:
         quantile = spec.options.get("quantile", .5)
         if isinstance(quantile, bool) or not isinstance(quantile, (int, float)) or not 0 < quantile < 1:

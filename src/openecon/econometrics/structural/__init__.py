@@ -97,6 +97,8 @@ ESTIMATORS = (
     ),
 )
 EXPORTS = {
+    "proxy_svar": "openecon.econometrics.structural.proxy:proxy_svar",
+    "proxy_svar_irf": "openecon.econometrics.structural.proxy:proxy_svar_irf",
     "svar_irf": "openecon.econometrics.structural.svar:svar_irf",
     "connectedness": "openecon.econometrics.structural.connectedness:connectedness",
     "rolling_connectedness": "openecon.econometrics.structural.connectedness:rolling_connectedness",

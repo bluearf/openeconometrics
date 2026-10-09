@@ -1,19 +1,10 @@
 /** Desktop-only native bridge. Cloud credentials never enter the Python API. */
 import { ApiError, decodeResponse } from "./api.ts";
-
-declare global {
-  interface Window {
-    __TAURI_INTERNALS__?: unknown;
-    __TAURI__?: { core: { invoke<T>(command: string, args?: Record<string, unknown>): Promise<T> } };
-  }
-}
-
-export const isDesktop = () => typeof window !== "undefined" && Boolean(window.__TAURI_INTERNALS__);
+import { nativeCoreInvoke } from "./native-core.ts";
+export { isDesktop } from "./native-core.ts";
 
 export function nativeInvoke<T>(command: string, args?: Record<string, unknown>): Promise<T> {
-  const invoke = window.__TAURI__?.core.invoke;
-  if (!isDesktop() || !invoke) throw new Error("Could not connect to the desktop app.");
-  return invoke<T>(command, args).catch((error: unknown) => {
+  return nativeCoreInvoke<T>(command, args).catch((error: unknown) => {
     if (error === "OPENECON_NETWORK") throw new TypeError("The cloud connection was lost.");
     if (typeof error === "string" && /^OPENECON_HTTP:[1-5][0-9]{2}$/.test(error))
       throw new ApiError("Could not complete the cloud request.", Number(error.slice(14)));

@@ -350,6 +350,10 @@ def _fit(spec, source, *, batch_rows, family, link, scale, nmp, title):
             extra["working_correlation_note"] = f"the {longest}-by-{longest} working correlation is not stored (more than 50 periods)"
         tests = {"model": wald_test(raw_beta, raw_covariance, range(int(spec.intercept), p), label="Wald chi2 test of the slopes")}
         info = {"covariance": spec.covariance, "correction": correction, "df_inference": None, "df_resid": None}
+        if spec.covariance != "nonrobust":
+            info.update(cluster_count=groups.groups, cluster_df=groups.groups-1,
+                        cluster_column=spec.panel, cluster_columns=[spec.panel],
+                        small_sample_correction=groups.groups/(groups.groups-1))
         algorithm = ("owned SQL neighbours and tridiagonal precision; bounded row tensors, no whole panel" if corr == "ar1"
                      else "guarded T-by-T correlation factors and one guarded panel solve" if corr in PATTERNED
                      else "bounded row replays and Sherman-Morrison group moments; no full panel/correlation matrix")

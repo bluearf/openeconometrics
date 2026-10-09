@@ -649,7 +649,7 @@ def test_error_codes():
     assert code(oe.pca_scores, {"a": 1}, frame) == "invalid_result"
     assert code(oe.pca_scores, oe.pca(frame, names), frame[names[:3]]) == "missing_columns"
     assert code(oe.factor, frame, names, method="minres") == "invalid_option"
-    assert code(oe.factor, frame, names, rotate="geomin") == "invalid_option"
+    assert code(oe.factor, frame, names, rotate="unknown") == "invalid_option"
     assert code(oe.factor, frame, names, scores="anderson") == "invalid_option"
     assert code(oe.factor, frame, names, kaiser="yes") == "invalid_option"
     assert code(oe.factor, frame, names[:2]) == "invalid_spec"

@@ -1,6 +1,6 @@
 # Saved-result prediction and marginal effects
 
-`oe.predict` and `oe.margins` cover **58 estimator names**, with explicit
+`oe.predict` and `oe.margins` cover **66 estimator names**, with explicit
 conditions on fitted options and response targets. The [generated inventory](../capabilities.md)
 tracks registered names and native Dataset fitting routes; fitting does not establish prediction
 coverage. These interfaces reconstruct the supported target from the
@@ -41,7 +41,7 @@ oe.margins(saved, "income", data=new_rows,
 
 The 21 direct adapters below support response means/probabilities, the linear index `xb`, its standard
 error `stdp`, continuous response derivatives, and AME/MEM. They support ordinary
-numeric predictors and saved treatment-coded categories. The additional 20
+numeric predictors and saved treatment-coded categories. The additional 24
 linear/population adapters and five mixture/truncated-count adapters follow their
 own saved domains below. Unsupported formula designs remain rejected.
 
@@ -65,7 +65,12 @@ own saved domains below. Unsupported formula designs remain rejected.
 
 The additional names are `areg`, `reghdfe`, `ivreghdfe`, `xtreg`, `xtivreg`,
 `xtgls`, `xtpcse`, `xtfmb`, `prais`, `rreg`, `qreg`, `bsqreg`, `iqreg`, `sqreg`,
-`xtgee`, `ppmlhdfe`, `mixed`, `xtlogit`, `xtprobit` and `xtpoisson`.
+`xtgee`, `ppmlhdfe`, `mixed`, `xtlogit`, `xtprobit`, `xtpoisson`, `sreg`,
+`mmreg`, `ivcue` and `mixedflex`.
+
+The [eight saved target extensions](saved-target-extensions.md) define the new
+robust-location, structural CUE and population mixedflex targets and the separate
+complete-graph `oe.spatial_predict` interface for SAR/SEM/SAC/SDM.
 
 Structural linear fits predict their recorded coefficient response. Random-effect
 linear fits and `mixed` return the population linear mean, without conditioned

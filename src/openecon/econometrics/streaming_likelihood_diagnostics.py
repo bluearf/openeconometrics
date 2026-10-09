@@ -205,6 +205,30 @@ def augment(sample, builder, theta, terms, params, covariance, metrics, tests, e
     k = len(sample.designs['mean'].terms)
     slopes = [i for i, term in enumerate(terms[:k]) if not term.endswith('Intercept')]
     ll = metrics['log_likelihood']
+    if name in {'heckman', 'heckprobit', 'zip', 'zinb', 'hurdle', 'intreg'}:
+        counts = _CompensatedSum((4,))
+        for batch in sample.batches():
+            frequency = batch.weights if spec.weight_type == 'fweight' else torch.ones(len(batch.frame), dtype=torch.float64)
+            if name == 'intreg':
+                from .streaming_likelihood import _censored_bounds
+                low, high = _censored_bounds(batch, spec)
+                left, right = torch.isneginf(low), torch.isposinf(high)
+                point = ~left & ~right & (low == high)
+                interval = ~left & ~right & (low < high)
+                masks = (left, point, right, interval)
+            else:
+                column = _role(spec, 'select')[0] if name in {'heckman', 'heckprobit'} else spec.outcome
+                on = batch.numeric(column) > 0
+                masks = (on, ~on, torch.zeros_like(on), torch.zeros_like(on))
+            counts.add(torch.stack([frequency[mask].sum() for mask in masks]))
+        values = [int(round(float(value))) for value in counts.value]
+        if name == 'intreg':
+            metrics.update(zip(('n_left_censored', 'n_uncensored', 'n_right_censored', 'n_interval'), values, strict=True))
+            metrics.update(n_point=values[1], df_model=len(slopes))
+        elif name in {'heckman', 'heckprobit'}:
+            metrics.update(n_selected=values[0], n_censored=values[1])
+        else:
+            metrics['n_zero_observations'] = values[1]
     if name in {'tobit', 'ivtobit'}:
         metrics.update(zip(('n_left_censored', 'n_uncensored', 'n_right_censored'), sample.notes['censoring_counts'], strict=True))
     if name == 'truncreg':

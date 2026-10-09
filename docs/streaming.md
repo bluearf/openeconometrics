@@ -1,10 +1,16 @@
 # Large local datasets
 
+<!-- BEGIN source-generated capability scope -->
+Current source: **157 registered fit names**, **92 Dataset fit routes**, **74 common saved predict/margins adapters**. The [generated method/option inventory](capabilities.md) states conditions, exclusions and devices.
+
+Fit routes, common prediction adapters and family-specific helpers/forecasts have separate contracts. Source implementation does not establish independent scientific validation, installed-package verification or public shipment for a method/option. Those require their own dated, source-pinned evidence; historical measurements retain their original scope.
+<!-- END source-generated capability scope -->
+
 Current numerical execution uses OpenEconometrics's own float64 PyTorch kernels.
 SciPy is absent from runtime dependencies and from the packaged application;
 it remains an optional development dependency for independent test oracles.
 `oe.capabilities()["streaming"]` is the authoritative current catalogue of
-verified Dataset adapters, algorithms and option conditions.
+implemented Dataset adapters, algorithms and option conditions.
 
 Large CSV/Parquet inputs opened with `oe.read()` automatically return a lazy
 Dataset once the eager threshold is exceeded. The 100,000-row/32-MiB values
@@ -13,9 +19,11 @@ imports stream original files into owned snapshots. Large desktop files stay
 local; project scripts and small supported cloud files still synchronize.
 XLSX and DTA retain separate eager-format limits.
 
-Verified replay families now extend beyond OLS/logit/probit:
+The Dataset subset includes the following source replay families. Consult the
+generated inventory for current per-estimator options; this overview is not an
+independent scientific, installed or large-physical-data receipt for every option:
 
-| Family | Verified native replay routes |
+| Family | Implemented native replay routes |
 |---|---|
 | Linear and fixed effects | OLS, areg, reghdfe, PPMLHDFE, cnsreg; xtreg FE/BE/RE/FD/pooled/MLE, native FE/pooled Driscoll-Kraay; xtfmb |
 | Systems and moments | SUR, mvreg, reg3, GMM with all native HAC kernels; IV/absorbed IV 2SLS/LIML/GMM, centered/iterated GMM, panel FE/BE/FD IV, G2SLS/EC2SLS RE IV |
@@ -29,8 +37,8 @@ Verified replay families now extend beyond OLS/logit/probit:
 | Time series | VAR, VEC/Johansen, ARDL, NARDL, Prais, ARIMA/SARIMA, ARCH/GARCH variants, UCM, Markov switching, threshold |
 | Dynamic panel | Anderson-Hsiao; difference/system GMM, FD/FOD, one/two-step and Windmeijer inference |
 
-All 80 currently registered model names have native Dataset routes. The routes
-cover the currently implemented estimation methods and option families above;
+The Dataset routes cover the declared estimation methods and option families
+above;
 they retain the same scientific restrictions as the native API. For example,
 REML mixed inference is nonrobust, two-step selection/IV likelihoods use their
 native nonrobust covariance, EC2SLS applies to RE panel IV, and Driscoll-Kraay
@@ -153,7 +161,7 @@ is a separate contract.
 ## Current verification
 
 The installed macOS 0.3.33 package is documented in the
-[release evidence](evidence/desktop-0.3.33.json): all 356 owned frozen-code
+release evidence (internal evidence excluded from this public snapshot): all 356 owned frozen-code
 fingerprints match the approved source; 30 actual Dataset fits, including 22
 new option cases, match forced resident native references. Saved JSON and
 LaTeX reopen in a new bundled worker, checked Metal factors match CPU float64,
@@ -162,7 +170,7 @@ hashes. Cross-family source checks passed 1,133 tests with nine intended native
 option-domain skips; 445 frontend and 27 native tests passed. These scoped
 checks do not claim a fresh whole-repository suite, all option combinations or
 new all-model throughput benchmarks. The
-[0.3.32 record](evidence/desktop-0.3.32.json) remains historical evidence.
+0.3.32 record (internal evidence excluded from this public snapshot) remains historical evidence.
 
 Independent and dense/replay tests compare complete coefficient/covariance,
 likelihood, model-test and forecasting contracts. Owned snapshots and numerical
@@ -219,7 +227,7 @@ readback. Log axes validate the full source, including unsampled values. Small
 resident inputs with at most 2,000 source rows keep their previous configuration
 format. Existing `Dataset` reductions are unchanged.
 
-The [MARKET-99 receipts](evidence/market-99-resident-charts/README.md) measure
+The MARKET-99 receipts (internal evidence excluded from this public snapshot) measure
 fresh owned physical Parquet sources loaded into resident DataFrames or NumPy
 column mappings, with a new process for each one-/five-million-row case. At
 five million rows, histogram took 0.415–0.421 seconds and scatter 0.560–0.606
@@ -254,7 +262,7 @@ runs once in a fresh process on one busy Mac, with OS caches retained. These
 synthetic fixtures are not Stata-equivalence or production-latency guarantees.
 
 The final suite passed **2,152 Python tests** with three macOS platform skips.
-The [historical benchmark record](evidence/streaming-local-0.3.4.json) records all eight
+The historical benchmark record (internal evidence excluded from this public snapshot) records all eight
 actual one-million-row Parquet cases on an Apple M3 Pro with 18 GiB RAM.
 
 | Estimator / covariance | Complete fit | Peak process RSS | Source passes |
@@ -275,13 +283,13 @@ cases contain 50,000 observed groups and verify actual disk spill and cleanup.
 Historical numeric OLS measurements in 0.3.2 fitted 10 million Parquet rows in
 4.675 seconds and 100 million replayed generated rows in 60.563 seconds. The latter
 includes generation on all three passes and is not an on-disk 100-million-row
-measurement. See the [historical measurement](evidence/streaming-local-0.3.2.json)
-and [historical installer verification](evidence/desktop-0.3.2.json).
+measurement. See the historical measurement (internal evidence excluded from this public snapshot)
+and historical installer verification (internal evidence excluded from this public snapshot).
 
 The historical Apple Silicon installer was
 `desktop/build/releases/0.3.4/target/release/bundle/dmg/OpenEcon_0.3.4_aarch64.dmg`.
 Its verified identity and packaged-runtime checks are recorded in
-[the release evidence](evidence/desktop-0.3.4.json). The running user's application
+the release evidence (internal evidence excluded from this public snapshot). The running user's application
 and data are preserved; installing/reopening the new version activates these changes.
 
 Algorithm reference: [Demmel et al., communication-optimal QR](https://arxiv.org/abs/0808.2664).

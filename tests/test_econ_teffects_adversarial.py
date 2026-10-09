@@ -284,8 +284,11 @@ def test_rdrobust_degenerate_and_invalid():
     coarse = df.assign(x=np.round(df.x, 1))
     assert code(lambda: oe.rdrobust(data=coarse, y="y", running="x", p=6, h=0.25)) \
         == "insufficient_observations"
-    assert code(lambda: oe.rdrobust(data=df, y="y", running="x", covariates=["t"])) \
-        == "not_implemented"
+    # Covariate adjustment is implemented; retain the accepted-input regression
+    # and test an invalid covariate instead of an obsolete unsupported guard.
+    finite(oe.rdrobust(data=df, y="y", running="x", covariates=["t"]))
+    assert code(lambda: oe.rdrobust(data=df, y="y", running="x",
+                                   covariates=["absent_covariate"])) == "missing_columns"
 
 
 @pytest.mark.parametrize("scale,shift", [(1e-6, 0.0), (1e6, 0.0), (1.0, 1e6)])

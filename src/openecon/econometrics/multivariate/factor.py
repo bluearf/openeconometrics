@@ -20,10 +20,11 @@ from openecon.econometrics.multivariate import extraction as ex
 from openecon.econometrics.multivariate import rotation as rot
 from openecon.econometrics.multivariate.pca import eigen_table, standardize
 
-METHODS = ("pf", "ipf", "ml", "pcf")
-ROTATIONS = (*rot.ORTHOGONAL, *rot.OBLIQUE)
+METHODS = ("pf", "ipf", "ml", "pcf", "minres", "alpha", "image_covariance")
+ROTATIONS = (*rot.ORTHOGONAL, *rot.OBLIQUE, "target", "geomin", "cf", "partial_target")
 # Stata's defaults: factors with an eigenvalue above 5e-6 (pf, ipf, ml), above 1 for pcf.
-_MINEIGEN = {"pf": 5e-6, "ipf": 5e-6, "ml": 5e-6, "pcf": 1.0}
+_MINEIGEN = {"pf": 5e-6, "ipf": 5e-6, "ml": 5e-6, "pcf": 1.0, "minres": 5e-6,
+             "alpha": 5e-6, "image_covariance": 5e-6}
 # SPSS's defaults for iterated principal axis factoring; BFGS and rotations get 1000.
 _IPF_ITERATIONS, _IPF_TOLERANCE, _ITERATIONS = 25, 1e-3, 1000
 # Gradient projection converges linearly; its steps cost microseconds.
@@ -42,8 +43,28 @@ def _sphericity(r: Tensor, n: int) -> tuple[float | None, float, float | None]:
     return statistic, df, c.chi2_upper(statistic, df)
 
 
-def _correlation(data: Any, names: list[str], missing: str, diagnostics: dict | None = None
+def _correlation(data: Any, names: list[str], missing: str, diagnostics: dict | None = None,
+                 weights: str | None = None
                  ) -> tuple[Tensor, Tensor, Tensor, int, int]:
+    from .summary import Summary
+    if weights is not None:
+        if isinstance(data, Summary):
+            raise AnalysisError("unsupported_option", "Summary matrices cannot also specify frequency weights.")
+        from .weighted import frequency_moments
+        mean, sscp, n, dropped, extra = frequency_moments(data, names, weights, missing)
+        if n < 3:
+            raise AnalysisError("insufficient_observations", "EFA needs a frequency weight total of at least three.")
+        extra["inference"] = "literal frequency-replication sample; existing Gaussian method tests retain their assumptions"
+        if diagnostics is not None:
+            diagnostics.update(extra)
+        return c.correlation(sscp), mean, (sscp.diagonal() / (n - 1)).sqrt(), n, dropped
+    if isinstance(data, Summary):
+        c.check_choice(missing, "missing", ("drop", "raise"))
+        if data.n < 3:
+            raise AnalysisError("insufficient_observations", "EFA needs n of at least three.")
+        if diagnostics is not None:
+            diagnostics.update(data.attrs)
+        return c.correlation(data.covariance), data.mean, data.std, data.n, 0
     from openecon.dataset import Dataset
     if isinstance(data, Dataset):
         from .replay import moments as replay_moments
@@ -75,6 +96,14 @@ def _score_coefficients(method: str, r: Tensor, pattern: Tensor, phi: Tensor,
                             f"1/uniqueness, but the uniqueness of {', '.join(bad)} is not "
                             "positive (a Heywood case). Use scores='regression'.")
     weighted = pattern / uniqueness[:, None]
+    if method == "anderson_rubin":
+        if not torch.allclose(phi, torch.eye(phi.shape[0], dtype=c.FLOAT), rtol=0, atol=1e-10):
+            raise AnalysisError("unsupported_option", "Anderson–Rubin scores require orthogonal factors.")
+        covariance = weighted.T @ r @ weighted
+        c.positive_definite(covariance, "Anderson–Rubin score covariance", "extract fewer identified factors.")
+        values, vectors = torch.linalg.eigh(covariance)
+        root = (vectors * values.rsqrt()) @ vectors.T
+        return weighted @ root
     inner = c.positive_definite(
         pattern.T @ weighted, "matrix L'Psi^{-1}L", "the factors are not separately "
         "identified. Extract fewer factors.")
@@ -106,7 +135,11 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
            mineigen: float | None = None, rotate: str | None = None, kaiser: bool = True,
            power: float = 4.0, gamma: float = 0.0, scores: str | None = None,
            max_iterations: int | None = None, tolerance: float | None = None,
-           missing: str = "drop") -> TableSet:
+           missing: str = "drop", target: Any = None, geomin_epsilon: float = .01,
+           geomin_oblique: bool = False, weights: str | None = None,
+           weight_type: str = "fweight", cf_kappa: float = 0.0, cf_oblique: bool = False,
+           target_mask: Any = None, target_oblique: bool = False,
+           rotation_tolerance: float = 1e-10) -> TableSet:
     """Exploratory factor analysis of a correlation matrix, with rotation and scores.
 
     Model. The p standardized variables are z = L f + e with m common factors f
@@ -129,6 +162,13 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
       Psi^{-1/2} R Psi^{-1/2}, is minimized by BFGS with its analytic gradient over
       uniquenesses bounded below by 0.005; a uniqueness at the bound is a Heywood
       case, reported in ``attrs["heywood"]`` with a note.
+    * ``"minres"`` minimizes off-diagonal squared residuals with native BFGS.
+    * ``"alpha"`` iterates positive communalities through their standardized
+      correlation eigenproblem; nonpositive generalizability is noted.
+    * ``"image_covariance"`` decomposes the covariance of leave-one-variable
+      linear predictions (SAS/Guttman variant, not SPSS generalized image).
+      Full prediction coefficients and covariance are returned.
+      These three methods require an explicit factor count and no mineigen.
 
     Number of factors. ``factors`` is the maximum number kept; factors whose
     eigenvalue (of the SMC-reduced matrix for pf / ipf / ml, of R for pcf) does not
@@ -144,6 +184,13 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
     default; Stata rotates without it unless ``normalize`` is given). Rotated
     factors are ordered by decreasing sum of squared loadings. Loadings columns
     are signed so that the loading of largest absolute value is positive.
+    ``"cf"`` supplies orthogonal or oblique Crawford–Ferguson with
+    ``cf_kappa`` in [0,1]. ``"partial_target"`` uses an explicit binary
+    ``target_mask`` and a nonzero specified anchor on each target axis;
+    the masked tangent must have full rank. Both support 2–16 factors and
+    at most 10000 iterations, with local stationary solutions only.
+    Complete and partial target rotations preserve caller target order/sign.
+    Their targets/masks, transformations and factor covariances persist.
 
     Scores. ``scores="regression"`` (default for ``oe.factor_scores``; Thomson):
     coefficients B = R^{-1} S with S the structure matrix L Phi; ``"bartlett"``:
@@ -158,6 +205,13 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
         (default 1000) and of the rotation (default 10000).
     tolerance : convergence tolerance of ipf on the communalities (default 0.001).
     missing : ``"drop"`` (listwise deletion) or ``"raise"``.
+    weights : optional nonnegative integer frequency-count column. Moments
+        use sum(weights)-1 without row expansion; zero-count rows are excluded.
+        n records the count total, with separate physical/missing/zero counts.
+        Only weight_type="fweight" is supported; counts/total must be <=2**53.
+    cf_kappa, cf_oblique : CF criterion and geometry, only with rotate="cf".
+    target_mask, target_oblique : partial-target mask and geometry.
+    rotation_tolerance : CF/partial-target gradient tolerance, 1e-12 to 1e-5.
 
     Returns
     -------
@@ -208,6 +262,12 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
     names = c.name_list(columns, "columns", minimum=2 if method == "pcf" else 3)
     if factors is not None:
         factors = c.check_count(factors, "factors")
+    fixed_count = method in ("minres", "alpha", "image_covariance")
+    if fixed_count and (factors is None or mineigen is not None):
+        raise AnalysisError("invalid_option", f"{method} EFA requires an explicit factors count and does not use mineigen selection.")
+    if method in ("alpha", "image_covariance") and factors >= len(names):
+        raise AnalysisError("too_many_factors", "Alpha/image-covariance extraction needs fewer factors than variables.")
+    c.check_choice(weight_type, "weight_type", ("fweight",))
     cutoff = _MINEIGEN[method] if mineigen is None else c.check_number(
         mineigen, "mineigen", minimum=0.0)
     if rotate is not None:
@@ -216,13 +276,64 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
     power = c.check_number(power, "power", minimum=1.0)
     gamma = c.check_number(gamma, "gamma", maximum=1.0)
     if scores is not None:
-        c.check_choice(scores, "scores", ("regression", "bartlett"))
+        c.check_choice(scores, "scores", ("regression", "bartlett", "anderson_rubin"))
+    if target is not None and rotate not in ("target", "partial_target"):
+        raise AnalysisError("invalid_option", "target requires rotate='target' or 'partial_target'.")
+    if rotate in ("target", "partial_target") and target is None:
+        raise AnalysisError("invalid_option", "Target rotation requires a target matrix.")
+    if isinstance(target, pd.DataFrame):
+        if target.index.has_duplicates or target.columns.has_duplicates or list(target.index) != names or target.shape[1] > len(names):
+            raise AnalysisError("invalid_spec", "Target row labels must agree with variable order.")
+        c.require_numeric(target, list(target.columns))
+        if isinstance(target_mask, pd.DataFrame):
+            if list(target_mask.index) != names or list(target_mask.columns) != list(target.columns):
+                raise AnalysisError("invalid_spec", "Target mask labels must match the target matrix.")
+        target = target.to_numpy(dtype="float64")
+    if isinstance(target_mask, pd.DataFrame):
+        if target_mask.index.has_duplicates or target_mask.columns.has_duplicates or list(target_mask.index) != names:
+            raise AnalysisError("invalid_spec", "Target mask row labels must agree with variable order.")
+        target_mask = target_mask.to_numpy()
+    c.check_flag(cf_oblique, "cf_oblique")
+    cf_kappa = c.check_number(cf_kappa, "cf_kappa", minimum=0, maximum=1)
+    if (cf_oblique or cf_kappa != 0) and rotate != "cf":
+        raise AnalysisError("invalid_option", "Crawford–Ferguson options require rotate='cf'.")
+    c.check_flag(target_oblique, "target_oblique")
+    if (target_mask is not None or target_oblique) and rotate != "partial_target":
+        raise AnalysisError("invalid_option", "Partial-target options require rotate='partial_target'.")
+    if rotate == "partial_target" and target_mask is None:
+        raise AnalysisError("invalid_option", "Partial-target rotation requires an explicit binary target_mask.")
+    rotation_tolerance = c.check_number(rotation_tolerance, "rotation_tolerance", minimum=1e-12, maximum=1e-5)
+    if rotation_tolerance != 1e-10 and rotate not in ("cf", "partial_target"):
+        raise AnalysisError("invalid_option", "rotation_tolerance is used by CF and partial-target rotation.")
+    c.check_flag(geomin_oblique, "geomin_oblique")
+    geomin_epsilon = c.check_number(geomin_epsilon, "geomin_epsilon", minimum=1e-12, maximum=1)
+    if (geomin_oblique or geomin_epsilon != .01) and rotate != "geomin":
+        raise AnalysisError("invalid_option", "Geomin options require rotate='geomin'.")
     if max_iterations is not None:
         max_iterations = c.check_count(max_iterations, "max_iterations")
+    if rotate in ("cf", "partial_target"):
+        if factors is not None and not 2 <= factors <= 16:
+            raise AnalysisError("invalid_option", "CF and partial-target rotation require 2–16 factors.")
+        if max_iterations is not None and max_iterations > 10000:
+            raise AnalysisError("invalid_option", "CF and partial-target rotation allow at most 10000 iterations.")
+    if method == "image_covariance" and (tolerance is not None or (max_iterations is not None and rotate is None)):
+        raise AnalysisError("invalid_option", "Image-covariance extraction is closed form; tolerance is not used and max_iterations only applies with rotation.")
     tol = _IPF_TOLERANCE if tolerance is None else c.check_number(
         tolerance, "tolerance", minimum=0.0, exclusive=True)
     diagnostics: dict[str, Any] = {}
-    r, mean, std, n, dropped = _correlation(data, names, missing, diagnostics)
+    from .summary import geometry
+    if fixed_count or weights is not None or rotate in ("target", "geomin", "cf", "partial_target") or scores == "anderson_rubin":
+        from openecon.dataset import Dataset
+        from .summary import Summary
+        rows = 0 if isinstance(data, (Dataset, Summary)) else len(c.source(data))
+        matrix_iterations = max_iterations or (1000 if method in ("ml", "minres", "alpha")
+                                               else 25 if method == "ipf" else 1)
+        if rotate is not None:
+            matrix_iterations = max_iterations or 10000
+        diagnostics["option_resource_plan"] = geometry(len(names), rows=rows, iterations=matrix_iterations,
+            parameters=len(names) * min(factors, len(names)) if method == "minres" else 0)
+        diagnostics.update({"precision": "float64", "device": "cpu"})
+    r, mean, std, n, dropped = _correlation(data, names, missing, diagnostics, weights)
     p = len(names)
     notes: list[str] = []
 
@@ -234,9 +345,11 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
         smc = ex.squared_multiple_correlations(r)
         screen = ex.reduced_eigen(r, smc)[0]
     limit = p if factors is None else min(factors, p)
-    if method == "ml":
+    if method in ("ml", "minres"):
         limit = min(limit, max(m for m in range(p) if (p - m) ** 2 >= p + m))
-    m = min(int((screen > cutoff).sum()), limit)
+    m = factors if fixed_count else min(int((screen > cutoff).sum()), limit)
+    if method == "minres" and m > limit:
+        raise AnalysisError("too_many_factors", "Minimum-residual factor count is not identified.")
     if m < 1:
         raise AnalysisError("no_factors", f"No factor has an eigenvalue above {cutoff:g}; lower "
                             "mineigen or use method='pcf'.")
@@ -251,6 +364,22 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
     elif method == "ipf":
         fit = ex.iterated_principal_factors(r, smc, m, max_iter=max_iterations or _IPF_ITERATIONS,
                                             tol=tol)
+    elif method == "minres":
+        fit = ex.minimum_residual(r, smc, m, max_iter=max_iterations or _ITERATIONS,
+                                  tolerance=1e-7 if tolerance is None else tol)
+        value, gradient = ex.minres_objective(fit.loadings, r)
+        diagnostics.update({"objective": "half_off_diagonal_residual_ss", "gradient_max": float(gradient.abs().max()),
+                            "converged": True, "loading_inference": "not provided"})
+    elif method in ("alpha", "image_covariance"):
+        from .extraction_extensions import alpha_factors, image_covariance_factors
+        fit = (alpha_factors(r, smc, m, max_iter=max_iterations or _ITERATIONS,
+                             tol=1e-8 if tolerance is None else tol) if method == "alpha"
+               else image_covariance_factors(r, m))
+        diagnostics.update(fit.diagnostics)
+        if method == "alpha" and not diagnostics["retained_roots_above_one"]:
+            notes.append("A retained alpha root is at most one, so its alpha generalizability is nonpositive; consider fewer factors. No reliability coefficient is estimated.")
+        if method == "image_covariance":
+            notes.append("Saved scores use the requested existing regression/Bartlett/Anderson–Rubin factor-score convention. They are not exact principal-component scores of the image predictions.")
     else:
         fit = ex.maximum_likelihood(r, smc, m, max_iter=max_iterations or _ITERATIONS)
     loadings = c.fix_signs(fit.loadings)
@@ -274,15 +403,28 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
         eigen_rows = eigen_rows.reindex(c.numbered("Factor", p))
     eigen_rows["initial_eigenvalue"] = initial.tolist()
     rotated = None
+    rotation_extension = None
     if rotate is not None:
-        rotated = rot.rotate(loadings, rotate, normalize=kaiser, power=power, gamma=gamma,
-                             max_iter=max_iterations or _ROTATION_ITERATIONS)
-        if m < 2:
+        if rotate in ("cf", "partial_target"):
+            from .rotation_extensions import cf, partial_target
+            rotation_extension = (cf(loadings, kappa=cf_kappa, oblique=cf_oblique, kaiser=kaiser,
+                                     max_iter=max_iterations or _ROTATION_ITERATIONS, tol=rotation_tolerance)
+                if rotate == "cf" else partial_target(loadings, target=target, mask=target_mask,
+                    oblique=target_oblique, kaiser=kaiser, max_iter=max_iterations or _ROTATION_ITERATIONS,
+                    tol=rotation_tolerance))
+            rotated = rotation_extension.rotation
+            diagnostics.update(rotation_extension.diagnostics)
+        else:
+            rotated = rot.rotate(loadings, rotate, normalize=kaiser, power=power, gamma=gamma,
+                                 max_iter=max_iterations or _ROTATION_ITERATIONS, target=target,
+                                 epsilon=geomin_epsilon, geomin_oblique=geomin_oblique)
+        if m < 2 and rotate != "target":
             notes.append("A single factor cannot be rotated; the rotated loadings equal the "
                          "unrotated ones.")
         elif not rotated.converged:
-            notes.append("The rotation stopped with the criterion gradient below 1e-5 (the "
-                         "SPSS tolerance) but above the 1e-10 aimed at.")
+            requested = rotation_tolerance if rotate in ("cf", "partial_target") else 1e-10
+            notes.append("The rotation stopped with the criterion gradient below 1e-5 "
+                         f"but above the requested {requested:g} tolerance.")
     pattern = loadings if rotated is None else rotated.pattern
     phi = torch.eye(m, dtype=c.FLOAT) if rotated is None else rotated.phi
 
@@ -291,12 +433,25 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
         "variance": _variance_table(loadings, rotated, p),
         "loadings": c.frame(loadings, columns=labels, index=names),
     }
+    if method in ("alpha", "image_covariance"):
+        for key, matrix in fit.matrices.items():
+            tables[key] = c.frame(matrix, columns=names, index=names)
     if rotated is not None:
         tables["rotated_loadings"] = c.frame(pattern, columns=labels, index=names)
         if rotated.oblique:
             tables["structure"] = c.frame(pattern @ phi, columns=labels, index=names)
             tables["factor_correlations"] = c.frame(phi, columns=labels, index=labels)
         tables["rotation_matrix"] = c.frame(rotated.matrix, columns=labels, index=labels)
+        if rotate == "target":
+            tables["rotation_target"] = c.frame(torch.as_tensor(target, dtype=c.FLOAT), columns=labels, index=names)
+        if rotate == "partial_target":
+            tables["rotation_target"] = c.frame(rotation_extension.target, columns=labels, index=names)
+            tables["rotation_target_mask"] = c.frame(rotation_extension.mask.to(c.FLOAT), columns=labels, index=names)
+        if rotate in ("target", "geomin"):
+            diagnostics.update({"rotation_converged": rotated.converged, "rotation_oblique": rotated.oblique,
+                                "rotation_orientation": "caller target order/sign" if rotate == "target" else "descending pattern SS; largest loading positive",
+                                "geomin_epsilon": geomin_epsilon if rotate == "geomin" else None,
+                                "rotation_start": "identity", "rotation_optimum": "global Procrustes" if rotate == "target" else "local stationary point"})
     tables["communalities"] = c.frame(
         torch.stack([smc, communality, uniqueness], dim=1),
         columns=["initial", "extraction", "uniqueness"], index=names)
@@ -316,6 +471,8 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
     tables["fit"] = c.frame(fit_rows, columns=["statistic", "df", "p_value"], index=fit_index)
 
     score_method = scores or "regression"
+    if scores == "anderson_rubin" and rotated is not None and rotated.oblique:
+        raise AnalysisError("unsupported_option", "Anderson–Rubin scores require an orthogonal rotation.")
     try:
         coefficients = _score_coefficients(score_method, r, pattern, phi, uniqueness, names)
     except AnalysisError:
@@ -329,7 +486,9 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
     tables["descriptives"] = c.frame(torch.stack([mean, std], dim=1),
                                      columns=["mean", "std_dev"], index=names)
     title = {"pf": "principal factors", "ipf": "iterated principal factors",
-             "pcf": "principal-component factors", "ml": "maximum likelihood"}[method]
+             "pcf": "principal-component factors", "ml": "maximum likelihood",
+             "minres": "minimum residual", "alpha": "alpha factors",
+             "image_covariance": "image-covariance factors"}[method]
     return TableSet(
         tables, title=f"Factor analysis ({title}) of {', '.join(names)}",
         procedure="factor", n=n, n_missing=dropped, method=method, factors=m, rotate=rotate,
@@ -338,12 +497,13 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
         iterations=fit.iterations, discrepancy=fit.discrepancy,
         rotation_iterations=None if rotated is None else rotated.iterations,
         heywood=heywood, scores=score_method if coefficients is not None else None,
-        mineigen=cutoff, notes=notes, missing="listwise",
-        sign_convention="largest absolute loading of each factor is positive", **diagnostics)
+        mineigen=None if method in ("alpha", "image_covariance") else cutoff, notes=notes, missing="listwise",
+        sign_convention="caller target orientation" if rotate in ("target", "partial_target") else "largest absolute loading of each factor is positive", **diagnostics)
 
 
 @c.procedure
-def factortest(data: Any, columns: list[str], *, missing: str = "drop") -> pd.DataFrame:
+def factortest(data: Any, columns: list[str], *, missing: str = "drop",
+               weights: str | None = None, weight_type: str = "fweight") -> pd.DataFrame:
     """Kaiser-Meyer-Olkin sampling adequacy and Bartlett's test of sphericity.
 
     With R the correlation matrix and a_ij = -r^ij / sqrt(r^ii r^jj) the
@@ -360,6 +520,13 @@ def factortest(data: Any, columns: list[str], *, missing: str = "drop") -> pd.Da
     data : DataFrame, mapping of columns or list of records.
     columns : two or more numeric columns.
     missing : ``"drop"`` (listwise deletion) or ``"raise"``.
+    weights : optional nonnegative integer frequency counts, weight_type="fweight".
+        Anchored covariance uses sum(weights)-1 without row expansion; n is the
+        count total with separate physical/missing/zero rows. Counts/total must
+        be <=2**53. Resident and bounded Dataset routes are supported.
+        Bartlett's Gaussian approximation treats counts as original independent
+        observations; duplicated dependent observations do not create valid
+        inferential sample size. Survey/analytic/probability weights are absent.
 
     Returns
     -------
@@ -380,8 +547,9 @@ def factortest(data: Any, columns: list[str], *, missing: str = "drop") -> pd.Da
     3.0
     """
     names = c.name_list(columns, "columns", minimum=2)
+    c.check_choice(weight_type, "weight_type", ("fweight",))
     diagnostics: dict[str, Any] = {}
-    r, _, _, n, dropped = _correlation(data, names, missing, diagnostics)
+    r, _, _, n, dropped = _correlation(data, names, missing, diagnostics, weights)
     factor_ = c.positive_definite(
         r, "correlation matrix", "a variable is a linear combination of the others, so the "
         "anti-image correlations are undefined. Remove the redundant variable.")

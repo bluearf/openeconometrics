@@ -1,0 +1,275 @@
+{
+  "schema_version": 1,
+  "source_baseline": "e5db5d0806428c8776f9a77e4416d720ed8e0220",
+  "planning_only": true,
+  "implementation_authorized": false,
+  "parent_issue": "MARKET-73",
+  "plans": [
+    {
+      "issue": "MARKET-146",
+      "planning_scope": "complete_scope_and_acceptance_design",
+      "implementation_status": "deferred",
+      "historical_decision_preserved": true,
+      "document": "sem.md",
+      "implementation_tracker": "https://github.com/bluearf/openecon/issues/32",
+      "current_exports": [
+        "pca",
+        "factor",
+        "sureg",
+        "mediation",
+        "sem"
+      ],
+      "proposed_unregistered_names": [
+        "cfa",
+        "latent_sem",
+        "gsem"
+      ],
+      "phases": [
+        {
+          "id": "SEM-1",
+          "status": "deferred",
+          "scope": "Continuous CFA identification and covariance ML",
+          "depends_on": [],
+          "acceptance_details": "sem.md"
+        },
+        {
+          "id": "SEM-2",
+          "status": "deferred",
+          "scope": "Continuous latent/path, means, correlated errors and joint inference",
+          "depends_on": [
+            "SEM-1"
+          ],
+          "acceptance_details": "sem.md"
+        },
+        {
+          "id": "SEM-3",
+          "status": "deferred",
+          "scope": "Fit indices, standardized solutions, summary input and saved scores",
+          "depends_on": [
+            "SEM-2"
+          ],
+          "acceptance_details": "sem.md"
+        },
+        {
+          "id": "SEM-4",
+          "status": "deferred",
+          "scope": "Multigroup invariance, MAR FIML and robust uncertainty",
+          "depends_on": [
+            "SEM-3"
+          ],
+          "acceptance_details": "sem.md"
+        },
+        {
+          "id": "SEM-5",
+          "status": "deferred",
+          "scope": "Generalized and multilevel latent outcomes",
+          "depends_on": [
+            "SEM-4"
+          ],
+          "acceptance_details": "sem.md"
+        }
+      ]
+    },
+    {
+      "issue": "MARKET-155",
+      "planning_scope": "complete_scope_and_acceptance_design",
+      "implementation_status": "deferred",
+      "historical_decision_preserved": true,
+      "document": "bayesian.md",
+      "implementation_tracker": "https://github.com/bluearf/openecon/issues/41",
+      "current_exports": [
+        "ols",
+        "logit",
+        "var"
+      ],
+      "proposed_unregistered_names": [
+        "bayes_linear"
+      ],
+      "phases": [
+        {
+          "id": "BAYES-1",
+          "status": "deferred",
+          "scope": "Analytic proper conjugate regression and contrasts",
+          "depends_on": [],
+          "acceptance_details": "bayesian.md"
+        },
+        {
+          "id": "BAYES-2",
+          "status": "deferred",
+          "scope": "Versioned posterior state, prediction and explicit hypothesis comparisons",
+          "depends_on": [
+            "BAYES-1"
+          ],
+          "acceptance_details": "bayesian.md"
+        },
+        {
+          "id": "BAYES-3",
+          "status": "deferred",
+          "scope": "Native multiple-chain sampling, diagnostics and GLM recovery",
+          "depends_on": [
+            "BAYES-2"
+          ],
+          "acceptance_details": "bayesian.md"
+        },
+        {
+          "id": "BAYES-4",
+          "status": "deferred",
+          "scope": "Hierarchical models and Bayesian variable selection/averaging",
+          "depends_on": [
+            "BAYES-3"
+          ],
+          "acceptance_details": "bayesian.md"
+        },
+        {
+          "id": "BAYES-5",
+          "status": "deferred",
+          "scope": "BVAR priors/IRFs then a separate TVP-VAR state/sampler",
+          "depends_on": [
+            "BAYES-4"
+          ],
+          "acceptance_details": "bayesian.md"
+        }
+      ]
+    },
+    {
+      "issue": "MARKET-156",
+      "planning_scope": "complete_scope_and_acceptance_design",
+      "implementation_status": "deferred",
+      "historical_decision_preserved": true,
+      "document": "supervised.md",
+      "implementation_tracker": "https://github.com/bluearf/openecon/issues/42",
+      "current_exports": [
+        "discrim",
+        "cluster_kmeans",
+        "cluster_hierarchical",
+        "teffects",
+        "network_gnn"
+      ],
+      "proposed_unregistered_names": [
+        "cart",
+        "random_forest",
+        "gradient_boosting",
+        "mlp",
+        "rbf",
+        "knn",
+        "svm"
+      ],
+      "phases": [
+        {
+          "id": "ML-1",
+          "status": "deferred",
+          "scope": "Training/split/preprocessing and saved prediction contract",
+          "depends_on": [],
+          "acceptance_details": "supervised.md"
+        },
+        {
+          "id": "ML-2",
+          "status": "deferred",
+          "scope": "CART weights/pruning and explicit missing/category stages",
+          "depends_on": [
+            "ML-1"
+          ],
+          "acceptance_details": "supervised.md"
+        },
+        {
+          "id": "ML-3",
+          "status": "deferred",
+          "scope": "CHAID, exhaustive CHAID and QUEST distinct algorithms",
+          "depends_on": [
+            "ML-2"
+          ],
+          "acceptance_details": "supervised.md"
+        },
+        {
+          "id": "ML-4",
+          "status": "deferred",
+          "scope": "Random forest and gradient boosting",
+          "depends_on": [
+            "ML-3"
+          ],
+          "acceptance_details": "supervised.md"
+        },
+        {
+          "id": "ML-5",
+          "status": "deferred",
+          "scope": "Supervised kNN and SVM",
+          "depends_on": [
+            "ML-4"
+          ],
+          "acceptance_details": "supervised.md"
+        },
+        {
+          "id": "ML-6",
+          "status": "deferred",
+          "scope": "MLP and RBF",
+          "depends_on": [
+            "ML-5"
+          ],
+          "acceptance_details": "supervised.md"
+        }
+      ]
+    },
+    {
+      "issue": "MARKET-169",
+      "planning_scope": "complete_scope_and_acceptance_design",
+      "implementation_status": "deferred",
+      "historical_decision_preserved": true,
+      "document": "mixtures.md",
+      "implementation_tracker": "https://github.com/bluearf/openecon/issues/56",
+      "current_exports": [
+        "zip",
+        "zinb",
+        "mswitch"
+      ],
+      "proposed_unregistered_names": [
+        "finite_mixture",
+        "latent_class"
+      ],
+      "phases": [
+        {
+          "id": "MIX-1",
+          "status": "deferred",
+          "scope": "Gaussian regression mixture with fixed K and bounded multi-start EM",
+          "depends_on": [],
+          "acceptance_details": "mixtures.md"
+        },
+        {
+          "id": "MIX-2",
+          "status": "deferred",
+          "scope": "Regular joint information and complete prediction/state",
+          "depends_on": [
+            "MIX-1"
+          ],
+          "acceptance_details": "mixtures.md"
+        },
+        {
+          "id": "MIX-3",
+          "status": "deferred",
+          "scope": "Poisson/binary components and membership covariates",
+          "depends_on": [
+            "MIX-2"
+          ],
+          "acceptance_details": "mixtures.md"
+        },
+        {
+          "id": "MIX-4",
+          "status": "deferred",
+          "scope": "Polytomous locally independent latent classes",
+          "depends_on": [
+            "MIX-3"
+          ],
+          "acceptance_details": "mixtures.md"
+        },
+        {
+          "id": "MIX-5",
+          "status": "deferred",
+          "scope": "Entropy/AIC/BIC and separately calibrated class comparison",
+          "depends_on": [
+            "MIX-4"
+          ],
+          "acceptance_details": "mixtures.md"
+        }
+      ]
+    }
+  ]
+}

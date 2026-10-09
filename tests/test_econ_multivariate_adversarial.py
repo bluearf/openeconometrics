@@ -70,7 +70,7 @@ ERRORS = [
     ("factor ipf limit", lambda: oe.factor(DF, NAMES, method="ipf", max_iterations=1),
      "no_convergence"),
     ("factor method", lambda: oe.factor(DF, NAMES, method="minres"), "invalid_option"),
-    ("factor rotate", lambda: oe.factor(DF, NAMES, rotate="geomin"), "invalid_option"),
+    ("factor rotate", lambda: oe.factor(DF, NAMES, rotate="unknown"), "invalid_option"),
     ("factor power", lambda: oe.factor(DF, NAMES, rotate="promax", power=0.5),
      "invalid_option"),
     ("factor gamma", lambda: oe.factor(DF, NAMES, rotate="oblimin", gamma=2),

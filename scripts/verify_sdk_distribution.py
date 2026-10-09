@@ -1,11 +1,12 @@
-"""Verify the installed SDK patch in an isolated interpreter (never this checkout)."""
+"""Verify the installed SDK and charts pair in an isolated interpreter (never this checkout)."""
+
 from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
 import subprocess
 
-PROGRAM = r'''
+PROGRAM = r"""
 import importlib.metadata as metadata
 import importlib.util
 import json
@@ -13,10 +14,13 @@ from pathlib import Path
 import socket
 import sys
 
-assert metadata.version('openecon') == '0.3.18a4'
-assert metadata.version('openecon-charts') == '0.3.0a2'
+expected = json.loads(sys.argv[1])
+assert metadata.version('openecon') == expected['sdk_version']
+assert metadata.version('openecon-charts') == expected['charts_version']
+assert 'openecon-charts==' + expected['charts_version'] in metadata.requires('openecon')
 import openecon as oe
 from openecon.econometrics import registry
+assert oe.__version__ == expected['sdk_version']
 names = registry.names()
 exports = {**oe._EXPORTS, **registry.public_exports()}
 assert {'ols', 'poisson', 'nbreg'} <= set(names)
@@ -47,7 +51,13 @@ assert ols.nobs == 480
 design = np.column_stack([np.ones(len(frame)), frame[['education', 'experience']].to_numpy()])
 expected = np.linalg.lstsq(design, frame.wage.to_numpy(), rcond=None)[0]
 np.testing.assert_allclose([c.estimate for c in ols.coefficients], expected, rtol=1e-10, atol=1e-10)
-assert np.isfinite(ols.covariance_matrix).all()
+bread = np.linalg.inv(design.T @ design)
+residuals = frame.wage.to_numpy() - design @ expected
+leverage = np.einsum('ij,jk,ik->i', design, bread, design)
+scores = design * (residuals / (1 - leverage))[:, None]
+expected_covariance = bread @ (scores.T @ scores) @ bread
+np.testing.assert_allclose(ols.covariance_matrix, expected_covariance, rtol=1e-9, atol=1e-12)
+np.testing.assert_allclose([c.std_error for c in ols.coefficients], np.sqrt(np.diag(expected_covariance)), rtol=1e-9, atol=1e-12)
 assert r'\begin{tabular}' in ols.to_latex()
 stored_ols = oe.ResultBundle.model_validate_json(ols.model_dump_json())
 assert stored_ols.model_dump(mode='json') == ols.model_dump(mode='json')
@@ -115,25 +125,34 @@ print(json.dumps({'status': 'passed', 'sdk_version': metadata.version('openecon'
                   'charts_version': metadata.version('openecon-charts'),
                   'registry_estimators': len(names), 'registry_exports': len(exports),
                   'referenced_modules': len(set(entries)), 'lazy_registry_no_heavy_imports': True,
-                  'ols_independent_algebra': True, 'guarded_parquet_after_torch': True, 'exact_fit_guard_and_real_noise': True, 'poisson_score_check': True,
+                  'ols_independent_algebra': True, 'hc3_independent_full_covariance': True, 'guarded_parquet_after_torch': True, 'exact_fit_guard_and_real_noise': True, 'poisson_score_check': True,
                   'json_restore_predictions_duplicate_index': True, 'latex_and_chart_protocol': True,
                   'source': str(root), 'scope': 'Package smoke checks; no vendor parity or CUDA acceptance.'}))
-'''
+"""
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--python', type=Path, required=True)
-    parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument("--python", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--sdk-version", default="0.3.19a1")
+    parser.add_argument("--charts-version", default="0.3.1a1")
     args = parser.parse_args()
+    expected = json.dumps({"sdk_version": args.sdk_version, "charts_version": args.charts_version})
     # Preserve the venv executable path: resolving its symlink selects the host interpreter.
-    check = subprocess.run([str(args.python.absolute()), '-I', '-c', PROGRAM], capture_output=True, text=True, check=False)
+    check = subprocess.run(
+        [str(args.python.absolute()), "-I", "-c", PROGRAM, expected],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
     if check.returncode:
         raise SystemExit(check.stderr)
     record = json.loads(check.stdout)
     args.output.parent.mkdir(parents=True, exist_ok=True)
-    args.output.write_text(json.dumps(record, indent=2) + '\n')
+    args.output.write_text(json.dumps(record, indent=2) + "\n")
     print(json.dumps(record))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

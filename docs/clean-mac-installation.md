@@ -2,7 +2,7 @@
 
 MARKET-82 was exercised on 7 October 2026 with the **installed** 0.3.43 QA app,
 macOS 26.6.2, Apple M3 Pro (12 logical CPUs, 18 GiB). The
-[machine-readable record](evidence/clean-mac-install-rollback-2026-10-07/summary.json)
+machine-readable record (internal evidence excluded from this public snapshot)
 contains artifact hashes, source tests, runtime receipts and explicit limits.
 
 Two initially absent application/WebKit profiles were used on an existing Mac.
@@ -60,7 +60,7 @@ benchmark. Real native password login used an existing synthetic QA owner.
 Reopen, update, rollback and restoration showed that owner without reentering
 credentials. Opening the owned cloud project loaded its draft and history;
 no cloud code was executed. The
-[timing record](evidence/clean-mac-install-rollback-2026-10-07/timings.json)
+timing record (internal evidence excluded from this public snapshot)
 also retains the earlier baseline and update observations. A capture process
 stopped at an app-exit race on two earlier launches; their native timings remain
 unavailable. The capture now skips incomplete exit samples, and subsequent
@@ -99,7 +99,7 @@ The authentication token contents were never read for these snapshots.
 The extra empty-profile experiment archived and restored only the owned QA
 profile and WebKit store; its final restoration snapshot also matched. All 50
 audited pre-existing human files remained unchanged. The
-[preservation record](evidence/clean-mac-install-rollback-2026-10-07/preservation.json)
+preservation record (internal evidence excluded from this public snapshot)
 contains matching before/after snapshot and component hashes.
 
 ## Reproduction and evidence boundaries

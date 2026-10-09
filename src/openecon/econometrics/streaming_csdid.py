@@ -740,6 +740,9 @@ def fit_streaming(spec, source, *, batch_rows=None):
                 "df_inference": None,
                 "df_resid": None,
                 "small_sample_correction": None,
+                "bootstrap_reps": 0, "uniform": False, "multiplier": None,
+                "se_method": "analytic shared influence functions", "families": {},
+                "coefficient_intervals": "pointwise normal; simultaneous bands stored separately",
                 "correction": "influence-function covariance of the group-time ATTs, clustered by unit (analytic; did's default multiplier bootstrap is not used)",
             }
             result = _result(

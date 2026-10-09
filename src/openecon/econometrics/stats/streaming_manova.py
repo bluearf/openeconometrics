@@ -87,9 +87,14 @@ def manova(data,outcomes,factors,covariates,interactions,alpha,missing):
             notes.append("Box's M is not computed: a cell has no more observations than outcomes or a singular covariance matrix.")
         else:
             tables["box_m"] = c.frame([list(box.values())],columns=list(box),index=["box_m"])
-    return TableSet(tables,title=f"Multivariate analysis of variance of {', '.join(outcomes)}",
+    result = TableSet(tables,title=f"Multivariate analysis of variance of {', '.join(outcomes)}",
         n=model.n,n_missing=sample.dropped,df_resid=model.df_error,outcomes=outcomes,
         terms=[term.name for term in model.terms],ss_type=3,alpha=alpha,notes=notes,
         coding="sum-to-zero (effect) coding",missing="listwise",**sample.attrs(),
         full_source_collected=False,factorial_resource_plan=model.resource_plan.record(),
         cell_resource_plan=None if cellplan is None else cellplan.record(),**model.tsqr)
+    from .manova_options import save_model_geometry
+    state = save_model_geometry(model, outcomes, dropped=sample.dropped, input_kind="dataset_glm")
+    result.attrs["manova_contrast_state"] = state
+    result.attrs["manova_contrast_available"] = state is not None
+    return result

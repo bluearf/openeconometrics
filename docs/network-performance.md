@@ -70,7 +70,7 @@ WebView startup and force-worker convergence are outside these clocks.
 
 ## Recorded CPU results
 
-The [Python receipt](evidence/network-pipeline-2026-10-06.json) contains 24 ordinary
+The Python receipt (internal evidence excluded from this public snapshot) contains 24 ordinary
 runs and one separate profiled control on Apple M3 Pro, 18 GiB RAM, macOS 26.6.2,
 Python 3.13.5, Torch 2.14.0, two threads. Values below are seconds, medians of three
 fresh processes. The local desktop had other applications running; background load
@@ -117,7 +117,7 @@ and result/display coverage, and report both raw runs and changed-source hashes.
 
 ## Browser and installed-app verification
 
-The [browser receipt](evidence/network-pipeline-browser-2026-10-06.json) records
+The browser receipt (internal evidence excluded from this public snapshot) records
 24 actual headed Chrome measurements using the Python-produced artifacts and the
 production chart renderer. Each case includes full/shown counts, exact byte hashes,
 hardware metadata, Chrome/ANGLE renderer, viewport, phase clocks, allocated GPU
@@ -148,7 +148,7 @@ the position texture. These allocations exclude driver/framebuffer memory.
 UTF-8 decode, body SHA validation, raw RAF intervals and temporal frame-change
 clocks are retained separately in the receipt.
 
-The [installed Mac receipt](evidence/network-performance-native-2026-10-06.json)
+The installed Mac receipt (internal evidence excluded from this public snapshot)
 records the smaller [runnable companion](examples/network_performance.py) in the
 installed 0.3.42 app: 2.65 seconds for code execution, one six-row result table,
 six persisted charts, four temporal frames, and all charts observed as

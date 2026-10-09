@@ -92,6 +92,23 @@ def test_sorted_missing_positions_dates_and_categories(data):
     assert streamed.nobs_original == len(frame)
 
 
+def test_physical_parquet_arrow_numeric_tail_survives_saved_forecast(data, tmp_path):
+    from openecon.econometrics import registry
+    from openecon.models import ResultBundle
+    path = tmp_path / "var.parquet"
+    data.to_parquet(path, index=False, row_group_size=127)
+    specification = oe.var(data=data, y=["a", "b"], x=["x"], time="t", lags=2).spec
+    expected = registry.load_entry(registry.get("var"))(specification, pd.read_parquet(path))
+    actual = oe.fit(specification, data=oe.scan(path))
+    actual = ResultBundle.model_validate_json(actual.model_dump_json())
+    assert actual.inference["reference"] == expected.inference["reference"]
+    future = pd.DataFrame({"x": [.1, .2, -.4]})
+    one, two = oe.forecast(expected, 3, exog=future), oe.forecast(actual, 3, exog=future)
+    pd.testing.assert_frame_equal(one, two, rtol=3e-7, atol=3e-7)
+    numeric_tree(expected.covariance_matrix, actual.covariance_matrix, 3e-7)
+    numeric_tree(expected.extra["forecast"]["last_values"], actual.extra["forecast"]["last_values"], 3e-7)
+
+
 def test_strict_global_rank_and_time_guards(data):
     frame = data.assign(b=2*data.a)
     valid_spec = oe.var(data=data, y=["a", "b"], time="t").spec

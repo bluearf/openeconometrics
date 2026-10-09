@@ -3,12 +3,17 @@
 Principal components, factor analysis with rotations and scores, scale
 reliability, k-means and hierarchical clustering, discriminant analysis,
 canonical correlation, multidimensional scaling and correspondence analysis:
-`pca`, `pca_scores`, `factor`, `factortest`, `factor_scores`, `alpha`,
+`pca`, `pca_scores`, `factor`, `factor_bootstrap`, `factortest`, `factor_scores`, `alpha`,
 `cluster_kmeans`, `cluster_assign`, `cluster_hierarchical`, `cluster_cut`,
 `discrim`, `discrim_predict`, `canon`, `mds` and `ca`. They cover SPSS's FACTOR,
 RELIABILITY, QUICK CLUSTER, CLUSTER, DISCRIMINANT, CORRESPONDENCE and PROXSCAL,
 and Stata's `pca`, `factor`, `rotate`, `alpha`, `cluster`, `discrim`, `candisc`,
 `canon`, `mds`, `mdsmat` and `ca`.
+
+The [fixed spectral geometry and query uncertainty guide](spectral-geometry-uncertainty.md)
+documents `pca_subspace_bootstrap`, `canon_bootstrap`, `ca_bootstrap` and
+`pca_bootstrap_scores`, including their sampling laws, identification gates
+and complete saved-output contracts.
 
 Everything on this page is computed in OpenEconometrics on float64 PyTorch tensors.
 Moment matrices come from one pass over the data (centre, then one `X'X`
@@ -18,7 +23,7 @@ own BFGS optimizer and an analytic gradient, and rotations are iterated here.
 No statistics library runs at fit time; NumPy, SciPy and statsmodels appear
 only in the test suite as independent oracles.
 
-These procedures are descriptive analyses, not model fits. They register no
+These procedures return analysis tables rather than registered estimator fits. Most are descriptive; the bounded bootstrap below supplies explicitly scoped uncertainty. They register no
 estimator and return a `TableSet`: a dictionary of named result tables
 (`openecon.frame.DataFrame`) with `str()` and `.to_latex()` for the whole set
 and scalar results in `.attrs`. Functions that produce one value per
@@ -60,6 +65,11 @@ df[["verbal", "maths"]] = oe.factor_scores(result, df)
 | `canon (x1 x2 x3) (y1 y2)`; `MANOVA ... /DISCRIM`, CANCORR macro | `oe.canon(df, x=[...], y=[...])` |
 | `mds x1-x5, id(id)`; `mdsmat D`; `PROXSCAL`, `ALSCAL` | `oe.mds(df, cols)`; `oe.mds(distances=D)` (`method="smacof"`) |
 | `ca row col`; `CORRESPONDENCE TABLE=row BY col` | `oe.ca(df, "row", "col", weights="count")` |
+
+The [frequency/summary and saved RM guide](multivariate-weight-matrix.md)
+documents MARKET-369–376: weighted reliability/adequacy/discriminant/CCA,
+group/joint summaries, canonical scores, wide RM input/state and predeclared
+RM contrasts. Its Gaussian assumptions and explicit limits are method-specific.
 
 ## Samples, missing data and failures
 
@@ -103,7 +113,89 @@ pairs). A whole column may therefore differ in sign from another package's
 output; nothing else changes. The rule used is stored in
 `attrs["sign_convention"]`.
 
+## Added EFA contracts (MARKET-311, 313–319)
+
+| Option | Supported contract | Explicit boundary |
+| --- | --- | --- |
+| `factor(..., weights="w", weight_type="fweight")` | Integer nonnegative counts use anchored weighted moments without expanding rows. All seven extractions, rotations and saved score coefficients reuse the same moments. `n=sum(w)`, covariance divisor `n-1`, physical/missing/zero rows recorded separately. | Counts/total `<=2**53`; no analytic/probability weights. Existing Gaussian tests treat counts as literal independent row replication, not a survey design. |
+| `factor(..., method="alpha", factors=m)` | Iterate communalities using eigenvectors of `H^-1/2(R-I)H^-1/2+I`; map loadings back by `H^1/2`. Initial SMCs, full spectrum, iteration residual and full scoring state persist. | Explicit `m<p`, positive communalities/retained roots, convergence required. Heywood uniqueness is reported without clipping. Roots at or below one carry a nonpositive generalizability note; this is not Cronbach alpha. |
+| `factor(..., method="image_covariance", factors=m)` | SAS/Guttman covariance of leave-one-variable linear predictions: `B=I-R^-1 D`, `C=B'RB`, `D=diag(1/diag(R^-1))`. Full B/C and the eigendecomposition loadings persist. | Explicit `m<p`, PD correlation and positive retained image roots. This is not SPSS Kaiser generalized image extraction. Saved EFA score estimates are not exact principal-component scores of the image predictions. |
+| `factor(..., rotate="cf", cf_kappa=k, cf_oblique=False/True)` | Crawford–Ferguson criterion `sum(L²*((1-k)*row-other-SS+k*column-other-SS))/4`; analytic manifold gradient; identity start; optional Kaiser row scaling. Full pattern, transformation, and oblique structure/Phi persist. | `k` in `[0,1]`, 2–16 full-rank factors, at most 10000 iterations, tolerance `1e-12`–`1e-5`. Local stationary solution only; near-singular transformations refuse. |
+| `factor(..., rotate="partial_target", target=T, target_mask=M, target_oblique=False/True)` | Binary specified-cell mask and half masked squared residual; unspecified target cells may be NaN. Nonzero specified anchor on each axis and full rank of the actual masked tangent Jacobian identify the local rotation. Kaiser scales target and loadings by the loading row norm. | Same factor/iteration/tolerance limits as CF. Underidentified/near-singular results refuse. Caller target column/sign orientation is retained; full target, mask, transformation and Phi persist. |
+| `factor_bootstrap(df, cols, replications=199, confidence=.95, seed=0, anchor=None)` | Fixed unrotated **one-factor principal-factor estimator functional**. Resample complete raw rows IID and refit moments/SMCs/eigenvectors for every planned replicate. Fixed sign anchor aligns loadings. Full loading/uniqueness vectors give joint covariance, SE, bias and marginal percentile CI. | Resident CPU float64 only; 3–16 variables, at most 10000 rows, 19–1999 replicates, work `<=250000000`; each interval tail needs at least one order statistic (`(B+1)*(1-confidence)/2>=1`). Any failed replicate refuses all intervals. No p/df or familywise/exact coverage. |
+
+The bootstrap assumes IID sampling from the complete-case population, finite
+fourth moments, fixed variable dimension, a nonsingular population correlation, a separated leading
+reduced-matrix eigenvalue, a fixed anchor away from zero and interior positive
+uniqueness. These assumptions concern the PF estimator functional; intervals
+are not claimed to cover latent ML loadings or a data-selected factor model.
+The `openecon.factor_bootstrap.v1` result saves the complete fitting sample,
+original labels/positions, source hash, point estimates, every replicate,
+full joint covariance, diagnostics, RNG and interval settings. Weighted,
+clustered/dependent, summary and Dataset bootstrap inputs are unsupported.
+
+Independent tests use literal frequency-row expansion, the published SAS
+alpha fixture and separately implemented NumPy communalities, per-variable
+OLS image predictions, finite-difference gradients/tangent Jacobians,
+SciPy angle/manifold rotation optimizations and full NumPy bootstrap vectors
+on Gaussian and heavy-tailed/skewed fixtures. See the executable
+[eight-case example](../examples/multivariate_extension_acceptance.py).
+Vendor output parity remains unverified; MARKET-185 remains a broader parent.
+
+Primary algorithm references: [SAS alpha example](https://support.sas.com/documentation/onlinedoc/iml/ex_code/143/alpha.html),
+[SAS FACTOR algorithms](https://go.documentation.sas.com/api/docsets/statug/15.2/content/factor.pdf),
+[Crawford–Ferguson](https://doi.org/10.1007/BF02310792),
+[gradient projection](https://doi.org/10.1007/BF02294840), and
+[Stata rotate definitions](https://www.stata.com/manuals/mvrotate.pdf), and
+[bootstrap delta theorem and variance example](https://www.stat.purdue.edu/~dasgupta/bootstrap.pdf).
+
 ## `pca`: principal components
+
+### Added option domains (MARKET-256–263)
+
+The following additions extend the existing kernels. They are descriptive
+procedures, so loading covariance/SE/df/p/CI are **not supplied**. Existing
+Bartlett and ML model tests remain conditional on their stated assumptions;
+minimum-residual discrepancy is not a likelihood-ratio test.
+
+| Option | Supported contract | Explicit boundary |
+| --- | --- | --- |
+| `pca(..., weights="w", weight_type="fweight")` | Nonnegative integer frequency weights, weighted listwise deletion, zero-weight exclusion, covariance divisor `sum(w)-1`. `n` is weight total; `physical_rows`, `n_missing`, `n_zero_weight` are separate. Resident and replayable Dataset routes use anchored moments without row replication. | No analytic/probability weights; count total must be exactly representable (`<=2**53`). |
+| `pca_matrix(C, n=..., columns=..., matrix=...)` | Explicit covariance/correlation convention and observation count; labelled DataFrame or full square matrix. Symmetry, positive diagonal and PSD are checked. PCA permits singular PSD matrices. | No automatic PSD repair, triangular matrices or inferred training means. |
+| `factor_matrix(C, n=..., ...)` | Same validated summary input; covariance is standardized to correlation, then the existing extraction/rotation path runs without synthetic rows. | EFA methods that need an inverse still reject singular correlation matrices. |
+| `factor(..., method="minres", factors=m)` | Native BFGS minimizes half the off-diagonal residual sum of squares; explicit identified factor count, gradient/convergence diagnostics, principal-axis reporting. Negative uniqueness is reported as a Heywood case. | No automatic retention, hidden uniqueness clamp, loading CI or fabricated ML model test. |
+| `factor(..., scores="anderson_rubin")` | Weights `Psi^-1 L (L'Psi^-1 R Psi^-1 L)^-1/2` give unit score covariance under the sample correlation matrix. Full weights persist. | Orthogonal factors and positive uniqueness required; oblique rotations and deficient score rank refuse. |
+| `factor(..., rotate="target", target=T)` | Full finite target, orthogonal Procrustes. Kaiser normalization weights both loading and target rows by the **loading** row norm. Caller target order/sign is preserved. Target and transformation persist. | No partial/oblique target; rank-deficient cross-product refuses because orientation is not uniquely identified. |
+| `factor(..., rotate="geomin", geomin_epsilon=.01, geomin_oblique=False)` | Positive epsilon, row geometric-mean criterion, analytic gradient, orthogonal/oblique gradient projection, identity start. Converged transformation and Phi persist. | Local stationary solution; no global optimum or multistart claim. |
+| `ca_project(result, profiles, axis="row"/"column")` | Nonnegative profiles with **all** active opposite-axis category columns; reorder by label. Project onto persisted active standard coordinates; no refit or passive contributions. | Zero-total/missing/unseen profiles refuse. Near-zero axes are unidentified; coordinates and squared correlations are undefined; sampling CI is absent. |
+
+Summary scoring needs actual `means=` and (for correlation input) `sds=`.
+Without those inputs, analysis tables still exist but centred/standardized
+scores refuse with `missing_training_moments`. Covariance PCA permits raw
+uncentred projection with `center=False`. No unknown moment is replaced by a
+made-up zero. Saved transforms apply to new observations; missing score rows
+retain their original index. Dataset score results are lazy and check a full
+source digest on replay.
+
+New option geometry is limited to 256 variables and a matrix-iteration work
+estimate of 2 billion (`iterations*p**3`). Supplementary projection accepts
+16,384 profiles per call. Minimum-residual BFGS is additionally limited to 256
+loading parameters, its parameter/matrix work estimate and named inverse-Hessian
+workspace. Named live buffers are admitted before allocation
+under `OPENECON_WORKSPACE_MB`; this excludes caller input, Python result objects
+and BLAS/allocator workspace and is not an RSS guarantee. Compute is CPU
+float64 Torch. Unknown options are refused rather than approximated.
+
+Independent numerical references and invariant checks are in
+`tests/test_multivariate_options.py`. The executable acceptance example is
+`docs/examples/multivariate_options.py`; dated source/frozen/installed evidence
+is separate from licensed vendor comparison. Broader weighting, extraction,
+rotation, discriminant and repeated-measures options stay in MARKET-185.
+
+Method references: [Stata PCA/matrix input](https://www.stata.com/manuals/mvpca.pdf),
+[GPArotation criteria and projection](https://search.r-project.org/CRAN/refmans/GPArotation/html/GPA.html),
+[factor score definitions](https://www.stat.ethz.ch/CRAN/web/packages/EFAtools/refman/EFAtools.html),
+[Stata correspondence analysis](https://www.stata.com/manuals/mvca.pdf).
 
 `oe.pca(data, columns, *, matrix="correlation", components=None, mineigen=None,
 missing="drop")`
@@ -544,21 +636,26 @@ earlier.
 
 ## Limitations
 
-- No weights (frequency or sampling) except the count column of `ca`.
-- Factor analysis works on the correlation matrix of raw data; there is no
-  matrix input, no covariance-matrix factoring, no minimum-residual, alpha or
-  image extraction, no Anderson-Rubin scores and no standard errors of
-  loadings.
-- Rotations: varimax, quartimax, equamax, direct oblimin, promax. Stata's
-  further criteria (geomin, Crawford-Ferguson family, target rotation) are not
-  implemented.
+- Weights are restricted to frequency-weight PCA/EFA/reliability/adequacy/CCA,
+  resident frequency LDA/QDA and the count column of `ca`;
+  analytic/probability weights and weighting other multivariate procedures remain unsupported.
+- EFA supports raw and declared summary input, minres/alpha/image-covariance
+  extraction and Anderson–Rubin scores. SPSS Kaiser generalized image extraction,
+  exact image-component scores and selected/multifactor/rotated loading inference
+  remain unsupported. Only the fixed one-factor PF bootstrap below supplies uncertainty.
+- CF and partial orthogonal/oblique targets extend existing rotations within
+  the rank, anchoring and local convergence domains below. No global optimum
+  or multistart guarantee is supplied for iterative rotations.
 - `alpha` has no pairwise deletion and no automatic sign reversal.
 - k-means minimizes Euclidean within-cluster sums of squares only (no k-medians,
   no other dissimilarities, no running means).
 - Hierarchical clustering is limited by the n-by-n matrix (`max_n`), offers four
   dissimilarities for continuous data and no measures for binary data.
-- `discrim` has no stepwise variable selection (SPSS `/METHOD=WILKS`), no
-  k-nearest-neighbour or logistic discriminant analysis, and classifies QDA
+- `discrim` does not select predictors; the separate `discrim_stepwise` route
+  provides bounded forward/backward/bidirectional Wilks screening with saved
+  classification and explicit post-selection limits. See
+  [selection and general MANOVA/RM contrasts](multivariate-selection-contrasts.md).
+  There is no k-nearest-neighbour or logistic discriminant analysis. QDA classifies
   from the original variables (Stata) rather than from the discriminant
   functions (SPSS `/CLASSIFY=SEPARATE`).
 - `canon` reports no standard errors of the canonical coefficients.
@@ -566,7 +663,8 @@ earlier.
   transformation); no ordinal (nonmetric) transformations, no individual
   differences models.
 - `ca`: simple correspondence analysis of two variables; no supplementary
-  points, no multiple or joint correspondence analysis.
+  refitting; saved supplementary row/column profiles use `ca_project`.
+  Multiple or joint correspondence analysis remains unsupported.
 - Parity with Stata or SPSS output has not been measured against those
   programs; the oracles are independent implementations (see below).
 

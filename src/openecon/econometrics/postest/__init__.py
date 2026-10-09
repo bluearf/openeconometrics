@@ -21,6 +21,11 @@ ESTIMATORS: tuple[EstimatorInfo, ...] = ()
 
 # Extra public functions exported as oe.<name>: {"name": "package.module:function"}.
 EXPORTS: dict[str, str] = {
+    "trajectory_bands": "openecon.econometrics.postest.trajectories:trajectory_bands",
+    "summary_state": "openecon.econometrics.summary_state:summary_state",
+    "restore_summary": "openecon.econometrics.summary_state:restore_summary",
+    "wild_cluster_test": "openecon.econometrics.postest.wild_restricted:wild_cluster_test",
+    "wild_cluster_confidence_set": "openecon.econometrics.postest.wild_restricted:wild_cluster_confidence_set",
     "export_group_state": "openecon.econometrics.postest.group_state:export_group_state",
     "lrtest": "openecon.econometrics.postest.likelihood:lrtest",
     "estat_ic": "openecon.econometrics.postest.likelihood:estat_ic",
@@ -29,4 +34,18 @@ EXPORTS: dict[str, str] = {
     "suest": "openecon.econometrics.postest.suest:suest",
     "fcast_eval": "openecon.econometrics.postest.forecast_eval:fcast_eval",
     "dm_test": "openecon.econometrics.postest.forecast_eval:dm_test",
+    "multipletests": "openecon.econometrics.postest.multiple:multipletests",
+    "stepdown": "openecon.econometrics.postest.multiple:stepdown",
+    "simultaneous_ci": "openecon.econometrics.postest.multiple:simultaneous_ci",
+    "simultaneous_t_ci": "openecon.econometrics.postest.finite_sample:simultaneous_t_ci",
+    "ols_stepdown": "openecon.econometrics.postest.finite_sample:ols_stepdown",
+    "hotelling_region": "openecon.econometrics.postest.finite_sample:hotelling_region",
+    "mean_sign_stepdown": "openecon.econometrics.postest.randomization_joint:mean_sign_stepdown",
+    "mean_permutation_stepdown": "openecon.econometrics.postest.randomization_joint:mean_permutation_stepdown",
+    "simultaneous_dkw_band": "openecon.econometrics.postest.distribution_free_joint:simultaneous_dkw_band",
+    "simultaneous_quantile_ci": "openecon.econometrics.postest.distribution_free_joint:simultaneous_quantile_ci",
+    "simultaneous_proportion_ci": "openecon.econometrics.postest.distribution_free_joint:simultaneous_proportion_ci",
+    "multinomial_region": "openecon.econometrics.postest.distribution_free_joint:multinomial_region",
+    "hoeffding_mean_ci": "openecon.econometrics.postest.bounded_joint:hoeffding_mean_ci",
+    "empirical_bernstein_mean_ci": "openecon.econometrics.postest.bounded_joint:empirical_bernstein_mean_ci",
 }

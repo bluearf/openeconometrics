@@ -4,6 +4,10 @@
 `oe.spatial_impacts` are lazy public APIs. The four estimators also dispatch from
 `oe.fit(ModelSpec(...), data=table)` and persist as ordinary `ResultBundle`s.
 
+Saved OLS model-residual diagnostics are documented separately in
+[spatial diagnostics](spatial-diagnostics.md). Their fixed-design Gaussian
+null differs from raw-variable Moran randomization.
+
 ```python
 import openecon as oe
 
@@ -139,7 +143,7 @@ asymmetric W and isolates, to validate randomization expectation/variance; NumPy
 tail calculations check seed, ties, plus-one probabilities and RNG preservation.
 
 Run `scripts/validate_spatial_market124.py` with this checkout on PYTHONPATH to
-regenerate [the receipt](../evidence/market-124-spatial/oracle.json) and coefficient
+regenerate the receipt (internal evidence excluded from this public snapshot) and coefficient
 and impact LaTeX exports. This is source-level CPU evidence, not Stata parity,
 frozen-desktop, deployment, saved-project UI or public-release verification.
 
@@ -154,3 +158,10 @@ frozen-desktop, deployment, saved-project UI or public-release verification.
   and [author-maintained moment implementation](https://github.com/r-spatial/spdep/blob/main/R/moran.R)
   give normality/randomization moment assumptions. Our isolate contract corresponds
   to retaining full N rather than the package's optional `adjust.n` reduction.
+
+## Restored complete-network means
+
+`oe.spatial_predict` evaluates saved SAR/SEM/SAC/SDM ML means on every effective
+fitted graph unit, with full joint parameter and query-mean covariance. It does
+not refit or replace the saved network. See the [saved target extensions](saved-target-extensions.md)
+for formulas, keyed-input contracts, complete JSON persistence and explicit limits.

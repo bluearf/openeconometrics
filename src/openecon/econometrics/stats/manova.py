@@ -235,7 +235,12 @@ def manova(data: Any, y: list[str], factors: list[str] | None = None, *,
                          "outcomes or a singular covariance matrix.")
         else:
             tables["box_m"] = c.frame([list(box.values())], columns=list(box), index=["box_m"])
-    return TableSet(tables, title=f"Multivariate analysis of variance of {', '.join(outcomes)}",
+    result = TableSet(tables, title=f"Multivariate analysis of variance of {', '.join(outcomes)}",
                     n=model.n, n_missing=dropped, df_resid=model.df_error, outcomes=outcomes,
                     terms=[term.name for term in model.terms], ss_type=3, alpha=alpha,
                     notes=notes, coding="sum-to-zero (effect) coding", missing="listwise")
+    from .manova_options import save_model_geometry
+    state = save_model_geometry(model, outcomes, dropped=dropped)
+    result.attrs["manova_contrast_state"] = state
+    result.attrs["manova_contrast_available"] = state is not None
+    return result

@@ -63,12 +63,12 @@ from openecon.engines.distributions import f_sf
 from openecon.models import ModelSpec, ResultBundle
 
 _LINEAR = {"nonrobust", "robust", "cluster"}
-_COVARIANCES = {"fe": _LINEAR | {"driscoll_kraay"}, "pooled": _LINEAR | {"driscoll_kraay"},
+_COVARIANCES = {"cre": _LINEAR, "fe": _LINEAR | {"driscoll_kraay"}, "pooled": _LINEAR | {"driscoll_kraay"},
                 "re": _LINEAR, "be": _LINEAR, "fd": _LINEAR, "mle": {"nonrobust"}}
 _TITLES = {"fe": "Fixed-effects (within) regression", "re": "Random-effects GLS regression",
            "be": "Between regression", "fd": "First-difference regression",
            "pooled": "Pooled OLS regression", "mle": "Random-effects ML regression"}
-_NO_WEIGHTS = {"re": "none", "be": "none",
+_NO_WEIGHTS = {"cre": "none", "re": "none", "be": "none",
                "mle": "iweights only, which OpenEconometrics does not support"}
 
 
@@ -81,6 +81,9 @@ def fit_xtreg(spec: ModelSpec, data: Any) -> ResultBundle:
     if model == "fd":
         return _fit_fd(frame)
     sample = panel_sample(frame, constant_weights=model == "fe")
+    if model == "cre":
+        from openecon.econometrics.panel.mundlak import fit_cre
+        return fit_cre(sample)
     if model == "mle":
         from openecon.econometrics.panel.mle import fit_mle
 
@@ -103,7 +106,7 @@ def _validate(frame: ModelFrame, model: str) -> None:
         raise AnalysisError("invalid_spec", "model='fd' needs a time column to difference "
                             "consecutive periods.")
     for option, owner in (("sa", "re"), ("wls", "be")):
-        if frame.option(option) and model != owner:
+        if frame.option(option) and model != owner and not (option == "sa" and model == "cre"):
             raise AnalysisError("invalid_spec", f"{option}=True applies to model='{owner}' only.")
     if spec.weights is not None and model in _NO_WEIGHTS:
         raise AnalysisError("unsupported_weights",
@@ -402,9 +405,9 @@ def _theta_summary(theta: Tensor) -> dict[str, float]:
             "p95": float(quantiles[2]), "max": float(theta.max())}
 
 
-def _fit_re(sample: PanelSample) -> ResultBundle:
+def _fit_re(sample: PanelSample, design: Design | None = None) -> ResultBundle:
     frame, spec, codes, nobs = sample.frame, sample.spec, sample.codes, sample.nobs
-    design = frame.drop_collinear(frame.design())
+    design = frame.drop_collinear(frame.design() if design is None else design)
     y = frame.numeric(spec.outcome)
     # Centered slopes: the GLS transform of [1, X - m] spans the same space as that of
     # [1, X] (the offset m maps onto the transformed constant 1 - theta_i), so this is an

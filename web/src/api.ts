@@ -1,5 +1,7 @@
 import type { ConsoleState, DatasetProfile, ExecutionRecord } from "./types.ts";
 import type { ResultSharingSnapshot } from "./result-sharing.ts";
+import type { ProjectTransferActions } from "./project-transfers.ts";
+import { saveTextExport, type TextExportReceipt } from "./text-export.ts";
 import {
   documentExtension,
   validFileName,
@@ -155,6 +157,9 @@ export interface WorkspaceClient {
   readonly desktop?: boolean;
   /** Native local runtime tools; its transport never uses the cloud broker. */
   readonly localDesktop?: boolean;
+  readonly transferActions?: ProjectTransferActions;
+  cancelFileDownload?: (fileId: string) => Promise<void>;
+  subscribeFileDownload?: (listener: (file: {id: string; name: string} | null) => void) => () => void;
   readScriptConflict?: (id: string) => Promise<ScriptConflictSnapshot>;
   resolveScriptConflict?: (
     snapshot: ScriptConflictSnapshot,
@@ -400,17 +405,18 @@ export const connect = localClient.connect;
 export const api = localClient.request;
 export { localClient };
 
-export function download(
+export async function download(
   content: string,
   filename: string,
   type = "application/json",
-) {
-  const url = URL.createObjectURL(new Blob([content], { type }));
-  const anchor = document.createElement("a");
-  anchor.href = url;
-  anchor.download = filename;
-  anchor.click();
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+): Promise<TextExportReceipt> {
+  try {
+    return await saveTextExport(content, filename, type);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    window.dispatchEvent(new CustomEvent("openecon-export-error", { detail: message }));
+    return { status: "failed" };
+  }
 }
 
 export async function downloadBundle(resultId: string) {

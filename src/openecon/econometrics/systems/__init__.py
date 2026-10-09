@@ -202,5 +202,11 @@ ESTIMATORS: tuple[EstimatorInfo, ...] = (
 
 # Extra public functions exported as oe.<name>: {"name": "package.module:function"}.
 EXPORTS: dict[str, str] = {
+    "nlsur": "openecon.econometrics.systems.nonlinear_sur:nlsur",
+    "nlsur_restore": "openecon.econometrics.systems.nonlinear_sur:nlsur_restore",
+    "nlsur_predict": "openecon.econometrics.systems.nonlinear_sur_postestimation:nlsur_predict",
+    "nlsur_margins": "openecon.econometrics.systems.nonlinear_sur_postestimation:nlsur_margins",
+    "nlsur_contrast": "openecon.econometrics.systems.nonlinear_sur_postestimation:nlsur_contrast",
+
     "frontier_efficiency": "openecon.econometrics.systems.frontier:frontier_efficiency",
 }

@@ -383,6 +383,8 @@ def _adapter(sample: ReplaySample):
     if not k and name not in {"ologit", "oprobit"}:
         raise AnalysisError("no_parameters", "No identified mean-equation regressor remains.")
     terms, equations = list(mean.terms), [spec.outcome]*k
+    if name in {"glm", "poisson", "cloglog", "fracreg", "cpoisson", "tpoisson", "frontier"}:
+        equations = [None]*k
     transform = mean.transform
     extra: dict[str, Any] = {}
     report_map = None
@@ -520,7 +522,7 @@ def _adapter(sample: ReplaySample):
         start = torch.cat((beta, gamma, torch.tensor(tail, dtype=torch.float64)))
         transform = torch.block_diag(mean.transform, second.transform, torch.eye(ancillary, dtype=torch.float64))
         terms.extend([*second.terms, "/athrho", *(["/lnsigma"] if name == "heckman" else [])])
-        equations.extend([second_y]*q+[None]*ancillary)
+        equations.extend([second_y if name == "biprobit" else "select"]*q+[None]*ancillary)
     elif name == "betareg":
         precision = sample.designs["precision"]
         link, scale_link = make_link(_option(spec, "link")), ScaleLink(_option(spec, "scale_link"))
@@ -1035,7 +1037,7 @@ def _check_final(sample, builder, theta, hessian, *, converged=True):
 def _chart_sample(sample, builder, theta):
     """One fully verified pass; store only400 actual response/latent predictions."""
     name, spec = sample.spec.estimator, sample.spec
-    if name in {"ologit", "oprobit", "mlogit", "hurdle", "churdle", "streg"}:
+    if name in {"ologit", "oprobit", "mlogit", "streg"}:
         return None, None, None
     fitted, observed, remaining = [], [], 400
     k = len(sample.designs["mean"].terms)
@@ -1059,7 +1061,37 @@ def _chart_sample(sample, builder, theta):
             y = batch.numeric(_role(spec, "select")[0])
             definition = "fitted selection probability against selection status"
         elif name == "betareg":
-            pred = obj.fitted(theta)[0]
+            pred = obj.fitted(theta)[1]
+        elif name in {"hurdle", "churdle"}:
+            from .count.kernels import link_pieces
+            q = len(sample.designs["selection"].terms)
+            link = _option(spec, "select_link") if name == "churdle" else _option(spec, "zero_link")
+            probability = link_pieces(link, batch.designs["selection"]@theta[k:k+q], False)[0].exp()
+            index = batch.designs["mean"]@theta[:k]
+            offset = _offset(batch, spec)
+            if offset is not None:
+                index = index+offset
+            if name == "hurdle":
+                mu = index.exp()
+                if _option(spec, "dist") == "nbinomial":
+                    alpha = theta[-1].exp()
+                    zero = (-torch.log1p(alpha*mu)/alpha).exp()
+                else:
+                    zero = (-mu).exp()
+                pred = probability*mu/(1-zero)
+            else:
+                limit, sigma = _option(spec, "ll"), theta[-1].exp()
+                if _option(spec, "model") == "linear":
+                    shift = (index-limit)/sigma
+                    ratio = (-.5*shift.square()-.5*math.log(2*math.pi)-torch.special.log_ndtr(shift)).exp()
+                    conditional = index+sigma*ratio
+                elif limit > 0:
+                    shift = (index-math.log(limit))/sigma
+                    conditional = (index+.5*sigma.square()+torch.special.log_ndtr(shift+sigma)-torch.special.log_ndtr(shift)).exp()
+                else:
+                    conditional = (index+.5*sigma.square()).exp()
+                pred = (1-probability)*limit+probability*conditional
+            definition = "unconditional response mean including hurdle participation"
         elif name in {"tobit", "intreg", "truncreg", "frontier"}:
             pred = batch.designs["mean"]@theta[:k]
             off = _offset(batch, spec)
@@ -1071,10 +1103,11 @@ def _chart_sample(sample, builder, theta):
                 y = torch.where(torch.isneginf(low), high, torch.where(torch.isposinf(high), low, (low+high)/2))
                 definition += "; observed interval midpoint or finite endpoint"
         elif name in {"ivprobit", "ivtobit"}:
-            pred = obj.index(theta)
+            structural, _ = obj.structural(theta)
+            pred = obj.base[:, obj.columns_w]@structural[:obj.kw]
             if name == "ivprobit":
                 pred = torch.special.ndtr(pred)
-            definition = "conditional outcome index including reduced-form residuals"
+            definition = "structural outcome index using observed endogenous regressors"
         else:
             from .count.kernels import link_pieces
             indices = obj.indices(theta)
@@ -1198,6 +1231,17 @@ def fit_streaming(spec: ModelSpec, source: Dataset, *, batch_rows: int | None = 
                 slopes = [i for i, term in enumerate(terms) if not term.endswith("Intercept")]
             use_t = spec.estimator == "tobit"
             df_resid = sample.nobs-len(slopes) if use_t else None
+            reporting_df = df_resid
+            if spec.estimator in {"glm", "poisson", "cloglog", "fracreg", "nbreg", "betareg",
+                                  "cpoisson", "cnbreg", "tpoisson", "tnbreg", "zip", "zinb",
+                                  "gnbreg", "hurdle", "churdle"}:
+                reporting_df = sample.nobs-len(start)
+            if spec.estimator == "nbreg":
+                metrics["df_resid"] = reporting_df
+            if spec.estimator == "frontier":
+                metrics["df_model"] = len(slopes)
+                inference.update(nobs=sample.nobs, inefficiency_distribution=_option(spec, "distribution"),
+                                 frontier="cost" if _option(spec, "cost") else "production")
             if use_t:
                 inference["df_inference"] = df_resid
                 metrics.update({"df_model": len(slopes), "df_resid": df_resid})
@@ -1207,7 +1251,7 @@ def fit_streaming(spec: ModelSpec, source: Dataset, *, batch_rows: int | None = 
             augment(sample, builder, run.theta, terms, params, covariance, metrics, tests, extra)
             result = build_result(frame, terms=terms, params=params, covariance=covariance, equations=equations,
                                   nobs=sample.nobs, metrics=metrics, tests=tests, extra=extra, inference=inference,
-                                  use_t=use_t, df_inference=df_resid, df_resid=df_resid, fitted=fitted, observed=observed, categories=sample.categories,
+                                  use_t=use_t, df_inference=df_resid, df_resid=reporting_df, fitted=fitted, observed=observed, categories=sample.categories,
                                   solver="torch_replayed_fisher_scoring_tsqr" if irls else "torch_replayed_analytic_newton",
                                   solver_diagnostics={**run.diagnostics, "converged": True, "iterations": run.iterations,
                                                       "dense_observation_matrix": False},

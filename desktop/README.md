@@ -1,5 +1,11 @@
 # OpenEconometrics desktop
 
+<!-- BEGIN source-generated capability scope -->
+Current source: **157 registered fit names**, **92 Dataset fit routes**, **74 common saved predict/margins adapters**. The [generated method/option inventory](../docs/capabilities.md) states conditions, exclusions and devices.
+
+Fit routes, common prediction adapters and family-specific helpers/forecasts have separate contracts. Source implementation does not establish independent scientific validation, installed-package verification or public shipment for a method/option. Those require their own dated, source-pinned evidence; historical measurements retain their original scope.
+<!-- END source-generated capability scope -->
+
 Current source scope and versions are recorded in the [generated capability inventory](../docs/capabilities.md). Dated build, client and installation records below retain their original verification scope.
 
 The visible application name is **OpenEconometrics** from desktop 0.3.35.
@@ -33,13 +39,13 @@ econometrics code.
 
 The 0.3.27 Apple Silicon build was installed and verified locally with a fresh
 runtime containing 230 econometrics modules and 80 registered estimators.
-The [release record](../docs/evidence/desktop-0.3.27.json) separates catalogue
+The release record (internal evidence excluded from this public snapshot) separates catalogue
 resolution, seven actual model fits, installed-app checks, saved-file preservation
 and old-cache cleanup.
 
 The 0.3.37 Apple Silicon update adds native sparse Louvain/Leiden communities,
 centrality and topology analysis, static GraphML/GEXF/Pajek interchange and
-community-grouped network charts. The [release record](../docs/evidence/desktop-0.3.37.json)
+community-grouped network charts. The release record (internal evidence excluded from this public snapshot)
 separates source tests, all 373 frozen owned modules, 27 actual packaged network
 operations, saved-output reopen, installer/installed-byte verification and
 preservation of the existing project. New network algorithms use CPU; graph
@@ -72,7 +78,7 @@ The 0.3.7 Apple Silicon installer supports `%uv pip install`, `%uv add`, `%pip
 install` and `oe.install(...)`, including version ranges, extras and requirements
 files. Actual uv resolution and native-wheel installation were verified inside
 the read-only mounted installer without external Python. See
-[0.3.7 release evidence](../docs/evidence/desktop-0.3.7.json).
+0.3.7 release evidence (internal evidence excluded from this public snapshot).
 
 ## Native interface
 
@@ -84,8 +90,9 @@ Use `window.__TAURI__.core.invoke(command, args)` only when
 | `desktop_info` | none | `local_origin`, `data_root`, fixed `cloud_origin`, `version` |
 | `cloud_request` | `method`, `path`, optional `token`, optional JSON `body` | `{status, body}`; HTTP errors preserve status and JSON |
 | `download_project_file` | `projectId`, `fileId`, `token` | `{cloud_id,name,python_path,data_hash,sha256,size_bytes,reused}` |
-| `download_project_files` | `projectId`, `token` | array of cache records; one authenticated listing for all files, bounded to 20 files and 64 MiB total |
-| `upload_project_file` | `projectId`, `token` | native chooser then streaming multipart; cancellation returns status 204 |
+| `download_project_files` | `projectId`, `token` | array of cache records; authenticated listing, at most 20 files / 8 GiB shared bytes; legacy inline files retain a separate 64 MiB budget |
+| `upload_project_file` | `projectId`, `token` | native chooser; negotiated chunked upload or legacy multipart; picker cancellation returns status 204 |
+| `project_transfer_action` | `projectId`, optional `requestId`, `token`, `action` | pending local upload list/status, explicit resume/cancel, or active chunked download cancellation |
 | `open_desktop_login` | `requestId` (32 hex characters) | opens fixed cloud login URL in the system browser |
 
 Transport failures reject with `OPENECON_NETWORK`; file-listing and download
@@ -98,8 +105,12 @@ The broker rejects arbitrary URLs, encoded paths, query strings, redirects and
 every `/console/execute` route. It accepts a narrow membership, draft and data
 API allowlist with a 128 KiB request and 10 MiB response limit. The sole exception
 is the explicitly invoked local-result archive route, limited to 3 MiB of JSON.
-Transfers are
-limited to 24 MiB. Tokens pass directly from Firebase in the webview to Rust;
+The source `chunked-v1` protocol permits CSV/Parquet up to 2 GiB per file in
+4 MiB verified parts, with explicit resumable upload journals and bounded
+download staging. The legacy inline path remains 24 MiB per file / 64 MiB per
+project. New protocol implementation is distinct from live deployment and
+installed two-member cloud acceptance; see [transfer proof boundaries](../docs/team-data-transfers.md).
+Tokens pass directly from Firebase in the webview to Rust;
 they are neither sent to Python nor written to its environment or files.
 
 Downloads obtain metadata from the authenticated project listing, verify its
@@ -169,8 +180,44 @@ Tools, Rust, Python 3.13 and Node.js. It exports exact versions from `uv.lock`
 without modifying the lock and installs that version of the CPU PyTorch wheel
 from the official CPU index. It copies freshly built web assets into the runtime
 and produces an NSIS installer under `src-tauri/target/release/bundle/nsis/`.
-`windows-ci.yml` is a ready GitHub Actions workflow template. The installer
-includes the WebView2 bootstrapper for computers without WebView2.
+The manual `.github/workflows/openecon-desktop.yml` workflow uses a standard
+Windows 2025 x64 runner; `windows-ci.yml` mirrors that workflow. It records the
+exact checked-out commit, component versions, lock/config hashes and runner
+image before building. Git preserves LF source bytes and package metadata is
+written as UTF-8 independently of the Windows locale. Before tests, it preserves
+the raw native producer executable as an acceptance reference. Tauri's locked
+NSIS bundler changes its bundle-type marker from `UNK` to `NSS` while packaging
+and restores the raw executable afterward; installed identity checks reproduce
+only that exact three-byte transformation in memory. Every other native byte
+and the frozen resources must match. The raw reference is verification evidence,
+not a standalone installer.
+
+The workflow tests native boundaries, distribution metadata and worker startup
+with both shell shutdown and input-pipe closure, then installs
+the actual NSIS package into a path containing spaces and Turkish characters.
+`scripts/verify_windows_installation.ps1` exercises the installed resources and
+production executable, real WebView2/native IPC, bundled CPU computations,
+saved-result recovery, charts and project package installation. It uses an
+owned disposable GitHub runner profile and refuses an existing native data
+directory; it is not a general script for a user's existing installation.
+After a successful build, all validation phases run independently so
+one failing phase does not hide later installation failures. Any failed phase
+still fails the job. Installer and source-bound acceptance evidence are
+retained as separate GitHub artifacts for 30 days; require the final run to
+succeed before distributing the installer. A failed validation may retain a
+separately named `Windows-built-unverified` installer for seven days solely for
+diagnosis. A workflow definition alone is not a passing build or installation
+receipt.
+
+The installer embeds the WebView2 bootstrapper, which needs internet access if
+WebView2 is missing. Hosted-runner acceptance uses the runner's provisioned
+WebView2. The package is an unsigned x64 CPU alpha; code signing/SmartScreen
+reputation, Windows ARM, physical CUDA, missing-WebView2 first installation,
+previous-version upgrades and live cloud sign-in/team acceptance are separate
+checks. Reinstalling the same NSIS package verifies data preservation for that
+operation, not compatibility with an older version. The bundled SDK/charts
+versions come from this source commit and need not equal the first pair
+published to PyPI.
 
 ## Verification
 
@@ -187,6 +234,9 @@ to keep one full build cache and avoid accumulating old installers and runtimes.
 The runtime emits one bounded readiness record on stdout:
 `{type:'ready',url:'http://127.0.0.1:PORT',port:PORT,token:LOCAL_TOKEN}`.
 The shell sends `{type:'shutdown'}` over its private stdin pipe when closing.
+On Windows, the runtime keeps that existing stream open but clears its process
+default input handle before starting workers. This prevents worker interpreter
+initialization from querying the shutdown pipe while its reader is waiting.
 
 Implementation references: [Tauri capabilities](https://v2.tauri.app/security/capabilities/),
 [Tauri distribution](https://v2.tauri.app/distribute/),

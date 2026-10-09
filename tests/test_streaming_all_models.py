@@ -186,7 +186,8 @@ def test_capabilities_describe_real_coverage():
     from openecon.econometrics import registry
     metadata = oe.capabilities()["streaming"]
     assert metadata["estimators"][:3] == ["ols", "logit", "probit"]
-    assert len(metadata["estimators"]) == 80
+    from openecon.econometrics.streaming_registry import estimators
+    assert len(metadata["estimators"]) == 3 + len(estimators())
     assert set(metadata["estimators"]) == {entry.name for entry in registry.all_estimators()} - set(oe.capabilities()["eager_only_estimators"])
     assert metadata["row_limit"] is None
     assert "hundred_billion_rows_hardware_validated" not in metadata

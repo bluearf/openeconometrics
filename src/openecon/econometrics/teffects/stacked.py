@@ -132,12 +132,14 @@ def fit_stacked(frame: ModelFrame, method: str) -> ResultBundle:
     indicators = [mask.to(torch.float64) for mask in masks]
 
     fit: TreatmentFit | None = None
+    categories = {}
     xt = None
     t_terms: list[str] = []
     t_means = torch.zeros(0, dtype=torch.float64)
     if method in _TREATMENT_MODEL:
         tx = frame.role("tx") or list(spec.predictors)
         design, t_means = _centred_design(frame, tx, weights, intercept=True)
+        categories.update(design.categories)
         kept = _screen(frame, design, None, w, "TME:")
         xt, t_terms, t_means = design.x[:, kept], [design.terms[i] for i in kept], t_means[kept]
         if frame.n <= xt.shape[1] * (levels - 1):
@@ -153,6 +155,7 @@ def fit_stacked(frame: ModelFrame, method: str) -> ResultBundle:
     equations: list[_Equation] = []
     if method in _OUTCOME_MODEL:
         base, o_means = _centred_design(frame, spec.predictors, weights, intercept=spec.intercept)
+        categories.update(base.categories)
         if base.x.shape[1] == 0:
             raise AnalysisError("invalid_spec", "The outcome model has no terms: give covariates "
                                 "or keep the intercept.")
@@ -194,7 +197,7 @@ def fit_stacked(frame: ModelFrame, method: str) -> ResultBundle:
 
     covariance, info = stacked_covariance(frame, jacobian, scores, weights)
     result = _result(frame, method, treatment, weights, layout, tau, covariance, info, t_terms,
-                     t_means, estimand, omodel, tmodel)
+                     t_means, estimand, omodel, tmodel, categories)
     if estimand == "atet":
         result.extra["target_population"] = {"treatment_level": treatment.labels[target],
                                               "definition": "E[Y(l)-Y(control) | D=tlevel]"}
@@ -294,7 +297,7 @@ def _scores(method: str, layout: _Layout, y: Tensor, indicators: list[Tensor], o
 def _result(frame: ModelFrame, method: str, treatment: Treatment, weights: StudyWeights,
             layout: _Layout, tau: Tensor, covariance: Tensor, info: dict[str, Any],
             t_terms: list[str], t_means: Tensor, estimand: str, omodel: str,
-            tmodel: str) -> ResultBundle:
+            tmodel: str, categories: dict[str, Any]) -> ResultBundle:
     levels = treatment.levels
     pom = covariance[layout.tau:, layout.tau:]
     if estimand == "pomeans":
@@ -366,7 +369,7 @@ def _result(frame: ModelFrame, method: str, treatment: Treatment, weights: Study
         frame, terms=terms, params=params, covariance=reported, equations=equations,
         title=f"Treatment-effects estimation: {text}", use_t=False, metrics=metrics,
         solver="stacked_estimating_equations", inference=info, extra=extra,
-        nobs=weights.nobs, categories=None,
+        nobs=weights.nobs, categories=categories,
         provenance={"method": method, "estimand": estimand, "outcome_model": extra["outcome_model"],
                     "treatment_model": extra["treatment_model"],
                     "parameters_in_stacked_system": layout.size},

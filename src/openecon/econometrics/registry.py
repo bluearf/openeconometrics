@@ -20,12 +20,12 @@ from typing import Any, Callable
 
 # Family packages, in the order their estimators are listed to users.
 FAMILIES: tuple[str, ...] = (
-    "linear", "panel", "iv", "glm", "discrete", "limited", "count", "quantile",
-    "arima", "arch", "var", "unitroot", "tsmodels",
-    "stats", "nonparametric", "multivariate", "selection",
-    "survival", "dpanel", "teffects", "mixed", "systems", "postest",
-    "spatial", "regularized", "tsworkflows", "mgarch", "robust",
-    "longrun", "panel_ardl", "structural", "decomposition",
+    'linear', 'panel', 'iv', 'glm', 'discrete', 'limited', 'count',
+    'quantile', 'arima', 'arch', 'var', 'unitroot', 'tsmodels', 'stats',
+    'nonparametric', 'multivariate', 'selection', 'survival', 'dpanel', 'teffects', 'mixed',
+    'systems', 'postest', 'spatial', 'regularized', 'tsworkflows', 'mgarch', 'robust',
+    'longrun', 'panel_ardl', 'structural', 'decomposition', 'meta', 'fractional', 'smoothing',
+    'irt', 'categorical', 'causal', 'survey', 'measurement', 'temporal', 'conjoint', 'mi', 'causal_design', 'survival_ext', 'finite', 'conditional', 'twostep', 'control_function',
 )
 
 WEIGHT_TYPES = ("aweight", "fweight", "pweight", "iweight")
@@ -209,6 +209,23 @@ def forecasters() -> dict[str, tuple[str, str]]:
         for name, target in getattr(import_module(f"openecon.econometrics.{family}"), "FORECAST", {}).items():
             table[name] = tuple(target.split(":"))
     return table
+
+
+def auxiliary_exports() -> dict[str, dict[str, str]]:
+    """Manifest helper registrations, separate from fit/prediction coverage.
+
+    This loads only the same Torch-free manifests as public_exports. A registered
+    helper has its own method/option and evidence contract; no estimation,
+    numerical validation or installed/public shipment is inferred from presence.
+    """
+    result = {}
+    for family in FAMILIES:
+        manifest = import_module(f"openecon.econometrics.{family}")
+        for name, target in getattr(manifest, "EXPORTS", {}).items():
+            if name in result:
+                raise RuntimeError(f"Auxiliary function '{name}' is exported twice.")
+            result[name] = {"family": family, "entry": target}
+    return result
 
 
 def _is_number(value: Any) -> bool:

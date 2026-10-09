@@ -30,6 +30,13 @@ matrices, and no N-by-N matrix is ever formed. Timings are at the end.
 
 ## `mixed`: linear mixed models
 
+Saved numeric unweighted model-based ML/REML fits also support
+`mixed_satterthwaite` for explicit scalar fixed contrasts. The
+[inference guide](next-eight-inference-stability.md) defines the approximate
+df calculation, matched original data, complete variance information and
+resource bounds. It does not change the base fit's asymptotic z reporting or
+add Kenward–Roger/joint multi-df inference.
+
 ### Model
 
 With one grouping level, group `j` with `n_j` observations follows

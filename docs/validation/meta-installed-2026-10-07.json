@@ -1,0 +1,94 @@
+{
+  "status": "passed",
+  "project_id": "04f53f6657864800846402b30b191c9d",
+  "script_id": "0e0744f78492490993eb4f2c334a37bd",
+  "installed_app": "/Users/anilsen/Applications/OpenEconometrics Meta QA.app",
+  "runtime_sha256": "62a768b82cf16ca78d52ffab174f08460aab9d885741c5082c5db06307034012",
+  "compiled_modules_equal_source": {
+    "openecon.econometrics.meta": "eecc9abaa4036b96aac53e54fee0e7df62d4d81fe19dc3e34b74054febe5e9f2",
+    "openecon.econometrics.meta.common": "03b7f98f1aa27670e86c82b63b6dbac78ac7f8f8027540f91eb45d01824cb200",
+    "openecon.econometrics.meta.effects": "ecef30df350d1ba65bdd04003c461acbac3a4549aeb1a65408b02ed9919b4b5c",
+    "openecon.econometrics.meta.models": "c21001701f524cbf072d5848025f6d639dfb61c4f07896268c39382ad5372a41",
+    "openecon.econometrics.meta.kernels": "127d9a1f03a4f1088ffe0b10c6bac83baef1ca4f35550b6df25160dff91e0c33",
+    "openecon.econometrics.meta.diagnostics": "8a72358e27701af612cd0979652ce51f9554d05e7efaeff8bc311b9dfdfe5975",
+    "openecon.econometrics.registry": "df37d01baa490969eeda51fdcbd422389b8d27775bbcf06f99fe4f3799b95b22",
+    "openecon.analysis_contracts": "56861f58fc3c06f7adef77d87ac9d77eb6145c1168ce0d367a6b6c7cad5fef6d",
+    "openecon_charts.charts": "a3ef7bb9454e3c66b546d551730de199f0e3d68872fe84e188fd9183e346ee33",
+    "openecon_charts.annotations": "7a6eadce1283b3ac99cd58f45b30ddd7023f2b93bc6cea47c8b4eaeced540ecb",
+    "openecon_charts.latex": "92ed2768191e4c37ef92a536ddecef7fb73626e6ede869a5c7a8ff7e71e7fb6f",
+    "openecon_charts/assets/renderer.js": "146b5e39f2eb48c7b003b82d844925a65f5b320c07add31506b23154f33b6bb8",
+    "openecon_charts/assets/charts.css": "63e813ed53d34238cd83955221d3cc67d961d7d3e047d1d27013361dbd98858a"
+  },
+  "example_sha256": "0c26731969d981f80b9f76f16ec34af0fa6e1d6d9f21c88c022c62672a42fb0d",
+  "verifier_sha256": "c67ef0b10fc99f3d321cf85336426322ae104f0422d50aa37b00d8031e6a259e",
+  "primary_app_untouched": true,
+  "human_project_untouched": true,
+  "release_delivered": false,
+  "native_run_and_rendered_tables_observed": true,
+  "execution_id": "902986bd-7d11-4398-ac60-8aa503768b54",
+  "execution_sha256": "de4a8733cf7eb7821a2b7b4be953e00e24394033ec3abf725a0299f8dba6fbc6",
+  "complete_result_hashes": {
+    "effects": "01f43eca0e446a6b00ad37443691fdbb6f5ecf01ae1685e47530f0a11450b0af",
+    "pool": "d864f397f29fde29a99a1a1b3b0135f70e9401dc8a5f85283953014444fae519",
+    "regression": "faf16f8cd4cc63a9e515d62318a268fdc98475dc276880171b7faad8e8951463",
+    "prediction": "4212bda9e57bde9442ae0925c97273f5890380bb976ce1527bf8dab57dc13b97",
+    "diagnostics": "28d8f36043460927da26253203e7e635961c375b70a57ac679ce93017010d201",
+    "plots": "80b71b0b5dc9f0e9967abab9ec84cfff46edf04527d2ce4b7468e9fbcb3cd497"
+  },
+  "proof": {
+    "methods": [
+      "meta_effectsize",
+      "meta_pool",
+      "meta_regress",
+      "meta_predict",
+      "meta_diagnostics",
+      "meta_plot"
+    ],
+    "study_count": 13,
+    "table_outputs": 18,
+    "saved_tables": 19,
+    "plot_outputs": 2,
+    "complete_covariance": [
+      3,
+      3
+    ],
+    "pooled_effect": -0.7145323421582296,
+    "tau2": 0.3132432581374712,
+    "counts": {
+      "leave_one_out": {
+        "planned": 13,
+        "completed": 13,
+        "failed": 0
+      },
+      "cumulative": {
+        "planned": 13,
+        "completed": 12,
+        "failed": 1
+      },
+      "subgroups": {
+        "planned": 3,
+        "completed": 3,
+        "failed": 0
+      }
+    },
+    "publication_latex": true,
+    "metadata_json_roundtrip": true,
+    "full_results_sha256": {
+      "effects": "01f43eca0e446a6b00ad37443691fdbb6f5ecf01ae1685e47530f0a11450b0af",
+      "prediction": "4212bda9e57bde9442ae0925c97273f5890380bb976ce1527bf8dab57dc13b97",
+      "pool": "d864f397f29fde29a99a1a1b3b0135f70e9401dc8a5f85283953014444fae519",
+      "regression": "faf16f8cd4cc63a9e515d62318a268fdc98475dc276880171b7faad8e8951463",
+      "diagnostics": "28d8f36043460927da26253203e7e635961c375b70a57ac679ce93017010d201",
+      "plots": "80b71b0b5dc9f0e9967abab9ec84cfff46edf04527d2ce4b7468e9fbcb3cd497"
+    }
+  },
+  "ordered_table_outputs": 18,
+  "complete_saved_tables": 19,
+  "ordered_plot_outputs": 2,
+  "publication_latex": true,
+  "saved_source_matches_example": true,
+  "console_duration_ms": 3112.27,
+  "app_restart_readback_unchanged": true,
+  "reopened_previous_session_visible": true,
+  "forest_pooled_row_and_funnel_segments_observed": true
+}

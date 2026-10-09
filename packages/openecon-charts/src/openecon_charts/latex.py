@@ -169,6 +169,13 @@ def _axis_annotation_layers(plot, xlim, ylim) -> tuple[list[str], list[str]]:
                            + coord(*a) + " rectangle " + coord(*b) + ";", r"\end{scope}"])
             label_anchor = coord((first + last) / 2 if axis == "x" else .5,
                                  (first + last) / 2 if axis == "y" else .5)
+        elif kind == "segment":
+            a = (fraction(item["x0"], "x"), fraction(item["y0"], "y"))
+            b = (fraction(item["x1"], "x"), fraction(item["y1"], "y"))
+            front.extend([header, r"\begin{scope}[overlay]", clip,
+                          f"\\draw[{_annotation_line_style(item, i)}] " + coord(*a) + " -- " + coord(*b) + ";",
+                          r"\end{scope}"])
+            continue
         elif kind in {"vline", "hline"}:
             axis = "x" if kind == "vline" else "y"
             position = fraction(item[axis], axis)

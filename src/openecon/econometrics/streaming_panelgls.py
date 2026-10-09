@@ -529,7 +529,7 @@ def _fit(spec, source, *, batch_rows):
             elif panel.groups<=200:
                 extra["sigma"] = ([row[0]*scale*scale for row in panel.db.execute("SELECT var FROM groups ORDER BY id")] if panels_kind=="heteroskedastic" else (structure*scale*scale).tolist())
             correction = "GLS covariance from globally whitened TSQR; group variances or contemporaneous Sigma, original units"
-        info = {"covariance": spec.covariance, "df_inference": None, "df_resid": None, "correction": correction}
+        info = {"covariance": spec.covariance, "df_inference": None, "df_resid": None, "correction": correction, "nobs": n}
         panel.verify()
         return _result(sample, terms=design.terms, beta=raw_beta, covariance=raw_cov, info=info, metrics=metrics, notes=notes,
                predictions=predictions, tests=tests, solver="native_panel_GLS_PCSE_ordered_disk_replay", diagnostics={"converged": converged, "iterations": iterations,

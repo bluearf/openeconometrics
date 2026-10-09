@@ -201,7 +201,7 @@ results retained their model tests, metadata, D3 charts, LaTeX and event order;
 malformed models returned 422 and viewer writes returned 403. Configuration,
 IAM and the remote compute image remained unchanged. Cleanup readback found no
 remaining fixture resources. Release evidence is recorded in
-[OLS and Mac 0.3.6 verification](evidence/ols-0.3.6.json).
+OLS and Mac 0.3.6 verification (internal evidence excluded from this public snapshot).
 
 This is not a claim of complete Stata numerical parity. Complex survey designs,
 Bayesian/MI/prefix machinery, absorbed high-dimensional fixed effects and

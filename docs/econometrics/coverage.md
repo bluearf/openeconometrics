@@ -1,9 +1,18 @@
 # Coverage matrix: Stata, SPSS and EViews procedures in OpenEconometrics
 
+<!-- BEGIN source-generated capability scope -->
+Current source: **157 registered fit names**, **92 Dataset fit routes**, **74 common saved predict/margins adapters**. The [generated method/option inventory](../capabilities.md) states conditions, exclusions and devices.
+
+Fit routes, common prediction adapters and family-specific helpers/forecasts have separate contracts. Source implementation does not establish independent scientific validation, installed-package verification or public shipment for a method/option. Those require their own dated, source-pinned evidence; historical measurements retain their original scope.
+<!-- END source-generated capability scope -->
+
 Implemented estimators run in OpenEconometrics itself on float64 PyTorch tensors; no
-third-party estimation library runs at fit time. Status: **done** (implemented,
-independently verified, documented), **partial**, **in progress**, **planned**. Each family
-has its own guide under `docs/econometrics/`. The [source-generated current inventory](../capabilities.md) supplies versioned estimator/Dataset/prediction counts, exact option records and device contracts; the hand-written family rows below describe bounded method domains.
+third-party estimation library runs at fit time. In this historical family
+overview, **done** denotes implementation of the stated domain, **partial**
+denotes explicitly excluded options, and **in progress** / **planned** denote
+remaining work. These labels do not establish independent scientific, installed
+or public-release coverage. Each family has a guide under `docs/econometrics/`;
+any validation claim belongs to its identified method, options and dated receipt. The [source-generated current inventory](../capabilities.md) supplies versioned estimator/Dataset/prediction counts, exact option records and device contracts; the hand-written family rows below describe bounded method domains.
 
 Parity notes: `provenance["stata_parity_validated"]` stays `False` until a
 result has been compared with real Stata/SPSS/EViews output. Conventions
@@ -110,7 +119,7 @@ each family guide.
 | `oe.discrim` LDA / QDA, `oe.canon`, `oe.mds`, `oe.ca` | `discrim`, `canon`, `mds`, `ca` | DISCRIMINANT, CANCORR, PROXSCAL, CORRESPONDENCE | — | done |
 | `oe.stepwise` (forward/backward/stepwise), `oe.collin` (VIF, condition indices), `oe.curvefit`, `oe.tabstat` | `stepwise`, `estat vif`, `tabstat` | REGRESSION (STEPWISE, COLLIN), CURVEFIT, MEANS | — | done |
 
-## Wave 6 — post-estimation shared by every model
+## Wave 6 — shared post-estimation for supported result targets
 
 | OpenEconometrics | Stata | Status |
 | --- | --- | --- |

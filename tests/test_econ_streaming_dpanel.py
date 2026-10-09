@@ -74,6 +74,16 @@ def compare(current, frame, rows=17):
     assert actual.sample_positions == []
     assert actual.provenance["sample_position_count"] == actual.nobs
     assert actual.provenance["streaming"]["maximum_batch_rows"] <= rows
+    reference = {row["row"]: row for row in expected.predictions}
+    compared = 0
+    for prediction in actual.predictions:
+        assert prediction["fitted"] == prediction["predicted"]
+        if prediction["row"] in reference:
+            compared += 1
+            for key in ("observed", "fitted", "residual"):
+                assert prediction[key] == pytest.approx(reference[prediction["row"]][key],
+                                                        rel=2e-8, abs=2e-10)
+    assert compared > 0
     saved = ResultBundle.model_validate_json(actual.model_dump_json())
     assert saved.coefficients == actual.coefficients
     assert r"\begin{tabular}" in saved.to_latex()

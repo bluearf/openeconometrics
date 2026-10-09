@@ -7,11 +7,12 @@ import re
 import unicodedata
 
 _COLOR = re.compile(r"#[0-9a-fA-F]{3}(?:[0-9a-fA-F]{3})?\Z")
-_TYPES = {"text", "arrow", "vline", "hline", "vspan", "hspan"}
+_TYPES = {"text", "arrow", "vline", "hline", "vspan", "hspan", "segment"}
 _TEXT_STYLE = {"font_size", "align", "dx", "dy"}
 _LINE_STYLE = {"line_width", "dash"}
 _POSITIONS = {"text": {"x", "y"}, "arrow": {"x", "y"}, "vline": {"x"},
-              "hline": {"y"}, "vspan": {"x0", "x1"}, "hspan": {"y0", "y1"}}
+              "hline": {"y"}, "vspan": {"x0", "x1"}, "hspan": {"y0", "y1"},
+              "segment": {"x0", "y0", "x1", "y1"}}
 
 
 def _number(value, name: str, *, lower=None, upper=None) -> float:
@@ -58,14 +59,14 @@ def normalize_annotations(plot, annotations, options: dict) -> list[dict]:
             raise TypeError("Each annotation must be a dictionary.")
         kind = entry.get("type")
         if not isinstance(kind, str) or kind not in _TYPES:
-            raise ValueError("Annotation type must be text, arrow, vline, hline, vspan, or hspan.")
+            raise ValueError("Annotation type must be text, arrow, vline, hline, vspan, hspan, or segment.")
         has_text = "text" in entry
         if kind in {"text", "arrow"} and not has_text:
             raise ValueError("Text and arrow annotations require text.")
         allowed = {"type", "coords", "color", "opacity", "text", *_POSITIONS[kind]}
         if has_text:
             allowed |= _TEXT_STYLE
-        if kind in {"arrow", "vline", "hline"}:
+        if kind in {"arrow", "vline", "hline", "segment"}:
             allowed |= _LINE_STYLE
         if set(entry) - allowed:
             unknown = sorted(set(entry) - allowed, key=str)[0]
@@ -89,7 +90,7 @@ def normalize_annotations(plot, annotations, options: dict) -> list[dict]:
                 item[name] = _number(value, name)
                 if options.get(axis + "_scale") == "log" and item[name] <= 0:
                     raise ValueError("Annotation coordinates on a log axis must be strictly positive.")
-            elif kind in {"vline", "hline", "vspan", "hspan"}:
+            elif kind in {"vline", "hline", "vspan", "hspan", "segment"}:
                 raise ValueError(f"Annotation {kind} requires a numeric {axis} axis.")
             elif not isinstance(value, str) or value not in _category(plot, axis):
                 raise ValueError(f"Annotation {axis} must exactly match an existing category or coefficient term.")
@@ -116,7 +117,7 @@ def normalize_annotations(plot, annotations, options: dict) -> list[dict]:
             item["align"] = align
             for name, default in (("dx", 12 if kind == "arrow" else 0), ("dy", -12 if kind == "arrow" else 0)):
                 item[name] = _number(entry.get(name, default), name, lower=-500, upper=500)
-        if kind in {"arrow", "vline", "hline"}:
+        if kind in {"arrow", "vline", "hline", "segment"}:
             item["line_width"] = _number(entry.get("line_width", 1.5), "line_width", lower=.25, upper=12)
             dash = entry.get("dash", "solid" if kind == "arrow" else "dashed")
             if not isinstance(dash, str) or dash not in {"solid", "dashed", "dotted"}:

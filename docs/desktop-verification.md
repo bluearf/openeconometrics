@@ -11,7 +11,7 @@ tracks first launch, reopen, authenticated loading, bundled CPU computation and
 update/rollback. Historical minimum-OS labels below are recorded metadata, not
 a retrospective audit of every dependency; the current finalizer performs that
 audit before creating a DMG.
-The current [0.3.33 local installation record](evidence/desktop-0.3.33.json)
+The current 0.3.33 local installation record (internal evidence excluded from this public snapshot)
 documents complete native Dataset option families, exact frozen-source
 fingerprints, 30 actual bundled-worker fits and saved-output restart,
 installed Mac application and preserved project files. The older artifact

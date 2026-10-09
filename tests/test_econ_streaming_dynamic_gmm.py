@@ -88,6 +88,17 @@ def compare(current, frame, rows=13):
     assert actual.provenance["streaming"]["maximum_batch_rows"] <= max(
         rows, frame.groupby("id").size().max()
     )
+    reference = {row["row"]: row for row in expected.predictions}
+    compared = 0
+    assert len(actual.predictions) == len({row["row"] for row in actual.predictions})
+    for prediction in actual.predictions:
+        assert prediction["fitted"] == prediction["predicted"]
+        if prediction["row"] in reference:
+            compared += 1
+            for key in ("observed", "fitted", "residual"):
+                assert prediction[key] == pytest.approx(reference[prediction["row"]][key],
+                                                        rel=2e-6, abs=2e-8)
+    assert compared > 0
     saved = ResultBundle.model_validate_json(actual.model_dump_json())
     assert saved.coefficients == actual.coefficients
     assert r"\begin{tabular}" in saved.to_latex()

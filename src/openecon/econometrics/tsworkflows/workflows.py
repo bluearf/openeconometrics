@@ -246,25 +246,86 @@ def rolling(
     max_fits=100,
     on_error="raise",
     exog=None,
+    reverse=False,
+    calendar=None,
+    reverse_recursive=False,
+    selection=None,
+    evaluate=False,
 ):
-    """Refit an existing ModelSpec using only rows through each recorded origin.
+    """Refit an existing ModelSpec over explicit regular-calendar windows.
 
     ``window`` is minimum training size; expanding=True retains the first row.
     Optional forecasts call the existing family handler. Future regressors must
     be supplied separately in ``exog`` keyed by integer origin (never read from
     the future estimation table). Failures are either raised or explicit records.
+    Reverse windows traverse fixed windows backward or expand anchored suffixes;
+    these are retrospective and reject forward forecasting/evaluation. Bounded
+    ARIMA selection is rerun on each training window. evaluate=True records
+    observed future outcomes only after fitting and forecasting, with physical
+    target positions and per-horizon errors. Panel calendars use rolling_panel.
     """
-    if not isinstance(spec, ModelSpec) or not isinstance(expanding, bool):
+    if not isinstance(spec, ModelSpec) or any(
+        not isinstance(flag, bool) for flag in (expanding, reverse, evaluate)
+    ):
         raise AnalysisError("invalid_spec", "rolling needs ModelSpec and a boolean expanding flag.")
+    if reverse and (forecast_steps or evaluate):
+        raise AnalysisError(
+            "unsupported_target",
+            "Reverse windows are retrospective; forward forecast/evaluation is not available.",
+        )
+    if evaluate and (not forecast_steps or spec.estimator not in {"arima", "ets", "ucm", "sspace"}):
+        raise AnalysisError(
+            "unsupported_target",
+            "Evaluation needs forward forecasts of one arima/ets/ucm/sspace response.",
+        )
+    if selection is not None:
+        allowed = {
+            "d",
+            "seasonal_d",
+            "period",
+            "max_p",
+            "max_q",
+            "max_P",
+            "max_Q",
+            "max_d",
+            "criterion",
+            "constant",
+            "max_candidates",
+            "max_iterations",
+            "tolerance",
+        }
+        if spec.estimator == "ets":
+            allowed = {"models", "period", "criterion", "candidate_options", "max_candidates", "max_work", "max_iterations", "tolerance"}
+        if spec.estimator not in {"arima", "ets"} or not isinstance(selection, dict) or set(selection) - allowed:
+            raise AnalysisError(
+                "invalid_option",
+                "selection must contain bounded auto_arima or auto_ets options for the matching ARIMA/ETS spec.",
+            )
+    if not isinstance(reverse_recursive, bool) or calendar is not None and not isinstance(calendar, bool):
+        raise AnalysisError("invalid_option", "calendar and reverse_recursive need boolean values.")
+    if isinstance(spec, ModelSpec) and (spec.panel or calendar is not None or reverse_recursive):
+        if selection is not None or evaluate:
+            raise AnalysisError("unsupported_target", "Calendar/panel/reverse-recursive analysis does not accept ARIMA selection or forecast evaluation; use the original scalar workflow.")
+        from .window_targets import advanced_rolling
+        return advanced_rolling(
+            spec, data=data, window=window, step=step, expanding=expanding,
+            reverse=reverse or reverse_recursive,
+            calendar=bool(spec.panel) if calendar is None else calendar,
+            forecast_steps=forecast_steps, max_fits=max_fits, on_error=on_error, exog=exog,
+        )
     extra_columns = []
     common_spec = spec
-    if spec.estimator == "midas":
+    if spec.estimator in {"midas", "umidas"}:
         from openecon.econometrics.tsworkflows.midas import _alignment
         from openecon.analysis import _coerce_frame
         from openecon.econometrics.registry import role_columns
 
         aligned = _coerce_frame(data)
-        _alignment(spec.options["alignment"], aligned, role_columns(spec, "lags"))
+        if spec.estimator == "umidas":
+            from openecon.econometrics.tsworkflows.umidas import bound_alignment
+            bound_alignment(spec.options["alignment"], aligned, role_columns(spec, "lags"))
+        else:
+            _alignment(spec.options["alignment"], aligned, role_columns(spec, "lags"))
         extra_columns = spec.options["alignment"]["binding_columns"]
         if spec.time is None:
             common_spec = ModelSpec.model_validate(
@@ -283,21 +344,29 @@ def rolling(
     max_fits = _integer(max_fits, "max_fits", 1, 1000)
     if on_error not in {"raise", "record"}:
         raise AnalysisError("invalid_option", "on_error must be raise or record.")
-    stops = list(range(window, common.n + 1, step))
-    if len(stops) > max_fits:
+    windows = (
+        [
+            (start, common.n if expanding else start + window)
+            for start in range(common.n - window, -1, -step)
+        ]
+        if reverse
+        else [
+            (0 if expanding else stop - window, stop) for stop in range(window, common.n + 1, step)
+        ]
+    )
+    if len(windows) > max_fits:
         raise AnalysisError(
-            "search_budget", f"Rolling requires {len(stops)} fits; increase max_fits explicitly."
+            "search_budget", f"Rolling requires {len(windows)} fits; increase max_fits explicitly."
         )
     common.workspace_plan(
-        "rolling summaries", {"results": len(stops) * (16384 + forecast_steps * 128)}
+        "rolling summaries", {"results": len(windows) * (16384 + forecast_steps * 128)}
     )
-    estimates, forecasts, history = [], [], []
-    for stop in stops:
-        start = 0 if expanding else stop - window
-        origin = stop - 1
+    estimates, forecasts, history, evaluation = [], [], [], []
+    for start, stop in windows:
+        origin = start if reverse else stop - 1
         rows = common.sample.iloc[start:stop].copy()
         window_spec = spec
-        if spec.estimator == "midas":
+        if spec.estimator in {"midas", "umidas"}:
             from openecon.econometrics.tsworkflows.midas import _hash
 
             positions = common.positions[start:stop]
@@ -321,7 +390,27 @@ def rolling(
             "status": "ok",
         }
         try:
-            result = fit(window_spec, data=rows)
+            if selection is not None and spec.estimator == "ets":
+                from openecon.econometrics.tsworkflows.selection import auto_ets
+
+                ets_selection = {"period": spec.options.get("period", 2), **selection}
+                result = auto_ets(data=rows, y=spec.outcome, time=spec.time,
+                                  missing="raise", alpha=spec.alpha, **ets_selection)
+            else:
+                result = (
+                    fit(window_spec, data=rows)
+                    if selection is None
+                    else auto_arima(
+                        data=rows,
+                        y=spec.outcome,
+                        x=spec.predictors,
+                        time=spec.time,
+                        covariance=spec.covariance,
+                        missing="raise",
+                        alpha=spec.alpha,
+                        **selection,
+                    )
+                )
             record.update(
                 nobs=result.nobs,
                 sample_positions=[common.positions[start + i] for i in result.sample_positions],
@@ -332,6 +421,7 @@ def rolling(
                 inference=result.inference,
                 metrics=result.metrics,
                 spec=result.spec.model_dump(mode="json"),
+                auto_selection=result.extra.get("auto_selection"),
             )
             if result.extra.get("target") == "prediction":
                 raise AnalysisError(
@@ -352,22 +442,59 @@ def rolling(
             if forecast_steps:
                 options = {} if exog is None or origin not in exog else {"exog": exog[origin]}
                 future = forecast(result, forecast_steps, **options)
-                for row in future.to_dict("records"):
+                future_rows = future.to_dict("records")
+                if evaluate and len(future_rows) != forecast_steps:
+                    raise AnalysisError(
+                        "unsupported_target",
+                        "Evaluation requires exactly one forecast per horizon.",
+                    )
+                for horizon, row in enumerate(future_rows, 1):
                     forecasts.append({"origin": origin, **row})
+                    if evaluate and stop + horizon - 1 < common.n:
+                        predicted = row.get("mean", row.get("forecast"))
+                        if predicted is None:
+                            raise AnalysisError(
+                                "unsupported_target",
+                                "Forecast output needs a mean or forecast column.",
+                            )
+                        observed = float(common.sample[spec.outcome].iloc[stop + horizon - 1])
+                        error = observed - float(predicted)
+                        evaluation.append(
+                            {
+                                "origin": origin,
+                                "horizon": horizon,
+                                "target_position": common.positions[stop + horizon - 1],
+                                "observed": observed,
+                                "forecast": float(predicted),
+                                "error": error,
+                                "squared_error": error**2,
+                                "absolute_error": abs(error),
+                            }
+                        )
         except AnalysisError as exc:
             if on_error == "raise":
                 raise
             record.update(status="failed", error_code=exc.code, error=str(exc))
         history.append(record)
     return TableSet(
-        {"coefficients": table(estimates), "forecasts": table(forecasts)},
+        {
+            "coefficients": table(estimates),
+            "forecasts": table(forecasts),
+            "evaluation": table(evaluation),
+        },
         title="Recursive refits" if expanding else "Rolling refits",
         spec=spec.model_dump(mode="json"),
         window=window,
         step=step,
         expanding=expanding,
+        reverse=reverse,
+        selection=selection,
         origins=history,
-        lookahead="estimation ends at origin; supplied future exog is explicitly conditional",
+        lookahead=(
+            "retrospective reverse windows; no forward evaluation"
+            if reverse
+            else "estimation and differencing/order selection end at origin; future outcomes only enter scoring; supplied future exog is explicitly conditional"
+        ),
         sample_positions=common.positions,
     )
 

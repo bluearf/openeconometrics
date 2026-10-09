@@ -1,0 +1,53 @@
+.account-linking {
+  max-width: 32rem;
+  color: #17273b;
+}
+.account-linking h3 {
+  font-size: 0.94rem;
+  margin: 1.2rem 0 0.8rem;
+}
+.account-linking .account-link-email {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.account-linking > p {
+  line-height: 1.5;
+}
+.account-linking form {
+  display: grid;
+  gap: 0.9rem;
+}
+.account-linking label {
+  display: grid;
+  gap: 0.45rem;
+}
+.account-linking input {
+  min-height: 2.7rem;
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid #d3dbe4;
+  border-radius: 6px;
+  padding: 0.65rem;
+  font: inherit;
+  background: white;
+  color: #17273b;
+}
+.account-linking select {
+  border: 1px solid #d3dbe4;
+  border-radius: 6px;
+  padding: 0.65rem;
+  background: white;
+  color: #17273b;
+}
+.account-linking .team-primary {
+  background: #17273b;
+  color: white;
+}
+.account-linking .team-secondary {
+  margin: 0.5rem 0;
+}
+.account-link-notice {
+  background: #eef3f8;
+  padding: 0.8rem;
+  border-radius: 6px;
+}

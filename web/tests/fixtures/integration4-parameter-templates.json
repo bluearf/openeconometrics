@@ -1,0 +1,78 @@
+[
+  {
+    "token": 41,
+    "parameters": [
+      {
+        "name": "data",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "y",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "endogenous",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "instruments",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "x",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "covariance",
+        "kind": "keyword-only",
+        "default": "'robust'"
+      },
+      {
+        "name": "cluster",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "intercept",
+        "kind": "keyword-only",
+        "default": "True"
+      },
+      {
+        "name": "missing",
+        "kind": "keyword-only",
+        "default": "'raise'"
+      },
+      {
+        "name": "alpha",
+        "kind": "keyword-only",
+        "default": "0.05"
+      },
+      {
+        "name": "max_iterations",
+        "default": "100",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "tolerance",
+        "default": "1e-09",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "max_work",
+        "default": "10000000000",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "device",
+        "kind": "keyword-only",
+        "default": "'cpu'"
+      },
+      {
+        "name": "batch_rows",
+        "kind": "keyword-only",
+        "default": "None"
+      }
+    ]
+  }
+]

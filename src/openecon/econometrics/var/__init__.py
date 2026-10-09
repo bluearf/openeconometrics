@@ -96,6 +96,7 @@ FORECAST: dict[str, str] = {
 
 # Extra public functions exported as oe.<name>: {"name": "package.module:function"}.
 EXPORTS: dict[str, str] = {
+    "asymcausality": "openecon.econometrics.var.asymmetric:asymcausality",
     "varsoc": "openecon.econometrics.var.estimators:varsoc",
     "irf": "openecon.econometrics.var.postestimation:irf",
     "var_forecast": "openecon.econometrics.var.postestimation:var_forecast",

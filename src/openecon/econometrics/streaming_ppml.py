@@ -26,7 +26,7 @@ from .core import wald_test
 from .glm.common import check_pweights
 from .glm.kernels import _DRIFT, _EPS, _MAX_HALVINGS, _STALL
 from .replay_sample import ReplaySample
-from .streaming_hdfe import _Selection, _Vectors, _absorb
+from .streaming_hdfe import _ProjectionReplay, _Selection, _Vectors, _absorb
 from .streaming_linear import _Notes, _finite, _result, _scratch_directory
 
 SUPPORTED = frozenset({"ppmlhdfe"})
@@ -128,7 +128,7 @@ def _prune(first, selection, dimensions, clusters, notes):
 class _States(_Vectors):
     def __init__(self, sample, width, dimensions, metadata):
         parent = _scratch_directory()
-        extra = sample.nrows * width * 8 * 20 + metadata * 2
+        extra = sample.nrows * width * 8 * 20 + metadata * 2 + sample.nrows * 24
         if extra + 64 * 1024**2 > shutil.disk_usage(parent or tempfile.gettempdir()).free:
             raise AnalysisError(
                 "fixed_effect_disk_limit",
@@ -170,7 +170,7 @@ def _step(sample, states, dimensions, selected, tolerance):
             mu = value.exp()
             z = value - _offset(sample, batch) + (batch.numeric(sample.spec.outcome) - mu) / mu
             states.write(writer, torch.cat((z[:, None], batch.designs["x"]), 1))
-    sweeps, _, _ = _absorb(states, working, dimensions, min(1e-10, tolerance / 10), 10000)
+    sweeps, _, _ = _absorb(states, _Working(states.projection, states), dimensions, min(1e-10, tolerance / 10), 10000)
     tree = _TSQRTree()
     for batch, (values,) in states.batches(working, "y"):
         x, z = values[:, [i + 1 for i in selected]], values[:, 0]
@@ -379,6 +379,7 @@ def fit_streaming(spec, source, *, batch_rows=None):
             )
             states = _States(sample, width + 1, len(dimensions), selection.path.stat().st_size)
             stack.callback(states.close)
+            states.projection = _ProjectionReplay(sample, states, selection, dimensions)
             before = _CompensatedSum((width,))
             with states.writer("raw") as writer:
                 for batch in sample.batches():
@@ -393,7 +394,7 @@ def fit_streaming(spec, source, *, batch_rows=None):
                             1,
                         ),
                     )
-            _absorb(states, sample, dimensions, min(1e-10, tolerance / 10), 10000)
+            _absorb(states, states.projection, dimensions, min(1e-10, tolerance / 10), 10000)
             tree = _TSQRTree()
             after = _CompensatedSum((width,))
             for batch, (values,) in states.batches(sample, "y"):
@@ -513,8 +514,9 @@ def fit_streaming(spec, source, *, batch_rows=None):
                 null.add((batch.weights * poisson_logmass(y, nullmu)).sum())
                 take = min(400 - len(predictions), len(y))
                 predictions.extend(
-                    {"observed": float(a), "predicted": float(b), "residual": float(a - b)}
-                    for a, b in zip(y[:take], mu[:take], strict=True)
+                    {"row": int(position), "observed": float(a), "fitted": float(b),
+                     "predicted": float(b), "residual": float(a - b)}
+                    for position, a, b in zip(batch.positions[:take], y[:take], mu[:take], strict=True)
                 )
             ll, null = float(ll.value), float(null.value)
             if not all(math.isfinite(v) for v in (ll, null, deviance)):

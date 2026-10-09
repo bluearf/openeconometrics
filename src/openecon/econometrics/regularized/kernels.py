@@ -58,15 +58,20 @@ def transform(x: Tensor, y: Tensor, intercept: bool, standardize: bool):
     return scaled, centered_y, center, scale, y_center
 
 
-def objective(z: Tensor, y: Tensor, b: Tensor, lam: float, ratio: float, load: Tensor) -> Tensor:
+def objective(z: Tensor, y: Tensor, b: Tensor, lam: float, ratio: float, load: Tensor,
+              factors: Tensor | None = None) -> Tensor:
+    factors = torch.ones_like(b) if factors is None else factors
     return 0.5 * (y - z @ b).square().mean() + lam * (
-        ratio * (load * b.abs()).sum() + 0.5 * (1 - ratio) * b.square().sum()
+        ratio * (factors * load * b.abs()).sum()
+        + 0.5 * (1 - ratio) * (factors * b.square()).sum()
     )
 
 
-def kkt(z: Tensor, y: Tensor, b: Tensor, lam: float, ratio: float, load: Tensor) -> float:
-    g = z.T @ (z @ b - y) / len(y) + lam * (1 - ratio) * b
-    threshold = lam * ratio * load
+def kkt(z: Tensor, y: Tensor, b: Tensor, lam: float, ratio: float, load: Tensor,
+        factors: Tensor | None = None) -> float:
+    factors = torch.ones_like(b) if factors is None else factors
+    g = z.T @ (z @ b - y) / len(y) + lam * (1 - ratio) * factors * b
+    threshold = lam * ratio * factors * load
     residual = torch.where(
         b != 0, (g + threshold * b.sign()).abs(), (g.abs() - threshold).clamp_min(0)
     )
@@ -82,19 +87,28 @@ def solve(
     max_iterations: int,
     tolerance: float,
     initial: Tensor | None = None,
+    *,
+    factors: Tensor | None = None,
 ):
     n, p = z.shape
-    if ratio == 0:
-        gram = z.T @ z / n + lam * torch.eye(p, dtype=torch.float64)
-        if lam == 0:
+    factors = torch.ones(p, dtype=torch.float64) if factors is None else factors
+    if ratio == 0 or lam == 0 or not bool((factors > 0).any()):
+        if lam == 0 or not bool((factors > 0).any()):
             b = torch.linalg.lstsq(z, y, driver="gelsd").solution
         else:
+            gram = z.T @ z / n + lam * torch.diag(factors)
+            if not bool(torch.isfinite(gram).all()):
+                raise AnalysisError("numerical_failure", "Factor-weighted normal equations exceed finite float64 arithmetic.")
             b = torch.linalg.solve(gram, z.T @ y / n)
         iterations = 1
     else:
         b = torch.zeros(p, dtype=torch.float64) if initial is None else initial.clone()
         r = y - z @ b
-        diagonal = z.square().mean(0) + lam * (1 - ratio)
+        ridge_penalty = lam * (1 - ratio) * factors
+        diagonal = z.square().mean(0) + ridge_penalty
+        if (not bool(torch.isfinite(diagonal).all())
+                or not bool(torch.isfinite(lam * ratio * factors * load).all())):
+            raise AnalysisError("numerical_failure", "Factor-weighted penalties exceed finite float64 arithmetic.")
         limit = tolerance * max(1.0, float((z.T @ y / n).abs().max()))
         for iterations in range(1, max_iterations + 1):
             for j in range(p):
@@ -102,22 +116,22 @@ def solve(
                 if float(diagonal[j]) == 0:
                     b[j] = 0
                 else:
-                    partial = torch.dot(z[:, j], r) / n + (diagonal[j] - lam * (1 - ratio)) * old
+                    partial = torch.dot(z[:, j], r) / n + (diagonal[j] - ridge_penalty[j]) * old
                     b[j] = (
                         partial.sign()
-                        * (partial.abs() - lam * ratio * load[j]).clamp_min(0)
+                        * (partial.abs() - lam * ratio * factors[j] * load[j]).clamp_min(0)
                         / diagonal[j]
                     )
                 r += z[:, j] * (old - b[j])
-            if kkt(z, y, b, lam, ratio, load) <= limit:
+            if kkt(z, y, b, lam, ratio, load, factors) <= limit:
                 break
         else:
             raise AnalysisError(
                 "nonconvergence",
                 f"Coordinate descent did not satisfy KKT conditions after {max_iterations} sweeps.",
             )
-    violation = kkt(z, y, b, lam, ratio, load)
-    loss = float(objective(z, y, b, lam, ratio, load))
+    violation = kkt(z, y, b, lam, ratio, load, factors)
+    loss = float(objective(z, y, b, lam, ratio, load, factors))
     if not bool(torch.isfinite(b).all()) or not math.isfinite(violation) or not math.isfinite(loss):
         raise AnalysisError(
             "numerical_failure",
@@ -130,7 +144,32 @@ def solve(
     }
 
 
-def path_values(z: Tensor, y: Tensor, ratio: float, options: dict) -> list[float]:
+def penalty_factors(value, p: int) -> Tensor:
+    """Validate explicit factors; booleans and implicit normalization are refused."""
+    if value is None:
+        return torch.ones(p, dtype=torch.float64)
+    if (not isinstance(value, list) or len(value) != p
+            or any(isinstance(v, bool) or not isinstance(v, (int, float)) for v in value)):
+        raise AnalysisError("invalid_penalty_factors", "penalty_factors needs one numeric factor per predictor.")
+    factors = torch.tensor(value, dtype=torch.float64)
+    if not bool(torch.isfinite(factors).all()) or bool((factors < 0).any()):
+        raise AnalysisError("invalid_penalty_factors", "Penalty factors must be finite and nonnegative.")
+    return factors
+
+
+def forced_rank(z: Tensor, factors: Tensor) -> None:
+    """A zero-factor block must have unique unpenalized training coefficients."""
+    block = z[:, factors == 0]
+    if block.shape[1] == 0:
+        return
+    singular = torch.linalg.svdvals(block)
+    if (len(singular) < block.shape[1] or float(singular[0]) == 0
+            or float(singular[-1]) <= torch.finfo(torch.float64).eps * 100 * max(block.shape) * float(singular[0])):
+        raise AnalysisError("unidentified_forced_controls", "Zero-penalty controls must be jointly identified in every training sample, including CV folds.")
+
+
+def path_values(z: Tensor, y: Tensor, ratio: float, options: dict,
+                factors: Tensor | None = None) -> list[float]:
     given = options.get("lambda_path")
     if given is not None:
         if not given or len(given) > 200 or any(v < 0 or not math.isfinite(v) for v in given):
@@ -140,7 +179,14 @@ def path_values(z: Tensor, y: Tensor, ratio: float, options: dict) -> list[float
         if len(set(given)) != len(given):
             raise AnalysisError("invalid_penalty", "lambda_path must not repeat values.")
         return sorted(map(float, given), reverse=True)
-    top = float((z.T @ y / len(y)).abs().max()) / max(ratio, 0.01)
+    factors = torch.ones(z.shape[1], dtype=torch.float64) if factors is None else factors
+    penalized = factors > 0
+    if not bool(penalized.any()):
+        raise AnalysisError("invalid_penalty", "An automatic lambda path requires at least one positive penalty factor; use a fixed penalty or explicit path for an unpenalized model.")
+    forced = z[:, ~penalized]
+    residual = y if forced.shape[1] == 0 else y - forced @ torch.linalg.lstsq(forced, y, driver="gelsd").solution
+    score = (z[:, penalized].T @ residual / len(y)).abs() / factors[penalized]
+    top = float(score.max()) / max(ratio, 0.01)
     if not math.isfinite(top):
         raise AnalysisError(
             "numerical_failure", "Lambda-path score exceeds finite float64 arithmetic."
@@ -166,7 +212,16 @@ def fit_penalized(
     selection = options.get("selection", "cv")
     iterations, tolerance = options.get("max_iterations", 2000), options.get("tolerance", 1e-8)
     local_seed = options.get("seed", 1729) if seed is None else seed
+    factors = penalty_factors(options.get("penalty_factors"), p)
+    forced_count = int((factors == 0).sum())
+    work_guard(n * p + n * forced_count**2 + forced_count**3,
+               options.get("max_work", 2000000000), "penalty factors and forced-control identification")
     z, yc, center, scale, ycenter = transform(x, y, intercept, standardize)
+    forced_rank(z, factors)
+    svd_limit = (not bool((factors > 0).any())
+                 or options.get("penalty") == 0
+                 or (options.get("lambda_path") is not None and 0 in options["lambda_path"]))
+    planned_solver = max(solver_work(n, p, iterations, ratio), n*p*p+p**3) if svd_limit else solver_work(n, p, iterations, ratio)
     load = torch.ones(p, dtype=torch.float64)
     record = {
         "selection": selection,
@@ -174,6 +229,9 @@ def fit_penalized(
         "intercept_unpenalized": intercept,
         "standardize": standardize,
         "scaling_source": "supplied training sample only",
+        "penalty_factors": factors.tolist(),
+        "unpenalized_indices": torch.where(factors == 0)[0].tolist(),
+        "penalty_factor_convention": "literal factors multiply both L1 and L2 penalties; no factor normalization",
     }
     records, betas = [], []
     if selection == "fixed":
@@ -181,11 +239,13 @@ def fit_penalized(
             raise AnalysisError("invalid_penalty", "selection='fixed' requires penalty.")
         values = [float(options["penalty"])]
         if options.get("lambda_path") is not None:
-            values = path_values(z, yc, ratio, options)
+            values = path_values(z, yc, ratio, options, factors)
             if float(options["penalty"]) not in values:
                 raise AnalysisError("invalid_penalty", "Fixed penalty must occur in lambda_path.")
         chosen = values.index(float(options["penalty"]))
     elif selection == "plugin":
+        if bool((factors != 1).any()):
+            raise AnalysisError("unsupported_selection", "Score plug-in selection requires unit penalty factors and no forced controls; custom factors support fixed or CV selection.")
         if options.get("penalty") is not None or options.get("lambda_path") is not None:
             raise AnalysisError(
                 "invalid_penalty", "Plug-in selection determines penalty; omit penalty/lambda_path."
@@ -242,29 +302,33 @@ def fit_penalized(
                 "invalid_penalty", "CV selects penalty from lambda_path; omit penalty."
             )
         automatic_grid = options.get("lambda_path") is None
-        values = [] if automatic_grid else path_values(z, yc, ratio, options)
+        values = [] if automatic_grid else path_values(z, yc, ratio, options, factors)
         path_count = options.get("n_lambdas", 30) if automatic_grid else len(values)
         assignment = folds(n, options.get("folds", 5), local_seed)
         k = options.get("folds", 5)
         work_guard(
-            solver_work(n, p, iterations, ratio) * path_count * (k + 1),
+            planned_solver * path_count * (k + 1),
             options.get("max_work", 2000000000),
             "penalty-path CV",
         )
         error_sum = torch.zeros(path_count, dtype=torch.float64)
         fold_mse = []
         fold_paths = []
+        fold_diagnostics = []
         for fold in range(k):
             train, test = assignment != fold, assignment == fold
             tz, ty, tc, ts, tmy = transform(x[train], y[train], intercept, standardize)
+            forced_rank(tz, factors)
             b = None
             errors = []
+            diagnostics = []
             # With no user grid, compare dimensionless geometric fractions.
             # Validation labels never determine a training fold's lambda_max.
-            fold_values = path_values(tz, ty, ratio, options) if automatic_grid else values
+            fold_values = path_values(tz, ty, ratio, options, factors) if automatic_grid else values
             fold_paths.append(fold_values)
             for index, lam in enumerate(fold_values):
-                b, _ = solve(tz, ty, lam, ratio, load, iterations, tolerance, b)
+                b, diag = solve(tz, ty, lam, ratio, load, iterations, tolerance, b, factors=factors)
+                diagnostics.append(diag)
                 squared = (y[test] - ((x[test] - tc) / ts @ b + tmy)).square()
                 if not bool(torch.isfinite(squared).all()):
                     raise AnalysisError(
@@ -274,10 +338,11 @@ def fit_penalized(
                 error_sum[index] += squared.sum()
                 errors.append(float(squared.mean()))
             fold_mse.append(errors)
+            fold_diagnostics.append(diagnostics)
         scores = error_sum / n
         chosen = int(scores.argmin())
         if automatic_grid:
-            values = path_values(z, yc, ratio, options)
+            values = path_values(z, yc, ratio, options, factors)
         record.update(
             {
                 "fold_assignments": assignment.tolist(),
@@ -286,6 +351,7 @@ def fit_penalized(
                 "cv_rule": "minimum pooled out-of-fold MSE; ties choose largest lambda",
                 "folds": k,
                 "fold_lambda_paths": fold_paths,
+                "fold_path_diagnostics": fold_diagnostics,
                 "cv_selector_units": "fraction of training-fold lambda_max"
                 if automatic_grid
                 else "absolute user-supplied lambda",
@@ -300,13 +366,13 @@ def fit_penalized(
         raise AnalysisError("invalid_selection", "Unknown penalty selection.")
     if not records:
         work_guard(
-            solver_work(n, p, iterations, ratio) * len(values),
+            planned_solver * len(values),
             options.get("max_work", 2000000000),
             "penalty path",
         )
         b = None
         for lam in values:
-            b, diag = solve(z, yc, lam, ratio, load, iterations, tolerance, b)
+            b, diag = solve(z, yc, lam, ratio, load, iterations, tolerance, b, factors=factors)
             betas.append(b.clone())
             records.append({"penalty": lam, **diag})
     b = betas[chosen]
@@ -337,7 +403,7 @@ def fit_penalized(
             "constant": constant,
             "coefficient_path": [(bb / scale).tolist() for bb in betas],
             "constant_path": [float(ycenter - center @ (bb / scale)) for bb in betas],
-            "objective_definition": "mean(residual^2)/2 + lambda*(l1_ratio*sum(loadings*abs(beta_z)) + (1-l1_ratio)*sum(beta_z^2)/2)",
+            "objective_definition": "mean(residual^2)/2 + lambda*(l1_ratio*sum(penalty_factors*loadings*abs(beta_z)) + (1-l1_ratio)*sum(penalty_factors*beta_z^2)/2)",
         }
     )
     return {"fitted": fitted, "state": record, "coefficient": coefficient, "constant": constant}

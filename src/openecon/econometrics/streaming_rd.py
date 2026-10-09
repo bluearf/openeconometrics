@@ -727,7 +727,7 @@ def fit_streaming(spec, source, *, batch_rows=None):
                 "df_inference": None,
                 "df_resid": None,
                 "small_sample_correction": None,
-                "variance_method": "native rdrobust local-polynomial sandwich",
+                "variance_method": "rdrobust local-polynomial sandwich",
                 "correction": context.vce
                 + " residual local-polynomial sandwich; complete local sample and robust bias correction",
             }
