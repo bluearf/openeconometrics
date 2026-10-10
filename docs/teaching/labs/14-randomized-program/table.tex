@@ -1,0 +1,42 @@
+\begin{table}[htbp]
+\centering
+\caption{Evaluating a Randomized Training Program: original synthetic data}
+\label{tab:14-randomized-program}
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Dependent variable: & earnings & earnings & earnings \\
+ & (1) & (2) & (3) \\
+ & Unadjusted offer HC2 & Baseline-adjusted offer HC2 & Participation association HC2 \\
+\midrule
+offer & $18.4029$ & $16.7144$ &  \\
+ & $(2.6961)$ & $(2.0976)$ &  \\[0.35em]
+baseline\_score &  & $2.2450$ &  \\
+ &  & $(0.1100)$ &  \\[0.35em]
+participated &  &  & $37.7670$ \\
+ &  &  & $(2.3655)$ \\[0.35em]
+Constant & $149.9610$ & $82.8995$ & $143.1744$ \\
+ & $(1.9277)$ & $(3.3869)$ & $(1.5611)$ \\[0.35em]
+\midrule
+Observations & 600 & 600 & 600 \\
+$R^{2}$ & 0.0723 & 0.4479 & 0.2973 \\
+$\text{Adjusted }R^{2}$ & 0.0707 & 0.4461 & 0.2961 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\footnotesize
+\raggedright
+\textit{Notes:} Standard errors are in parentheses.\par
+(1) OLS: HC2 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1; Student t inference (df = 598); 95\% confidence level (alpha = 0.05); estimation sample 600 of 600 observations; model F(1, 598) = 46.5916, p = 2.15077e-11.\par
+(2) OLS: HC2 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1; Student t inference (df = 597); 95\% confidence level (alpha = 0.05); estimation sample 600 of 600 observations; model F(2, 597) = 287.664, p = 3.28999e-88.\par
+(3) OLS: HC2 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1; Student t inference (df = 598); 95\% confidence level (alpha = 0.05); estimation sample 600 of 600 observations; model F(1, 598) = 254.907, p = 4.65701e-48.\par
+Original synthetic observations. Inference conventions and exact estimation samples are retained in the model notes; no empirical policy claim.\par
+\end{minipage}
+\endgroup
+\end{table}

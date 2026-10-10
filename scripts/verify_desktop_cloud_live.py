@@ -56,6 +56,9 @@ def main():
             config = call("GET", "/auth/config").json()
             assert config["firebase"]["projectId"] == PROJECT
             assert config["desktop_login_available"] is True
+            assert config.get("cloud_execution_available") is False
+            # Build-bound, read-only identity of the deployed sync service.
+            report["source_commit"] = config.get("source_commit")
             config = config["firebase"]
             tokens = {}
             for role in ("owner", "viewer", "outsider"):

@@ -11,6 +11,8 @@ import pytest
 from scipy.stats import norm
 import torch
 
+from scripts.torch_test_state import preserve_torch_default_device
+
 import openecon as oe
 from openecon.analysis_contracts import AnalysisError
 from openecon.dataset import Dataset
@@ -328,17 +330,16 @@ def test_full_public_and_path_persistence_types_positions_and_private_inputs(cas
 def test_global_meta_default_and_rng_unchanged(case):
     expected = invoke(case)
     rng = torch.get_rng_state().clone()
-    device = torch.get_default_device()
     dtype = torch.get_default_dtype()
-    try:
-        torch.set_default_dtype(torch.float32)
-        torch.set_default_device("meta")
-        actual = invoke(case)
-        assert str(torch.get_default_device()) == "meta"
-        assert torch.get_default_dtype() == torch.float32
-    finally:
-        torch.set_default_device(device)
-        torch.set_default_dtype(dtype)
+    with preserve_torch_default_device():
+        try:
+            torch.set_default_dtype(torch.float32)
+            torch.set_default_device("meta")
+            actual = invoke(case)
+            assert str(torch.get_default_device()) == "meta"
+            assert torch.get_default_dtype() == torch.float32
+        finally:
+            torch.set_default_dtype(dtype)
     assert actual.attrs["state"] == expected.attrs["state"]
     assert torch.equal(rng, torch.get_rng_state())
 

@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "kind": "additive_source_selector_extension",
+  "base_commit": "ffdd0b13bdf973ba6af8008aee52a8eef412d06a",
+  "base_producer_sha256": "50012b2116743c5138924654396b2fa80c36558d9fa5a1a0301b9066b24545d8",
+  "base_selector_count": 145,
+  "base_selectors_sha256": "c29e7f58f68e0405709768a7d4db6e362c639a091433a0ad8afbf2f37e344cf2",
+  "appended_selectors": [
+    "tests/test_multivariate_score_uncertainty.py"
+  ],
+  "complete_selector_count": 146,
+  "complete_selectors_sha256": "f457593e990f6c6a1ccc710678ce5f36f896c1af6cfdbb00b9da2e2c491660df",
+  "unchanged_base_plan_sha256": "ecebc48bca1f2212c095f2d72362160401ccc229d5f8d7a2b4fcac97cfc61c7b",
+  "timeout_seconds": 900,
+  "sdk_minors": [
+    "3.11",
+    "3.13"
+  ],
+  "distributed_shards_per_minor": 4,
+  "all_original_selectors_in_original_order": true,
+  "no_skip_or_reduction": true,
+  "partition": "Existing source-pinned four node groups and positive timing fallback; no production timing/sharding/validator changes."
+}

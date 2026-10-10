@@ -814,7 +814,7 @@ test("four-stage compression restores every appended golden signature and preser
 });
 
 test("four-stage compression restores every appended complete parameter list without shared mutations", () => {
-  assert.deepEqual(fourStageParameters.map(({token}) => token), Array.from({length: 30}, (_, i) => 42 + i));
+  assert.deepEqual(fourStageParameters.map(({token}) => token), Array.from({length: 30}, (_, i) => 41 + i));
   for (const {token: P, parameters} of fourStageParameters) {
     const stored: StoredApiEntry = {n: "~Fixture.call", S: "(payload)", k: "m", R: "dict[str, Any]",
       d: "Complete Türkçe help.", P};
@@ -874,7 +874,7 @@ test("appended parameter templates retain every pre-existing logical field", () 
 });
 
 
-for (const [batch, tokens] of [[2, [37, 38, 39]], [3, [40]], [4, [41]], [5, [72, 73, 74]]] as const) {
+for (const [batch, tokens] of [[2, [37, 38, 39]], [3, [40]], [4, [74]], [5, [71, 72, 73]]] as const) {
 test(`integration ${batch} complete parameter lists preserve every golden field and independent objects`, () => {
   const golden = JSON.parse(readFileSync(new URL(`./fixtures/integration${batch}-parameter-templates.json`, import.meta.url), "utf8"));
   assert.deepEqual(golden.map(({ token }: { token: number }) => token), tokens);
@@ -891,6 +891,20 @@ test(`integration ${batch} complete parameter lists preserve every golden field 
 });
 }
 
+
+test("sequential branch templates retain complete prior help after incoming token collisions", () => {
+  const golden = JSON.parse(readFileSync(new URL("./fixtures/sequential-parameter-templates.json", import.meta.url), "utf8"));
+  assert.deepEqual(golden.map(({ token }: { token: number }) => token), [41,42,43,44,45,46,47,48,49,50]);
+  for (const { token, parameters } of golden) {
+    // Preserve the canonical 80-template prefix; this historical branch's ten full templates resolve at 75..84.
+    const stored = { n: "~saved.example", S: "()", d: "Complete saved metadata.", P: 75 + token - 41 };
+    assert.deepEqual(decodeApiEntry(stored).parameters, parameters);
+    const changed = decodeApiEntry(stored);
+    changed.parameters[0].description = "Changed locally";
+    changed.parameters.find(parameter => parameter.choices)?.choices?.push("'local'");
+    assert.deepEqual(decodeApiEntry(stored).parameters, parameters);
+  }
+});
 
 test("incoming streamed control-function signature retains its append-only token", () => {
   const suffix = "(*, data: Any, y: str, endogenous: str, instruments: Sequence[str], x: Sequence[str] | None=None, covariance: str='robust', cluster: str | None=None, intercept: bool=True, missing: str='raise', alpha: float=0.05, max_iterations: int=100, tolerance: float=1e-09, max_work: int=10000000000, device: str='cpu', batch_rows: int | None=None)";
@@ -916,7 +930,7 @@ test("new shared signatures retain every literal suffix and legacy override", ()
 test("new complete parameter lists preserve independent defaults annotations descriptions and choices", () => {
   const lists = [[{"name":"data","kind":"positional-or-keyword"},{"name":"variables","kind":"positional-or-keyword"},{"name":"knots","kind":"keyword-only"},{"name":"components","default":"2","kind":"keyword-only"},{"name":"n_starts","default":"3","kind":"keyword-only"},{"name":"seed","kind":"keyword-only","default":"0"},{"name":"maxiter","default":"500","kind":"keyword-only"},{"name":"tol","default":"1e-08","kind":"keyword-only"},{"name":"missing","kind":"keyword-only","default":"'drop'"},{"name":"max_work","default":"WORK","kind":"keyword-only"},{"name":"max_bytes","default":"BYTES","kind":"keyword-only"},{"name":"device","kind":"keyword-only","default":"'cpu'"}],[{"name":"data","kind":"positional-or-keyword"},{"name":"outcome","kind":"positional-or-keyword"},{"name":"predictors","kind":"positional-or-keyword"},{"name":"knots","kind":"keyword-only"},{"name":"missing","kind":"keyword-only","default":"'drop'"},{"name":"max_bytes","default":"c.LIMIT_BYTES","kind":"keyword-only"},{"name":"max_work","default":"c.WORK","kind":"keyword-only"},{"name":"device","kind":"keyword-only","default":"'cpu'"}],[{"name":"result","kind":"positional-or-keyword"},{"name":"data","kind":"positional-or-keyword"},{"name":"missing","kind":"keyword-only","default":"'raise'"},{"name":"max_work","default":"WORK","kind":"keyword-only"},{"name":"max_bytes","default":"BYTES","kind":"keyword-only"},{"name":"device","kind":"keyword-only","default":"'cpu'"}]];
   for (const [offset, parameters] of lists.entries()) {
-    const stored: StoredApiEntry = {n: "~Fixture.call", S: "()", P: 72+offset, d: "Full help."};
+    const stored: StoredApiEntry = {n: "~Fixture.call", S: "()", P: 71+offset, d: "Full help."};
     const before = structuredClone(stored);
     assert.deepEqual(decodeApiEntry(stored).parameters, parameters);
     const changed = decodeApiEntry(stored);
@@ -936,11 +950,11 @@ test("categorical branch templates remain complete after the incoming compressio
   const suffix = "(data: pd.DataFrame, variables: list[str], *, knots: dict, components: int=2, n_starts: int=3, seed: int=0, maxiter: int=500, tol: float=1e-08, missing: str='drop', max_work: int=WORK, max_bytes: int=BYTES, device: str='cpu')";
   const parameters = [[{"name":"data","kind":"positional-or-keyword"},{"name":"variables","kind":"positional-or-keyword"},{"name":"knots","kind":"keyword-only"},{"name":"components","default":"2","kind":"keyword-only"},{"name":"n_starts","default":"3","kind":"keyword-only"},{"name":"seed","kind":"keyword-only","default":"0"},{"name":"maxiter","default":"500","kind":"keyword-only"},{"name":"tol","default":"1e-08","kind":"keyword-only"},{"name":"missing","kind":"keyword-only","default":"'drop'"},{"name":"max_work","default":"WORK","kind":"keyword-only"},{"name":"max_bytes","default":"BYTES","kind":"keyword-only"},{"name":"device","kind":"keyword-only","default":"'cpu'"}],[{"name":"data","kind":"positional-or-keyword"},{"name":"outcome","kind":"positional-or-keyword"},{"name":"predictors","kind":"positional-or-keyword"},{"name":"knots","kind":"keyword-only"},{"name":"missing","kind":"keyword-only","default":"'drop'"},{"name":"max_bytes","default":"c.LIMIT_BYTES","kind":"keyword-only"},{"name":"max_work","default":"c.WORK","kind":"keyword-only"},{"name":"device","kind":"keyword-only","default":"'cpu'"}],[{"name":"result","kind":"positional-or-keyword"},{"name":"data","kind":"positional-or-keyword"},{"name":"missing","kind":"keyword-only","default":"'raise'"},{"name":"max_work","default":"WORK","kind":"keyword-only"},{"name":"max_bytes","default":"BYTES","kind":"keyword-only"},{"name":"device","kind":"keyword-only","default":"'cpu'"}]];
   assert.equal(signatureTokenUpperBound, 68);
-  assert.equal(parameterTokenUpperBound, 80);
+  assert.equal(parameterTokenUpperBound, 85);
   const signature = { n: "~catpca_spline", I: 67, d: "Bounded spline PCA", p: [] };
   assert.deepEqual(decodeApiEntry(signature), decodeApiEntry({ ...signature, S: suffix }));
   for (const [offset, expected] of parameters.entries()) {
-    const stored = { n: "~saved_spline", S: "(value)", d: "Retained help", P: 72 + offset };
+    const stored = { n: "~saved_spline", S: "(value)", d: "Retained help", P: 71 + offset };
     const before = structuredClone(stored);
     const decoded = decodeApiEntry(stored);
     assert.deepEqual(decoded.parameters, expected);

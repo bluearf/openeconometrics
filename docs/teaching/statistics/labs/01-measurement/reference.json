@@ -1,0 +1,116 @@
+{
+  "metadata": {
+    "lab": "01-measurement",
+    "title": "What Does One Row Represent?",
+    "synthetic": true,
+    "data_file": "household_measurements.xlsx",
+    "raw_rows": 180
+  },
+  "summary": {
+    "raw_households": 180,
+    "observed_spending": 176,
+    "missing_spending": 4,
+    "mean_spending": 888.9854307578305,
+    "mean_spending_per_person": 299.55846219669
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "index": [
+        "household_size",
+        "monthly_spending"
+      ],
+      "columns": [
+        "n",
+        "mean",
+        "std_dev",
+        "min",
+        "max"
+      ],
+      "values": [
+        [
+          176.0,
+          3.5113636363636362,
+          1.6800973997739748,
+          1.0,
+          6.0
+        ],
+        [
+          176.0,
+          888.9854307578305,
+          245.68562366220894,
+          377.9296705139819,
+          1419.4156618437783
+        ]
+      ],
+      "attrs": {
+        "percentile_method": "stata",
+        "moments": "spss",
+        "alpha": 0.05,
+        "missing": "variable-wise",
+        "n": 176
+      }
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "hist",
+        "title": "What Does One Row Represent?",
+        "xlabel": "Monthly spending (currency)",
+        "ylabel": "Households",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              406.85983693980955,
+              464.7201697914649,
+              522.5805026431202,
+              580.4408354947756,
+              638.3011683464309,
+              696.1615011980863,
+              754.0218340497416,
+              811.882166901397,
+              869.7424997530524,
+              927.6028326047077,
+              985.4631654563631,
+              1043.3234983080183,
+              1101.183831159674,
+              1159.044164011329,
+              1216.9044968629846,
+              1274.7648297146397,
+              1332.6251625662953,
+              1390.4854954179505
+            ],
+            "y": [
+              2.0,
+              3.0,
+              10.0,
+              12.0,
+              9.0,
+              17.0,
+              14.0,
+              13.0,
+              12.0,
+              14.0,
+              9.0,
+              14.0,
+              13.0,
+              8.0,
+              10.0,
+              10.0,
+              4.0,
+              2.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "unique_household_ids": true,
+    "observed_plus_missing_equals_raw": true,
+    "native_count_matches_retained_rows": true,
+    "native_mean_matches_direct_sum": true
+  }
+}

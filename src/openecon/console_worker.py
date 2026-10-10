@@ -350,6 +350,7 @@ def _execute(code: str, namespace: dict, execution_id: str, *, artifact_workspac
     from openecon._network_model_common import ModelResult
     from openecon._network_temporal import NetworkSnapshots
     from openecon.latex import Latex
+    from openecon.econometrics.bayesian.posterior import PosteriorBundle, PosteriorContrast, PosteriorDraws
     from openecon.output_latex import MAX_MATH_BYTES, add_output_latex, validate_latex_fields
     output = BoundedText()
     displays = []
@@ -372,6 +373,8 @@ def _execute(code: str, namespace: dict, execution_id: str, *, artifact_workspac
             output.write("\n[Display limit reached: 20 outputs.]\n")
             return
         if isinstance(value, (Network, NetworkFlowResult, CostFlowResult, NetworkCutResult, NetworkBlockResult, NetworkSnapshots, ModelResult)):
+            return display(value.summary())
+        if isinstance(value, (PosteriorBundle, PosteriorContrast, PosteriorDraws)):
             return display(value.summary())
         if isinstance(value, Latex):
             math = getattr(value, "math", None)

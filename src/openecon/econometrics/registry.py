@@ -26,6 +26,9 @@ FAMILIES: tuple[str, ...] = (
     'systems', 'postest', 'spatial', 'regularized', 'tsworkflows', 'mgarch', 'robust',
     'longrun', 'panel_ardl', 'structural', 'decomposition', 'meta', 'fractional', 'smoothing',
     'irt', 'categorical', 'causal', 'survey', 'measurement', 'temporal', 'conjoint', 'mi', 'causal_design', 'survival_ext', 'finite', 'conditional', 'twostep', 'control_function',
+    'bayesian', 'latent', 'ivquantile', 'weakiv', 'mixtures', 'supervised',
+    'bayesian_var_public',
+    'interval_weibull_covariate_public',
 )
 
 WEIGHT_TYPES = ("aweight", "fweight", "pweight", "iweight")
@@ -125,11 +128,12 @@ def _legacy() -> tuple[EstimatorInfo, ...]:
     return tuple(
         EstimatorInfo(
             name=name, title=title, family="core", entry="openecon.analysis:fit",
-            covariances=tuple(_SUPPORTED_COVARIANCES[name]), default_covariance="nonrobust",
+            covariances=tuple(_SUPPORTED_COVARIANCES[name]) if name == "ols" else
+                ("nonrobust", "cluster", "opg", "robust"), default_covariance="nonrobust",
             stata=stata, function=name, outcome=outcome, inference="t" if name == "ols" else "z",
             legacy=True, description=description,
             predictors="optional" if name == "ols" else "required",
-            weights=WEIGHT_TYPES if name == "ols" else (),
+            weights=WEIGHT_TYPES,
             cluster_dimensions=4 if name == "ols" else 1,
         )
         for name, (title, stata, outcome, description) in described.items()
@@ -292,12 +296,20 @@ def validate_spec(spec: Any) -> str:
         raise ValueError("The outcome must not also be the cluster column.")
     covariance = spec.covariance
     if info.legacy:
-        # logit and probit keep the strict contract of the core estimators (ols is
-        # validated by openecon.linear_ols before the registry is consulted).
-        covariance = covariance or ("cluster" if clusters else "nonrobust")
-        if covariance not in {"nonrobust", "cluster"}:
-            raise ValueError("Binary models support nonrobust or cluster covariance.")
-        if (isinstance(spec.cluster, list) or spec.weights or spec.weight_type or spec.time
+        # Keep the unweighted core unchanged. Explicit weights have a separate
+        # resident ML route, with its own recorded finite-sample conventions.
+        if (spec.weights is None) != (spec.weight_type is None):
+            raise ValueError("weights and weight_type must be given together.")
+        weighted = spec.weights is not None
+        covariance = covariance or ("cluster" if clusters else
+                                   "robust" if spec.weight_type == "pweight" else "nonrobust")
+        allowed = {"nonrobust", "opg", "robust", "cluster"} if weighted else {"nonrobust", "cluster"}
+        if covariance not in allowed:
+            raise ValueError("Binary models support nonrobust or cluster covariance without "
+                             "weights; weighted fits also support opg and robust.")
+        if spec.weight_type == "pweight" and covariance not in {"robust", "cluster"}:
+            raise ValueError("Binary pweights require robust or cluster covariance.")
+        if (isinstance(spec.cluster, list) or spec.time
                 or spec.panel or spec.options or spec.columns):
             raise ValueError("Binary models do not accept OLS-specific options.")
         if covariance == "cluster" and spec.cluster is None:
@@ -373,6 +385,25 @@ def describe(info: EstimatorInfo) -> dict[str, Any]:
         "inference": "Student t" if info.inference == "t" else "unavailable (prediction target)" if info.inference == "none" else "Normal z",
     }
     if info.legacy:
+        if info.name in {"logit", "probit"}:
+            record.update({
+                "weights": list(info.weights),
+                "unweighted_covariances": ["nonrobust", "cluster"],
+                "weighted_binary": {
+                    "route": "resident CPU float64; Dataset unsupported",
+                    "covariances_by_weight": {
+                        key: ["nonrobust", "opg", "robust", "cluster"]
+                        if key != "pweight" else ["robust", "cluster"] for key in info.weights},
+                    "pweight_default": "robust unless cluster is supplied",
+                    "semantics": "fweight replicates rows; aweight normalizes to retained rows; "
+                                 "iweight/pweight use positive supplied weights",
+                    "corrections": "weighted ML robust N/(N-1), cluster G/(G-1); "
+                                   "unweighted legacy CR1 is preserved",
+                    "limits": {"original_rows": 100000, "parameters": 64,
+                               "iterations": 100, "dense_work": 5000000000},
+                    "aweight_note": "OpenEconometrics extension; not a Stata logit/probit option",
+                },
+            })
         return record
     record.update({
         "title": info.title, "family": info.family, "description": info.description,

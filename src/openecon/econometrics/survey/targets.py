@@ -5,7 +5,15 @@ from __future__ import annotations
 import torch
 
 from openecon.analysis_contracts import AnalysisError
-from .common import FLOAT, SurveyResult, finite, prepare, result
+from .common import (
+    FLOAT,
+    MAX_DEFF_WORK,
+    SRSWR_WEIGHTED_REFERENCE,
+    SurveyResult,
+    finite,
+    prepare,
+    result,
+)
 
 
 def taylor(target, *, alpha, null, deff):
@@ -30,20 +38,49 @@ def taylor(target, *, alpha, null, deff):
         "confidence_interval": "unclipped design-t Wald interval; census point interval, undefined zero-SE tests",
     }
     if deff:
-        if not bool((target.weights == target.weights[0]).all()):
-            raise AnalysisError(
-                "unsupported_survey_deff",
-                "SRSWR design effects currently require equal sampling weights.",
-            )
         n = len(target.weights)
         if n < 2:
             raise AnalysisError(
                 "unsupported_survey_deff", "SRSWR reference needs at least two design rows."
             )
-        centred = weighted - weighted.mean(0)
-        reference = finite(n / (n - 1) * (centred.T @ centred), "SRSWR covariance")
+        if bool((target.weights == target.weights[0]).all()):
+            # Preserve the accepted equal-weight result, including its metadata.
+            centred = weighted - weighted.mean(0)
+            reference = finite(n / (n - 1) * (centred.T @ centred), "SRSWR covariance")
+            reference_name = "equal-weight independent row PSUs, full population/domain geometry, with replacement, no FPC"
+        else:
+            width = len(target.labels)
+            if n * width * (width + 2) > MAX_DEFF_WORK:
+                raise AnalysisError(
+                    "survey_budget",
+                    "Unequal-weight SRSWR reference exceeds 50 million full-design moment work units.",
+                )
+            population = finite(target.weights.sum(), "SRSWR population weight sum")
+            mean = finite(weighted.sum(0) / population, "SRSWR weighted influence mean")
+            centred = finite(influence - mean, "SRSWR centered row influences")
+            moments = finite(
+                (centred.T * target.weights) @ centred,
+                "SRSWR weighted centered crossproducts",
+            )
+            reference = finite(population / (n - 1) * moments, "SRSWR covariance")
+            positive = reference.diagonal() > 0
+            finite(
+                covariance.diagonal()[positive] / reference.diagonal()[positive],
+                "SRSWR design-effect ratios",
+            )
+            reference_name = SRSWR_WEIGHTED_REFERENCE
+            metadata["srs_reference_state"] = {
+                "schema_version": "survey-srswr-weighted-v1",
+                "law": "full-design-weighted-population-srswr-linearized",
+                "n_design": n,
+                "sum_design_weights": float(population),
+                "weighted_influence_mean": mean.tolist(),
+                "weighted_centered_crossproducts": moments.tolist(),
+                "fpc_applied": False,
+                "eligibility": "fixed-domain-and-joint-complete-case-indicator",
+            }
         metadata.update(
-            srs_reference="equal-weight independent row PSUs, full population/domain geometry, with replacement, no FPC",
+            srs_reference=reference_name,
             srs_covariance=reference.tolist(),
             design_effect=[
                 float(covariance[i, i] / reference[i, i]) if reference[i, i] > 0 else None

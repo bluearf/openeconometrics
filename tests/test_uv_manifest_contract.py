@@ -45,9 +45,7 @@ def api(monkeypatch):
                 "iss": f"https://securetoken.google.com/{PROJECT}",
                 "firebase": {"sign_in_provider": "password"}}
 
-    runner = Mock()
-    runner.start.side_effect = AssertionError("Manifest sharing must not execute code")
-    app = create_team_app(store=store, storage=storage, runner=runner,
+    app = create_team_app(store=store, storage=storage,
                           auth=TeamAuth(PROJECT, verifier=verify), public_origin=ORIGIN,
                           firebase_config={"projectId": PROJECT, "authDomain": PROJECT + ".firebaseapp.com"})
     with TestClient(app, base_url=ORIGIN) as client:
@@ -58,10 +56,9 @@ def api(monkeypatch):
             assert response.headers["cache-control"] == "no-store"
             return response.json()
         yield SimpleNamespace(client=client, call=call, store=store, db=db, storage=storage,
-                              runner=runner, project=project["id"], install=install, evaluate=evaluate)
+                              project=project["id"], install=install, evaluate=evaluate)
     install.assert_not_called()
     evaluate.assert_not_called()
-    assert runner.mock_calls == []
     assert storage.objects == {}
     assert not any("/runs/" in path for path in db.data)
 

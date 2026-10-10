@@ -120,15 +120,27 @@ def _unlabel(label: Mapping) -> Any:
     raise ValueError("Invalid MI index label encoding.")
 
 
+def _multi_index_sortorder(value: Any, nlevels: int) -> int | None:
+    """Validate the saved declaration without sorting or changing any row code."""
+    if value is not None and (type(value) is not int or not 0 <= value <= nlevels):
+        raise ValueError("MI MultiIndex sortorder must be an integer in [0, nlevels] or None.")
+    return value
+
+
 def _encode_index(index: pd.Index) -> dict[str, Any]:
     if len(index) > MAX_ROWS:
         raise AnalysisError("unsupported_index", "MI index levels/categories may contain at most 10000 entries.")
     if isinstance(index, pd.MultiIndex):
         if index.nlevels > MAX_COLUMNS:
             raise AnalysisError("unsupported_index", "MI supports at most 16 row-index levels.")
-        return {"kind": "multi", "names": [_label(n) for n in index.names],
-                "levels": [_encode_index(level) for level in index.levels],
-                "codes": [code.tolist() for code in index.codes]}
+        result = {"kind": "multi", "names": [_label(n) for n in index.names],
+                  "levels": [_encode_index(level) for level in index.levels],
+                  "codes": [code.tolist() for code in index.codes]}
+        order = _multi_index_sortorder(index.sortorder, index.nlevels)
+        # An absent declaration retains the exact historical descriptor/digest.
+        if order is not None:
+            result["sortorder"] = order
+        return result
     if isinstance(index, pd.RangeIndex):
         return {"kind": "range", "name": _label(index.name), "start": index.start,
                 "stop": index.stop, "step": index.step}
@@ -157,6 +169,7 @@ def _index_envelope(state: Any, n: int, *, depth: int = 0) -> None:
         levels, codes, names = (state.get(k, ()) for k in ("levels", "codes", "names"))
         if not 1 <= len(levels) <= MAX_COLUMNS or len(codes) != len(levels) or len(names) != len(levels):
             raise ValueError("MI multi-index dimensions disagree.")
+        _multi_index_sortorder(state.get("sortorder"), len(levels))
         if any(len(c) != n for c in codes):
             raise ValueError("MI multi-index code length disagrees with rows.")
         for level in levels:
@@ -209,9 +222,11 @@ def _metadata_bytes(value: Any) -> int:
 def _decode_index(state: Mapping) -> pd.Index:
     kind = state["kind"]
     if kind == "multi":
+        order = _multi_index_sortorder(state.get("sortorder"), len(state["levels"]))
         return pd.MultiIndex(levels=[_decode_index(v) for v in state["levels"]],
                              codes=[list(v) for v in state["codes"]],
-                             names=[_unlabel(v) for v in state["names"]], verify_integrity=True)
+                             names=[_unlabel(v) for v in state["names"]],
+                             sortorder=order, verify_integrity=True)
     name = _unlabel(state["name"])
     if kind == "range":
         return pd.RangeIndex(state["start"], state["stop"], state["step"], name=name)

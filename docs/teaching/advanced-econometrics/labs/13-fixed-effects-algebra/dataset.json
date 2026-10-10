@@ -1,0 +1,45 @@
+{
+  "filename": "fixed_effects_algebra.xlsx",
+  "description": "Fixed Effects as Dummies and Within Variation; original synthetic teaching data.",
+  "observation_unit": "One synthetic panel-period observation.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 730013,
+  "columns": [
+    {
+      "name": "row_id",
+      "description": "Stable record identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "x",
+      "description": "Exposure or predictor X",
+      "unit": "centered units",
+      "missing": 0
+    },
+    {
+      "name": "z",
+      "description": "Observed covariate Z",
+      "unit": "centered units",
+      "missing": 0
+    },
+    {
+      "name": "y",
+      "description": "Outcome",
+      "unit": "outcome units",
+      "missing": 0
+    },
+    {
+      "name": "unit",
+      "description": "Panel unit identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "time",
+      "description": "Within-unit period",
+      "unit": "integer period",
+      "missing": 0
+    }
+  ]
+}

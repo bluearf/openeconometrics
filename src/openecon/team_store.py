@@ -2,12 +2,13 @@
 
 No Python execution, pickle, dataframe parsing or user-controlled filesystem
 paths belong in this process. Every mutation reads membership in its transaction.
+Run documents are read-only history: desktop-shared results and records from the
+retired cloud execution backend. This module never starts or finalizes a run.
 """
 from __future__ import annotations
 
 from copy import deepcopy
 from datetime import datetime, timedelta, timezone
-import math
 import re
 import unicodedata
 from threading import RLock
@@ -17,11 +18,6 @@ from openecon import script_contracts as scripts
 from openecon import file_layout
 
 
-# The control lease includes bounded platform queueing in addition to the
-# existing task budget (Python limit + 120s for startup, transfer and cleanup).
-# Neither allowance extends the actual Python or Cloud Run task timeout.
-_RUN_QUEUE_ALLOWANCE_SECONDS = 15 * 60
-_RUN_TASK_OVERHEAD_SECONDS = 120
 MAX_PROJECT_NAME_VERSION = 2**53 - 1
 MAX_PROJECT_NAME_LENGTH = 100
 MAX_PROJECT_DESCRIPTION_LENGTH = 500
@@ -747,137 +743,8 @@ class TeamStore:
             self._audit(db, project_id, user, 'file.added', metadata['name'])
         self.db.atomic(add)
 
-    def begin_run(self, project_id, user, code, timeout_seconds):
-        if (isinstance(timeout_seconds, bool) or not isinstance(timeout_seconds, (int, float))
-                or not math.isfinite(timeout_seconds) or not .05 <= timeout_seconds <= 120):
-            raise TeamError('INVALID_TIMEOUT', 'The run duration must be between 0.05 and 120 seconds.', 422)
-        run_id, created = uuid4().hex, now()
-        deadline = (datetime.fromisoformat(created) + timedelta(
-            seconds=_RUN_QUEUE_ALLOWANCE_SECONDS + math.ceil(timeout_seconds)
-            + _RUN_TASK_OVERHEAD_SECONDS)).isoformat()
-        def begin(db):
-            project = self._project(db, project_id, user, 'editor')
-            if any(f.get('transfer') == 'chunked-v1' for f in project['files']):
-                raise TeamError('LOCAL_COMPUTE_REQUIRED', 'Run large shared datasets on the desktop.', 409)
-            if project.get('active_run'):
-                raise TeamError('CONSOLE_BUSY', 'A run is already in progress in this project.', 409)
-            # A durable daily quota and project lock bound parallel work/cost.
-            day = created[:10]
-            if project.get('run_day') != day:
-                project.update(run_day=day, daily_runs=0)
-            if project.get('daily_runs', 0) >= 100:
-                raise TeamError('RUN_LIMIT', 'The project has reached its daily limit of 100 runs.', 429)
-            limits = db.get('oe_limits/compute') or {'day': day, 'runs': 0, 'active': {}}
-            if limits['day'] != day:
-                limits.update(day=day, runs=0)
-            limits['active'] = {k: v for k, v in limits['active'].items() if v > created}
-            if len(limits['active']) >= 4 or limits['runs'] >= 200:
-                raise TeamError('CAPACITY_LIMIT', 'Computation capacity is full. Try again shortly.', 429)
-            project.update(active_run=run_id, run_count=project['run_count'] + 1,
-                           daily_runs=project.get('daily_runs', 0) + 1, updated_at=created)
-            run = {'id': run_id, 'project_id': project_id, 'uid': user.uid, 'email': user.email,
-                   'code': code, 'timeout_seconds': timeout_seconds, 'state': 'starting',
-                   'generation': project['run_count'], 'created_at': created,
-                   'deadline': deadline,
-                   'files': deepcopy(project['files']), 'operation': None, 'execution': None,
-                   'result': None, 'cancel_requested': False}
-            limits['runs'] += 1
-            limits['active'][run_id] = run['deadline']
-            db.put('oe_limits/compute', limits)
-            db.put(f'oe_projects/{project_id}', project)
-            db.put(f'oe_projects/{project_id}/runs/{run_id}', run)
-            self._audit(db, project_id, user, 'run.started', run_id)
-            return run
-        return self.db.atomic(begin)
-
     def run(self, project_id, run_id):
         return self.db.get(f'oe_projects/{ident(project_id)}/runs/{ident(run_id)}')
-
-    def update_run(self, project_id, run_id, **changes):
-        def update(db):
-            path = f'oe_projects/{project_id}/runs/{run_id}'
-            run = db.get(path)
-            if run is None:
-                raise TeamError('NOT_FOUND', 'Run not found.', 404)
-            run.update(changes)
-            db.put(path, run)
-            return run
-        return self.db.atomic(update)
-
-    def _attach_run_execution(self, project_id, run_id, *, operation, execution, claim):
-        if not isinstance(operation, str) or not operation or not isinstance(execution, (str, type(None))):
-            raise ValueError('A confirmed execution operation is required.')
-        def attach(db):
-            path = f'oe_projects/{ident(project_id)}/runs/{ident(run_id)}'
-            run = db.get(path)
-            if run is None:
-                raise TeamError('NOT_FOUND', 'Run not found.', 404)
-            terminal = run['state'] in {'finished', 'failed', 'cancelled'}
-            if claim and (run.get('operation') or terminal):
-                raise TeamError('RUN_ALREADY_DISPATCHED', 'The run has already been started.', 409)
-            if run.get('operation') and run['operation'] != operation:
-                raise TeamError('RUN_ALREADY_DISPATCHED', 'The run has already been started.', 409)
-            if run.get('execution') and execution and run['execution'] != execution:
-                raise TeamError('RUN_ALREADY_DISPATCHED', 'The run has already been started.', 409)
-            # Polling may publish a result while the dispatch request is still
-            # returning. Attaching the same operation must never reopen it.
-            run['operation'] = operation
-            if execution:
-                run['execution'] = execution
-            if not terminal:
-                run['state'] = 'running'
-            db.put(path, run)
-            return run
-        return self.db.atomic(attach)
-
-    def claim_run_dispatch(self, project_id, run_id, *, operation, execution):
-        """Record the one launch attempt before synchronous remote dispatch."""
-        return self._attach_run_execution(project_id, run_id, operation=operation,
-                                          execution=execution, claim=True)
-
-    def attach_run_execution(self, project_id, run_id, *, operation, execution=None):
-        """Attach a confirmed handle without changing a terminal run's state."""
-        return self._attach_run_execution(project_id, run_id, operation=operation,
-                                          execution=execution, claim=False)
-
-    def request_cancel(self, project_id, user):
-        def cancel(db):
-            project = self._project(db, project_id, user, 'editor')
-            if not project['active_run']:
-                return None
-            path = f'oe_projects/{project_id}/runs/{project["active_run"]}'
-            run = db.get(path)
-            run['cancel_requested'] = True
-            db.put(path, run)
-            self._audit(db, project_id, user, 'run.cancel_requested', run['id'])
-            return run
-        return self.db.atomic(cancel)
-
-    def finish_run(self, project_id, run_id, result, record_summary, *, failed=False):
-        def finish(db):
-            path = f'oe_projects/{project_id}/runs/{run_id}'
-            run = db.get(path)
-            project = db.get(f'oe_projects/{project_id}')
-            if run['state'] in {'finished', 'cancelled', 'failed'}:
-                return run
-            member = project['members'].get(run['uid'])
-            revoked = not member or member['role'] not in {'owner', 'editor'}
-            cancelled = run['cancel_requested'] or revoked
-            run.update(state='cancelled' if cancelled else 'failed' if failed else 'finished',
-                       result=None if cancelled else result,
-                       record_summary=record_summary, completed_at=now())
-            if cancelled:
-                run['record_summary'] = {'status': 'interrupted', 'message': 'The run was stopped or permissions changed.'}
-            if project['active_run'] == run_id:
-                project['active_run'] = None
-            limits = db.get('oe_limits/compute')
-            if limits:
-                limits['active'].pop(run_id, None)
-                db.put('oe_limits/compute', limits)
-            db.put(path, run)
-            db.put(f'oe_projects/{project_id}', project)
-            return run
-        return self.db.atomic(finish)
 
     def runs(self, project_id, user):
         self.project(project_id, user)

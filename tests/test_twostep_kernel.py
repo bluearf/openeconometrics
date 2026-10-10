@@ -83,13 +83,13 @@ def test_real_cf_tree_is_balanced_bounded_and_every_internal_summary_matches_its
             rows = state["rows"]
             assert state["count"] == len(rows)
             torch.testing.assert_close(
-                torch.tensor(state["mean"]), x[rows].mean(0).float(), atol=1e-6, rtol=1e-6
+                torch.tensor(state["mean"], dtype=torch.float64), x[rows].mean(0), atol=1e-12, rtol=1e-12
             )
             torch.testing.assert_close(
-                torch.tensor(state["m2"]),
-                ((x[rows] - x[rows].mean(0)) ** 2).sum(0).float(),
-                atol=1e-6,
-                rtol=1e-6,
+                torch.tensor(state["m2"], dtype=torch.float64),
+                ((x[rows] - x[rows].mean(0)) ** 2).sum(0),
+                atol=1e-12,
+                rtol=1e-12,
             )
             assert (
                 state["categorical_counts"][0]

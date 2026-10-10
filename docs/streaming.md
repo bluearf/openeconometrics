@@ -147,8 +147,8 @@ Cluster inference requires writable temporary storage and at least two groups.
 Singular designs, separation and nonconvergence return explicit errors.
 
 Local desktop computation has no automatic 60/120-second deadline; an explicit
-local deadline is optional and Stop remains available. Cloud computation,
-permissions and cloud transfer limits are unchanged. `oe.read()` returns a small
+local deadline is optional and Stop remains available. The cloud team service
+runs no computation; its permissions and transfer limits are unchanged. `oe.read()` returns a small
 DataFrame or a large CSV/Parquet Dataset automatically; `oe.scan()` always selects
 the local bounded source path and never uploads data.
 

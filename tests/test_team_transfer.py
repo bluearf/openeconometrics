@@ -378,7 +378,7 @@ def http(env):
                 'iss': 'https://securetoken.google.com/openecon-test',
                 'firebase': {'sign_in_provider': 'password'}}
     app = create_team_app(store=env.store, storage=env.storage,
-        auth=TeamAuth('openecon-test', verifier=verify), runner=object(), public_origin=origin,
+        auth=TeamAuth('openecon-test', verifier=verify), public_origin=origin,
         firebase_config={'projectId': 'openecon-test', 'authDomain': 'openecon-test.firebaseapp.com'})
     with TestClient(app, base_url=origin) as client:
         yield client
@@ -407,7 +407,7 @@ def test_http_owner_upload_viewer_download_strict_errors_and_local_compute(env, 
     assert response.headers['X-OpenEcon-SHA256'] == hashlib.sha256(payload).hexdigest()
     assert http.get(prefix + f'/files/{file_id}/download', headers=viewer).status_code == 409
     response = http.post(prefix + '/console/execute', json={'code': '1 + 1'}, headers=headers)
-    assert response.status_code == 409 and response.json()['detail']['code'] == 'LOCAL_COMPUTE_REQUIRED'
+    assert response.status_code == 410 and response.json()['detail']['code'] == 'CLOUD_EXECUTION_RETIRED'
     assert env.store.project(env.pid, env.users['owner'])['active_run'] is None
 
 

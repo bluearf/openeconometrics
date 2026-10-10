@@ -1,0 +1,27 @@
+{
+  "filename": "message_responses.xlsx",
+  "description": "Did Two Messages Produce Different Response Rates?; original synthetic teaching data.",
+  "observation_unit": "One synthetic recipient assigned one message.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710014,
+  "columns": [
+    {
+      "name": "recipient_id",
+      "description": "Recipient identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "message",
+      "description": "Randomized message label",
+      "unit": "A or B",
+      "missing": 0
+    },
+    {
+      "name": "response",
+      "description": "Response within the stated follow-up",
+      "unit": "0=no, 1=yes",
+      "missing": 0
+    }
+  ]
+}

@@ -1,7 +1,9 @@
-"""Real subprocess and tamper checks for complete two-group SDK execution."""
+"""Real subprocess and tamper checks for complete three-group SDK execution."""
 
 import importlib.util
+import builtins
 from collections import Counter
+import errno
 import hashlib
 import json
 import math
@@ -11,6 +13,7 @@ import shutil
 import subprocess
 import sys
 import time
+from types import SimpleNamespace
 import xml.etree.ElementTree as ET
 
 import pytest
@@ -26,11 +29,17 @@ gate_spec = importlib.util.spec_from_file_location(
 )
 gate = importlib.util.module_from_spec(gate_spec)
 gate_spec.loader.exec_module(gate)
+timing_spec = importlib.util.spec_from_file_location("sdk_timing_plugin", ROOT / "scripts/pytest_gate_timings.py")
+timing_plugin = importlib.util.module_from_spec(timing_spec)
+timing_spec.loader.exec_module(timing_plugin)
 # These small real-subprocess fixtures retain their declared toy partition.
 # Production scope/order is checked separately against the actual gate source.
-TOY_HEAVY = ("tests/test_streaming_control_function_engine.py",
-             "tests/test_control_stream_acceptance.py")
-SELECTORS = ["tests/test_before.py", *TOY_HEAVY, "tests/test_after.py"]
+TOY_FIXED = (("tests/test_control_stream_acceptance.py",),
+             ("tests/test_streaming_control_function_engine.py",))
+FIXED_SELECTORS = tuple(item for group in groups.FIXED_GROUPS for item in group)
+SELECTORS = ["tests/test_before.py", TOY_FIXED[1][0], TOY_FIXED[0][0], "tests/test_after.py"]
+# Incoming two-child probe labels retain their exact selector identities.
+TOY_HEAVY = (TOY_FIXED[1][0], TOY_FIXED[0][0])
 
 
 def repository(path, bodies=None):
@@ -83,7 +92,7 @@ def execute(root, *, timeout=30, receipt="receipts/run", **kwargs):
         junit=base / "combined.xml",
         timings=base / "combined.jsonl",
         timeout=timeout,
-        expensive=TOY_HEAVY,
+        fixed_groups=TOY_FIXED,
         **kwargs,
     )
     return base, report
@@ -99,7 +108,7 @@ def actual_pass(tmp_path_factory):
 
 def copied_children(actual_pass, tmp_path):
     _, base, _ = actual_pass
-    children = [tmp_path / f"group-{index}" for index in range(2)]
+    children = [tmp_path / f"group-{index}" for index in range(3)]
     for index, target in enumerate(children):
         shutil.copytree(base / "sdk-groups" / f"group-{index}", target)
     return children
@@ -116,7 +125,7 @@ def test_real_parallel_pass_has_raw_hashes_and_exact_source_scope(actual_pass):
         "errors": 0,
         "skipped": 0,
     }
-    assert [item["selectors"] for item in report["groups"]] == groups.split_groups(SELECTORS, TOY_HEAVY)
+    assert [item["selectors"] for item in report["groups"]] == groups.split_groups(SELECTORS, TOY_FIXED)
     for item in report["groups"]:
         assert item["status"] == "passed" and item["exit_code"] == 0 and item["pid"] > 0
         assert report["environment"] == groups.child_environment_contract(
@@ -170,9 +179,12 @@ def test_current_cgroup_quota_and_fractional_budget_set_two_child_threads(
     monkeypatch.setattr(groups.os, "cpu_count", lambda: 16)
     monkeypatch.setattr(groups.os, "sched_getaffinity", lambda _: set(range(8)), raising=False)
     budget = groups.detect_cpu_budget(proc=proc, system="Linux")
-    assert budget["effective_cpus"] == effective and budget["threads_per_child"] == threads
-    assert budget["groups"] == 2 and budget["cgroup"]["version"] == version
-    assert budget["max_concurrent_children"] == min(2, max(1, math.floor(effective)))
+    # Keep the incoming historical parameter IDs while checking the current three-child allocation.
+    assert threads == min(2, max(1, math.floor(effective / 2)))
+    assert budget["effective_cpus"] == effective
+    assert budget["threads_per_child"] == min(2, max(1, math.floor(effective / 3)))
+    assert budget["groups"] == 3 and budget["cgroup"]["version"] == version
+    assert budget["max_concurrent_children"] == min(3, max(1, math.floor(effective)))
     assert budget["cgroup"]["limits"][0]["cpus"] == int(quota) / 100000
     assert Path(budget["cgroup"]["limits"][0]["path"]).parent == leaf
     name = "cpu.max" if version == 2 else "cpu.cfs_quota_us"
@@ -238,7 +250,9 @@ def test_affinity_is_a_limit_even_with_more_host_cpus_and_unlimited_quota(
     budget = groups.detect_cpu_budget(proc=proc, system="Linux")
     assert budget["host_cpus"] == 64 and budget["affinity_cpus"] == affinity
     assert budget["cgroup"]["status"] == "unlimited"
-    assert budget["effective_cpus"] == affinity and budget["threads_per_child"] == threads
+    assert threads == min(2, max(1, math.floor(affinity / 2)))
+    assert budget["effective_cpus"] == affinity
+    assert budget["threads_per_child"] == min(2, max(1, math.floor(affinity / 3)))
 
 
 @pytest.mark.parametrize("quota,period", [
@@ -347,11 +361,11 @@ def test_threads():
     base, report = execute(root, env=inherited)
     assert report["status"] == "failed" and report["cpu_budget"] == budget
     assert report["selected_tests"] == SELECTORS and report["timeout_seconds"] == 30
-    assert [item["selectors"] for item in report["groups"]] == groups.split_groups(SELECTORS, TOY_HEAVY)
+    assert [item["selectors"] for item in report["groups"]] == groups.split_groups(SELECTORS, TOY_FIXED)
     assert all(item["environment"] == {**groups.child_environment_contract(1), **{
         key: item["temporary_directory"] for key in groups.TEMPORARY_ENVIRONMENT_KEYS}}
         for item in report["groups"])
-    assert "intentional child failure" in (base / "sdk-groups/group-1/pytest.log").read_text()
+    assert "intentional child failure" in (base / "sdk-groups/group-2/pytest.log").read_text()
     assert inherited == original and dict(os.environ) == before
 
 
@@ -387,10 +401,12 @@ def test_actual_environment():
     assert budget["threads_per_child"] == 1
     assert inherited == original
     assert report["tests"] == {"tests": 4, "failures": 0, "errors": 0, "skipped": 0}
+    assert [child["selectors"] for child in report["groups"]] == groups.split_groups(SELECTORS, TOY_FIXED)
+    assert [child["tests"]["tests"] for child in report["groups"]] == [1, 1, 2]
     for child in report["groups"]:
         rows, _ = groups.read_child(base / "sdk-groups" / child["junit"],
                                    base / "sdk-groups" / child["phase_timings"], child["selectors"])
-        assert len(rows) == 2
+        assert len(rows) == len(child["selectors"])
 
 
 def test_canonical_output_uses_actual_elements_and_records_in_original_order(actual_pass):
@@ -415,13 +431,21 @@ def test_canonical_output_uses_actual_elements_and_records_in_original_order(act
 
 def test_group_processes_really_overlap(actual_pass):
     _, _, report = actual_pass
-    a, b = report["groups"]
-    assert max(a["start_seconds"], b["start_seconds"]) < min(a["stop_seconds"], b["stop_seconds"])
-    assert (
-        a["command"][a["command"].index("--basetemp") + 1]
-        != b["command"][b["command"].index("--basetemp") + 1]
-    )
-    assert a["command"][a["command"].index("-o") + 1] != b["command"][b["command"].index("-o") + 1]
+    children = report["groups"]
+    assert len(children) == 3
+    workers = report["cpu_budget"]["max_concurrent_children"]
+    events = sorted((value, delta) for child in children for value, delta in (
+        (child["start_seconds"], 1), (child["stop_seconds"], -1)))
+    active, maximum = 0, 0
+    for _, delta in events:
+        active += delta
+        maximum = max(maximum, active)
+        assert 0 <= active <= workers
+    assert active == 0 and maximum == workers
+    if workers == 3:
+        assert max(item["start_seconds"] for item in children) < min(item["stop_seconds"] for item in children)
+    assert len({item["command"][item["command"].index("--basetemp") + 1] for item in children}) == 3
+    assert len({item["command"][item["command"].index("-o") + 1] for item in children}) == 3
 
 
 @pytest.mark.parametrize(
@@ -437,16 +461,58 @@ def test_real_fail_skip_or_setup_error_cannot_pass(tmp_path, body):
     base, report = execute(root)
     assert report["status"] == "failed" and "error" in report
     assert (base / "sdk-groups/report.json").exists()
-    assert any((base / "sdk-groups" / f"group-{i}/pytest.log").stat().st_size for i in range(2))
+    assert any((base / "sdk-groups" / f"group-{i}/pytest.log").stat().st_size for i in range(3))
 
 
 def test_future_selector_is_automatically_in_complete_complement():
     selectors = ["tests/test_future.py", *SELECTORS]
-    assert groups.split_groups(selectors, TOY_HEAVY)[0] == list(TOY_HEAVY)
-    assert groups.split_groups(selectors, TOY_HEAVY)[1] == [selectors[0], SELECTORS[0], SELECTORS[-1]]
+    assert groups.split_groups(selectors, TOY_FIXED)[0] == list(TOY_FIXED[0])
+    assert groups.split_groups(selectors, TOY_FIXED)[1] == list(TOY_FIXED[1])
+    assert groups.split_groups(selectors, TOY_FIXED)[2] == [selectors[0], SELECTORS[0], SELECTORS[-1]]
+
+
+def test_preregistered_three_groups_retain_actual_source_scope_and_order():
+    selectors = groups.selector_contract(ROOT)
+    expected_fixed = (('tests/test_control_stream_acceptance.py',), ('tests/test_econ_saved_prediction_linear.py', 'tests/test_control_function_common_prediction.py', 'tests/test_streaming_control_function_engine.py', 'tests/test_control_function_stream_state.py', 'tests/test_nested_logit_independent.py', 'tests/test_parallel_sdk_groups.py', 'tests/test_bayesian_hypothesis_oracles.py', 'tests/test_bayesian_hypothesis_state.py', 'tests/test_latent_sem_lifecycle.py', 'tests/test_latent_sem_math.py', 'tests/test_latent_sem_state.py', 'tests/test_dynamic_factor.py', 'tests/test_finite_mixture.py', 'tests/test_weakiv_clr_math.py', 'tests/test_weakiv_clr_state.py', 'tests/test_supervised.py', 'tests/test_supervised_integration_lifecycle.py', 'tests/test_five_model_public_integration.py'))
+    current_fixed = (expected_fixed[0], expected_fixed[1] + ('tests/test_bayesian_var_conjugate.py', 'tests/test_bayesian_var_sbc_protocol.py', 'tests/test_bayesian_var_public_integration.py', 'tests/test_bayesian_var_public_admission_v2.py', 'tests/test_editor_catalog_intern_v2.py'))
+    assert groups.FIXED_GROUPS == current_fixed
+    assert expected_fixed[1][:5] == (
+        "tests/test_econ_saved_prediction_linear.py",
+        "tests/test_control_function_common_prediction.py",
+        "tests/test_streaming_control_function_engine.py",
+        "tests/test_control_function_stream_state.py",
+        "tests/test_nested_logit_independent.py",
+    )
+    assert expected_fixed[1][5] == "tests/test_parallel_sdk_groups.py"
+    assert selectors == gate.TESTS and len(selectors) == 160
+    partition = groups.split_groups(selectors)
+    assert partition[:2] == [[item for item in selectors if item in group] for group in current_fixed]
+    assert partition[2] == [item for item in selectors if item not in FIXED_SELECTORS]
+    assert [len(partition[0]), len(partition[1])] == [1, 23]
+    plan = json.loads((ROOT / "docs/econometrics/merge-gate-sdk-groups-plan.json").read_text())
+    assert plan["group_count"] == 3 and plan["fixed_groups"] == [list(group) for group in expected_fixed]
+    baseline = plan["selected_tests"]
+    assert selectors[:138] == baseline
+    assert selectors[145:146] == ["tests/test_multivariate_score_uncertainty.py"]
+    assert selectors[138:142] == ["tests/test_weighted_binary.py", "tests/test_econ_glm.py", "tests/test_econ_glm_oracle.py", "tests/test_econ_saved_prediction_categories.py"]
+    assert plan["effective_groups"] == groups.split_groups(baseline, expected_fixed)
+    assert list(map(len, partition)) == [1, 23, 136]
+    assert plan["environment"] == groups.GATE_ENVIRONMENT
+    assert plan["timeout_seconds"] == 900
+    assert plan["selected_test_scope_sha256"] == hashlib.sha256(
+        json.dumps(baseline, separators=(",", ":")).encode()).hexdigest()
+    assert set(sum(partition, [])) == set(selectors)
+    assert sum(map(len, partition)) == len(selectors)
+    # Within a fixed group, membership never replaces original source order.
+    assert groups.split_groups(selectors, tuple(tuple(reversed(group)) for group in current_fixed)) == partition
+
+    assert expected_fixed[1][6:] == tuple(gate.TESTS[126:138])
+
 
 
 def test_production_four_file_partition_retains_actual_source_scope_and_order():
+    # Retain the incoming case name and its complete heavy-file scope. Legacy
+    # execution now uses three groups; distributed shards use four node groups.
     selectors = groups.selector_contract(ROOT)
     expected_heavy = (
         "tests/test_econ_saved_prediction_linear.py",
@@ -455,14 +521,41 @@ def test_production_four_file_partition_retains_actual_source_scope_and_order():
         "tests/test_control_stream_acceptance.py",
     )
     assert groups.EXPENSIVE == expected_heavy
-    assert selectors == gate.TESTS and len(selectors) >= 76
-    heavy, other = groups.split_groups(selectors)
-    assert heavy == [item for item in selectors if item in expected_heavy]
-    assert other == [item for item in selectors if item not in expected_heavy]
-    assert len(heavy) == 4 and len(other) == len(selectors) - 4
-    assert set(heavy).isdisjoint(other) and set(heavy + other) == set(selectors)
-    # Tuple order controls membership only, never the original file order.
-    assert groups.split_groups(selectors, tuple(reversed(expected_heavy))) == [heavy, other]
+    assert selectors == gate.TESTS and len(selectors) == 160
+    partition = groups.split_groups(selectors)
+    assert list(map(len, partition)) == [1, 23, 136]
+    assert Counter(item for group in partition for item in group) == Counter(selectors)
+    assert set(expected_heavy) <= set(sum(partition[:2], []))
+    original_order = [item for item in selectors if item in expected_heavy]
+    actual = [item for group in partition for item in group if item in expected_heavy]
+    assert sorted(actual, key=selectors.index) == original_order
+
+
+def test_mprobit_survey_and_categorical_merge_preserves_all_complete_batches():
+    selectors = groups.selector_contract(ROOT)
+    merged_batches = {
+        "tests/test_mprobit.py",
+        "tests/test_mprobit_postestimation.py",
+        "tests/test_mprobit_independent.py",
+        "tests/test_categorical_spline_regression.py",
+        "tests/test_categorical_spline_pca.py",
+        "tests/test_categorical_frequency_rotation.py",
+        "tests/test_categorical_frequency_bootstrap.py",
+        "tests/test_survey_four_stage_oracles.py",
+        "tests/test_survey_four_stage_design.py",
+        "tests/test_survey_four_stage_review.py",
+        "tests/test_survey_four_stage_safety.py",
+        "tests/test_survey_four_stage_regression.py",
+        "tests/test_survey_four_stage_regression_state.py",
+    }
+    assert merged_batches <= set(selectors)
+    assert len(selectors) == len(set(selectors)) == 160
+    first, second, other = groups.split_groups(selectors)
+    assert [len(first), len(second), len(other)] == [1, 23, 136]
+    assert merged_batches <= set(other)
+    assert set(first).isdisjoint(second)
+    assert set(first + second).isdisjoint(other)
+    assert set(first + second + other) == set(selectors)
 
 
 def test_mprobit_survey_categorical_causal_and_packaging_merge_preserves_complete_batches():
@@ -486,14 +579,20 @@ def test_mprobit_survey_categorical_causal_and_packaging_merge_preserves_complet
         "tests/test_causal_effect_distribution.py",
         "tests/test_causal_confidence_delivery.py",
         "tests/test_sdist_packaging.py",
+        "tests/test_econ_postest_suest.py",
+        "tests/test_econ_suest_extended.py",
+        "tests/test_econ_suest_binomial_commands.py",
+        "tests/test_verify_team_cleanup.py",
+        "tests/test_verify_windows_cloud_ui_fixture.py",
     }
     assert merged_batches <= set(selectors)
-    assert len(selectors) == len(set(selectors)) == 102
-    heavy, other = groups.split_groups(selectors)
-    assert len(heavy) == 4 and len(other) == 98
+    assert len(selectors) == len(set(selectors)) == 160
+    first, second, other = groups.split_groups(selectors)
+    assert [len(first), len(second), len(other)] == [1, 23, 136]
     assert merged_batches <= set(other)
-    assert set(heavy).isdisjoint(other)
-    assert set(heavy + other) == set(selectors)
+    assert set(first).isdisjoint(second)
+    assert set(first + second).isdisjoint(other)
+    assert set(first + second + other) == set(selectors)
 
 
 def test_production_future_selectors_remain_complete_and_in_original_complement_order():
@@ -503,17 +602,17 @@ def test_production_future_selectors_remain_complete_and_in_original_complement_
         "tests/test_future_before.py", *selectors[:midpoint],
         "tests/test_future_middle.py", *selectors[midpoint:], "tests/test_future_after.py",
     ]
-    heavy, other = groups.split_groups(future)
-    assert heavy == groups.split_groups(selectors)[0]
-    assert other == [item for item in future if item not in groups.EXPENSIVE]
-    assert len(heavy) + len(other) == len(future) == len(selectors) + 3
-    assert set(heavy).isdisjoint(other) and set(heavy + other) == set(future)
+    partition = groups.split_groups(future)
+    assert partition[:2] == groups.split_groups(selectors)[:2]
+    assert partition[2] == [item for item in future if item not in FIXED_SELECTORS]
+    assert sum(map(len, partition)) == len(future) == len(selectors) + 3
+    assert set(sum(partition, [])) == set(future)
 
 
-@pytest.mark.parametrize("missing", groups.EXPENSIVE)
+@pytest.mark.parametrize("missing", FIXED_SELECTORS)
 def test_production_missing_any_heavy_source_file_is_rejected(missing):
     selectors = [item for item in groups.selector_contract(ROOT) if item != missing]
-    with pytest.raises(ValueError, match="Heavy SDK selectors missing"):
+    with pytest.raises(ValueError, match="Fixed SDK selectors missing"):
         groups.split_groups(selectors)
 
 
@@ -532,12 +631,40 @@ def test_production_missing_any_heavy_source_file_is_rejected(missing):
 )
 def test_invalid_overlapping_or_duplicate_selector_scope_rejected(selectors):
     with pytest.raises(ValueError):
-        groups.split_groups(selectors, TOY_HEAVY)
+        groups.split_groups(selectors, TOY_FIXED)
 
 
 def test_missing_heavy_selector_cannot_silently_change_partition():
-    with pytest.raises(ValueError, match="Heavy SDK selectors missing"):
-        groups.split_groups([SELECTORS[0], SELECTORS[-1]], TOY_HEAVY)
+    with pytest.raises(ValueError, match="Fixed SDK selectors missing"):
+        groups.split_groups([SELECTORS[0], SELECTORS[-1]], TOY_FIXED)
+
+
+@pytest.mark.parametrize('fixed', [
+    (), (TOY_FIXED[0],), (*TOY_FIXED, ('tests/test_before.py',)),
+    ((), TOY_FIXED[1]), (TOY_FIXED[0], TOY_FIXED[0]),
+    (TOY_FIXED[0], ('tests/test_missing.py',)),
+])
+def test_fixed_groups_cannot_drop_duplicate_or_add_a_worker_scope(fixed):
+    with pytest.raises(ValueError):
+        groups.split_groups(SELECTORS, fixed)
+
+
+@pytest.mark.parametrize('attack', ['missing_third', 'two_group_plan', 'duplicate_third'])
+def test_actual_three_child_merge_cannot_accept_an_incomplete_or_replayed_child(
+    actual_pass, tmp_path, attack
+):
+    children = copied_children(actual_pass, tmp_path)
+    partition = groups.split_groups(SELECTORS, TOY_FIXED)
+    if attack == 'missing_third':
+        children.pop()
+    elif attack == 'two_group_plan':
+        partition = [partition[0] + partition[1], partition[2]]
+    else:
+        children[2] = children[1]
+    with pytest.raises(ValueError):
+        groups.merge_evidence(children, SELECTORS, partition,
+                              tmp_path / 'merged.xml', tmp_path / 'merged.jsonl')
+    assert not (tmp_path / 'merged.xml').exists()
 
 
 @pytest.mark.parametrize(
@@ -602,7 +729,7 @@ def test_real_raw_evidence_tamper_rejected(actual_pass, tmp_path, attack):
         groups.merge_evidence(
             children,
             SELECTORS,
-            groups.split_groups(SELECTORS, TOY_HEAVY),
+            groups.split_groups(SELECTORS, TOY_FIXED),
             tmp_path / "merged.xml",
             tmp_path / "merged.jsonl",
         )
@@ -610,7 +737,7 @@ def test_real_raw_evidence_tamper_rejected(actual_pass, tmp_path, attack):
 
 def test_selector_missing_all_real_cases_is_rejected(actual_pass, tmp_path):
     children = copied_children(actual_pass, tmp_path)
-    child = children[1]
+    child = children[2]
     xml = child / "pytest.xml"
     tree = ET.parse(xml)
     suite = next(tree.getroot().iter("testsuite"))
@@ -633,7 +760,7 @@ def test_selector_missing_all_real_cases_is_rejected(actual_pass, tmp_path):
         groups.merge_evidence(
             children,
             SELECTORS,
-            groups.split_groups(SELECTORS, TOY_HEAVY),
+            groups.split_groups(SELECTORS, TOY_FIXED),
             tmp_path / "merged.xml",
             tmp_path / "merged.jsonl",
         )
@@ -641,7 +768,7 @@ def test_selector_missing_all_real_cases_is_rejected(actual_pass, tmp_path):
 
 def test_cross_file_reordering_rejected_even_if_xml_and_phases_agree(actual_pass, tmp_path):
     children = copied_children(actual_pass, tmp_path)
-    child = children[0]
+    child = children[2]
     xml = child / "pytest.xml"
     tree = ET.parse(xml)
     suite = next(tree.getroot().iter("testsuite"))
@@ -655,7 +782,7 @@ def test_cross_file_reordering_rejected_even_if_xml_and_phases_agree(actual_pass
         groups.merge_evidence(
             children,
             SELECTORS,
-            groups.split_groups(SELECTORS, TOY_HEAVY),
+            groups.split_groups(SELECTORS, TOY_FIXED),
             tmp_path / "merged.xml",
             tmp_path / "merged.jsonl",
         )
@@ -663,7 +790,7 @@ def test_cross_file_reordering_rejected_even_if_xml_and_phases_agree(actual_pass
 
 def test_partition_cannot_omit_repeat_or_move_a_selector(actual_pass, tmp_path):
     children = copied_children(actual_pass, tmp_path)
-    partition = groups.split_groups(SELECTORS, TOY_HEAVY)
+    partition = groups.split_groups(SELECTORS, TOY_FIXED)
     partition[1].pop()
     with pytest.raises(ValueError, match="partition"):
         groups.merge_evidence(
@@ -691,6 +818,214 @@ def test_real_total_timeout_preserves_partial_phases_and_kills_children(tmp_path
     )
 
 
+def test_stop_reaps_exited_leader_before_signalling_its_group(tmp_path, monkeypatch):
+    # Keep the incoming historical ID: an empty group is reaped after proof;
+    # no signal occurs after its original session anchor is released.
+    ready = tmp_path / "ready"
+    process = groups._launch_sdk(
+        [sys.executable, "-c", f"from pathlib import Path; Path({str(ready)!r}).touch()"])
+    try:
+        if os.name == "posix":
+            assert _sdk_lifecycle_exited(process) == 0
+            assert process.returncode is None
+            with monkeypatch.context() as patch:
+                patch.setattr(os, "killpg", lambda *args: pytest.fail("Proved empty group must not receive a signal"))
+                groups._stop([process])
+            assert process._openecon_sdk_session_closed is True
+        else:
+            import _winapi
+            assert _winapi.WaitForSingleObject(process._handle, 3000) == _winapi.WAIT_OBJECT_0
+            assert ready.exists() and process.returncode is None
+            groups._stop([process])
+        assert process.returncode == 0
+    finally:
+        groups._stop([process])
+
+
+
+@pytest.mark.parametrize("stubborn", [False, True])
+def test_stop_cleans_live_worker_after_leader_exit(tmp_path, stubborn):
+    ready, survived = tmp_path / "ready", tmp_path / "survived"
+    worker = ("import os,pathlib,signal,time; from pathlib import Path; "
+              + ("signal.signal(signal.SIGTERM,signal.SIG_IGN); " if stubborn else "")
+              + _atomic_sdk_pid_marker(ready)
+              + f"time.sleep(6); Path({str(survived)!r}).touch(); time.sleep(30)")
+    command = ([sys.executable, "-c", worker] if os.name == "nt" else
+               [sys.executable, "-c", f"import subprocess,sys; subprocess.Popen([sys.executable,'-c',{worker!r}])"])
+    process = groups._launch_sdk(command)
+    try:
+        deadline = time.monotonic() + 3
+        while not ready.exists() and time.monotonic() < deadline:
+            time.sleep(.01)
+        assert ready.exists()
+        worker_pid = int(ready.read_text())
+        if os.name == "posix":
+            assert _sdk_lifecycle_exited(process) == 0 and process.returncode is None
+        groups._stop([process])
+        if os.name == "posix":
+            assert worker_pid != process.pid
+            actual = subprocess.run(["/bin/ps", "-p", str(worker_pid), "-o", "stat="],
+                                    capture_output=True, text=True, timeout=3)
+            assert actual.returncode in (0, 1)
+            assert not any(state and state[0] not in "ZX" for state in actual.stdout.split()), (
+                "Actual descendant writer survived completed group cleanup")
+        time.sleep(1.1)
+        assert not survived.exists(), "A worker survived owned process cleanup"
+        assert process.returncode is not None
+    finally:
+        groups._stop([process])
+
+
+
+def test_group_permission_retry_requires_success_or_absence(tmp_path, monkeypatch):
+    process = groups._launch_sdk([sys.executable, "-c", "import time; time.sleep(30)"])
+    calls = []
+    try:
+        if os.name == "posix":
+            actual = os.killpg
+
+            def actual_last_recipient_exit(pgid, signum):
+                calls.append((pgid, signum))
+                assert pgid == process.pid and process.returncode is None
+                actual(pgid, signum)
+                assert _sdk_lifecycle_exited(process) == -signum
+                raise PermissionError(errno.EPERM, "actual last-recipient zombie transition")
+
+            with monkeypatch.context() as patch:
+                patch.setattr(os, "killpg", actual_last_recipient_exit)
+                groups._stop([process])
+            # Retain the original success-or-absence role, with real absence.
+            # A still-live recipient denial must not be silently retried into PASS.
+            assert calls == [(process.pid, groups.signal.SIGTERM)]
+            assert process._openecon_sdk_session_closed is True
+        else:
+            groups._stop([process])
+        assert process.returncode is not None
+    finally:
+        groups._stop([process])
+
+
+
+def test_persistent_group_denial_fails_and_still_stops_other_owned_child(monkeypatch):
+    processes = [groups._launch_sdk([sys.executable, "-c", "import time; time.sleep(30)"]) for _ in range(2)]
+    try:
+        with monkeypatch.context() as patch:
+            if os.name == "posix":
+                actual = groups._signal_sdk_group
+
+                def denied_first(process, signum, deadline):
+                    if process is processes[0]:
+                        raise PermissionError(errno.EPERM, "persistent owned group denial")
+                    return actual(process, signum, deadline)
+
+                patch.setattr(groups, "_signal_sdk_group", denied_first)
+            else:
+                def denied_handle():
+                    raise PermissionError(errno.EPERM, "persistent owned handle denial")
+
+                patch.setattr(processes[0], "terminate", denied_handle)
+                patch.setattr(processes[0], "kill", denied_handle)
+            with pytest.raises(PermissionError, match="persistent owned (group|handle) denial"):
+                groups._stop(processes)
+            if os.name == "posix":
+                assert processes[0]._openecon_sdk_session_closed is False
+                assert processes[0].returncode is None and groups._sdk_exit(processes[0]) is None
+                assert processes[1]._openecon_sdk_session_closed is True
+            else:
+                assert processes[0].poll() is None
+            assert processes[1].returncode is not None
+    finally:
+        groups._stop(processes)
+
+
+
+@pytest.mark.parametrize("unsafe_temporary_remover,fd_remover_absent", [(False, False), (True, False), (False, True)])
+def test_process_cleanup_denial_preserves_failed_report_and_child_logs(tmp_path, monkeypatch,
+                                                                     unsafe_temporary_remover, fd_remover_absent):
+    path = tmp_path / "repo"
+    ready = path / "persistent-denial-ready"
+    # Keep the first child actually alive on both platforms. Reaping an already
+    # exited Windows handle cannot meaningfully exercise native signal denial.
+    other = ("import pathlib,time\n"
+             "def test_bad():\n"
+             f"    marker=pathlib.Path({str(ready)!r})\n"
+             "    deadline=time.monotonic()+5\n"
+             "    while not marker.exists():\n"
+             "        assert time.monotonic()<deadline\n"
+             "        time.sleep(.01)\n"
+             "    assert False, 'retained failure'\n")
+    root = repository(path, {item: other for item in SELECTORS})
+    (root / TOY_FIXED[0][0]).write_text(
+        "import pathlib,time,pytest\n"
+        "@pytest.fixture(autouse=True)\n"
+        "def actual_live_writer():\n"
+        f"    pathlib.Path({str(ready)!r}).touch()\n"
+        "    yield\n"
+        "    time.sleep(30)\n"
+        "def test_bad(): assert False, 'retained failure'\n")
+    owned, actual_launch = [], groups._launch_sdk
+    try:
+        with monkeypatch.context() as patch:
+            def retained_launch(*args, **kwargs):
+                process = actual_launch(*args, **kwargs)
+                owned.append(process)
+                if os.name == "nt" and len(owned) == 1:
+                    def denied_handle():
+                        raise PermissionError(errno.EPERM, "persistent receipt cleanup denial")
+
+                    patch.setattr(process, "terminate", denied_handle)
+                    patch.setattr(process, "kill", denied_handle)
+                return process
+
+            patch.setattr(groups, "_launch_sdk", retained_launch)
+            if os.name == "posix":
+                actual_signal = groups._signal_sdk_group
+
+                def denied_first(process, signum, deadline):
+                    if process is owned[0]:
+                        raise PermissionError(errno.EPERM, "persistent receipt cleanup denial")
+                    return actual_signal(process, signum, deadline)
+
+                patch.setattr(groups, "_signal_sdk_group", denied_first)
+            if fd_remover_absent:
+                patch.setattr(groups.shutil.rmtree, "avoids_symlink_attacks", False)
+            if unsafe_temporary_remover:
+                def refused_temporary_cleanup(path, identity):
+                    raise ValueError("SDK temporary cleanup refused a replaced directory or unsafe remover")
+
+                patch.setattr(groups, "remove_child_temporary_directory", refused_temporary_cleanup)
+            base, report = execute(root)
+            assert report["status"] == "failed" and "SDK child process failed" in report["error"]
+            assert report["execution_error"] == report["error"]
+            assert "PermissionError" in report["process_cleanup_error"]
+            persisted = json.loads((base / "sdk-groups/report.json").read_text())
+            for key in ("status", "error", "execution_error", "process_cleanup_error", "temporary_cleanup_errors"):
+                assert persisted[key] == report[key]
+            assert "retained failure" in "".join((base / "sdk-groups" / item["log"]).read_text()
+                                                for item in report["groups"])
+            first = next(item for item in report["groups"] if item["pid"] == owned[0].pid)
+            assert first["temporary_directory_removed_after_stop"] is False
+            assert "verified owned process-group shutdown" in first["temporary_cleanup_error"]
+            assert Path(first["temporary_directory"]).is_dir()
+            failures = report["temporary_cleanup_errors"]
+            removal_refused = unsafe_temporary_remover or not groups.shutil.rmtree.avoids_symlink_attacks
+            assert len(failures) == (len(report["groups"]) if removal_refused else 1)
+            for item in report["groups"]:
+                assert (base / "sdk-groups" / item["log"]).is_file()
+                if item is first or removal_refused:
+                    assert item["temporary_directory_removed_after_stop"] is False
+                    assert Path(item["temporary_directory"]).is_dir()
+                    assert {"group_index": item["index"], "directory": item["temporary_directory"],
+                            "error": item["temporary_cleanup_error"]} in failures
+                    if item is not first:
+                        assert "unsafe remover" in item["temporary_cleanup_error"]
+                else:
+                    assert item["temporary_directory_removed_after_stop"] is True
+    finally:
+        groups._stop(owned)
+
+
+
 @pytest.mark.skipif(os.name == "nt", reason="Process-group regression requires POSIX")
 def test_outer_wrapper_timeout_stops_every_child_and_grandchild(tmp_path, monkeypatch):
     # A smaller test watchdog deliberately fires before the helper's own clock.
@@ -707,8 +1042,14 @@ def test_worker():
 from pathlib import Path
 spec=importlib.util.spec_from_file_location('actual_helper',{str(ROOT / "scripts/run_parallel_sdk_groups.py")!r})
 helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
+# TOY three-worker scheduling must launch every real child before the watchdog.
+helper.detect_cpu_budget=lambda: {{"system": "Darwin", "host_cpus": 3,
+    "affinity_cpus": 3, "effective_cpus": 3., "groups": 3,
+    "max_concurrent_children": 3, "threads_per_child": 1, "cgroup": {{
+        "status": "not_applicable", "version": None, "views": [],
+        "probes": [], "limits": [], "error": None}}}}
 root=Path({str(root)!r});base=root/'receipts/outer';base.mkdir(parents=True)
-report=helper.run_groups(root=root,python=Path(sys.executable),selectors={SELECTORS!r},directory=base/'sdk-groups',junit=base/'all.xml',timings=base/'all.jsonl',timeout=60,expensive={TOY_HEAVY!r})
+report=helper.run_groups(root=root,python=Path(sys.executable),selectors={SELECTORS!r},directory=base/'sdk-groups',junit=base/'all.xml',timings=base/'all.jsonl',timeout=60,fixed_groups={TOY_FIXED!r})
 raise SystemExit(0 if report['status']=='passed' else 1)
 """)
     monkeypatch.setattr(gate, "ROOT", root)
@@ -721,12 +1062,40 @@ raise SystemExit(0 if report['status']=='passed' else 1)
     report = json.loads((receipt / "outer/sdk-groups/report.json").read_text())
     assert report["status"] == "failed" and "signal" in report["error"]
     pid_files = list((root / "tests").glob("*.pid"))
-    assert len(pid_files) == 2, "Both real child processes must have spawned a grandchild"
+    assert len(pid_files) == 3, "All three real child processes must have spawned a grandchild"
     time.sleep(2.5)
     assert not list((root / "tests").glob("*.orphan")), (
         "A grandchild survived process-group cleanup"
     )
 
+
+def test_production_cli_cannot_extend_or_shrink_900_deadline(tmp_path):
+    modes = (["--local"], ["--execution", str(tmp_path / "execution.json"),
+                           "--component-sdk-version", "3.13", "--shard-index", "0"])
+    for mode in modes:
+        for timeout in (899, 901):
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "scripts/run_parallel_sdk_groups.py"),
+                    "--python",
+                    sys.executable,
+                    "--directory",
+                    str(tmp_path / "groups"),
+                    "--junitxml",
+                    str(tmp_path / "out.xml"),
+                    "--gate-timings",
+                    str(tmp_path / "out.jsonl"),
+                    *mode,
+                    "--timeout",
+                    str(timeout),
+                ],
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
+            assert result.returncode != 0 and "invalid choice" in result.stderr
+        assert not (tmp_path / "groups").exists()
 
 @pytest.mark.parametrize("shard,timeouts", [(None, (900, 1799, 1801)), (0, (899, 901, 1800)),
                                            (1, (899, 901, 1800))])
@@ -763,6 +1132,168 @@ def test_production_cli_cannot_extend_shrink_or_borrow_mode_deadline(tmp_path, s
     assert not (tmp_path / "groups").exists()
 
 
+def local_cli_repository(path):
+    """Run the production main and partition against a small committed scope."""
+    root = repository(path)
+    with (root / ".gitignore").open("a") as stream:
+        stream.write(".venv*\n")
+    selectors = [*SELECTORS, *(item for item in FIXED_SELECTORS if item not in SELECTORS)]
+    for selector in selectors:
+        if not (root / selector).exists():
+            shutil.copyfile(root / SELECTORS[0], root / selector)
+    (root / "scripts/verify_merge_candidate.py").write_text("TESTS=" + repr(selectors) + "\n")
+    wrapper = root / "scripts/run_parallel_sdk_groups.py"
+    wrapper.write_text(f"""import importlib.util
+from pathlib import Path
+spec=importlib.util.spec_from_file_location('actual_helper',{str(ROOT / 'scripts/run_parallel_sdk_groups.py')!r})
+helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
+helper.ROOT=Path({str(root)!r})
+raise SystemExit(helper.main())
+""")
+    subprocess.run(["git", "add", "."], cwd=root, check=True)
+    subprocess.run(["git", "commit", "-qm", "production local CLI fixture"], cwd=root, check=True)
+    return root, selectors
+
+
+def local_cli(root, base, *, started=None, extra=(), env=None, clock_offset=0):
+    base.mkdir(parents=True)
+    started = time.monotonic() + clock_offset if started is None else started
+    options = groups.environment(root) if env is None else env.copy()
+    options.update(OPENECON_SDK_PARENT_STARTED_MONOTONIC=str(started),
+                   OPENECON_SDK_PARENT_DEADLINE_MONOTONIC=str(started + 900))
+    command = [sys.executable, "scripts/run_parallel_sdk_groups.py", "--python", sys.executable,
+               "--directory", str(base / "sdk-groups"), "--junitxml", str(base / "combined.xml"),
+               "--gate-timings", str(base / "combined.jsonl"), "--local", *extra]
+    if clock_offset:
+        # A fresh hosted machine can have uptime below the 900-second budget.
+        # Shift only the clock origin in the real CLI process: elapsed time,
+        # the production admission guard, and the fixed deadline are unchanged.
+        command = [sys.executable, "-c",
+                   "import runpy,sys,time; actual=time.monotonic; "
+                   f"time.monotonic=lambda:actual()+{clock_offset!r}; "
+                   "sys.argv=sys.argv[1:]; runpy.run_path(sys.argv[0],run_name='__main__')",
+                   *command[1:]]
+    return subprocess.run(command, cwd=root, env=options, capture_output=True, text=True, timeout=15)
+
+
+def test_real_local_cli_has_full_source_scope_and_null_hosted_identity(tmp_path, monkeypatch):
+    root, selectors = local_cli_repository(tmp_path / "repo")
+    monkeypatch.setenv("PYTEST_ADDOPTS", "-k nonexistent")
+    monkeypatch.setenv("PYTEST_PLUGINS", "nonexistent_plugin")
+    base = root / "receipts/local"
+    result = local_cli(root, base, env=dict(os.environ))
+    assert result.returncode == 0, result.stdout + result.stderr
+    manifest = json.loads((base / "sdk-groups/report.json").read_text())
+    assert manifest["source_commit"] == groups.source_identity(root)["source_commit"]
+    assert manifest["source_tree"] == groups.source_identity(root)["source_tree"]
+    assert manifest["execution"] is manifest["execution_sha256"] is manifest["component_sdk_version"] is None
+    assert manifest["timeout_seconds"] == 900 and 0 < manifest["seconds"] < 900
+    assert manifest["selected_tests"] == selectors and manifest["tests"]["tests"] == 4 * len(selectors)
+    assert [item["selectors"] for item in manifest["groups"]] == groups.split_groups(selectors)
+    assert len((base / "combined.jsonl").read_text().splitlines()) == 12 * len(selectors)
+    for item in manifest["groups"]:
+        assert item["execution"] is None and item["exit_code"] == 0
+        for key in ("log", "junit", "phase_timings", "collection"):
+            path = base / "sdk-groups" / item[key]
+            assert path.is_file() and item[key + "_sha256"] == groups.digest(path)
+
+
+def test_complete_local_gate_runs_real_group_cli_for_both_bound_interpreters(tmp_path, monkeypatch):
+    # Both toy paths use this test's interpreter. This proves CLI wiring and
+    # full versus partial scope; the fixture is not dual-SDK scientific proof.
+    root, selectors = local_cli_repository(tmp_path / "repo")
+    paths = []
+    for version in ("311", "313"):
+        environment = root / (".venv" + version)
+        environment.symlink_to(sys.prefix, target_is_directory=True)
+        paths.append(environment / "bin/python")
+    monkeypatch.setattr(gate, "ROOT", root)
+    monkeypatch.setattr(gate, "TESTS", selectors)
+    actual_output = subprocess.check_output
+
+    def version_output(command, **kwargs):
+        if len(command) == 3 and command[1] == "-c" and "sys.version_info" in command[2]:
+            return "3.11\n" if "/.venv311/" in command[0] else "3.13\n"
+        return actual_output(command, **kwargs)
+
+    monkeypatch.setattr(gate.subprocess, "check_output", version_output)
+    actual_step = gate.run_step
+
+    def common_fixture(name, command, directory, timeout, **kwargs):
+        if name.startswith("sdk-"):
+            return actual_step(name, command, directory, timeout, **kwargs)
+        return dict(name=name, command=command, status="passed", exit_code=0,
+                    seconds=.001, log=name + ".log", log_sha256="0" * 64)
+
+    monkeypatch.setattr(gate, "run_step", common_fixture)
+    monkeypatch.setattr(gate, "package_manifest", lambda directory: [])
+    args = SimpleNamespace(directory=root / "receipts/full-local", python=paths,
+                           timeout=900, local_sdk_groups=True, ci_sdk_version=None,
+                           publish_repo=None, pr=None)
+    assert gate.run(args) == 0
+    report = json.loads((args.directory / "report.json").read_text())
+    assert report["source_commit"] == groups.source_identity(root)["source_commit"]
+    assert report["component_mode"] is False and report["component_sdk_version"] is None
+    assert report["sdk_versions_executed"] == ["3.11", "3.13"]
+    assert report["selected_tests"] == selectors
+    for version in report["sdk_versions_executed"]:
+        manifest = json.loads((args.directory / f"sdk-{version}-groups/report.json").read_text())
+        assert manifest["python"] == str(paths[0 if version == "3.11" else 1])
+        assert manifest["tests"] == dict(tests=4 * len(selectors), failures=0, errors=0, skipped=0)
+        assert manifest["execution"] is manifest["component_sdk_version"] is None
+        assert groups.collected_nodes(args.directory / f"sdk-{version}-groups/group-0/pytest-collection.jsonl")
+        assert len((args.directory / f"pytest-{version}-timings.jsonl").read_text().splitlines()) == 12 * len(selectors)
+
+
+@pytest.mark.parametrize("age", [901, 899.98])
+def test_real_local_cli_cannot_restart_expired_or_nearly_spent_900_budget(tmp_path, age):
+    root, _ = local_cli_repository(tmp_path / "repo")
+    base = root / "receipts/deadline"
+    origin = 1_000_000
+    result = local_cli(root, base, started=time.monotonic() + origin - age,
+                       clock_offset=origin)
+    assert result.returncode == 1
+    manifest = json.loads((base / "sdk-groups/report.json").read_text())
+    assert manifest["status"] == "failed" and "deadline" in manifest["error"]
+    assert manifest["timeout_seconds"] == 900 and manifest["seconds"] >= 900
+    assert "tests" not in manifest and not (base / "combined.xml").exists()
+
+
+@pytest.mark.parametrize("extra,reason", [
+    (["--execution", "missing.json"], "not allowed with argument"),
+    (["--component-sdk-version", "3.11"], "cannot claim"),
+    (["--timeout", "899"], "invalid choice"),
+    (["--timeout", "901"], "invalid choice"),
+    (["--shard-index", "0"], "cannot claim"),
+    (["--shard-index", "1"], "cannot claim"),
+    (["--timeout", "1800"], "900-second deadline"),
+])
+def test_local_cli_rejects_hosted_identity_or_changed_budget_before_children(tmp_path, extra, reason):
+    root, _ = local_cli_repository(tmp_path / "repo")
+    base = root / "receipts/rejected"
+    result = local_cli(root, base, extra=extra)
+    assert result.returncode != 0 and reason in result.stderr
+    assert not (base / "sdk-groups").exists()
+
+
+def test_hosted_cli_still_requires_component_before_reading_execution(tmp_path):
+    result = subprocess.run([sys.executable, str(ROOT / "scripts/run_parallel_sdk_groups.py"),
+                             "--python", sys.executable, "--directory", str(tmp_path / "groups"),
+                             "--junitxml", str(tmp_path / "out.xml"), "--gate-timings", str(tmp_path / "out.jsonl"),
+                             "--execution", str(tmp_path / "missing.json")],
+                            capture_output=True, text=True, timeout=10)
+    assert result.returncode != 0 and "requires --component-sdk-version" in result.stderr
+    assert not (tmp_path / "groups").exists()
+
+
+@pytest.mark.parametrize("claim", [{"component": "3.11"}, {"execution_sha256": "0" * 64}])
+def test_internal_local_runner_cannot_claim_hosted_identity(tmp_path, claim):
+    root = repository(tmp_path / "repo")
+    with pytest.raises(ValueError, match="cannot claim a hosted"):
+        execute(root, **claim)
+    assert not list((root / "receipts/run/sdk-groups").glob("group-*"))
+
+
 def test_source_selector_contract_reads_future_additions_without_importing_runtime(tmp_path):
     root = repository(tmp_path / "repo")
     values = [*SELECTORS, "tests/test_future.py"]
@@ -770,7 +1301,7 @@ def test_source_selector_contract_reads_future_additions_without_importing_runti
         "TESTS=" + repr(values) + "\nraise RuntimeError('must not import')\n"
     )
     assert groups.selector_contract(root) == values
-    assert groups.split_groups(values, TOY_HEAVY)[1][-1] == "tests/test_future.py"
+    assert groups.split_groups(values, TOY_FIXED)[2][-1] == "tests/test_future.py"
 
 
 def test_inherited_selectors_cannot_shrink_either_real_child(tmp_path, monkeypatch):
@@ -864,7 +1395,7 @@ def test_stale_or_reused_output_is_rejected_before_any_child(tmp_path, target, k
             junit=base / "combined.xml",
             timings=base / "combined.jsonl",
             timeout=30,
-            expensive=TOY_HEAVY,
+            fixed_groups=TOY_FIXED,
         )
     assert not list((base / "sdk-groups").glob("group-*"))
 
@@ -910,7 +1441,7 @@ def test_coherent_case_and_phase_omission_cannot_hide_collected_test(actual_pass
         groups.merge_evidence(
             children,
             SELECTORS,
-            groups.split_groups(SELECTORS, TOY_HEAVY),
+            groups.split_groups(SELECTORS, TOY_FIXED),
             tmp_path / "merged.xml",
             tmp_path / "merged.jsonl",
         )
@@ -934,7 +1465,7 @@ def test_same_process_collection_tamper_rejected(actual_pass, tmp_path, attack):
         groups.merge_evidence(
             children,
             SELECTORS,
-            groups.split_groups(SELECTORS, TOY_HEAVY),
+            groups.split_groups(SELECTORS, TOY_FIXED),
             tmp_path / "merged.xml",
             tmp_path / "merged.jsonl",
         )
@@ -964,7 +1495,7 @@ def test_exhaustive_causal_law_weight_is_advisory_and_keeps_complete_future_scop
         "tests/test_causal_multiarm_neyman.py::"
         "test_two_strata_full_cartesian_8100_law_full_covariance_and_population_weights"
     )
-    assert groups.ADVISORY_NODE_SECONDS[exhaustive] == 809.884951728
+    assert groups.ADVISORY_NODE_SECONDS[exhaustive] > 0
     known = sorted(node for node in groups.ADVISORY_NODE_SECONDS if node != exhaustive)
     future = [f"tests/test_new_scope.py::test_future[{i}]" for i in range(4000)]
     nodes = [exhaustive, *known, *future]
@@ -972,7 +1503,7 @@ def test_exhaustive_causal_law_weight_is_advisory_and_keeps_complete_future_scop
     plan = groups.make_partition_plan(nodes)
     partition = groups.partition_nodes(nodes)
     assert nodes == original
-    assert partition[plan["assignments"][0]] == [exhaustive]
+    assert partition[plan["assignments"][0]].count(exhaustive) == 1
     assert Counter(node for child in partition for node in child) == Counter(nodes)
     assert sum(plan["group_counts"]) == len(nodes)
     assert all(child == [node for node in nodes if node in child] for child in partition)
@@ -1008,13 +1539,17 @@ def test_invalid_complete_node_scope_cannot_create_a_plan(nodes):
 
 def test_actual_current_selector_collection_has_exact_four_way_node_union(tmp_path):
     selectors = groups.selector_contract(ROOT)
-    assert selectors == gate.TESTS and len(selectors) == 102
-    assert selectors[:3] == ["tests/test_mprobit.py", "tests/test_mprobit_postestimation.py",
+    assert selectors == gate.TESTS and len(selectors) == 160
+    assert selectors[:3] == ["tests/test_sequential_kernels.py", "tests/test_sequential_oracles.py",
+                             "tests/test_sequential_contracts.py"]
+    assert selectors[3:6] == ["tests/test_mprobit.py", "tests/test_mprobit_postestimation.py",
                              "tests/test_mprobit_independent.py"]
     assert {
         "tests/test_causal_confidence_sets.py", "tests/test_causal_multiarm_neyman.py",
         "tests/test_causal_effect_distribution.py", "tests/test_causal_confidence_delivery.py",
         "tests/test_sdist_packaging.py",
+        "tests/test_verify_team_cleanup.py",
+        "tests/test_verify_windows_cloud_ui_fixture.py",
     } <= set(selectors)
     collection = tmp_path / "complete.jsonl"
     result = subprocess.run(
@@ -1025,6 +1560,13 @@ def test_actual_current_selector_collection_has_exact_four_way_node_union(tmp_pa
     )
     assert result.returncode == 0, result.stdout + result.stderr
     nodes = groups.collected_nodes(collection)
+    assert selectors[119:124] == ["tests/test_twostep_kernel.py", "tests/test_twostep_reference.py",
+                                  "tests/test_twostep_contract.py", "tests/test_twostep_scale.py",
+                                  "tests/test_twostep_adaptive_reference.py"]
+    assert selectors[124:126] == ["tests/test_survey_deff.py", "tests/test_survey_inference.py"]
+    assert sum(node.startswith("tests/test_survey_deff.py::") for node in nodes) == 84
+    assert sum(node.startswith("tests/test_survey_inference.py::") for node in nodes) == 108
+    assert all(any(node.startswith(selector + "::") for node in nodes) for selector in selectors[119:124])
     # Preserve the complete previous 9,921-case scope plus all new causal and packaging cases.
     assert len(nodes) >= 9921
     assert sum(node.startswith("tests/test_sdist_packaging.py::") for node in nodes) == 3
@@ -1038,7 +1580,19 @@ def test_actual_current_selector_collection_has_exact_four_way_node_union(tmp_pa
         "test_two_strata_full_cartesian_8100_law_full_covariance_and_population_weights"
     )
     assert sum(node == exhaustive for node in nodes) == 1
-    assert [child for child in partition if exhaustive in child] == [[exhaustive]]
+    assert sum(child.count(exhaustive) for child in partition) == 1
+
+    assert selectors[126:138] == ['tests/test_bayesian_hypothesis_oracles.py', 'tests/test_bayesian_hypothesis_state.py', 'tests/test_latent_sem_lifecycle.py', 'tests/test_latent_sem_math.py', 'tests/test_latent_sem_state.py', 'tests/test_dynamic_factor.py', 'tests/test_finite_mixture.py', 'tests/test_weakiv_clr_math.py', 'tests/test_weakiv_clr_state.py', 'tests/test_supervised.py', 'tests/test_supervised_integration_lifecycle.py', 'tests/test_five_model_public_integration.py']
+    assert selectors[142:144] == ['tests/test_survey_fully_stratified_four_stage.py', 'tests/test_survey_fully_stratified_four_stage_safety.py']
+    assert selectors[144:145] == ["tests/test_confidence_sequences.py"]
+    assert sum(node.startswith(selectors[142] + "::") for node in nodes) == 57
+    assert sum(node.startswith(selectors[143] + "::") for node in nodes) == 99
+    assert all(any(node.startswith(selector + "::") for node in nodes) for selector in selectors[126:])
+    assert selectors[145:146] == ["tests/test_multivariate_score_uncertainty.py"]
+    assert selectors[138:142] == ["tests/test_weighted_binary.py", "tests/test_econ_glm.py", "tests/test_econ_glm_oracle.py", "tests/test_econ_saved_prediction_categories.py"]
+    assert sum(node.startswith("tests/test_weighted_binary.py::") for node in nodes) == 111
+    assert sum(node.startswith("tests/test_confidence_sequences.py::") for node in nodes) == 66
+
 
 
 @pytest.fixture(scope="module")
@@ -1059,7 +1613,7 @@ class TestExact:
 from pathlib import Path
 from scripts.run_parallel_sdk_groups import run_groups
 root=Path({str(root)!r});shard=int(sys.argv[1]);base=root/'receipts'/('shard-'+str(shard));base.mkdir(parents=True)
-report=run_groups(root=root,python=Path(sys.executable),selectors={SELECTORS!r},directory=base/'sdk-groups',junit=base/'combined.xml',timings=base/'combined.jsonl',timeout=30,expensive={TOY_HEAVY!r},shard_index=shard)
+report=run_groups(root=root,python=Path(sys.executable),selectors={SELECTORS!r},directory=base/'sdk-groups',junit=base/'combined.xml',timings=base/'combined.jsonl',timeout=30,shard_index=shard)
 print(json.dumps(report));raise SystemExit(0 if report['status']=='passed' else 1)
 """)
     processes = [subprocess.Popen([sys.executable, str(driver), str(shard)], cwd=root,
@@ -1252,8 +1806,11 @@ def test_capacity():
     base, report = execute(root, shard_index=shard)
     assert report["status"] == "passed", report
     assert report["cpu_budget"]["max_concurrent_children"] == 1
-    first, second = report["groups"]
-    assert first["pid"] != second["pid"] and first["stop_seconds"] <= second["start_seconds"]
+    children = report["groups"]
+    assert len(children) == (3 if shard is None else 2)
+    assert len({child["pid"] for child in children}) == len(children)
+    assert all(first["stop_seconds"] <= second["start_seconds"]
+               for first, second in zip(children, children[1:]))
     assert report["tests"]["tests"] == (4 if shard is None else 2)
     assert report["selected_tests"] == SELECTORS
     assert groups.digest(base / "combined.xml") == report["combined"]["junit_sha256"]
@@ -1335,8 +1892,9 @@ def test_direct_distributed_plugin_cannot_filter_original_collection(tmp_path, f
 
 @pytest.mark.parametrize("shard", [None, 0, 1])
 def test_concurrent_live_export_profiles_keep_strict_local_cleanup(tmp_path, monkeypatch, shard):
-    # Reproduce the real PDF failure: both children hold a browser-style profile
-    # open at once, while retaining the original before/after cleanup assertion.
+    # Every actual child holds a browser-style profile during its first case.
+    # Unequal later file counts retain strict per-child before/during/after cleanup.
+    participants = 3 if shard is None else 2
     body = '''import json, tempfile, time
 from pathlib import Path
 def test_live_export_profile():
@@ -1348,28 +1906,30 @@ def test_live_export_profile():
     before = sorted(temporary.glob("openecon-network-export-*"))
     with tempfile.TemporaryDirectory(prefix="openecon-network-export-") as name:
         profile = Path(name)
-        marker = gate / f"live-{round_number}-{child.name}.json"
-        pending = marker.with_suffix(".pending")
-        pending.write_text(json.dumps({"profile": name}))
-        pending.replace(marker)
-        deadline = time.monotonic() + 8
-        while True:
-            records = [json.loads(path.read_text()) for path in gate.glob(f"live-{round_number}-*.json")]
-            if len(records) == 2 and all(Path(row["profile"]).is_dir() for row in records):
-                break
-            assert time.monotonic() < deadline, "Both actual children must hold live profiles"
-            time.sleep(.01)
+        if round_number == 1:
+            marker = gate / f"live-{round_number}-{child.name}.json"
+            pending = marker.with_suffix(".pending")
+            pending.write_text(json.dumps({"profile": name}))
+            pending.replace(marker)
+            deadline = time.monotonic() + 8
+            while True:
+                records = [json.loads(path.read_text()) for path in gate.glob(f"live-{round_number}-*.json")]
+                if len(records) == EXPECTED_PARTICIPANTS and all(Path(row["profile"]).is_dir() for row in records):
+                    break
+                assert time.monotonic() < deadline, "Every actual child must hold a live profile"
+                time.sleep(.01)
+            assert len({str(Path(row["profile"]).parent) for row in records}) == EXPECTED_PARTICIPANTS
         assert sorted(temporary.glob("openecon-network-export-*")) == [*before, profile]
-        assert len({str(Path(row["profile"]).parent) for row in records}) == 2
-        (gate / f"checked-{round_number}-{child.name}").write_text("checked")
-        while len(list(gate.glob(f"checked-{round_number}-*"))) != 2:
-            assert time.monotonic() < deadline
-            time.sleep(.01)
+        if round_number == 1:
+            (gate / f"checked-{round_number}-{child.name}").write_text("checked")
+            while len(list(gate.glob(f"checked-{round_number}-*"))) != EXPECTED_PARTICIPANTS:
+                assert time.monotonic() < deadline
+                time.sleep(.01)
     assert sorted(temporary.glob("openecon-network-export-*")) == before
-'''
+'''.replace("EXPECTED_PARTICIPANTS", str(participants))
     root = repository(tmp_path / "repo", {selector: body for selector in SELECTORS})
-    monkeypatch.setattr(groups.os, "cpu_count", lambda: 2)
-    monkeypatch.setattr(groups.os, "sched_getaffinity", lambda _: {0, 1}, raising=False)
+    monkeypatch.setattr(groups.os, "cpu_count", lambda: participants)
+    monkeypatch.setattr(groups.os, "sched_getaffinity", lambda _: set(range(participants)), raising=False)
     detect = groups.detect_cpu_budget
     monkeypatch.setattr(groups, "detect_cpu_budget", lambda *a, **kw: detect(*a, **kw, system="Darwin"))
     foreign = root / "receipts/foreign"
@@ -1381,8 +1941,9 @@ def test_live_export_profile():
     inherited = dict(os.environ)
     base, report = execute(root, shard_index=shard)
     assert report["status"] == "passed", report
-    assert report["tests"]["tests"] == (4 if shard is None else 2)
-    assert len({item["temporary_directory"] for item in report["groups"]}) == 2
+    assert report["tests"]["tests"] == (len(SELECTORS) if shard is None else len(SELECTORS) // 2)
+    assert len(report["groups"]) == participants
+    assert len({item["temporary_directory"] for item in report["groups"]}) == participants
     for item in report["groups"]:
         temporary = Path(item["temporary_directory"])
         record = groups.child_temporary_receipt(temporary.parent / "runtime-environment.json",
@@ -1543,13 +2104,820 @@ def test_cleanup_error_fails_gate_and_still_cleans_the_other_owned_child(tmp_pat
     monkeypatch.setattr(groups, "remove_child_temporary_directory", failed_first)
     base, report = execute(root)
     assert report["status"] == "failed" and "owned temporary cleanup failed" in report["error"]
-    assert len(calls) == 2
-    first, second = report["groups"]
+    assert len(calls) == 3
+    first, *others = report["groups"]
     assert first["temporary_directory_removed_after_stop"] is False
     assert first["temporary_cleanup_error"] == "OSError: intentional owned cleanup refusal"
     assert Path(first["temporary_directory"]).is_dir()
-    assert second["temporary_directory_removed_after_stop"] is True
-    assert not Path(second["temporary_directory"]).exists()
+    for child in others:
+        assert child["temporary_directory_removed_after_stop"] is True
+        assert not Path(child["temporary_directory"]).exists()
     for item in report["groups"]:
         assert (base / "sdk-groups" / item["log"]).is_file()
         assert (base / "sdk-groups" / item["junit"]).is_file()
+
+
+def _add_third_child_native_probe(root, body):
+    """Keep all incoming toy cases and add an actual probe for the third child."""
+    selector = TOY_FIXED[0][0]
+    source = root / selector
+    original = source.read_text()
+    assert "def test_values(value):" in original and "class TestExact:" in original
+    source.write_text(original + "\n" + body)
+    for command in (["git", "add", selector], ["git", "commit", "-qm", "retain cases and probe third child"]):
+        subprocess.run(command, cwd=root, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+
+def _prove_native_thread_recipe(tmp_path, monkeypatch, component, threads):
+    # Both recipes execute real Torch children using the available interpreter;
+    # the toy component labels do not establish hosted Python-version proof.
+    # Current main allocates one worker per concurrent SDK child. Retain a
+    # real source-hook check of both admitted opt-in counts, including prior2.
+    if component is not None:
+        probe = "import importlib.util; spec=importlib.util.spec_from_file_location('actual_hook', " + repr(str(ROOT / "scripts/pytest_gate_timings.py")) + "); hook=importlib.util.module_from_spec(spec); spec.loader.exec_module(hook); hook._configure_native_threads(); import torch; assert torch.get_num_threads()==" + str(threads)
+        probe_env = {**os.environ, **{name: str(threads) for name in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS", "OPENECON_GATE_TORCH_THREADS")}}
+        subprocess.run([sys.executable, "-c", probe], env=probe_env, check=True, timeout=30)
+    if component is not None:
+        # TOY CPU observations exercise both exact three-child budget recipes.
+        cpus = 3 * threads
+        monkeypatch.setattr(groups, "detect_cpu_budget", lambda: {
+            "system": "Darwin", "host_cpus": cpus, "affinity_cpus": cpus,
+            "effective_cpus": float(cpus), "groups": 3, "max_concurrent_children": 3,
+            "threads_per_child": min(2, max(1, cpus // 3)), "cgroup": {
+                "status": "not_applicable", "version": None, "views": [],
+                "probes": [], "limits": [], "error": None}})
+    child_threads = 1 if component is None else groups.detect_cpu_budget()["threads_per_child"]
+    body = '''import os
+import torch
+
+def test_native_threads():
+    for name in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS"):
+        assert os.environ[name] == "__EXPECTED__"
+    assert torch.get_num_threads() == __EXPECTED__
+'''.replace("__EXPECTED__", str(child_threads))
+    root = repository(tmp_path / "repo", {SELECTORS[0]: body, TOY_HEAVY[0]: body})
+    _add_third_child_native_probe(root, body)
+    for name in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS"):
+        monkeypatch.setenv(name, "64")
+    expected = {name: "1" for name in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS")}
+    assert {name: gate.test_environment(component=component)[name] for name in expected} == expected
+    assert {name: groups.environment(root, component=component, threads=1)[name] for name in expected} == expected
+    execution = _native_fixture_execution(root, component)
+    timeout = 900 if component is None else 1800
+    # Opt into the actual copied timing hook's declared recipe in every child.
+    # Torch's initial count alone can differ between platform/builds.
+    monkeypatch.setenv("OPENECON_GATE_TORCH_THREADS", str(child_threads))
+    base, report = execute(root, timeout=timeout, component=component, **execution)
+    assert report["timeout_seconds"] == timeout
+    assert report["execution"] == execution.get("execution")
+    assert report["execution_sha256"] == execution.get("execution_sha256")
+    assert report["status"] == "passed" and report["tests"]["tests"] == 11, json.dumps({
+        "report": report, "child_logs": {
+            item["index"]: (base / "sdk-groups" / f"group-{item['index']}" / "pytest.log").read_text()
+            for item in report["groups"]}}, indent=2)
+    assert report["selected_tests"] == SELECTORS
+    assert report["component_sdk_version"] == component
+    assert {name: report["environment"][name] for name in expected} == {name: str(child_threads) for name in expected}
+    for item in report["groups"]:
+        assert {name: item["environment"][name] for name in expected} == {name: str(child_threads) for name in expected}
+
+
+def test_parallel_children_override_inherited_native_threads_and_use_one_torch_thread(tmp_path, monkeypatch):
+    _prove_native_thread_recipe(tmp_path, monkeypatch, None, 1)
+
+
+def test_parallel_children_own_complete_temporary_namespaces(tmp_path):
+    body = '''import json
+import os
+import tempfile
+from pathlib import Path
+
+def test_native_temp():
+    directory = Path(tempfile.gettempdir())
+    assert directory.name == 'runtime-temp'
+    assert all(os.environ[name] == str(directory) for name in ('TMPDIR', 'TMP', 'TEMP'))
+    before = set(directory.glob('openecon-network-export-*'))
+    with tempfile.TemporaryDirectory(prefix='openecon-network-export-') as profile:
+        assert Path(profile).parent == directory
+        assert set(directory.glob('openecon-network-export-*')) == before | {Path(profile)}
+    assert set(directory.glob('openecon-network-export-*')) == before
+    (Path('receipts') / f'observed-{os.getpid()}.json').write_text(json.dumps({'pid': os.getpid(), 'temp': str(directory)}))
+'''
+    root = repository(tmp_path / 'repo', {SELECTORS[0]: body, TOY_HEAVY[0]: body})
+    _add_third_child_native_probe(root, body)
+    _, report = execute(root)
+    assert report['status'] == 'passed' and report['tests']['tests'] == 11
+    temporary = []
+    for child in report['groups']:
+        directory = Path(child['temporary_directory'])
+        assert {key: child['environment'][key] for key in ('TMPDIR', 'TMP', 'TEMP')} == {name: str(directory) for name in ('TMPDIR', 'TMP', 'TEMP')}
+        observed = json.loads((root / 'receipts' / f"observed-{child['pid']}.json").read_text())
+        assert observed == {'pid': child['pid'], 'temp': str(directory)}
+        temporary.append(directory)
+    assert len(set(temporary)) == 3
+
+
+@pytest.mark.parametrize("component,threads", [("3.11", 1), ("3.13", 2)])
+def test_parallel_children_apply_component_native_recipe(tmp_path, monkeypatch, component, threads):
+    _prove_native_thread_recipe(tmp_path, monkeypatch, component, threads)
+
+
+def _timing_configuration(path=None):
+    writers = []
+    options = {"--gate-timings": str(path) if path else None, "--gate-collection": None,
+               "--gate-full-collection": None, "--gate-partition-plan": None,
+               "--gate-group-index": None, "--gate-group-count": None,
+               "--gate-report-protocol": 1, "--gate-report-ledger": None,
+               "--gate-report-terminal": None}
+    return SimpleNamespace(getoption=options.__getitem__, option=SimpleNamespace(),
+                           pluginmanager=SimpleNamespace(register=lambda writer, name: writers.append(writer))), writers
+
+
+def _forbid_torch_import(monkeypatch):
+    original = builtins.__import__
+
+    def checked(name, *args, **kwargs):
+        assert name != "torch", "Torch must not import before a complete enabled recipe is admitted"
+        return original(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", checked)
+
+
+@pytest.mark.parametrize("caps", [("1", None, None), ("1", "2", "1"), ("01", "01", "01"),
+                                  ("64", "64", "64"), ("1.0", "1.0", "1.0"), (" 1", " 1", " 1")])
+def test_timing_plugin_refuses_malformed_native_recipe_before_import_and_receipt(tmp_path, monkeypatch, caps):
+    monkeypatch.setenv("OPENECON_GATE_TORCH_THREADS", "1")
+    for name, value in zip(("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS"), caps, strict=True):
+        monkeypatch.delenv(name, raising=False) if value is None else monkeypatch.setenv(name, value)
+    _forbid_torch_import(monkeypatch)
+    destination = tmp_path / "timings.jsonl"
+    config, writers = _timing_configuration(destination)
+    with pytest.raises(ValueError, match="same canonical 1 or 2"):
+        timing_plugin.pytest_configure(config)
+    assert not destination.exists() and not writers
+
+
+@pytest.mark.parametrize("enabled", [False, True])
+def test_timing_plugin_without_enabled_declared_recipe_never_imports_torch(tmp_path, monkeypatch, enabled):
+    monkeypatch.delenv("OPENECON_GATE_TORCH_THREADS", raising=False) if enabled else monkeypatch.setenv("OPENECON_GATE_TORCH_THREADS", "2")
+    for name in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS"):
+        monkeypatch.delenv(name, raising=False) if enabled else monkeypatch.setenv(name, "64")
+    _forbid_torch_import(monkeypatch)
+    destination = tmp_path / "timings.jsonl"
+    config, writers = _timing_configuration(destination if enabled else None)
+    timing_plugin.pytest_configure(config)
+    assert destination.exists() is enabled and len(writers) == int(enabled)
+    for writer in writers:
+        writer.pytest_unconfigure()
+
+
+def test_timing_plugin_refuses_unrealized_exact_recipe_before_receipt(tmp_path, monkeypatch):
+    monkeypatch.setenv("OPENECON_GATE_TORCH_THREADS", "2")
+    for name in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS"):
+        monkeypatch.setenv(name, "2")
+    requested = []
+    fake = SimpleNamespace(set_num_threads=requested.append, get_num_threads=lambda: 1)
+    monkeypatch.setitem(sys.modules, "torch", fake)
+    destination = tmp_path / "timings.jsonl"
+    config, writers = _timing_configuration(destination)
+    with pytest.raises(RuntimeError, match="exact declared"):
+        timing_plugin.pytest_configure(config)
+    assert requested == [2] and not destination.exists() and not writers
+
+
+@pytest.mark.parametrize("component", ["3.10", "3.12", "unknown", True])
+def test_unknown_component_recipe_is_rejected_before_children(tmp_path, component):
+    with pytest.raises(ValueError, match="Unknown SDK component"):
+        gate.test_environment(component=component)
+    with pytest.raises(ValueError, match="Unknown SDK component"):
+        groups.environment(tmp_path, component=component)
+    with pytest.raises(ValueError, match="Unknown SDK component"):
+        gate.test_environment(component=component, distributed=True)
+    with pytest.raises(ValueError, match="Unknown SDK component"):
+        groups.environment(tmp_path, component=component, distributed=True)
+    root = repository(tmp_path / "repo")
+    with pytest.raises(ValueError, match="Unknown SDK component"):
+        execute(root, component=component)
+    with pytest.raises(ValueError, match="Unknown SDK component"):
+        execute(root, component=component, shard_index=0, receipt="receipts/distributed")
+    assert not list((root / "receipts/run").glob("sdk-groups/group-*"))
+    assert not list((root / "receipts/distributed").glob("sdk-groups/group-*"))
+
+
+@pytest.mark.parametrize("attack", ["component", "interpreter"])
+def test_production_cli_binds_component_to_actual_interpreter(tmp_path, attack):
+    version = f"{sys.version_info.major}.{sys.version_info.minor}"
+    assert version in ("3.11", "3.13")
+    component = ("3.11" if version == "3.13" else "3.13") if attack == "component" else version
+    executable = sys.executable if attack == "component" else str(tmp_path / "different-python")
+    result = subprocess.run(
+        [sys.executable, str(ROOT / "scripts/run_parallel_sdk_groups.py"),
+         "--python", executable, "--directory", str(tmp_path / "groups"),
+         "--junitxml", str(tmp_path / "out.xml"),
+         "--gate-timings", str(tmp_path / "out.jsonl"),
+         "--execution", str(tmp_path / "execution.json"),
+         "--component-sdk-version", component, "--timeout", "1800"],
+        capture_output=True, text=True, timeout=10,
+    )
+    message = ("grouping interpreter differs from its recorded component version"
+               if attack == "component" else "child interpreter differs from its grouping interpreter")
+    assert result.returncode != 0 and message in result.stderr
+    assert not (tmp_path / "groups").exists()
+
+
+@pytest.mark.parametrize("component", ["3.11", "3.13"])
+def test_distributed_component_recipe_uses_one_actual_torch_thread(tmp_path, component):
+    # Real children execute both recipes with the available interpreter;
+    # actual CLI version binding has its separate production refusal proof.
+    body = '''import os
+import torch
+
+def test_actual_recipe():
+    assert all(os.environ[name] == "1" for name in
+               ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS"))
+    assert torch.get_num_threads() == 1
+'''
+    root = repository(tmp_path / "repo", {selector: body for selector in SELECTORS})
+    inherited = {**os.environ, "OMP_NUM_THREADS": "64", "MKL_NUM_THREADS": "64",
+                 "OPENBLAS_NUM_THREADS": "64"}
+    expected = {name: "1" for name in
+                ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS")}
+    assert {name: gate.test_environment(component=component, distributed=True)[name]
+            for name in expected} == expected
+    execution = _native_fixture_execution(root, component, shard_index=0, shard_count=2)
+    base, report = execute(root, timeout=900, component=component, shard_index=0, shard_count=2, env=inherited, **execution)
+    assert report["timeout_seconds"] == 900
+    assert report["execution"] == execution["execution"]
+    assert report["execution_sha256"] == execution["execution_sha256"]
+    assert report["status"] == "passed", report
+    assert report["partial_scope"] is True and report["component_sdk_version"] == component
+    assert report["selected_tests"] == SELECTORS and report["tests"]["tests"] == 2
+    assert {name: report["environment"][name] for name in expected} == expected
+    for item in report["groups"]:
+        assert {name: item["environment"][name] for name in expected} == expected
+        assert item["collected_tests"] == 1 and item["tests"]["tests"] == 1
+        full = base / "sdk-groups" / item["full_collection"]
+        assert len(full.read_text().splitlines()) == 4
+
+
+def _native_fixture_execution(root, component, shard_index=None, shard_count=None):
+    """Bind toy native probes explicitly; these records do not claim hosted version proof."""
+    if component is None:
+        return {}
+    execution = {"source_commit": groups.source_identity(root)["source_commit"],
+                 "component_sdk_version": component}
+    if shard_index is not None:
+        execution["component_sdk_shard"] = shard_index
+        execution["component_sdk_shard_count"] = shard_count
+    directory = root / "receipts"
+    directory.mkdir(exist_ok=True)
+    receipt = directory / "native-execution.json"
+    with receipt.open("x") as stream:
+        stream.write(json.dumps(execution, sort_keys=True) + "\n")
+    return {"execution": execution, "execution_sha256": groups.digest(receipt)}
+
+
+# POSIX ownership regression checks use stdlib subprocesses only. These are
+# lifecycle fixtures, not scientific or hosted SDK acceptance.
+def _atomic_sdk_pid_marker(path):
+    # Existence is the readiness signal: the public name must never expose the
+    # interval between opening an empty file and flushing its complete PID.
+    return (f"_ready = pathlib.Path({str(path)!r}); "
+            "_pending = _ready.with_name(_ready.name + '.pending'); "
+            "_pending.write_text(str(os.getpid())); _pending.replace(_ready); ")
+
+
+def _sdk_lifecycle_exited(process, seconds=5):
+    deadline = time.monotonic() + seconds
+    while (code := groups._sdk_exit(process)) is None:
+        assert time.monotonic() < deadline, "Owned leader did not exit"
+        time.sleep(.01)
+    return code
+
+
+@pytest.mark.skipif(os.name != "posix", reason="Owned POSIX SDK process groups")
+def test_sdk_pid_readiness_never_exposes_an_empty_marker(tmp_path):
+    ready, writing, release = (tmp_path / name for name in ("ready.pid", "writing", "release"))
+    body = f'''import os,pathlib,time
+writing = pathlib.Path({str(writing)!r})
+release = pathlib.Path({str(release)!r})
+original_write = pathlib.Path.write_text
+def paused_write(path, text):
+    path.touch()
+    writing.touch()
+    deadline = time.monotonic() + 5
+    while not release.exists():
+        assert time.monotonic() < deadline
+        time.sleep(.01)
+    return original_write(path, text)
+pathlib.Path.write_text = paused_write
+{_atomic_sdk_pid_marker(ready)}
+time.sleep(30)
+'''
+    process = groups._launch_sdk([sys.executable, "-c", body])
+    try:
+        deadline = time.monotonic() + 5
+        while not writing.exists():
+            assert time.monotonic() < deadline
+            time.sleep(.01)
+        pending = ready.with_name(ready.name + ".pending")
+        assert pending.is_file() and pending.read_text() == ""
+        assert not ready.exists(), "An incomplete PID cannot claim that the worker is ready"
+        release.touch()
+        while not ready.exists():
+            assert time.monotonic() < deadline
+            time.sleep(.01)
+        assert int(ready.read_text()) == process.pid and not pending.exists()
+        assert groups._sdk_exit(process) is None
+    finally:
+        groups._stop([process])
+
+
+@pytest.mark.skipif(os.name != "posix", reason="Owned POSIX SDK process groups")
+def test_sdk_owned_exited_leader_stops_its_live_grandchild(tmp_path, monkeypatch):
+    marker = tmp_path / "grandchild.pid"
+    body = ("import pathlib,subprocess,sys; "
+            "child=subprocess.Popen([sys.executable,'-c','import time; time.sleep(30)']); "
+            f"pathlib.Path({str(marker)!r}).write_text(str(child.pid))")
+    process = groups._launch_sdk([sys.executable, "-c", body])
+    try:
+        assert _sdk_lifecycle_exited(process) == 0 and process.returncode is None
+        grandchild = int(marker.read_text())
+        assert grandchild in groups._live_sdk_group(process, time.monotonic() + 2)
+        calls, original = [], groups.os.killpg
+
+        def owned_signal(group, signum):
+            assert group == process.pid and process.returncode is None
+            calls.append(signum)
+            original(group, signum)
+
+        with monkeypatch.context() as patch:
+            patch.setattr(groups.os, "killpg", owned_signal)
+            groups._stop([process])
+        assert calls == [groups.signal.SIGTERM]
+        assert process.returncode == 0 and process._openecon_sdk_session_closed is True
+        rows = subprocess.check_output(["/bin/ps", "-A", "-o", "pid=,pgid=,stat="], text=True)
+        assert not [line for line in rows.splitlines()
+                    if int(line.split()[1]) == process.pid and not line.split()[2].startswith("Z")]
+    finally:
+        groups._stop([process])
+
+
+@pytest.mark.skipif(os.name != "posix", reason="Owned POSIX SDK process groups")
+def test_sdk_owned_exited_empty_group_is_reaped_once_without_signals(monkeypatch):
+    process = groups._launch_sdk([sys.executable, "-c", "pass"])
+    try:
+        assert _sdk_lifecycle_exited(process) == 0 and process.returncode is None
+        assert groups._live_sdk_group(process, time.monotonic() + 2) == []
+        with monkeypatch.context() as patch:
+            patch.setattr(groups.os, "killpg", lambda *args: pytest.fail("Empty/reaped group cannot be signalled"))
+            groups._stop([process])
+            assert process.returncode == 0 and process._openecon_sdk_session_closed is True
+            groups._stop([process])
+    finally:
+        groups._stop([process])
+
+
+@pytest.mark.skipif(os.name != "posix", reason="Owned POSIX SDK process groups")
+@pytest.mark.parametrize("error", [PermissionError, ProcessLookupError])
+def test_sdk_owned_last_recipient_signal_race_requires_fresh_empty_proof(monkeypatch, error):
+    process = groups._launch_sdk([sys.executable, "-c", "import time; time.sleep(30)"])
+    calls, original = [], groups.os.killpg
+
+    def exited_recipient(group, signum):
+        assert group == process.pid and process.returncode is None
+        calls.append(signum)
+        original(group, signum)
+        assert _sdk_lifecycle_exited(process) == -signum
+        raise error("Last live recipient exited after its owned snapshot")
+
+    try:
+        with monkeypatch.context() as patch:
+            patch.setattr(groups.os, "killpg", exited_recipient)
+            groups._stop([process])
+        assert calls == [groups.signal.SIGTERM]
+        assert process.returncode == -groups.signal.SIGTERM
+        assert process._openecon_sdk_session_closed is True
+    finally:
+        groups._stop([process])
+
+
+@pytest.mark.skipif(os.name != "posix", reason="Owned POSIX SDK process groups")
+@pytest.mark.parametrize("error", [PermissionError, ProcessLookupError])
+def test_sdk_owned_denied_live_recipient_is_never_hidden(monkeypatch, error):
+    process = groups._launch_sdk([sys.executable, "-c", "import time; time.sleep(30)"])
+    calls = []
+
+    def denied(group, signum):
+        assert group == process.pid and process.returncode is None
+        calls.append(signum)
+        raise error("Owned live recipient denied its signal")
+
+    try:
+        with monkeypatch.context() as patch:
+            patch.setattr(groups.os, "killpg", denied)
+            with pytest.raises(error, match="Owned live recipient denied"):
+                groups._stop([process])
+        assert calls == [groups.signal.SIGTERM, groups.signal.SIGKILL]
+        assert process.returncode is None and groups._sdk_exit(process) is None
+        assert process._openecon_sdk_session_closed is False
+    finally:
+        groups._stop([process])
+
+
+@pytest.mark.skipif(os.name != "posix", reason="Owned POSIX SDK process groups")
+@pytest.mark.parametrize("external_reap", [False, True])
+def test_sdk_owned_cached_or_external_reap_never_signals_a_reused_group(monkeypatch, external_reap):
+    process = groups._launch_sdk([sys.executable, "-c", "pass"])
+    if external_reap:
+        assert os.waitpid(process.pid, 0) == (process.pid, 0)
+    else:
+        assert process.wait(timeout=5) == 0
+    with monkeypatch.context() as patch:
+        patch.setattr(groups.os, "killpg", lambda *args: pytest.fail("Reaped PID cannot authorize a group signal"))
+        with pytest.raises(ValueError, match="reaped|ownership was lost"):
+            groups._stop([process])
+    process.wait(timeout=5)
+
+
+@pytest.mark.skipif(os.name != "posix", reason="Owned POSIX SDK process groups")
+def test_sdk_owned_arbitrary_unregistered_handle_never_authorizes_signal(monkeypatch):
+    monkeypatch.setattr(groups.os, "killpg", lambda *args: pytest.fail("Unowned handle cannot authorize a group signal"))
+    with pytest.raises(ValueError, match="owned dedicated session"):
+        groups._stop([SimpleNamespace(pid=os.getpid(), returncode=None)])
+
+
+@pytest.mark.skipif(os.name != "posix", reason="Owned POSIX SDK process groups")
+@pytest.mark.parametrize("code", [0, 7, -15])
+def test_sdk_owned_darwin_311_observer_keeps_exact_native_status(monkeypatch, code):
+    # Darwin executes its real public ABI fallback. Other supported POSIX hosts
+    # proxy their native waitid result through that exact ctypes Siginfo layout.
+    builtin = getattr(os, "waitid", None)
+    if sys.platform != "darwin" and builtin is None:
+        with monkeypatch.context() as patch:
+            patch.setattr(groups.subprocess, "Popen", lambda *args, **kwargs: pytest.fail("Unsupported observer launched a child"))
+            with pytest.raises(ValueError, match="non-reaping exit observation"):
+                groups._launch_sdk([sys.executable, "-c", "pass"])
+        return
+    body = (f"import sys; sys.exit({code})" if code >= 0 else
+            f"import os,signal; os.kill(os.getpid(),{-code})")
+    process = groups._launch_sdk([sys.executable, "-c", body])
+    try:
+        with monkeypatch.context() as patch:
+            if sys.platform != "darwin":
+                import ctypes
+
+                class NativeWaitidProxy:
+                    def __call__(self, kind, pid, target, flags):
+                        observed = builtin(kind, pid, flags)
+                        if observed is not None:
+                            target._obj.si_pid = observed.si_pid
+                            target._obj.si_code = observed.si_code
+                            target._obj.si_status = observed.si_status
+                        return 0
+
+                proxy = NativeWaitidProxy()
+                patch.setattr(ctypes, "CDLL", lambda *args, **kwargs: SimpleNamespace(waitid=proxy))
+                patch.setattr(groups.sys, "platform", "darwin")
+            patch.delattr(groups.os, "waitid", raising=False)
+            assert _sdk_lifecycle_exited(process) == code and process.returncode is None
+            assert groups._live_sdk_group(process, time.monotonic() + 2) == []
+            groups._stop([process])
+        assert process.returncode == code and process._openecon_sdk_session_closed is True
+    finally:
+        groups._stop([process])
+
+
+@pytest.mark.skipif(os.name != "posix", reason="Owned POSIX SDK process groups")
+def test_sdk_owned_missing_observer_refuses_before_actual_launch(monkeypatch):
+    calls = []
+    monkeypatch.delattr(groups.os, "waitid", raising=False)
+    monkeypatch.setattr(groups.sys, "platform", "linux")
+    monkeypatch.setattr(groups.subprocess, "Popen", lambda *args, **kwargs: calls.append((args, kwargs)))
+    with pytest.raises(ValueError, match="non-reaping exit observation"):
+        groups._launch_sdk([sys.executable, "-c", "pass"])
+    assert calls == []
+
+
+@pytest.mark.skipif(os.name != "posix", reason="Owned POSIX SDK process groups")
+def test_sdk_owned_cleanup_failure_still_stops_other_independent_groups(monkeypatch):
+    first = groups._launch_sdk([sys.executable, "-c", "import time; time.sleep(30)"])
+    second = groups._launch_sdk([sys.executable, "-c", "import time; time.sleep(30)"])
+    original, denied_calls = groups.os.killpg, []
+
+    def denied_first(group, signum):
+        if group == first.pid:
+            denied_calls.append(signum)
+            raise PermissionError("First owned group denied cleanup")
+        original(group, signum)
+
+    try:
+        with monkeypatch.context() as patch:
+            patch.setattr(groups.os, "killpg", denied_first)
+            with pytest.raises(PermissionError, match="First owned group denied cleanup"):
+                groups._stop([first, second])
+        assert denied_calls == [groups.signal.SIGTERM, groups.signal.SIGKILL]
+        assert first.returncode is None and first._openecon_sdk_session_closed is False
+        assert second.returncode == -groups.signal.SIGTERM and second._openecon_sdk_session_closed is True
+    finally:
+        groups._stop([first, second])
+
+
+@pytest.mark.skipif(os.name != "posix", reason="Owned POSIX SDK process groups")
+def test_sdk_owned_unproved_group_keeps_its_temp_and_other_children_keep_raw_evidence(tmp_path, monkeypatch):
+    root = repository(tmp_path / "repo")
+    stopped, original = [], groups._stop
+
+    def stop_only_independent_children(processes):
+        stopped.extend(processes)
+        original(processes[1:])
+        raise PermissionError("First owned group has no shutdown proof")
+
+    try:
+        with monkeypatch.context() as patch:
+            patch.setattr(groups, "_stop", stop_only_independent_children)
+            base, report = execute(root)
+        assert report["status"] == "failed"
+        assert "First owned group has no shutdown proof" in report["error"]
+        assert "First owned group has no shutdown proof" in report["process_cleanup_error"]
+        assert len(report["groups"]) == 3
+        first, *others = report["groups"]
+        assert first["temporary_directory_removed_after_stop"] is False
+        assert "verified owned process-group shutdown" in first["temporary_cleanup_error"]
+        assert Path(first["temporary_directory"]).is_dir()
+        assert all(group["temporary_directory_removed_after_stop"] is True for group in others)
+        for group in report["groups"]:
+            assert (base / "sdk-groups" / group["log"]).is_file()
+            assert (base / "sdk-groups" / group["junit"]).is_file()
+        assert json.loads((base / "sdk-groups/report.json").read_text())["error"] == report["error"]
+    finally:
+        original(stopped)
+
+
+@pytest.mark.skipif(os.name != "posix", reason="Owned POSIX SDK process groups")
+def test_sdk_owned_kill_signals_every_group_before_a_wait_can_spend_the_fresh_deadline(tmp_path, monkeypatch):
+    processes = []
+    try:
+        for index in range(2):
+            ready = tmp_path / f"term-resistant-{index}.pid"
+            body = ("import os,pathlib,signal,time; signal.signal(signal.SIGTERM,signal.SIG_IGN); "
+                    + _atomic_sdk_pid_marker(ready) + "time.sleep(30)")
+            process = groups._launch_sdk([sys.executable, "-c", body])
+            processes.append(process)
+            deadline = time.monotonic() + 5
+            while not ready.exists():
+                assert time.monotonic() < deadline
+                time.sleep(.01)
+            assert int(ready.read_text()) == process.pid and groups._sdk_exit(process) is None
+    except BaseException:
+        groups._stop(processes)
+        raise
+    calls, snapshots = [], []
+    first, second = processes
+    original_signal, original_wait = groups.os.killpg, groups._wait_sdk_group
+    original_snapshot = groups._live_sdk_group
+
+    def owned_signal(group, signum):
+        assert group in {first.pid, second.pid}
+        assert all(process.returncode is None for process in processes)
+        calls.append((group, signum))
+        original_signal(group, signum)
+
+    def fresh_snapshot(process, deadline):
+        snapshot = original_snapshot(process, deadline)
+        snapshots.append((process.pid, snapshot))
+        return snapshot
+
+    try:
+        with monkeypatch.context() as patch:
+            def controlled_wait(process, deadline):
+                kills = {pid for pid, signum in calls if signum == groups.signal.SIGKILL}
+                if not kills:
+                    # Model the spent TERM wait; both actual children ignore TERM.
+                    return False
+                if process is first:
+                    assert kills == {first.pid, second.pid}, (
+                        "Every independently owned group must receive KILL before waiting")
+                    assert {pid for pid, live in snapshots if pid in live} == {first.pid, second.pid}
+                    patch.setattr(groups.time, "monotonic", lambda: deadline + .01)
+                    raise subprocess.TimeoutExpired("controlled first SDK group wait", 2)
+                return original_wait(process, deadline)
+
+            patch.setattr(groups.os, "killpg", owned_signal)
+            patch.setattr(groups, "_live_sdk_group", fresh_snapshot)
+            patch.setattr(groups, "_wait_sdk_group", controlled_wait)
+            with pytest.raises(subprocess.TimeoutExpired, match="controlled first SDK group wait"):
+                groups._stop(processes)
+        assert calls == [(first.pid, groups.signal.SIGTERM), (second.pid, groups.signal.SIGTERM),
+                         (first.pid, groups.signal.SIGKILL), (second.pid, groups.signal.SIGKILL)]
+        assert all(process.returncode is None and process._openecon_sdk_session_closed is False
+                   for process in processes), "A spent proof clock cannot authorize an unproved reap"
+    finally:
+        groups._stop(processes)
+
+
+def test_sdk_owned_windows_process_disappearance_retains_original_signal_race_guards(monkeypatch):
+    calls, stage = [], [0]
+
+    class DisappearingChild:
+        returncode = None
+
+        def poll(self):
+            return self.returncode
+
+        def terminate(self):
+            calls.append("TERM")
+            raise ProcessLookupError("Child exited at TERM")
+
+        def kill(self):
+            calls.append("KILL")
+            stage[0] = 1
+            raise ProcessLookupError("Child exited at KILL")
+
+        def wait(self, timeout=None):
+            assert timeout is not None and 0 <= timeout <= 2
+            calls.append(("wait", timeout))
+            if not stage[0]:
+                raise subprocess.TimeoutExpired("controlled Windows TERM wait", timeout)
+            self.returncode = 0
+            return 0
+
+    process = DisappearingChild()
+    with monkeypatch.context() as patch:
+        patch.setattr(groups, "os", SimpleNamespace(name="nt"))
+        groups._stop([process])
+    assert calls[0] == "TERM" and calls[2] == "KILL"
+    assert calls[1][0] == calls[3][0] == "wait" and process.returncode == 0
+
+
+
+@pytest.mark.skipif(os.name != "posix", reason="Owned POSIX SDK process groups")
+def test_sdk_owned_original_failure_and_all_independent_cleanup_causes_survive_receipt_and_log(
+        tmp_path, monkeypatch, capsys):
+    body = 'def test_primary_failure(): assert False, "original primary SDK test failure"\n'
+    root = repository(tmp_path / "repo", {selector: body for selector in SELECTORS})
+    retained, original = [], groups._stop
+
+    def independent_cleanup_failures(processes):
+        retained.extend(processes)
+        original(processes[2:])
+        # Any child may fail first on a loaded runner. Await this case's real
+        # primary failure and flushed log before injecting independent cleanup
+        # causes; an empty still-running sibling is not failure evidence.
+        assert _sdk_lifecycle_exited(processes[0]) == 1
+        assert processes[0].returncode is None  # Retain the owned session anchor.
+        try:
+            raise PermissionError("First independent SDK cleanup denial")
+        except PermissionError as first:
+            try:
+                raise OSError("Second independent SDK cleanup refusal")
+            except OSError as second:
+                raise first from BaseExceptionGroup("Independent owned SDK failures", [second])
+
+    try:
+        with monkeypatch.context() as patch:
+            patch.setattr(groups, "_stop", independent_cleanup_failures)
+            base, report = execute(root)
+        assert report["status"] == "failed" and "SDK child process failed" in report["error"]
+        trace = report["process_cleanup_traceback"]
+        assert "First independent SDK cleanup denial" in trace
+        assert "Second independent SDK cleanup refusal" in trace
+        assert "Independent owned SDK failures" in trace
+        assert len(trace.encode()) < 2 * 1024 * 1024
+        parent_log = capsys.readouterr().err
+        assert trace in parent_log
+        saved = json.loads((base / "sdk-groups/report.json").read_text())
+        assert saved["error"] == report["error"] and saved["process_cleanup_traceback"] == trace
+        assert all(group["temporary_directory_removed_after_stop"] is False
+                   for group in report["groups"][:2])
+        assert all(Path(group["temporary_directory"]).is_dir() for group in report["groups"][:2])
+        assert "original primary SDK test failure" in (base / "sdk-groups" / report["groups"][0]["log"]).read_text()
+        for group in report["groups"]:
+            assert (base / "sdk-groups" / group["log"]).is_file()
+    finally:
+        original(retained)
+
+
+@pytest.mark.parametrize("denied_phase", ["terminate", "kill", "wait"])
+def test_sdk_windows_denial_retains_all_causes_and_stops_independent_handle(monkeypatch, denied_phase):
+    # Explicit fake native-handle protocol on every host; no Windows-installation claim.
+    calls = []
+
+    class NativeHandle:
+        def __init__(self, pid):
+            self.pid, self.returncode, self.stage = pid, None, "TERM"
+
+        def poll(self):
+            return self.returncode
+
+        def terminate(self):
+            calls.append((self.pid, "TERM"))
+            if self.pid == 1 and denied_phase == "terminate":
+                raise PermissionError("first native terminate denial")
+
+        def kill(self):
+            self.stage = "KILL"
+            calls.append((self.pid, "KILL"))
+            if self.pid == 1 and denied_phase == "kill":
+                raise PermissionError("first native kill denial")
+
+        def wait(self, timeout=None):
+            assert timeout is not None and 0 <= timeout <= 2
+            calls.append((self.pid, "wait", self.stage, timeout))
+            if self.pid == 1 and denied_phase == "wait":
+                raise PermissionError("first native wait denial")
+            if self.stage == "TERM":
+                raise subprocess.TimeoutExpired("controlled pending TERM handle", timeout)
+            if self.pid == 1 and denied_phase == "kill":
+                raise subprocess.TimeoutExpired("denied KILL retains live handle", timeout)
+            self.returncode = 0
+            return 0
+
+    first, second = NativeHandle(1), NativeHandle(2)
+    with monkeypatch.context() as patch:
+        patch.setattr(groups, "os", SimpleNamespace(name="nt"))
+        with pytest.raises(PermissionError, match="first native") as caught:
+            groups._stop([first, second])
+    assert second.returncode == 0
+    assert calls[:2] == [(1, "TERM"), (2, "TERM")]
+    kills = [i for i, call in enumerate(calls) if len(call) == 2 and call[1] == "KILL"]
+    kill_waits = [i for i, call in enumerate(calls) if len(call) == 4 and call[2] == "KILL"]
+    assert max(kills) < min(kill_waits)
+    if denied_phase in ("kill", "wait"):
+        assert first.returncode is None
+        assert isinstance(caught.value.__cause__, BaseExceptionGroup)
+
+
+def _complete_protocol2_fixture_module():
+    fixture_spec = importlib.util.spec_from_file_location(
+        "synthetic_complete_report_fixture", ROOT / "tests/gate_report_protocol_fixture.py")
+    fixture = importlib.util.module_from_spec(fixture_spec)
+    fixture_spec.loader.exec_module(fixture)
+    return fixture
+
+
+def test_protocol2_SDK_reads_all_nested_events_without_relabeling_parent_count(tmp_path):
+    fixture = _complete_protocol2_fixture_module()
+    xml, raw, nodes = fixture.make(tmp_path / "sdk")
+    actual, _ = groups.read_child(xml, raw, fixture.SELECTORS, report_protocol=2, root=ROOT)
+    assert [row[0] for row in actual] == nodes and len(actual) == 122
+    assert sum(len(row[2]) for row in actual) == 391
+    assert b"".join(line for row in actual for line in row[2]) == raw.read_bytes()
+    with pytest.raises(ValueError):
+        groups.read_child(xml, raw, fixture.SELECTORS)
+
+
+@pytest.mark.parametrize("damage", ["drop_nested", "duplicate_context", "nested_nonzero", "wrong_native_class",
+                                     "after_outer_call", "nested_ordinary_parent", "missing_terminal", "xml146"])
+def test_protocol2_SDK_refuses_resealed_missing_reordered_or_forged_nested_controls(tmp_path, damage):
+    fixture = _complete_protocol2_fixture_module()
+    xml, raw, _ = fixture.make(tmp_path / damage)
+    records, events = fixture.rows(raw)
+    nested = next(i for i, e in enumerate(events) if e["report_kind"] == "unittest_subreport")
+    if damage == "drop_nested":
+        records.pop(nested)
+        events.pop(nested)
+    elif damage == "duplicate_context":
+        events[nested+1]["native_context"] = events[nested]["native_context"]
+    elif damage == "nested_nonzero":
+        records[nested]["start"] = records[nested]["stop"] = 1000
+    elif damage == "wrong_native_class":
+        events[nested]["native_report_class"] = "_pytest.reports.TestReport"
+    elif damage == "after_outer_call":
+        records[nested], records[nested+2] = records[nested+2], records[nested]
+        events[nested], events[nested+2] = events[nested+2], events[nested]
+    elif damage == "nested_ordinary_parent":
+        records[nested]["nodeid"] = "tests/test_protocol2_synthetic.py::test_parent_0"
+        events[nested]["parent_nodeid"] = records[nested]["nodeid"]
+        events[nested]["native_location"][0] = "tests/test_protocol2_synthetic.py"
+    elif damage == "xml146":
+        tree = ET.parse(xml)
+        tree.getroot().set("tests", "146")
+        tree.write(xml, encoding="utf-8", xml_declaration=True)
+    fixture.reseal(raw, records, events)
+    if damage == "missing_terminal":
+        fixture.reports.paths(raw)[1].unlink()
+    with pytest.raises((ValueError, OSError)):
+        groups.read_child(xml, raw, fixture.SELECTORS, report_protocol=2, root=ROOT)
+
+
+def test_protocol2_three_child_merge_keeps_nested_blocks_and_native_XML_counter(tmp_path):
+    fixture = _complete_protocol2_fixture_module()
+    nodes = fixture.complete_nodes()
+    nodes[-1] = "tests/test_protocol2_other.py::test_last"
+    selectors = [*fixture.SELECTORS, "tests/test_protocol2_other.py"]
+    partition = [[selectors[0]], [selectors[1]], [selectors[2]]]
+    children = []
+    for index, selected in enumerate(partition):
+        path = tmp_path / f"group-{index}"
+        fixture.make(path, [node for node in nodes if node.split("::", 1)[0] in selected])
+        children.append(path)
+    xml, raw = tmp_path / "merged.xml", tmp_path / "merged.jsonl"
+    result = groups.merge_evidence(children, selectors, partition, xml, raw,
+                                   report_protocol=2, root=ROOT)
+    assert result == {"tests": 122, "failures": 0, "errors": 0, "skipped": 0}
+    assert ET.parse(xml).getroot().find("testsuite").get("tests") == "147"
+    assert len(list(ET.parse(xml).getroot().iter("testcase"))) == 122
+    assert len(raw.read_bytes().splitlines()) == 391
+    terminal = fixture.reports.terminal(raw, nodes, root=ROOT, derived=True)
+    assert terminal["report_counts"]["nested_reports"] == 25

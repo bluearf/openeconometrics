@@ -1,27 +1,19 @@
-"""Single-owner Cloud Run entry point. Local serving retains its loopback guard."""
+"""Cloud Run entry point for the team sync backend. It never runs analyses.
+
+Local serving (`openecon serve`) keeps its loopback guard and runs analyses on
+the user's machine. The retired single-owner cloud workbench is not available.
+"""
 from __future__ import annotations
 
 import os
-from pathlib import Path
-
-from openecon.cloud_access import CloudAccess
 
 
 def cloud_app():
-    if os.environ.get('OPENECON_MODE') == 'teams':
-        from openecon.team_cloud import team_app
-        return team_app()
-    required = ("OPENECON_PUBLIC_ORIGIN", "OPENECON_IAP_AUDIENCE", "OPENECON_OWNER_EMAIL")
-    if any(not os.environ.get(name) for name in required):
-        raise ValueError("Cloud serving requires an HTTPS origin, IAP audience and workspace owner.")
-    from openecon.server import create_app
-
-    access = CloudAccess(
-        public_origin=os.environ[required[0]], audience=os.environ[required[1]],
-        owner_email=os.environ[required[2]],
-    )
-    workspace = Path(os.environ.get("OPENECON_WORKSPACE", "/tmp/openecon"))
-    return create_app(workspace, cloud_access=access)
+    if os.environ.get('OPENECON_MODE') != 'teams':
+        raise ValueError('The cloud service only provides team sync (OPENECON_MODE=teams). '
+                         'Analyses run in the OpenEconometrics desktop app.')
+    from openecon.team_cloud import team_app
+    return team_app()
 
 
 def main():

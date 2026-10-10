@@ -1,5 +1,17 @@
 # Adding an estimator family
 
+## Project acceptance decision - 9 October 2026
+
+The project owner explicitly canceled licensed Stata/SPSS/EViews executable
+comparison work (MARKET-111 / GitHub#28). It is no longer a closure condition
+for MARKET-73 or its descendants; do not create replacement license-blocked
+tasks. This is a scope cancellation, not vendor parity. Keep blanket parity
+flags false and retain existing published references/scripts as historical
+evidence. Actual implementations still require meaningful independent
+analytical/author references, declared sample/weights/inference/failure domains,
+source/package validation, macOS native persistence, and applicable hosted
+Windows tests. Physical Windows hardware is not required; CUDA is deferred.
+
 Every OpenEconometrics estimator is implemented in this repository on float64 PyTorch
 tensors. No third-party estimation library (statsmodels, linearmodels, SciPy
 optimizers or distributions, scikit-learn) runs at fit time. Those packages may

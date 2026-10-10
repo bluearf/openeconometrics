@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "kind": "append-only-confidence-sequence-mandatory-selector-extension",
+  "base_commit": "35f347fd175aba76a367220b4d6ba571376887c1",
+  "base_producer_sha256": "d054ced2462d283244dde729e2b35d0e671dfaba68f7825c93c91cbf545b6a9f",
+  "unchanged_complete_historical_plan_sha256": "ecebc48bca1f2212c095f2d72362160401ccc229d5f8d7a2b4fcac97cfc61c7b",
+  "base_selector_count": 144,
+  "base_selector_scope_sha256": "7c5ac4b712c90c9fa7603020d815649fccc90fb44ca9ce2daf591417dea805ca",
+  "added_selectors": [
+    "tests/test_confidence_sequences.py"
+  ],
+  "complete_selector_count": 145,
+  "complete_selector_scope_sha256": "c29e7f58f68e0405709768a7d4db6e362c639a091433a0ad8afbf2f37e344cf2",
+  "local_effective_group_sizes": [
+    1,
+    18,
+    126
+  ],
+  "timeout_seconds": 900,
+  "legacy_timeout_seconds": 1800,
+  "all_previous_selectors_and_order_preserved": true,
+  "no_validator_or_budget_change": true
+}

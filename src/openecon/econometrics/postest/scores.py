@@ -18,6 +18,8 @@ Supported score families (fweight/pweight/aweight likelihood semantics where the
   ``s = q r x``, ``H = -sum r (r + q x'b) x x'``.
 - ``poisson`` (offset/exposure allowed): ``s = (y - mu) x``,
   ``H = -sum mu x x'``.
+- ``cloglog`` and ``fracreg`` logit/probit: Bernoulli likelihood/QML analytic
+  unit scores and observed Hessians, including fractional endpoints/interiors.
 - ``ologit`` / ``oprobit`` and ``mlogit``: the family kernels' analytic scores
   and Hessians (``discrete.kernels``).
 
@@ -35,15 +37,66 @@ import pandas as pd
 import torch
 from torch import Tensor
 
+from openecon.analysis import _frame_hasher, _position_bytes
 from openecon.analysis_contracts import AnalysisError
 from openecon.econometrics.core import ModelFrame, kernel_call
 from openecon.econometrics.postest.common import coefficient_vector
 from openecon.engines.optimize import information_inverse
 from openecon.models import ResultBundle
+from openecon.econometrics.resident_cpu import resident_cpu
+from openecon.resources import plan_workspace, tensor_bytes
 
 SUPPORTED = ("ols", "logit", "probit", "poisson", "ologit", "oprobit", "mlogit",
-             "glm", "nbreg", "tobit", "intreg", "truncreg")
+             "glm", "nbreg", "tobit", "intreg", "truncreg", "cloglog", "fracreg")
 DECREMENT_TOLERANCE = 1e-6
+BINOMIAL_COMMANDS = {"cloglog", "fracreg"}
+# Admission bounds dense reconstruction work, independently of the byte budget.
+MAX_BINOMIAL_SCORE_WORK = 100_000_000
+
+
+def binomial_score_plan(n: int, p: int):
+    work = n * p * p + p ** 3
+    if work > MAX_BINOMIAL_SCORE_WORK:
+        raise AnalysisError("suest_work_limit", "Saved binomial score reconstruction exceeds "
+                            f"the {MAX_BINOMIAL_SCORE_WORK:,}-operation admission bound "
+                            "(N*P^2 + P^3). Reduce the dense model dimensions.")
+    return plan_workspace("saved binomial suest scores", {
+        "design_score_copies": tensor_bytes((n, p)) * 4,
+        "likelihood_vectors": tensor_bytes((n,)) * 24,
+        "information_copies": tensor_bytes((p, p)) * 8,
+    })
+
+
+def _binomial_information_error():
+    return AnalysisError("singular_information", "The saved binomial information is "
+                         "singular at float64 precision in the reported coordinates. "
+                         "Center/rescale the predictors and refit before suest.")
+
+
+def _binomial_information_guard(objective, theta):
+    """Assess observed information before a rounded Gram matrix hides its rank.
+
+    Its square-root design has rows sqrt(-w_i h_i) x_i. Column normalization
+    preserves predictor-unit and likelihood-weight scale invariance. Squared
+    singular-value ratios are the normalized information's eigenvalue ratios;
+    p*eps is the existing information solver's working-precision rank scale.
+    """
+    state = objective.state(theta)
+    if state is None:
+        raise AnalysisError("suest_mismatch", "GLM estimates leave the family/link domain.")
+    curvature = -objective.prior * objective.pieces(state)[1]
+    if not bool(torch.isfinite(curvature).all()) or bool((curvature < 0).any()):
+        raise _binomial_information_error()
+    factor = objective.x * curvature.sqrt()[:, None]
+    norms = torch.linalg.vector_norm(factor, dim=0)
+    if not len(norms) or not bool(torch.isfinite(norms).all()) or not bool((norms > 0).all()):
+        raise _binomial_information_error()
+    factor /= norms
+    singular = torch.linalg.svdvals(factor)
+    if (len(singular) != factor.shape[1] or not bool(torch.isfinite(singular).all())
+            or float((singular[-1] / singular[0]).square())
+            <= factor.shape[1] * torch.finfo(torch.float64).eps):
+        raise _binomial_information_error()
 
 
 @dataclass
@@ -365,6 +418,78 @@ def glm_scores(result, data, positions):
     return _evaluate(GlmScores(objective), *_reported(result), frame)
 
 
+def binomial_command_scores(result, data, positions):
+    """Observed Bernoulli/QML derivatives, including fractional endpoints.
+
+    Fractional probit requires y*log(Phi(eta)) + (1-y)*log(Phi(-eta));
+    the binary probit's sign shortcut is invalid for interior responses.
+    """
+    from openecon.econometrics.glm.common import likelihood_weights, linear_offset
+    from openecon.econometrics.glm.families import Binomial, make_link
+    from openecon.econometrics.glm.kernels import GlmObjective
+
+    kind = result.spec.estimator
+    if kind == "cloglog" and result.spec.weight_type == "aweight":
+        raise _unsupported(result, "cloglog does not fit analytic weights")
+    allowed_roles = {"offset"} if kind == "cloglog" else set()
+    if any(value and role not in allowed_roles for role, value in result.spec.columns.items()):
+        raise _unsupported(result, "the saved columns include roles outside the native command")
+    link = "cloglog" if kind == "cloglog" else result.spec.options.get("link", "logit")
+    if link not in ({"cloglog"} if kind == "cloglog" else {"logit", "probit"}):
+        raise _unsupported(result, "the saved link is outside the command's score domain")
+    if (result.provenance.get("estimator") != kind or result.extra.get("link") != link
+            or (kind == "fracreg" and result.extra.get("quasi_likelihood") is not True)):
+        raise AnalysisError("suest_mismatch", "Saved estimator/link metadata do not describe "
+                            "the fitted binomial command.")
+    if result.provenance.get("solver_diagnostics", {}).get("converged") is not True:
+        raise AnalysisError("suest_mismatch", "Saved binomial scores require a recorded "
+                            "converged fit; refit historical results lacking this record.")
+    if (not positions or positions != result.sample_positions or len(set(positions)) != len(positions)
+            or any(isinstance(row, bool) or not isinstance(row, int) or row < 0 or row >= len(data)
+                   for row in positions)):
+        raise AnalysisError("suest_mismatch", "Saved binomial estimation positions are invalid "
+                            "or do not match the requested sample.")
+    binomial_score_plan(len(positions), len(result.coefficients))
+    # Native binomial commands use every complete, positive-weight row. A
+    # stationary subset can have the same coefficients while changing the
+    # information and sandwich, so stationarity alone cannot verify this sample.
+    frame = ModelFrame(result.spec, data)
+    # Omitted columns and unused category levels still incur allocation/QR
+    # work. Admit the exact unscreened width before either operation starts.
+    binomial_score_plan(frame.n, frame.design_width())
+    weights = likelihood_weights(frame)
+    sample_hasher = _frame_hasher(frame.sample)
+    sample_hasher.update(_position_bytes(frame.positions))
+    if (frame.positions != positions or result.nobs != weights.nobs
+            or result.nobs_original != len(frame.original)
+            or result.dropped_rows != len(frame.original) - frame.n
+            or result.provenance.get("sample_hash") != sample_hasher.hexdigest()):
+        raise AnalysisError("suest_mismatch", "The saved binomial estimation sample, "
+                            "counts or sample hash do not match the native fitted sample.")
+    design = frame.drop_collinear(frame.design(), weights.for_screen())
+    binomial_score_plan(frame.n, len(design.terms))
+    terms = [c.term for c in result.coefficients]
+    if (len(terms) != len(set(terms)) or set(terms) != set(design.terms)
+            or result.provenance.get("design_terms") != terms
+            or result.provenance.get("categorical_encoding") != design.categories
+            or result.provenance.get("omitted_terms") != frame.notes.get("omitted_terms", [])
+            or any(c.equation is not None for c in result.coefficients)):
+        raise AnalysisError("suest_mismatch", "The complete saved binomial design, categorical "
+                            "coding or omitted terms could not be reproduced.")
+    index = {term: i for i, term in enumerate(design.terms)}
+    x = design.x[:, [index[term] for term in terms]]
+    y = frame.numeric(result.spec.outcome)
+    valid = (y == 0) | (y == 1) if kind == "cloglog" else (y >= 0) & (y <= 1)
+    if not bool(valid.all()) or bool((y == y[0]).all()):
+        raise AnalysisError("suest_mismatch", "The saved binomial outcome is outside the fitted "
+                            "command's nonconstant response domain.")
+    objective = GlmObjective(x, y, _weights(frame), linear_offset(frame),
+                             Binomial(combinatorial=False), make_link(link))
+    reported = _reported(result)
+    _binomial_information_guard(objective, reported[0])
+    return _evaluate(GlmScores(objective), *reported, frame)
+
+
 def nbreg_scores(result, data, positions):
     from openecon.econometrics.glm.common import linear_offset
     from openecon.econometrics.glm.kernels import NegativeBinomialObjective
@@ -430,9 +555,11 @@ def limited_scores(result, data, positions):
 _PROVIDERS = {"ols": ols_scores, "logit": logit_scores, "probit": probit_scores,
               "poisson": poisson_scores, "ologit": ordered_scores, "oprobit": ordered_scores,
               "mlogit": mlogit_scores, "glm": glm_scores, "nbreg": nbreg_scores,
-              "tobit": limited_scores, "intreg": limited_scores, "truncreg": limited_scores}
+              "tobit": limited_scores, "intreg": limited_scores, "truncreg": limited_scores,
+              "cloglog": binomial_command_scores, "fracreg": binomial_command_scores}
 
 
+@resident_cpu
 def model_scores(result: ResultBundle, data: pd.DataFrame, positions: list[int]) -> ModelScores:
     """Scores and Hessian of one fit at its reported estimates (see module docstring).
 
@@ -445,7 +572,12 @@ def model_scores(result: ResultBundle, data: pd.DataFrame, positions: list[int])
     if spec.weights is not None and spec.weight_type not in {"fweight", "pweight", "aweight"}:
         raise _unsupported(result, "suest supports fweight, pweight and aweight only")
     scores = provider(result, data, positions)
-    decrement = scores.decrement()
+    try:
+        decrement = scores.decrement()
+    except AnalysisError as error:
+        if spec.estimator in BINOMIAL_COMMANDS and error.code == "singular_information":
+            raise _binomial_information_error() from error
+        raise
     if spec.weights and spec.weight_type == "pweight":
         # Match the scale-free convergence criterion used by likelihood fitting.
         decrement /= float(data[spec.weights].iloc[positions].mean())

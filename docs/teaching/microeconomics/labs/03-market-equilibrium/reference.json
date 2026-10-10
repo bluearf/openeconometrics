@@ -1,0 +1,174 @@
+{
+  "metadata": {
+    "lab": "03-market-equilibrium",
+    "title": "Market Equilibrium and a Demand Shift",
+    "synthetic": true,
+    "data_file": "market_equilibrium.xlsx",
+    "raw_rows": 51
+  },
+  "summary": {
+    "equilibrium_price": 35.0,
+    "equilibrium_quantity": 50.0,
+    "shifted_price": 40.0,
+    "shifted_quantity": 60.0,
+    "excess_demand_at_30": 20.0
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "index": [
+        "equilibrium_price",
+        "equilibrium_quantity",
+        "shifted_price",
+        "shifted_quantity",
+        "excess_demand_at_30"
+      ],
+      "columns": [
+        "value"
+      ],
+      "values": [
+        [
+          35.0
+        ],
+        [
+          50.0
+        ],
+        [
+          40.0
+        ],
+        [
+          60.0
+        ],
+        [
+          20.0
+        ]
+      ],
+      "attrs": {}
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "line",
+        "title": "Market Equilibrium and a Demand Shift",
+        "xlabel": "Price (currency/unit)",
+        "ylabel": "Excess demand (units/day)",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31,
+              32,
+              33,
+              34,
+              35,
+              36,
+              37,
+              38,
+              39,
+              40,
+              41,
+              42,
+              43,
+              44,
+              45,
+              46,
+              47,
+              48,
+              49,
+              50,
+              51,
+              52,
+              53,
+              54,
+              55,
+              56,
+              57,
+              58,
+              59,
+              60
+            ],
+            "y": [
+              100,
+              96,
+              92,
+              88,
+              84,
+              80,
+              76,
+              72,
+              68,
+              64,
+              60,
+              56,
+              52,
+              48,
+              44,
+              40,
+              36,
+              32,
+              28,
+              24,
+              20,
+              16,
+              12,
+              8,
+              4,
+              0,
+              -4,
+              -8,
+              -12,
+              -16,
+              -20,
+              -24,
+              -28,
+              -32,
+              -36,
+              -40,
+              -44,
+              -48,
+              -52,
+              -56,
+              -60,
+              -64,
+              -68,
+              -72,
+              -76,
+              -80,
+              -84,
+              -88,
+              -92,
+              -96,
+              -100
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "market_clears": true,
+    "shift_increases_price_and_quantity": true
+  }
+}

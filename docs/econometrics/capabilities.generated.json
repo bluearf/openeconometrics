@@ -1,5 +1,61 @@
 {
   "auxiliary_exports": {
+    "BayesianVARContrast": {
+      "entry": "openecon.econometrics.bayesian_var.api:BayesianVARContrast",
+      "family": "bayesian_var_public"
+    },
+    "BayesianVARDraws": {
+      "entry": "openecon.econometrics.bayesian_var.draws:BayesianVARDraws",
+      "family": "bayesian_var_public"
+    },
+    "BayesianVARForecast": {
+      "entry": "openecon.econometrics.bayesian_var.forecast:BayesianVARForecast",
+      "family": "bayesian_var_public"
+    },
+    "BayesianVARImpulse": {
+      "entry": "openecon.econometrics.bayesian_var.impulse:BayesianVARImpulse",
+      "family": "bayesian_var_public"
+    },
+    "BayesianVARPosterior": {
+      "entry": "openecon.econometrics.bayesian_var.posterior:BayesianVARPosterior",
+      "family": "bayesian_var_public"
+    },
+    "BayesianVARPrediction": {
+      "entry": "openecon.econometrics.bayesian_var.api:BayesianVARPrediction",
+      "family": "bayesian_var_public"
+    },
+    "BayesianVARSource": {
+      "entry": "openecon.econometrics.bayesian_var.posterior:BayesianVARSource",
+      "family": "bayesian_var_public"
+    },
+    "DatetimeIndexState": {
+      "entry": "openecon.econometrics.bayesian_var.posterior:DatetimeIndexState",
+      "family": "bayesian_var_public"
+    },
+    "MatrixNormalInverseWishartPrior": {
+      "entry": "openecon.econometrics.bayesian_var.posterior:MatrixNormalInverseWishartPrior",
+      "family": "bayesian_var_public"
+    },
+    "MomentAvailability": {
+      "entry": "openecon.econometrics.bayesian_var.forecast:MomentAvailability",
+      "family": "bayesian_var_public"
+    },
+    "MonteCarloSummary": {
+      "entry": "openecon.econometrics.bayesian_var.forecast:MonteCarloSummary",
+      "family": "bayesian_var_public"
+    },
+    "PlainIndexState": {
+      "entry": "openecon.econometrics.bayesian_var.posterior:PlainIndexState",
+      "family": "bayesian_var_public"
+    },
+    "PosteriorAlgebra": {
+      "entry": "openecon.econometrics.bayesian_var.posterior:PosteriorAlgebra",
+      "family": "bayesian_var_public"
+    },
+    "RangeIndexState": {
+      "entry": "openecon.econometrics.bayesian_var.posterior:RangeIndexState",
+      "family": "bayesian_var_public"
+    },
     "alpha": {
       "entry": "openecon.econometrics.multivariate.reliability:alpha",
       "family": "multivariate"
@@ -44,9 +100,133 @@
       "entry": "openecon.econometrics.causal_design.balance:balance",
       "family": "causal_design"
     },
+    "bayes_bma": {
+      "entry": "openecon.econometrics.bayesian.bma:bayes_bma",
+      "family": "bayesian"
+    },
+    "bayes_bma_draws": {
+      "entry": "openecon.econometrics.bayesian.bma_draws:bayes_bma_draws",
+      "family": "bayesian"
+    },
+    "bayes_bma_draws_restore": {
+      "entry": "openecon.econometrics.bayesian.bma_draws:bayes_bma_draws_restore",
+      "family": "bayesian"
+    },
+    "bayes_bma_predict": {
+      "entry": "openecon.econometrics.bayesian.bma_query:bayes_bma_predict",
+      "family": "bayesian"
+    },
+    "bayes_bma_prediction_restore": {
+      "entry": "openecon.econometrics.bayesian.bma_query:bayes_bma_prediction_restore",
+      "family": "bayesian"
+    },
+    "bayes_bma_restore": {
+      "entry": "openecon.econometrics.bayesian.bma:bayes_bma_restore",
+      "family": "bayesian"
+    },
+    "bayes_contrast": {
+      "entry": "openecon.econometrics.bayesian.commands:bayes_contrast",
+      "family": "bayesian"
+    },
+    "bayes_draws": {
+      "entry": "openecon.econometrics.bayesian.commands:bayes_draws",
+      "family": "bayesian"
+    },
+    "bayes_hypothesis": {
+      "entry": "openecon.econometrics.bayesian.hypothesis:bayes_hypothesis",
+      "family": "bayesian"
+    },
+    "bayes_hypothesis_draws": {
+      "entry": "openecon.econometrics.bayesian.hypothesis:bayes_hypothesis_draws",
+      "family": "bayesian"
+    },
+    "bayes_hypothesis_draws_restore": {
+      "entry": "openecon.econometrics.bayesian.hypothesis:bayes_hypothesis_draws_restore",
+      "family": "bayesian"
+    },
+    "bayes_hypothesis_predict": {
+      "entry": "openecon.econometrics.bayesian.hypothesis:bayes_hypothesis_predict",
+      "family": "bayesian"
+    },
+    "bayes_hypothesis_restore": {
+      "entry": "openecon.econometrics.bayesian.hypothesis:bayes_hypothesis_restore",
+      "family": "bayesian"
+    },
+    "bayes_linear": {
+      "entry": "openecon.econometrics.bayesian.commands:bayes_linear",
+      "family": "bayesian"
+    },
+    "bayes_predict": {
+      "entry": "openecon.econometrics.bayesian.commands:bayes_predict",
+      "family": "bayesian"
+    },
+    "bayes_var": {
+      "entry": "openecon.econometrics.bayesian_var.api:bayes_var",
+      "family": "bayesian_var_public"
+    },
+    "bayes_var_contrast": {
+      "entry": "openecon.econometrics.bayesian_var.api:bayes_var_contrast",
+      "family": "bayesian_var_public"
+    },
+    "bayes_var_contrast_restore": {
+      "entry": "openecon.econometrics.bayesian_var_public.transport:bayes_var_contrast_restore",
+      "family": "bayesian_var_public"
+    },
+    "bayes_var_draws": {
+      "entry": "openecon.econometrics.bayesian_var.draws:bayes_var_draws",
+      "family": "bayesian_var_public"
+    },
+    "bayes_var_draws_restore": {
+      "entry": "openecon.econometrics.bayesian_var_public.transport:bayes_var_draws_restore",
+      "family": "bayesian_var_public"
+    },
+    "bayes_var_forecast": {
+      "entry": "openecon.econometrics.bayesian_var.forecast:bayes_var_forecast",
+      "family": "bayesian_var_public"
+    },
+    "bayes_var_forecast_restore": {
+      "entry": "openecon.econometrics.bayesian_var_public.transport:bayes_var_forecast_restore",
+      "family": "bayesian_var_public"
+    },
+    "bayes_var_irf": {
+      "entry": "openecon.econometrics.bayesian_var.impulse:bayes_var_irf",
+      "family": "bayesian_var_public"
+    },
+    "bayes_var_irf_restore": {
+      "entry": "openecon.econometrics.bayesian_var_public.transport:bayes_var_irf_restore",
+      "family": "bayesian_var_public"
+    },
+    "bayes_var_predict": {
+      "entry": "openecon.econometrics.bayesian_var.api:bayes_var_predict",
+      "family": "bayesian_var_public"
+    },
+    "bayes_var_predict_restore": {
+      "entry": "openecon.econometrics.bayesian_var_public.transport:bayes_var_predict_restore",
+      "family": "bayesian_var_public"
+    },
+    "bayes_var_prior_restore": {
+      "entry": "openecon.econometrics.bayesian_var_public.transport:bayes_var_prior_restore",
+      "family": "bayesian_var_public"
+    },
+    "bayes_var_restore": {
+      "entry": "openecon.econometrics.bayesian_var_public.transport:bayes_var_restore",
+      "family": "bayesian_var_public"
+    },
+    "bayes_var_state_json": {
+      "entry": "openecon.econometrics.bayesian_var_public.tables:bayes_var_state_json",
+      "family": "bayesian_var_public"
+    },
+    "bayes_var_tables": {
+      "entry": "openecon.econometrics.bayesian_var_public.tables:bayes_var_tables",
+      "family": "bayesian_var_public"
+    },
     "bccaustest": {
       "entry": "openecon.econometrics.var.frequency_causality:bccaustest",
       "family": "var"
+    },
+    "bernoulli_confidence_sequence": {
+      "entry": "openecon.econometrics.postest.confidence_sequences:bernoulli_confidence_sequence",
+      "family": "postest"
     },
     "bernoulli_neyman_ate": {
       "entry": "openecon.econometrics.causal_design.multiarm_neyman:bernoulli_neyman_ate",
@@ -88,6 +268,14 @@
       "entry": "openecon.econometrics.multivariate.canon_uncertainty:canon_bootstrap",
       "family": "multivariate"
     },
+    "canon_bootstrap_score_contrasts": {
+      "entry": "openecon.econometrics.multivariate.score_contrasts:canon_bootstrap_score_contrasts",
+      "family": "multivariate"
+    },
+    "canon_bootstrap_scores": {
+      "entry": "openecon.econometrics.multivariate.score_uncertainty:canon_bootstrap_scores",
+      "family": "multivariate"
+    },
     "canon_fweight_bootstrap": {
       "entry": "openecon.econometrics.multivariate.canon_frequency_uncertainty:canon_fweight_bootstrap",
       "family": "multivariate"
@@ -99,6 +287,22 @@
     "canon_scores": {
       "entry": "openecon.econometrics.multivariate.canon:canon_scores",
       "family": "multivariate"
+    },
+    "cart": {
+      "entry": "openecon.econometrics.supervised.cart:cart",
+      "family": "supervised"
+    },
+    "cart_predict": {
+      "entry": "openecon.econometrics.supervised.cart:cart_predict",
+      "family": "supervised"
+    },
+    "cart_prediction_restore": {
+      "entry": "openecon.econometrics.supervised.cart:cart_prediction_restore",
+      "family": "supervised"
+    },
+    "cart_restore": {
+      "entry": "openecon.econometrics.supervised.cart:cart_restore",
+      "family": "supervised"
     },
     "catpca": {
       "entry": "openecon.econometrics.categorical.optimal:catpca",
@@ -260,6 +464,18 @@
       "entry": "openecon.econometrics.control_function.stream_state:cf_restore",
       "family": "control_function"
     },
+    "cfa": {
+      "entry": "openecon.econometrics.latent.cfa:cfa",
+      "family": "latent"
+    },
+    "cfa_covariance": {
+      "entry": "openecon.econometrics.latent.cfa:cfa_covariance",
+      "family": "latent"
+    },
+    "cfa_restore": {
+      "entry": "openecon.econometrics.latent.cfa:cfa_restore",
+      "family": "latent"
+    },
     "chi2gof": {
       "entry": "openecon.econometrics.nonparametric.distribution:chi2gof",
       "family": "nonparametric"
@@ -324,12 +540,32 @@
       "entry": "openecon.econometrics.conditional.codec:conditional_save",
       "family": "conditional"
     },
+    "conjoint_bootstrap_fit": {
+      "entry": "openecon.econometrics.conjoint.bootstrap:conjoint_bootstrap_fit",
+      "family": "conjoint"
+    },
+    "conjoint_bootstrap_importance": {
+      "entry": "openecon.econometrics.conjoint.bootstrap:conjoint_bootstrap_importance",
+      "family": "conjoint"
+    },
+    "conjoint_bootstrap_shares": {
+      "entry": "openecon.econometrics.conjoint.bootstrap:conjoint_bootstrap_shares",
+      "family": "conjoint"
+    },
+    "conjoint_contrast": {
+      "entry": "openecon.econometrics.conjoint.inference:conjoint_contrast",
+      "family": "conjoint"
+    },
     "conjoint_diagnostics": {
       "entry": "openecon.econometrics.conjoint.design:conjoint_diagnostics",
       "family": "conjoint"
     },
     "conjoint_fit": {
       "entry": "openecon.econometrics.conjoint.model:conjoint_fit",
+      "family": "conjoint"
+    },
+    "conjoint_group_mean": {
+      "entry": "openecon.econometrics.conjoint.inference:conjoint_group_mean",
       "family": "conjoint"
     },
     "conjoint_holdout": {
@@ -424,6 +660,22 @@
       "entry": "openecon.econometrics.stats.descriptives:describe",
       "family": "stats"
     },
+    "dfactor": {
+      "entry": "openecon.econometrics.tsworkflows.dfm:dfactor",
+      "family": "tsworkflows"
+    },
+    "dfactor_forecast": {
+      "entry": "openecon.econometrics.tsworkflows.dfm:dfactor_forecast",
+      "family": "tsworkflows"
+    },
+    "dfactor_nowcast": {
+      "entry": "openecon.econometrics.tsworkflows.dfm:dfactor_nowcast",
+      "family": "tsworkflows"
+    },
+    "dfactor_restore": {
+      "entry": "openecon.econometrics.tsworkflows.dfm:dfactor_restore",
+      "family": "tsworkflows"
+    },
     "dfgls": {
       "entry": "openecon.econometrics.unitroot.series:dfgls",
       "family": "unitroot"
@@ -435,6 +687,14 @@
     "dhcausality": {
       "entry": "openecon.econometrics.var.panel_causality:dhcausality",
       "family": "var"
+    },
+    "diffuse_forecast": {
+      "entry": "openecon.econometrics.tsworkflows.ssdiffuse:diffuse_forecast",
+      "family": "tsworkflows"
+    },
+    "diffuse_restore": {
+      "entry": "openecon.econometrics.tsworkflows.ssdiffuse:diffuse_restore",
+      "family": "tsworkflows"
     },
     "discrim": {
       "entry": "openecon.econometrics.multivariate.discrim:discrim",
@@ -528,6 +788,10 @@
       "entry": "openecon.econometrics.conditional.api:exact_poisson_test",
       "family": "conditional"
     },
+    "exponential_mean_confidence_sequence": {
+      "entry": "openecon.econometrics.postest.confidence_sequences:exponential_mean_confidence_sequence",
+      "family": "postest"
+    },
     "export_group_state": {
       "entry": "openecon.econometrics.postest.group_state:export_group_state",
       "family": "postest"
@@ -538,6 +802,14 @@
     },
     "factor_bootstrap": {
       "entry": "openecon.econometrics.multivariate.uncertainty:factor_bootstrap",
+      "family": "multivariate"
+    },
+    "factor_bootstrap_score_contrasts": {
+      "entry": "openecon.econometrics.multivariate.score_contrasts:factor_bootstrap_score_contrasts",
+      "family": "multivariate"
+    },
+    "factor_bootstrap_scores": {
+      "entry": "openecon.econometrics.multivariate.score_uncertainty:factor_bootstrap_scores",
       "family": "multivariate"
     },
     "factor_matrix": {
@@ -571,6 +843,18 @@
     "finite_load": {
       "entry": "openecon.econometrics.finite.common:finite_load",
       "family": "finite"
+    },
+    "finite_mixture": {
+      "entry": "openecon.econometrics.mixtures.gaussian:finite_mixture",
+      "family": "mixtures"
+    },
+    "finite_mixture_predict": {
+      "entry": "openecon.econometrics.mixtures.gaussian:finite_mixture_predict",
+      "family": "mixtures"
+    },
+    "finite_mixture_restore": {
+      "entry": "openecon.econometrics.mixtures.gaussian:finite_mixture_restore",
+      "family": "mixtures"
     },
     "finite_save": {
       "entry": "openecon.econometrics.finite.common:finite_save",
@@ -632,6 +916,10 @@
       "entry": "openecon.econometrics.panel.hausman:hausman",
       "family": "panel"
     },
+    "hoeffding_confidence_sequence": {
+      "entry": "openecon.econometrics.postest.confidence_sequences:hoeffding_confidence_sequence",
+      "family": "postest"
+    },
     "hoeffding_mean_ci": {
       "entry": "openecon.econometrics.postest.bounded_joint:hoeffding_mean_ci",
       "family": "postest"
@@ -651,6 +939,10 @@
     "interval_survival_predict": {
       "entry": "openecon.econometrics.survival_ext.interval:interval_survival_predict",
       "family": "survival_ext"
+    },
+    "interval_weibull_regression_predict": {
+      "entry": "openecon.econometrics.survival_ext.weibull_regression:interval_weibull_regression_predict",
+      "family": "interval_weibull_covariate_public"
     },
     "irf": {
       "entry": "openecon.econometrics.var.postestimation:irf",
@@ -748,6 +1040,22 @@
       "entry": "openecon.econometrics.iv.weak_inference:iv_ar_confidence_set",
       "family": "iv"
     },
+    "iv_clr_confidence_set": {
+      "entry": "openecon.econometrics.weakiv.api:iv_clr_confidence_set",
+      "family": "weakiv"
+    },
+    "iv_clr_restore": {
+      "entry": "openecon.econometrics.weakiv.api:iv_clr_restore",
+      "family": "weakiv"
+    },
+    "iv_clr_test": {
+      "entry": "openecon.econometrics.weakiv.api:iv_clr_test",
+      "family": "weakiv"
+    },
+    "iv_clr_test_restore": {
+      "entry": "openecon.econometrics.weakiv.api:iv_clr_test_restore",
+      "family": "weakiv"
+    },
     "iv_saved_ar_confidence_set": {
       "entry": "openecon.econometrics.iv.saved_weak:iv_saved_ar_confidence_set",
       "family": "iv"
@@ -759,6 +1067,18 @@
     "iv_weak_test": {
       "entry": "openecon.econometrics.iv.weak_inference:iv_weak_test",
       "family": "iv"
+    },
+    "ivqreg": {
+      "entry": "openecon.econometrics.ivquantile.api:ivqreg",
+      "family": "ivquantile"
+    },
+    "ivqreg_predict": {
+      "entry": "openecon.econometrics.ivquantile.api:ivqreg_predict",
+      "family": "ivquantile"
+    },
+    "ivqreg_restore": {
+      "entry": "openecon.econometrics.ivquantile.api:ivqreg_restore",
+      "family": "ivquantile"
     },
     "jackknife": {
       "entry": "openecon.econometrics.postest.resampling:jackknife",
@@ -795,6 +1115,22 @@
     "kwallis": {
       "entry": "openecon.econometrics.nonparametric.independent:kwallis",
       "family": "nonparametric"
+    },
+    "latent_scores": {
+      "entry": "openecon.econometrics.latent.sem:latent_scores",
+      "family": "latent"
+    },
+    "latent_sem": {
+      "entry": "openecon.econometrics.latent.sem:latent_sem",
+      "family": "latent"
+    },
+    "latent_sem_covariance": {
+      "entry": "openecon.econometrics.latent.sem:latent_sem_covariance",
+      "family": "latent"
+    },
+    "latent_sem_restore": {
+      "entry": "openecon.econometrics.latent.sem:latent_sem_restore",
+      "family": "latent"
     },
     "lee_bounds": {
       "entry": "openecon.econometrics.causal_design.partial_identification:lee_bounds",
@@ -1148,6 +1484,14 @@
       "entry": "openecon.econometrics.systems.nonlinear_sur:nlsur_restore",
       "family": "systems"
     },
+    "normal_mean_confidence_sequence": {
+      "entry": "openecon.econometrics.postest.confidence_sequences:normal_mean_confidence_sequence",
+      "family": "postest"
+    },
+    "normal_variance_confidence_sequence": {
+      "entry": "openecon.econometrics.postest.confidence_sequences:normal_variance_confidence_sequence",
+      "family": "postest"
+    },
     "oaxaca_details": {
       "entry": "openecon.econometrics.decomposition.oaxaca:oaxaca_details",
       "family": "decomposition"
@@ -1232,6 +1576,14 @@
       "entry": "openecon.econometrics.multivariate.pca_frequency_uncertainty:pca_fweight_bootstrap",
       "family": "multivariate"
     },
+    "pca_fweight_bootstrap_score_contrasts": {
+      "entry": "openecon.econometrics.multivariate.score_contrasts:pca_fweight_bootstrap_score_contrasts",
+      "family": "multivariate"
+    },
+    "pca_fweight_bootstrap_scores": {
+      "entry": "openecon.econometrics.multivariate.score_uncertainty:pca_fweight_bootstrap_scores",
+      "family": "multivariate"
+    },
     "pca_matrix": {
       "entry": "openecon.econometrics.multivariate.summary:pca_matrix",
       "family": "multivariate"
@@ -1271,6 +1623,10 @@
     "po_zt": {
       "entry": "openecon.econometrics.unitroot.phillips_ouliaris:po_zt",
       "family": "unitroot"
+    },
+    "poisson_confidence_sequence": {
+      "entry": "openecon.econometrics.postest.confidence_sequences:poisson_confidence_sequence",
+      "family": "postest"
     },
     "polychoric": {
       "entry": "openecon.econometrics.measurement.ordinal:polychoric",
@@ -1392,6 +1748,10 @@
       "entry": "openecon.econometrics.stats.planning_extended:precision_variance",
       "family": "stats"
     },
+    "prediction_split": {
+      "entry": "openecon.econometrics.supervised.split:prediction_split",
+      "family": "supervised"
+    },
     "proxy_svar": {
       "entry": "openecon.econometrics.structural.proxy:proxy_svar",
       "family": "structural"
@@ -1472,9 +1832,21 @@
       "entry": "openecon.econometrics.mixed.repeated:repeated_gls_predict",
       "family": "mixed"
     },
+    "restore_interval_weibull_prediction": {
+      "entry": "openecon.econometrics.survival_ext.weibull_regression:restore_interval_weibull_prediction",
+      "family": "interval_weibull_covariate_public"
+    },
+    "restore_interval_weibull_regression": {
+      "entry": "openecon.econometrics.survival_ext.weibull_regression:restore_interval_weibull_regression",
+      "family": "interval_weibull_covariate_public"
+    },
     "restore_repeated_gls": {
       "entry": "openecon.econometrics.mixed.repeated:restore_repeated_gls",
       "family": "mixed"
+    },
+    "restore_sequential_design": {
+      "entry": "openecon.econometrics.stats.sequential:restore_sequential_design",
+      "family": "stats"
     },
     "restore_summary": {
       "entry": "openecon.econometrics.summary_state:restore_summary",
@@ -1576,6 +1948,22 @@
       "entry": "openecon.econometrics.stats.ttest:sdtest",
       "family": "stats"
     },
+    "sem_effects": {
+      "entry": "openecon.econometrics.latent.sem:sem_effects",
+      "family": "latent"
+    },
+    "sequential_design": {
+      "entry": "openecon.econometrics.stats.sequential:sequential_design",
+      "family": "stats"
+    },
+    "sequential_information": {
+      "entry": "openecon.econometrics.stats.sequential:sequential_information",
+      "family": "stats"
+    },
+    "sequential_power": {
+      "entry": "openecon.econometrics.stats.sequential:sequential_power",
+      "family": "stats"
+    },
     "sfrancia": {
       "entry": "openecon.econometrics.nonparametric.normality:sfrancia",
       "family": "nonparametric"
@@ -1644,8 +2032,16 @@
       "entry": "openecon.econometrics.smoothing.postestimation:spline_derivative",
       "family": "smoothing"
     },
+    "split_restore": {
+      "entry": "openecon.econometrics.supervised.split:split_restore",
+      "family": "supervised"
+    },
     "sspace_autocov": {
       "entry": "openecon.econometrics.tsworkflows.sspace:sspace_autocov",
+      "family": "tsworkflows"
+    },
+    "sspace_diffuse": {
+      "entry": "openecon.econometrics.tsworkflows.ssdiffuse:sspace_diffuse",
       "family": "tsworkflows"
     },
     "sspace_disturbances": {
@@ -1688,6 +2084,10 @@
       "entry": "openecon.econometrics.survival_ext.interval:stinterval_weibull",
       "family": "survival_ext"
     },
+    "stinterval_weibull_regression": {
+      "entry": "openecon.econometrics.survival_ext.weibull_regression:stinterval_weibull_regression",
+      "family": "interval_weibull_covariate_public"
+    },
     "stock_yogo": {
       "entry": "openecon.econometrics.iv.weak_inference:stock_yogo",
       "family": "iv"
@@ -1711,6 +2111,10 @@
     "sts": {
       "entry": "openecon.econometrics.survival.km:sts",
       "family": "survival"
+    },
+    "student_mean_confidence_sequence": {
+      "entry": "openecon.econometrics.postest.confidence_sequences:student_mean_confidence_sequence",
+      "family": "postest"
     },
     "suest": {
       "entry": "openecon.econometrics.postest.suest:suest",
@@ -1762,6 +2166,38 @@
     },
     "survey_four_stage_total": {
       "entry": "openecon.econometrics.survey.four_stage_targets:survey_four_stage_total",
+      "family": "survey"
+    },
+    "survey_fully_stratified_four_stage_logit": {
+      "entry": "openecon.econometrics.survey.fully_stratified_four_stage_regression:survey_fully_stratified_four_stage_logit",
+      "family": "survey"
+    },
+    "survey_fully_stratified_four_stage_mean": {
+      "entry": "openecon.econometrics.survey.fully_stratified_four_stage_targets:survey_fully_stratified_four_stage_mean",
+      "family": "survey"
+    },
+    "survey_fully_stratified_four_stage_poisson": {
+      "entry": "openecon.econometrics.survey.fully_stratified_four_stage_regression:survey_fully_stratified_four_stage_poisson",
+      "family": "survey"
+    },
+    "survey_fully_stratified_four_stage_probit": {
+      "entry": "openecon.econometrics.survey.fully_stratified_four_stage_regression:survey_fully_stratified_four_stage_probit",
+      "family": "survey"
+    },
+    "survey_fully_stratified_four_stage_proportion": {
+      "entry": "openecon.econometrics.survey.fully_stratified_four_stage_targets:survey_fully_stratified_four_stage_proportion",
+      "family": "survey"
+    },
+    "survey_fully_stratified_four_stage_ratio": {
+      "entry": "openecon.econometrics.survey.fully_stratified_four_stage_targets:survey_fully_stratified_four_stage_ratio",
+      "family": "survey"
+    },
+    "survey_fully_stratified_four_stage_regress": {
+      "entry": "openecon.econometrics.survey.fully_stratified_four_stage_regression:survey_fully_stratified_four_stage_regress",
+      "family": "survey"
+    },
+    "survey_fully_stratified_four_stage_total": {
+      "entry": "openecon.econometrics.survey.fully_stratified_four_stage_targets:survey_fully_stratified_four_stage_total",
       "family": "survey"
     },
     "survey_fully_stratified_three_stage_logit": {
@@ -2104,6 +2540,10 @@
       "entry": "openecon.econometrics.tsworkflows.umidas:umidas_predict",
       "family": "tsworkflows"
     },
+    "uniform_endpoint_confidence_sequence": {
+      "entry": "openecon.econometrics.postest.confidence_sequences:uniform_endpoint_confidence_sequence",
+      "family": "postest"
+    },
     "var_forecast": {
       "entry": "openecon.econometrics.var.postestimation:var_forecast",
       "family": "var"
@@ -2176,6 +2616,152 @@
       "entry": "openecon.econometrics.unitroot.zandrews:zandrews",
       "family": "unitroot"
     }
+  },
+  "bayesian_bma": {
+    "budgets": {
+      "default_bytes": 268435456,
+      "default_work": 100000000,
+      "elements": 2000000,
+      "encoded_json_bytes": 33554432,
+      "forced_covariates": 8,
+      "models": 256,
+      "optional_covariates": 8,
+      "rows": 10000,
+      "scope": "encoded JSON, source/index and resident workspace/copies admitted separately; no statistical model-search cutoff"
+    },
+    "calibration": "fixed prospective full256 calibration and wrong-law negative controls; all complete historical source runs retained, full failure denominator unchanged",
+    "dataset_support": false,
+    "devices": [
+      "cpu"
+    ],
+    "draws": "independent local seeded joint model/coefficient/variance and optional indexed outcome draws; every row shares its sampled model and parameters; no MCMC convergence claim",
+    "exclusions": [
+      "improper priors",
+      "BIC/AIC weights",
+      "model search/pruning",
+      "different sample per mask",
+      "non-Gaussian/hierarchical/dependent likelihoods",
+      "weights",
+      "licensed vendor parity"
+    ],
+    "model": "finite enumeration of every optional Gaussian regression subset on one common complete-case union sample; intercept/forced covariates always included; explicit proper per-mask NIG priors and strictly positive model odds",
+    "precision": "float64",
+    "prediction": "full indexed cross-row conditional-mean and noisy-outcome covariance; equal-tail quantiles invert the entire Student-t/zero-atom mixture, with unresolved float64 brackets refused",
+    "public_api": [
+      "bayes_bma",
+      "bayes_bma_restore",
+      "bayes_bma_predict",
+      "bayes_bma_prediction_restore",
+      "bayes_bma_draws",
+      "bayes_bma_draws_restore"
+    ],
+    "stata_parity_validated": false,
+    "state": "complete source/index/dtypes, all priors/models/evidence/uncertainty/query/draw tapes; deterministic optimizer-free semantic replay; invalid complete state refused before partial export",
+    "uncertainty": "normalized exact log evidence; complete posterior model probabilities/PIP, full within/between-model coefficient covariance and coefficient-variance cross moments; unavailable moments remain unavailable"
+  },
+  "bayesian_var_conjugate": {
+    "cold_replay": "original cached Bartlett/coefficient normals and forecast innovation algebra; no refit/optimizer/RNG; recorded seeds/runtime descriptive, no seed-stream authentication",
+    "common_forecast_dispatch": false,
+    "dataset_support": false,
+    "devices": [
+      "cpu"
+    ],
+    "exclusions": [
+      "improper/default/empirical priors",
+      "stationarity-truncated posterior",
+      "missing/streaming/Dataset source",
+      "TVP/SV/nonconjugate/hierarchical VAR",
+      "common ResultBundle prediction/forecast",
+      "licensed vendor parity"
+    ],
+    "generic_ModelSpec_ResultBundle_common_predict_forecast_support": false,
+    "implementation_metadata_only": true,
+    "moments": "original None/availability thresholds and labelled empirical covariance/MC errors; all unstable draws retained",
+    "native_display": "whole tables in TableSet; each DataFrame native view limited50x30,20 outputs; complete explicit row/column batches and separate Run groups mandatory; complete typed JSON persists independently",
+    "original_api": [
+      "bayes_var",
+      "bayes_var_predict",
+      "bayes_var_contrast",
+      "bayes_var_draws",
+      "bayes_var_forecast",
+      "bayes_var_irf"
+    ],
+    "precision": "float64",
+    "proper_prior": "explicit full proper MNIW; unchanged strict SPD/no jitter; no empirical default or stationarity truncation",
+    "public_api": [
+      "bayes_var",
+      "bayes_var_predict",
+      "bayes_var_contrast",
+      "bayes_var_draws",
+      "bayes_var_forecast",
+      "bayes_var_irf",
+      "MatrixNormalInverseWishartPrior",
+      "BayesianVARPosterior",
+      "BayesianVARSource",
+      "PosteriorAlgebra",
+      "RangeIndexState",
+      "PlainIndexState",
+      "DatetimeIndexState",
+      "BayesianVARPrediction",
+      "BayesianVARContrast",
+      "BayesianVARDraws",
+      "BayesianVARForecast",
+      "BayesianVARImpulse",
+      "MomentAvailability",
+      "MonteCarloSummary",
+      "bayes_var_restore",
+      "bayes_var_predict_restore",
+      "bayes_var_contrast_restore",
+      "bayes_var_draws_restore",
+      "bayes_var_forecast_restore",
+      "bayes_var_irf_restore",
+      "bayes_var_prior_restore",
+      "bayes_var_tables",
+      "bayes_var_state_json"
+    ],
+    "registered_estimators": [],
+    "resource": "original numerical engines unchanged; public restore/tables/complete JSON compound pre-admission may refuse near-budget valid numerical states; bounded all primitive/index/table/UTF8 copies/work, depth32/2m nodes/32MiB conservative escaped state/indent<=4",
+    "restore_api": [
+      "bayes_var_restore",
+      "bayes_var_predict_restore",
+      "bayes_var_contrast_restore",
+      "bayes_var_draws_restore",
+      "bayes_var_forecast_restore",
+      "bayes_var_irf_restore",
+      "bayes_var_prior_restore"
+    ],
+    "scientific_installed_native_and_current_head_base_acceptance": "Require separate complete method/source/runtime-specific receipts; registration is not acceptance.",
+    "source": "resident CPU float64 complete finite data, original exact typed row index, 2..4 ordered series, 1..4 lags, integer consecutive time, optional intercept",
+    "stata_parity_validated": false,
+    "state_schemas": [
+      "openecon.bayesian_var_posterior.v1",
+      "openecon.bayesian_var_fixed_prediction.v1",
+      "openecon.bayesian_var_rank_one_contrast.v1",
+      "openecon.bayesian_var_joint_draws.v1",
+      "openecon.bayesian_var_forecast.v1",
+      "openecon.bayesian_var_impulse.v1"
+    ],
+    "table_and_complete_JSON_api": [
+      "bayes_var_tables",
+      "bayes_var_state_json"
+    ],
+    "typed_classes": [
+      "MatrixNormalInverseWishartPrior",
+      "BayesianVARPosterior",
+      "BayesianVARSource",
+      "PosteriorAlgebra",
+      "RangeIndexState",
+      "PlainIndexState",
+      "DatetimeIndexState",
+      "BayesianVARPrediction",
+      "BayesianVARContrast",
+      "BayesianVARDraws",
+      "BayesianVARForecast",
+      "BayesianVARImpulse",
+      "MomentAvailability",
+      "MonteCarloSummary"
+    ],
+    "uncertainty": "full coefficient/Sigma joint law and cross-covariance; matrix-t coefficient marginal; rank-one Student-t; full fixed-design prediction; complete joint draws/recursive paths/declared-order IRFs"
   },
   "binary_mediation": {
     "budgets": {
@@ -2416,9 +3002,14 @@
     "weights": []
   },
   "conjoint": {
+    "bootstrap": "full-refit independent-profile residual/HC2 Rademacher/HC2 Mammen/iid-random-profile pairs; whole-iid-respondent mean importance and first-choice/BTL/logit shares; complete draws, joint covariance and marginal type-7 percentile intervals; no failed-replica removal, p-values, joint bands or exact coverage",
     "budgets": {
       "artifact_bytes": 33554432,
       "attributes": 16,
+      "bootstrap_replications": [
+        20,
+        1999
+      ],
       "coefficients": 128,
       "default_max_work": 100000000,
       "levels_per_attribute": 32,
@@ -2426,6 +3017,16 @@
       "response_cells": 100000,
       "subjects": 128
     },
+    "cluster": "response-column labels joined by original profile/subject keys; >=2 clusters per retained subject; CR1 G/(G-1)*(n-1)/(n-p); t(G-1)",
+    "covariance": [
+      "nonrobust",
+      "hc0",
+      "hc1",
+      "hc2",
+      "hc3",
+      "cr0",
+      "cr1"
+    ],
     "dataset_support": false,
     "devices": [
       "cpu"
@@ -2437,7 +3038,7 @@
     ],
     "fit": "individual complete scored profiles; centred/scaled CPU QR then full raw covariance transform",
     "holdout": "new IDs and genuinely held-out combinations; explicit subject alignment, Pearson and Kendall tau-b",
-    "inference": "conditional iid individual OLS t and fitted-mean CI; group utilities/importance/shares descriptive",
+    "inference": "exact conditional Gaussian iid individual t; HC0/HC1/HC2/HC3 and within-respondent CR0/CR1 approximate t; saved linear contrasts with full covariance and exact iid F or asymptotic robust chi2; explicit iid-respondent empirical mean covariance with approximate t(m-1)",
     "missing": "raise or explicit whole-subject drop; missing IDs always refused",
     "persistence": [
       "conjoint_save",
@@ -2453,7 +3054,12 @@
       "conjoint_predict",
       "conjoint_holdout",
       "conjoint_importance",
-      "conjoint_simulate"
+      "conjoint_simulate",
+      "conjoint_group_mean",
+      "conjoint_contrast",
+      "conjoint_bootstrap_fit",
+      "conjoint_bootstrap_importance",
+      "conjoint_bootstrap_shares"
     ],
     "simulation": "equal-tie first choice, positive-score BTL, all-finite-score stable temperature logit; no respondent filtering",
     "stata_parity_validated": false,
@@ -2461,9 +3067,13 @@
       "rank/sequence input",
       "CBC",
       "arbitrary mixed-level OA search",
-      "weighted/clustered inference",
-      "group sampling CI",
-      "market sampling CI",
+      "weighted inference",
+      "cross-respondent profile clusters",
+      "multiway clusters",
+      "survey/latent importance inference",
+      "calibrated population market-share CI",
+      "clustered profile bootstrap",
+      "bootstrap-t/BCa/joint bands",
       "CUDA/MPS",
       "Dataset",
       "vendor parity"
@@ -2577,8 +3187,7 @@
         "PyJWT[crypto]>=2.10,<3",
         "firebase-admin>=6.9,<8",
         "google-cloud-firestore>=2.20,<3",
-        "google-cloud-storage>=3,<4",
-        "google-cloud-run>=0.10,<1"
+        "google-cloud-storage>=3,<4"
       ],
       "desktop": [
         "openecon[app]",
@@ -2602,7 +3211,7 @@
       "pydantic>=2.9,<3",
       "threadpoolctl>=3.5,<4",
       "packaging>=24,<27",
-      "openecon-charts==0.3.1a1"
+      "openecon-charts==0.3.2a1"
     ]
   },
   "estimators": {
@@ -8505,13 +9114,62 @@
       "categorical_predictors": true,
       "covariances": [
         "nonrobust",
-        "cluster"
+        "cluster",
+        "opg",
+        "robust"
       ],
       "inference": "Normal z",
       "intercept": true,
       "missing": [
         "raise",
         "drop"
+      ],
+      "unweighted_covariances": [
+        "nonrobust",
+        "cluster"
+      ],
+      "weighted_binary": {
+        "aweight_note": "OpenEconometrics extension; not a Stata logit/probit option",
+        "corrections": "weighted ML robust N/(N-1), cluster G/(G-1); unweighted legacy CR1 is preserved",
+        "covariances_by_weight": {
+          "aweight": [
+            "nonrobust",
+            "opg",
+            "robust",
+            "cluster"
+          ],
+          "fweight": [
+            "nonrobust",
+            "opg",
+            "robust",
+            "cluster"
+          ],
+          "iweight": [
+            "nonrobust",
+            "opg",
+            "robust",
+            "cluster"
+          ],
+          "pweight": [
+            "robust",
+            "cluster"
+          ]
+        },
+        "limits": {
+          "dense_work": 5000000000,
+          "iterations": 100,
+          "original_rows": 100000,
+          "parameters": 64
+        },
+        "pweight_default": "robust unless cluster is supplied",
+        "route": "resident CPU float64; Dataset unsupported",
+        "semantics": "fweight replicates rows; aweight normalizes to retained rows; iweight/pweight use positive supplied weights"
+      },
+      "weights": [
+        "aweight",
+        "fweight",
+        "pweight",
+        "iweight"
       ]
     },
     "lp": {
@@ -11844,13 +12502,62 @@
       "categorical_predictors": true,
       "covariances": [
         "nonrobust",
-        "cluster"
+        "cluster",
+        "opg",
+        "robust"
       ],
       "inference": "Normal z",
       "intercept": true,
       "missing": [
         "raise",
         "drop"
+      ],
+      "unweighted_covariances": [
+        "nonrobust",
+        "cluster"
+      ],
+      "weighted_binary": {
+        "aweight_note": "OpenEconometrics extension; not a Stata logit/probit option",
+        "corrections": "weighted ML robust N/(N-1), cluster G/(G-1); unweighted legacy CR1 is preserved",
+        "covariances_by_weight": {
+          "aweight": [
+            "nonrobust",
+            "opg",
+            "robust",
+            "cluster"
+          ],
+          "fweight": [
+            "nonrobust",
+            "opg",
+            "robust",
+            "cluster"
+          ],
+          "iweight": [
+            "nonrobust",
+            "opg",
+            "robust",
+            "cluster"
+          ],
+          "pweight": [
+            "robust",
+            "cluster"
+          ]
+        },
+        "limits": {
+          "dense_work": 5000000000,
+          "iterations": 100,
+          "original_rows": 100000,
+          "parameters": 64
+        },
+        "pweight_default": "robust unless cluster is supplied",
+        "route": "resident CPU float64; Dataset unsupported",
+        "semantics": "fweight replicates rows; aweight normalizes to retained rows; iweight/pweight use positive supplied weights"
+      },
+      "weights": [
+        "aweight",
+        "fweight",
+        "pweight",
+        "iweight"
       ]
     },
     "qreg": {
@@ -17284,6 +17991,41 @@
     ],
     "weights": []
   },
+  "group_sequential_designs": {
+    "accuracy": "full boundary/probability refinement1e-8, cumulative-alpha2e-11, conservation2e-10, separate rigorous omitted one-sided probability K*sf(12); refinement is not a rigorous quadrature theorem",
+    "alpha": "TOTAL null rejection over looks and directions in [.01,.1]; each spending law receives alpha/sides",
+    "computation": "native CPU float64 composite Gauss-Legendre panels width<=6, nodes128/256; cumulative max_work<=2 billion; preparation once per order; admission before allocation",
+    "documentation": "docs/econometrics/group-sequential.md",
+    "domain": "2..6 prespecified looks; first fraction>=.2, gaps>=.05, terminal exactly1; |effect*sqrt(information)|<=8; information in [1e-12,1e6], absolute effect<=1e6",
+    "inversion": "continuous maximum information at fixed fractions/boundaries; separately verified fine probability bracket and target; no integer minimum-N claim",
+    "model": "known information, canonical Gaussian independent increments; full correlation sqrt(min(t_i,t_j)/max(t_i,t_j))",
+    "persistence": "finite versioned primitive/derived full TableSet state; semantic numerical replay at fixed saved bounds, no boundary or information search; full tables/axes/metadata validated",
+    "procedures": [
+      "sequential_design",
+      "restore_sequential_design",
+      "sequential_power",
+      "sequential_information"
+    ],
+    "spending": [
+      "Lan-DeMets O'Brien-Fleming rho=1",
+      "Lan-DeMets Pocock",
+      "Hwang-Shih-DeCani gamma in [-8,8]",
+      "Kim-DeMets power rho in [.25,4]"
+    ],
+    "stata_parity_validated": false,
+    "stopping": "one-sided upper or symmetric two-sided first efficacy rejection; lower is opposite-direction rejection, not futility",
+    "unsupported": [
+      "unknown or estimated variance/ICC",
+      "adaptive looks",
+      "futility",
+      "exact binomial or PH endpoint planning",
+      "integer sample-size rounding",
+      "GPU",
+      "Dataset",
+      "weights",
+      "licensed vendor parity"
+    ]
+  },
   "inference_extensions": {
     "dataset_support": false,
     "devices": [
@@ -17363,6 +18105,59 @@
       "transfer_bytes": 67108864
     },
     "streaming_row_ceiling": null
+  },
+  "interval_weibull_covariate": {
+    "budgets": {
+      "covariates": 8,
+      "default_estimated_work": 500000000,
+      "encoded_state_bytes": 33554432,
+      "maxiter_per_start": 2000,
+      "observations": 4096,
+      "positive_time": [
+        1e-12,
+        1000000000000.0
+      ],
+      "query_components": 256
+    },
+    "covariance": "full observed information, complete coefficient-scale Jacobian, full cross-profile/time survival-hazard and parameter-query covariance",
+    "dataset_support": false,
+    "devices": [
+      "cpu"
+    ],
+    "inference": "normal asymptotic pointwise delta intervals conditional on correctly specified iid Weibull failure times and noninformative coarsening",
+    "likelihood": "original-time exact density/left/finite-interval/right Weibull likelihood; no midpoint substitution or row deletion",
+    "parameterizations": [
+      "AFT",
+      "PH"
+    ],
+    "persistence": "complete source, censoring/index/unit geometry, stationary endpoint, full information and joint query state; semantic replay without optimizer or RNG draws",
+    "precision": "float64",
+    "procedure": "stinterval_weibull_regression",
+    "restore": [
+      "restore_interval_weibull_regression",
+      "restore_interval_weibull_prediction"
+    ],
+    "saved_prediction": "interval_weibull_regression_predict",
+    "stata_parity_validated": false,
+    "typed_states": [
+      "WeibullIntervalFit",
+      "WeibullIntervalPrediction"
+    ],
+    "unsupported": [
+      "non-Weibull interval covariate families",
+      "interval Cox",
+      "frailty",
+      "delayed entry",
+      "clusters/robust sandwich",
+      "weights/survey",
+      "recurrent events",
+      "time-varying covariates",
+      "simultaneous bands",
+      "Dataset",
+      "CUDA/MPS",
+      "global optimum certification",
+      "vendor parity"
+    ]
   },
   "irt": {
     "budgets": {
@@ -17843,7 +18638,50 @@
       "simultaneous_t_ci",
       "hotelling_region"
     ],
-    "stata_parity_validated": false
+    "stata_parity_validated": false,
+    "time_uniform": {
+      "construction": "Fixed family of m iid marginal targets; deterministic alpha/[m*n*(n+1)] countable union bound over all integer prefixes; conservative optional-stopping coverage",
+      "document": "docs/econometrics/confidence-sequences.md",
+      "limits": {
+        "absolute_observation_max": 1e+100,
+        "alpha": [
+          0.001,
+          0.5
+        ],
+        "columns": 8,
+        "cumulative_poisson_count": 1000000,
+        "resident_rows": 512
+      },
+      "persistence": "Complete ordered numeric sample, typed row identities, all prefix intervals, explicit unbounded flags, known scales/supports and error budgets through summary_state",
+      "procedures": [
+        "bernoulli_confidence_sequence",
+        "poisson_confidence_sequence",
+        "normal_mean_confidence_sequence",
+        "student_mean_confidence_sequence",
+        "normal_variance_confidence_sequence",
+        "exponential_mean_confidence_sequence",
+        "uniform_endpoint_confidence_sequence",
+        "hoeffding_confidence_sequence"
+      ],
+      "sampling_models": [
+        "iid_bernoulli",
+        "iid_poisson",
+        "iid_normal",
+        "iid_exponential",
+        "iid_uniform_zero",
+        "iid_bounded"
+      ],
+      "unsupported": [
+        "adaptive target family",
+        "dependent rows",
+        "weights",
+        "missing deletion",
+        "Dataset/online continuation state",
+        "censoring",
+        "estimated support",
+        "mixture/LIL width claim"
+      ]
+    }
   },
   "multivariate_options": {
     "bootstrap": {
@@ -17891,6 +18729,21 @@
       "manova": "bounded complete crossed categorical sum-coded design with Type III hypotheses; resident exact integer frequencies or declared ordered cell means/unbiased covariance/counts; full coefficient/bread/error state and saved L B M=C contrasts",
       "repeated": "whole complete-subject frequency counts or declared ordered within-cell group summaries; original-cell sufficient geometry and existing Mauchly/GG/HF conventions; saved general contrasts",
       "weights": "exact nonnegative integer frequencies at most 2^53; no observation expansion; counts describe independent original observations/subject vectors"
+    },
+    "fixed_query_score_uncertainty": {
+      "budgets": {
+        "combined_work": 250000000,
+        "joint_score_coordinates": 128,
+        "physical_query_rows": 128,
+        "portable_bytes": 33554432,
+        "saved_table_cells": 500000
+      },
+      "exclusions": "selected query/count/target, non-PF/Bartlett/Anderson-Rubin scores, root-only CCA, analytic/survey/dependent weights, simultaneous/exact inference, vendor parity",
+      "functional": "caller-fixed independent queries; every draw uses its own stable training centering, scales and coefficients; PF uses R^-1 L; full covariance across all queries and CCA sides",
+      "inference": "all planned draws, B-1 covariance, SE, bias and marginal linear percentile intervals; training estimator uncertainty only, no observation/noise or individual latent posterior intervals",
+      "persistence": "complete original fit, typed query identities, physical missing alignment, centering/scales/coefficients, every joint score draw and inference",
+      "procedures": "frequency covariance/correlation PCA; IID/frequency paired X/Y coefficient-target CCA; IID/frequency unrotated/full-fixed-orthogonal-target 2..4-factor PF regression scores",
+      "validation": "complete saved source canonical point and every seeded training refit must match before reuse; checksum or generic restore alone is insufficient"
     },
     "frequency_bootstrap_uncertainty": {
       "assumptions": "literal IID independent units, fixed dimension/components/target and complete-case sample, finite fourth moments and regular identified population geometry; nonzero first-order coordinate variance for first-order percentile coverage",
@@ -17994,6 +18847,12 @@
       "pca_bootstrap_scores",
       "canon_bootstrap",
       "ca_bootstrap",
+      "pca_fweight_bootstrap_scores",
+      "canon_bootstrap_scores",
+      "factor_bootstrap_scores",
+      "pca_fweight_bootstrap_score_contrasts",
+      "canon_bootstrap_score_contrasts",
+      "factor_bootstrap_score_contrasts",
       "pca_fweight_bootstrap",
       "pca_subspace_fweight_bootstrap",
       "canon_fweight_bootstrap",
@@ -19093,7 +19952,7 @@
       "cpu"
     ],
     "domain": "prespecified scalar assumptions; no empirical data or observed power",
-    "group_sequential": false,
+    "group_sequential": "separate group_sequential_designs: prespecified canonical Gaussian efficacy boundaries only",
     "inversion": "power, integer n/events or detectable effect; boundary checks; scenario tables and editable plots; known-SD CI total width",
     "normal_designs": "known population SD means/differences/pairs and fixed equal-size cluster means with explicit ICC/design effect",
     "procedures": [
@@ -19117,7 +19976,7 @@
     "budgets": "n<=20000; lambda<=4096; |t delta|<=64; df<=40000; explicit refusal",
     "device": "cpu",
     "exact_laws": "normal independent t designs; balanced Gaussian ANOVA; conditional fixed-design Gaussian F",
-    "excluded": "observed power, group-sequential stopping, estimated ICC, arbitrary event/dropout hazards and licensed vendor parity",
+    "excluded": "observed power, estimated ICC, arbitrary event/dropout hazards and licensed vendor parity; group-sequential designs have a separate bounded known-information contract",
     "extensions": {
       "budgets": "method-specific resident CPU float64 limits with explicit failure; discrete first-feasible searches do not assume monotone rejection or width assurance",
       "documentation": "docs/econometrics/prospective-extensions.md",
@@ -19244,19 +20103,39 @@
   },
   "schema": 1,
   "source_fingerprints": {
-    "desktop/src-tauri/tauri.conf.json": "cbfd14146cc23a1f99dd636ff9a1f5d9c84629ee153382287e665b3eeeadfb95",
-    "packages/openecon-charts/pyproject.toml": "3249b552be4343f1dd0f127d46b130d4a7a50a940ff182e0383b7ed97c91798e",
-    "pyproject.toml": "4a84862c2482a7d3ffe5065fd7a48dadbe6b9962b6737863c96de2fb5ccba3e3",
-    "src/openecon/analysis_contracts.py": "469ad696266b03402557faf8bba79da69016e4a225b42632106fcfb0fb0708d1",
+    "desktop/src-tauri/tauri.conf.json": "9510b66925486f20d06359728321a7591f6a2620793092c486f14f126265fa3b",
+    "packages/openecon-charts/pyproject.toml": "f78bad50758400d5719b85df59878e42609c32f69e49ed4dd4d4658e4179789e",
+    "pyproject.toml": "16bd37eb38df4e6665a2bc502271b003a34c0334e9305944d1bdd3be34e02182",
+    "src/openecon/__init__.py": "a1f1848e93b83ca0beceef8ef89fa9e497e684b0a7cce43743fdd6273059c0ef",
+    "src/openecon/analysis_contracts.py": "69cca9181eb2e6ccd6d5866e9a4554ec902b7d12cd69f2647ba9172fcd9398b9",
     "src/openecon/dataset.py": "cfc19b714a6807ab33b3e8264cdda2d92e9418bfd909ca9532082fcd1b516616",
     "src/openecon/dataset_prepare.py": "180aca26fddac9276f7706bb539b20c9851dddc9e9c37eef569b8bb26cd76cdb",
     "src/openecon/econometrics/arch/__init__.py": "c0e958ed097858bf2773248f4d3bd6bfc3396da6a423e0bb72c9d9ddfa27639f",
     "src/openecon/econometrics/arima/__init__.py": "f7da65fa05c82e77c61d00e3cb4fa8eda87ea24ee97f58d31b56ad920aa0d740",
+    "src/openecon/econometrics/bayesian/__init__.py": "882363d46fbd5f337fc7f53a399d812d7a7223fb039f78536b8e35c8a25bbafb",
+    "src/openecon/econometrics/bayesian/bma.py": "2faabd1e3a8b4c73947a0bcce5785117870049a1f1bf518132d471b9810cd004",
+    "src/openecon/econometrics/bayesian/bma_common.py": "6705fd86387f12b65fcc2d995297481250ee3744c3fc18a8147c998d6a4877e2",
+    "src/openecon/econometrics/bayesian/bma_draws.py": "105b2bd05fa0a862272c9590b3c70120278ef57d71fbfa16cbc8d18fa09463b6",
+    "src/openecon/econometrics/bayesian/bma_kernels.py": "1f14de6b97ed7c9a00814e078e93e04620865dede9012785c852c4e1c969c62d",
+    "src/openecon/econometrics/bayesian/bma_query.py": "70f2ae433d594e7f09ab567045e1047a6ce919ea7aff7ca79a9d6ddc4b68a391",
+    "src/openecon/econometrics/bayesian_var/__init__.py": "4075fe12dc9659e43b52174b7cd68e81f794409a2a296b7b184400045e04d8cd",
+    "src/openecon/econometrics/bayesian_var/admission.py": "654c7735a0a166418b51c3848c57df3f969040783ebdb831d8e6eff0f263dafb",
+    "src/openecon/econometrics/bayesian_var/api.py": "f19f027e3fa1161244c98805d6e27e3b51d4dd4285dfccfa1ff4a99ea2835c28",
+    "src/openecon/econometrics/bayesian_var/design.py": "8bcadeaf1612f93bee17931605511c9c443d9eb36fcecc74f56226b79f192a9e",
+    "src/openecon/econometrics/bayesian_var/draws.py": "822fdeb16ef56db78143a503b901938f3f1cd41604f4dcb9df5f8c64b6abc1ee",
+    "src/openecon/econometrics/bayesian_var/forecast.py": "eababfc1ec78039084fe7f4c02acc53ad337d79c93220fca392a9d4a6e15df11",
+    "src/openecon/econometrics/bayesian_var/impulse.py": "7d2fd3d95aec0fab2e5d867191718b178e521ece3b64471bd2de7910408a21be",
+    "src/openecon/econometrics/bayesian_var/kernels.py": "e1dbaf7abf09cd01f433c3467d12b3b769a837b907907c7c5d4698e196ce7b65",
+    "src/openecon/econometrics/bayesian_var/moments.py": "6187688e438f253fc31d4f1a945831a8bef6e87ee32fdc88323db5f5f1e89902",
+    "src/openecon/econometrics/bayesian_var/posterior.py": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2",
+    "src/openecon/econometrics/bayesian_var_public/__init__.py": "9931e702720a2a05e6ecfa1cebd6226df272171b8debf9e53e0c051fcd26c8fa",
+    "src/openecon/econometrics/bayesian_var_public/tables.py": "d7562abe4497d5000df9ce7b395f2f0a109f112a38ca14141bf6cadb1995901e",
+    "src/openecon/econometrics/bayesian_var_public/transport.py": "d7c96b4b592d9ea8a53ee46a7a06e3a9e8b94bb148b9d754b03237fb01b07b80",
     "src/openecon/econometrics/categorical/__init__.py": "63e882cfa69f9f5b61056bb4fe63b2f4acad33a942880ff40b4fa3141a671a47",
     "src/openecon/econometrics/causal/__init__.py": "4e66692fb41a3e2d2ff53e8ea6084b063114ecaa88cd33c2a2a9bb0cd89257f5",
     "src/openecon/econometrics/causal_design/__init__.py": "2ab97f206fb333a60d20cd97f49d69e95c84959bb296a8221d9609551af2f88e",
     "src/openecon/econometrics/conditional/__init__.py": "6393be5c51ddabdafd19e8bb3c91ec27cd7731720eb24aeed3a7e6967f1698c0",
-    "src/openecon/econometrics/conjoint/__init__.py": "9b310abc4a9a5c0a4f697bacfb35691d6b0ac2b16fdf035531895e2e0f019987",
+    "src/openecon/econometrics/conjoint/__init__.py": "ebf2a34254fa7317dc88e2535ac3b7a8a423474969305c2f9817e574ba770685",
     "src/openecon/econometrics/control_function/__init__.py": "2a7704f1c08b072c7f66f72bbeeaf3920c89fcde189ee89cf2e1c840bafe4e46",
     "src/openecon/econometrics/control_function/commands.py": "190ff60cf6b7fb3027b95fd091f6f274d88bb5e5ed492b5f1566ba7c7b50e693",
     "src/openecon/econometrics/control_function/kernels.py": "a8ddd80c5b72c5dc370199d566fc1c351ea3a695ce2cbf28cc85089381415884",
@@ -19270,8 +20149,11 @@
     "src/openecon/econometrics/finite/__init__.py": "1a0d1a2e457685348a1eeead4997ffd0a14acc8449ff2cbd2b402555fac5b774",
     "src/openecon/econometrics/fractional/__init__.py": "b05545cc32aea60b731fe1e40a1751452a82feae3220bc23bc5a11034a6914d2",
     "src/openecon/econometrics/glm/__init__.py": "0cbe40c5b76eb2427e0c8b50897620854798bd7d11722433b3e66e4112db110e",
+    "src/openecon/econometrics/interval_weibull_covariate_public/__init__.py": "5f6faa7539a182cfa6028d0997feb8c53c72562b4d4d5eb78129e406efd91c7d",
     "src/openecon/econometrics/irt/__init__.py": "8780dc501945cfd41923b77d14466dc1cd6ad7567e0f40e683d4e6b546bd7224",
     "src/openecon/econometrics/iv/__init__.py": "b4f186e6659db958042ee21c07903ac75b67f694e9667fc857c6cdc9de0236a4",
+    "src/openecon/econometrics/ivquantile/__init__.py": "458883133bc5557db55a5cea1ca568223022d69fd8aa353682a1fcb362977cf3",
+    "src/openecon/econometrics/latent/__init__.py": "b91e382f11520ca96ecb79b1cb8fca81e043cd76669470e6533aa9519d93ec11",
     "src/openecon/econometrics/limited/__init__.py": "379f4b026c0452af5d1e9b8c0aae4af06897fdd12bd9448d1ed450e33eafc8a8",
     "src/openecon/econometrics/linear/__init__.py": "49fcc03b41048ac47360e082219639226a25f4f4efbb7726012dbee9e5668160",
     "src/openecon/econometrics/longrun/__init__.py": "506102f12d34d50945fb1915d6813895655630335ed0895da8b9b1e300112f26",
@@ -19280,7 +20162,7 @@
     "src/openecon/econometrics/mgarch/__init__.py": "459a325499282bf55c65097b62fb62f4cd12abfbc03fbb11649d0303ac50866f",
     "src/openecon/econometrics/mi/__init__.py": "cc5f7fdd3782379d115d98e43729f5721812d2d0c055a649a0eaaa6fcdeff623",
     "src/openecon/econometrics/mi/chained.py": "f3afc19955d20663c1f03f2fd94e7cb40d70163c64965206c6f0501a300a53e5",
-    "src/openecon/econometrics/mi/common.py": "079e5177f48a48d8900860c9e482db289e52e244e45d9fffc600c71bff549459",
+    "src/openecon/econometrics/mi/common.py": "7fc4940ba36392f32fdaa4088590fc6fe79e366eb5f987e1ad0def4881d76497",
     "src/openecon/econometrics/mi/diagnostics.py": "7de8b1627561c5c08f58d48d216f6265d09ec2870462b568dc4cdd792a524a0b",
     "src/openecon/econometrics/mi/discrete.py": "3b1c8df3bc587339a3a6d4341d92e0a59e1652e41163f3631168700d47f286f9",
     "src/openecon/econometrics/mi/generation.py": "f992d1a989700caa0fac6c476f220ba779f2d244ef3c3ab8c4ac679afa6c666a",
@@ -19290,32 +20172,40 @@
     "src/openecon/econometrics/mi/pooling.py": "d68e0bcdcd738a2da586d4d96a3f8b613ece3f29bead5c91f7c8083b5c17d4d9",
     "src/openecon/econometrics/mi/sensitivity.py": "83305e95d212e36c78255c3261deefe4c6baf342a7797b8569394cbb58a56c04",
     "src/openecon/econometrics/mixed/__init__.py": "31fc049e783a01bfdfa60622801720aad9b65067e91c00294f908b0a95e1f51b",
-    "src/openecon/econometrics/multivariate/__init__.py": "13aa5b58cdccc3e0e69f0de6961448c97b186d270c0a8b0df52f81a924d69881",
+    "src/openecon/econometrics/mixtures/__init__.py": "6affefc14677722d56cd6b60ec38329e378bef47d711eaa0997eb5036eff93ef",
+    "src/openecon/econometrics/multivariate/__init__.py": "8fe9f17ec08b4362f783fa2ba3fb214f8d36a53e104dec724001345e94120863",
     "src/openecon/econometrics/nonparametric/__init__.py": "9feb50043fed862ed103949c2c804f41f5820e62c46e5d4239b471c25fd1d9b0",
     "src/openecon/econometrics/panel/__init__.py": "35818c47661950f34c4ea75452a78be977f9a4b57eacf9e7dcb6edb9da89890d",
     "src/openecon/econometrics/panel_ardl/__init__.py": "2c5228b3775cc46d641e7b1e364d7a973f44323b7fcf058b9403c3199df8dfa7",
-    "src/openecon/econometrics/postest/__init__.py": "10cfcd25b255aa3b54fe2231626b5b24e255e6d706480f4d176862ee2b38b427",
+    "src/openecon/econometrics/postest/__init__.py": "b2bccb3c1c4a67cd7eb752d8dfbc45831ec948663de2abc56b98526d5d8d5b64",
     "src/openecon/econometrics/quantile/__init__.py": "f8b8590d2e892867eca6ded4cd5b777aa9138a843987e63c28df9c8b81dfcf23",
-    "src/openecon/econometrics/registry.py": "ffdb48ebc6d68e0bd21cc03d24dac55c86fb83dc844aeb4eff848d29062dca29",
+    "src/openecon/econometrics/registry.py": "20b7db214036ded7c84d5a57eb770bc1d0316e6c840fc7b24bfd0e6bed3cdea1",
     "src/openecon/econometrics/regularized/__init__.py": "cddfb88386fcc650673a9283134e3737578d49e2b766b752cafc3dece04ff781",
     "src/openecon/econometrics/robust/__init__.py": "e8df133aa84cb8031bf34891f9b8f83c9f3425f078360495d0a5446eebabecc8",
     "src/openecon/econometrics/selection/__init__.py": "1b6e715639f2ccdeafa5396ec4b8bc0401453f2883bd5e883e79c43628558f5e",
     "src/openecon/econometrics/smoothing/__init__.py": "1b49772aa8a9ae15570daa110e421e19dfd0c3153584fb7cc83815320c33ca48",
     "src/openecon/econometrics/spatial/__init__.py": "d9f987c907a99739b08e0f027cf9fc1827f78d90ded4f2c523e440ca5d445578",
-    "src/openecon/econometrics/stats/__init__.py": "7a3da4df6eaee982b23355b4b3493f6ab15ffe28a37572add9cbe8cfdf3dd2b1",
+    "src/openecon/econometrics/stats/__init__.py": "f532a72efcf1d8d5cf1b99e78c6ff594505f9c58783f564a99a8154cd8767102",
+    "src/openecon/econometrics/stats/sequential.py": "f7fa2e8d187b717939e7b7b7da5dc358adaef1ad6f248cded93075a749309c4c",
+    "src/openecon/econometrics/stats/sequential_kernels.py": "bb4b0f86b36d3075afc28e542427e8795670342d3a7c63ad7788f1ee038c8761",
     "src/openecon/econometrics/streaming_registry.py": "7fc8ada1a93aa4a5557cf1d05c01c76a210b7cf600c22f83f4748ef567a06eed",
     "src/openecon/econometrics/structural/__init__.py": "2b9396c5113eba83427ae1a364513dab691123d04378bdcb8380f0fda25da079",
-    "src/openecon/econometrics/survey/__init__.py": "2f0b02cca1a698af669ffb4e23e31d2f51cb86732eed0408d77e6f72e3839b4a",
+    "src/openecon/econometrics/supervised/__init__.py": "85e5b36e4538fbefe018b4b8d05d7a4501ceaef946cb780fbf6b6bd57670b254",
+    "src/openecon/econometrics/survey/__init__.py": "a468dc3a5e241673b30c4d4396d602a72c144301c1af13e7e27d43605bfd8202",
     "src/openecon/econometrics/survival/__init__.py": "c4063b72111f7adb4ff538ab09724ee6c6e68935942508440f51ef6e4e92a494",
     "src/openecon/econometrics/survival_ext/__init__.py": "9c4df9d76774a8aab2a1ff54626297945083e661447d3db9b5b2d7f0de3ce3be",
+    "src/openecon/econometrics/survival_ext/weibull_regression.py": "7871034c70c8db538bc1222e1321feb6b1b7b4dc77f6f8286683e65548cb64f3",
+    "src/openecon/econometrics/survival_ext/weibull_regression_common.py": "96c346d6b84a08607999c72dd4c9ce78de473aa02f0feac2a2664b8b8a726f8b",
+    "src/openecon/econometrics/survival_ext/weibull_regression_kernels.py": "8a14f4a143a152c7833fed22f3c1be2f02ee126d6d0c5b8eae95ce860e549579",
     "src/openecon/econometrics/systems/__init__.py": "ff5351da27d1f9966582d530c89879132cf0c00795e17523c813ecc3af32b4ef",
     "src/openecon/econometrics/teffects/__init__.py": "27b51e5aca6542461c050c70044c7d4fb91942bec3dedd4de30da1d3f29e5452",
     "src/openecon/econometrics/temporal/__init__.py": "c112092488533805413da31fd1fe0fab273da517a8f33b64c4f5ea879d91a41f",
     "src/openecon/econometrics/tsmodels/__init__.py": "d26aa69a4670d1bb62b1d9b9103f8ddfbb15a091ea98aea14baf02c6f231b825",
-    "src/openecon/econometrics/tsworkflows/__init__.py": "6660b6700ab738ecdbdcb28ac15e64740ced02f8fdc9aff8985b705ca52859a9",
+    "src/openecon/econometrics/tsworkflows/__init__.py": "bdf1dba1ddbb8590905e5b6dea753d989fb62865e5bb8ce1ea28d77344d21442",
     "src/openecon/econometrics/twostep/__init__.py": "5a613b1aff5ef5153449ca2e654684149630a50fb83507e2809a4ee7f509175a",
     "src/openecon/econometrics/unitroot/__init__.py": "a3f99ecd17d9c94991e14679b5c1496748c1f498dca9144f3fd394a5b4cfb870",
     "src/openecon/econometrics/var/__init__.py": "3ec7488f053344927900a4dd6898fdd7ea7cdc0b4933c007582e8de73eadbd6e",
+    "src/openecon/econometrics/weakiv/__init__.py": "aff573773ea90a8ed1b7e036717dc4126fb3531352e1dd0d0875c84e66a27fb1",
     "src/openecon/engines/separation.py": "a2f3aca6e5390dcc6c4443ca90c3f3d2758a637eea0b676553c9a0f5d615c612",
     "src/openecon/linear_ols/spec.py": "164cc1449bfe0208bfe1468bdb3612f14255106d13b4d1a732fb1bf8ea36e53e",
     "src/openecon/prediction_capabilities.py": "407ea29b560d102beffe1945fecae14b9c992a2ab5a5cd7f16a3d461b1a79732",
@@ -19323,7 +20213,7 @@
     "src/openecon/source_readers.py": "6c90b8870ba76a6a906889f8f2dbd318223f45189332993d59c13cdd1b53a18c",
     "src/openecon/survey.py": "1d03d66d8ca4223f9699d0e57d31ac38bbfb3242c8ac8c245427f925628f85ec"
   },
-  "source_ref": "ba0eeeefbd21ecb91f5a6963692c31b0fbd9d16a",
+  "source_ref": "a2c91d4f26a8a32e0f796de09bdcb1b07c848578",
   "stata_parity_validated": false,
   "state_space_paths": {
     "budgets": {
@@ -20796,7 +21686,7 @@
     "centering": "original or replicate mean for BRR/Fay/bootstrap; original or stratum mean for jackknife",
     "covariance": "full joint PSU Taylor or full replicate covariance; zero-domain PSUs retained",
     "dataset_support": false,
-    "deff": "optional equal-sampling-weight Taylor SRSWR independent-row reference only",
+    "deff": "optional Taylor SRSWR full-design reference; equal-weight legacy or unequal-weight population plug-in with fixed eligibility and complete moment replay",
     "design": "validated resident single-stage SurveyDesign; exact complete design revalidation",
     "devices": [
       "cpu"
@@ -20824,7 +21714,7 @@
       "calibrated unit-varying replicas",
       "generated row bootstrap",
       "partial-FPC BRR/Fay",
-      "arbitrary-weight DEFF",
+      "SRSWOR or calibrated/multistage/regression DEFF",
       "Dataset",
       "CUDA/MPS",
       "licensed vendor parity"
@@ -21097,15 +21987,13 @@
     "dataset_support": false,
     "device": "cpu",
     "excluded": [
-      "adaptive CF rebuild",
-      "IBM automatic change/jump heuristic",
-      "vendor adaptive noise reinsertion",
+      "licensed executable parity",
       "posterior membership probabilities",
       "GPU/streaming"
     ],
     "inference": "descriptive profiles/silhouette/ARI; covariance/SE/df/p/CI not defined",
     "licensed_vendor_run": false,
-    "noise": "explicit min_precluster_size exclusion before hierarchy; query nearest retained CF without noise cutoff",
+    "noise": "legacy min_precluster_size exclusion; opt-in adaptive sparse-leaf removal and bounded no-growth reinsertion; saved query strict training log-volume cutoff",
     "persistence": "sealed complete typed maps, training scaling, physical sample, CF tree, every hierarchy cut and assignment",
     "precision": "float64",
     "public_api": [
@@ -21118,15 +22006,16 @@
       "twostep_save",
       "twostep_load"
     ],
+    "rebuild": "opt-in aggregate-CF threshold growth; 0–16 retries, cumulative work budget and complete physical-row/history authentication",
     "score": "independent normal/multinomial CF score with global population variance regularization; stable centered M2",
-    "selection": "global minimum BIC/AIC over feasible declared range, or fixed count; distinct from IBM two-stage heuristic",
+    "selection": "legacy global minimum BIC/AIC or fixed count; opt-in Statistics14 two-stage change/jump with complete trace and explicit terminal/zero-loss extensions",
     "stata_parity_validated": false,
     "weights": false
   },
   "versions": {
-    "charts": "0.3.1a1",
-    "native": "0.3.45",
-    "sdk": "0.3.19a1"
+    "charts": "0.3.2a1",
+    "native": "0.3.46",
+    "sdk": "0.3.20a1"
   },
   "workspace": {
     "configuration": "OPENECON_WORKSPACE_MB",

@@ -11,6 +11,8 @@ import pytest
 from scipy.optimize import lsq_linear
 import torch
 
+from scripts.torch_test_state import preserve_torch_default_device
+
 from openecon.analysis_contracts import AnalysisError
 from openecon.econometrics.categorical import frequency_regression as m
 from openecon.econometrics.categorical import frequency as shared
@@ -332,12 +334,10 @@ def test_rank_nonconvergence_degeneracy_and_tied_nominal_roots_refused():
 
 def test_private_seed_and_default_device_resident_cpu():
     before = torch.random.get_rng_state().clone()
-    torch.set_default_device("meta")
-    try:
+    with preserve_torch_default_device():
+        torch.set_default_device("meta")
         result = fit("nominal")
         prediction = m.catreg_fweight_predict(result, sample())
-    finally:
-        torch.set_default_device("cpu")
     assert torch.equal(before, torch.random.get_rng_state())
     assert result.attrs["device"] == prediction.attrs["device"] == "cpu"
 

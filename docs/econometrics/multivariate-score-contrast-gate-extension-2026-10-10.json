@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "kind": "additive_source_selector_extension",
+  "base_commit": "c41b4f7397a70adad5a28b59db6099f4217e4597",
+  "base_selector_count": 155,
+  "complete_selector_count": 156,
+  "base_producer_sha256": "2e0bafcea5d35d46eb55f09d89e9b2abd7aa72a400181f028fb7b5e06db084ac",
+  "base_selectors_sha256": "12d8b4b5baf849c22a68c1a5faea2b484ca2b535c2ae6097aa4498510adacd35",
+  "complete_selectors_sha256": "c7b9e9c6aee938ea9276ec5c26bd00edfe635f7d31a4d21e014063ec16275302",
+  "appended_selectors": [
+    "tests/test_multivariate_score_contrasts.py"
+  ],
+  "all_original_selectors_in_original_order": true,
+  "no_skip_or_reduction": true,
+  "timeout_seconds": 900,
+  "sdk_minors": [
+    "3.11",
+    "3.13"
+  ],
+  "distributed_shards_per_minor": 4,
+  "policy": "Fresh quick required PR gate; complete registered SDK/package gate daily. No validator, timing or admission changes."
+}

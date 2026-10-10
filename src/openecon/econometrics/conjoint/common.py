@@ -19,6 +19,8 @@ from openecon.resources import plan_workspace
 PROCEDURES = (
     "conjoint_plan", "conjoint_orthogonal", "conjoint_diagnostics", "conjoint_fit",
     "conjoint_predict", "conjoint_holdout", "conjoint_importance", "conjoint_simulate",
+    "conjoint_group_mean", "conjoint_contrast",
+    "conjoint_bootstrap_fit", "conjoint_bootstrap_importance", "conjoint_bootstrap_shares",
 )
 MAX_ARTIFACT = 32 * 1024**2
 
@@ -115,7 +117,9 @@ def source(data):
 
 
 def _tables(output):
-    return {n: {"columns": list(f.columns), "index": list(f.index), "data": f.to_numpy().tolist()}
+    # Preserve per-column scalar types: a homogeneous NumPy matrix promotes
+    # integer IDs/df to floats when another column contains estimates.
+    return {n: {"columns": list(f.columns), "index": list(f.index), "data": f.astype(object).to_numpy().tolist()}
             for n, f in output.items()}
 
 

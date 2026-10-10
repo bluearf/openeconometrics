@@ -351,6 +351,42 @@ values: bounds F/t statistics are reported with `critical_values=None`,
 `decision=None` and `p_value=None` until their NARDL calibration is independently
 validated. The full plan's NARDL item therefore remains **partial**.
 
+### Why linear PSS/SYG bounds are not attached
+
+Shin, Yu and Greenwood-Nimmo (2014) read NARDL levels statistics against the
+linear Pesaran–Shin–Smith bounds tables. OpenEconometrics does not attach those
+bounds, even as an informational field labelled "not size-validated", because a
+reported bound pair invites the cointegration decision that the evidence does
+not support:
+
+- The signed levels are generated from one raw series. With
+  `s_t = sum_j |Delta x_j|`, `x+ = (x + s)/2` and `x- = (x - s)/2` up to the
+  partial-sum origin. Even when `x` has no drift, `s` is I(1) with positive
+  drift `E|Delta x|`, so `x+` and `x-` share one innovation and carry opposing
+  deterministic drifts. Whether the linear tables remain valid for this
+  generated pair has not been established. Counting `k` as the raw or the
+  expanded number of regressors would be a convention choice, not a derivation.
+- The frozen calibration (internal evidence excluded from this public snapshot)
+  imposed each null in a recursive bootstrap and still failed its declared size
+  gates under all four protocols (two seeds × two conventions). Each protocol
+  had 14 or 15 violations of the nominal-5% gate, which requires a Wilson 95%
+  upper bound of at most 0.08. At T=80, the adjustment and explanatory upper
+  bounds ranged from 0.096 to 0.123.
+- The [maintained-null analysis](nardl_bounds_next_protocol.md) shows that
+  `rho = 0` with nonzero `theta` makes the outcome I(2), outside the I(0)/I(1)
+  class that bounds tables assume.
+
+MARKET-112 tracks the remaining research:
+
+1. Write out the null limit analytically, without simulation.
+2. If that limit is pivotal, tabulate it independently and run a new
+   preregistered calibration.
+3. Otherwise, close the item as a negative result.
+
+The size gate, the failed receipts and the disabled decision stay unchanged in
+the meantime. Linear tables are not substituted for NARDL-specific critical
+values.
+
 ## Sources
 
 - [Shin, Yu and Greenwood-Nimmo (2014), author publication page](https://www.greenwoodeconomics.com/publications.html),

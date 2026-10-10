@@ -1,18 +1,19 @@
-"""Deployment selection affects new launches, never the owner of saved handles."""
+"""Production wiring builds a sync-only backend and never a compute runner."""
 import json
 import os
 from unittest.mock import Mock
 
 import pytest
 
-from openecon.team_cloud import team_app
-from openecon.team_dispatch import MigratingSandboxRunner
-from openecon.team_sandbox_runner import GoogleSandboxRunner
+from openecon.cloud import cloud_app
+from openecon.team_cloud import REQUIRED_SETTINGS, team_app
+
+COMMIT = '0123456789abcdef0123456789abcdef01234567'
 
 
 @pytest.fixture
 def configuration(monkeypatch):
-    from openecon import team_auth, team_runner, team_sandbox_runner, team_server, team_storage, team_store
+    from openecon import team_auth, team_server, team_storage, team_store
     for key in tuple(os.environ):
         if key.startswith('OPENECON_'):
             monkeypatch.delenv(key)
@@ -20,117 +21,83 @@ def configuration(monkeypatch):
         'OPENECON_PROJECT_ID': 'openecon-test',
         'OPENECON_PUBLIC_ORIGIN': 'https://openecon.example',
         'OPENECON_OWNER_EMAIL': 'owner@example.com',
-        'OPENECON_BUCKET': 'openecon-runs',
+        'OPENECON_BUCKET': 'openecon-projects',
         'OPENECON_SIGNER_EMAIL': 'signer@openecon-test.iam.gserviceaccount.com',
-        'OPENECON_COMPUTE_EMAIL': 'compute@openecon-test.iam.gserviceaccount.com',
-        'OPENECON_COMPUTE_JOB': 'openecon-compute',
         'OPENECON_FIREBASE_CONFIG': json.dumps({'projectId': 'openecon-test', 'apiKey': 'key',
                                                'authDomain': 'openecon-test.firebaseapp.com',
                                                'appId': 'application'}),
     }
     for key, value in settings.items():
         monkeypatch.setenv(key, value)
-    sandbox, jobs = Mock(name='sandbox'), Mock(name='jobs')
-    sandbox_factory, jobs_factory = Mock(return_value=sandbox), Mock(return_value=jobs)
-    monkeypatch.setattr(team_sandbox_runner, 'GoogleSandboxRunner', sandbox_factory)
-    monkeypatch.setattr(team_runner, 'GoogleJobRunner', jobs_factory)
+    created = Mock(name='create_team_app', side_effect=lambda **kwargs: kwargs)
     monkeypatch.setattr(team_auth, 'TeamAuth', Mock())
     monkeypatch.setattr(team_storage, 'TeamStorage', Mock())
     monkeypatch.setattr(team_store, 'FirestoreDocuments', Mock())
     monkeypatch.setattr(team_store, 'TeamStore', Mock())
-    monkeypatch.setattr(team_server, 'create_team_app', lambda **kwargs: kwargs['runner'])
-    return sandbox, jobs, sandbox_factory, jobs_factory
+    monkeypatch.setattr(team_server, 'create_team_app', created)
+    return created
 
 
-def add_sandbox(monkeypatch):
-    for key, value in {
-        'OPENECON_COMPUTE_SERVICE': 'openecon-sandbox',
-        'OPENECON_COMPUTE_ORIGIN': 'https://openecon-sandbox-123456789012.us-central1.run.app',
-        'OPENECON_COMPUTE_IMAGE': 'image@sha256:' + 'a' * 64,
-        'OPENECON_BROKER_CALLER_SUB': '108062605432490492564',
-    }.items():
+def test_sync_backend_needs_only_identity_and_storage_settings(configuration):
+    kwargs = team_app()
+    assert set(kwargs) == {'store', 'storage', 'auth', 'public_origin', 'firebase_config',
+                           'source_commit_id'}
+    assert 'runner' not in kwargs
+    assert kwargs['public_origin'] == 'https://openecon.example'
+    assert kwargs['source_commit_id'] is None
+
+
+def test_build_source_commit_reaches_the_app(monkeypatch, configuration):
+    monkeypatch.setenv('OPENECON_SOURCE_COMMIT', COMMIT)
+    assert team_app()['source_commit_id'] == COMMIT
+
+
+@pytest.mark.parametrize('legacy', [
+    {'OPENECON_RUNNER': 'sandbox'}, {'OPENECON_RUNNER': 'jobs'},
+    {'OPENECON_COMPUTE_JOB': 'openecon-compute',
+     'OPENECON_COMPUTE_EMAIL': 'compute@openecon-test.iam.gserviceaccount.com',
+     'OPENECON_COMPUTE_SERVICE': 'openecon-sandbox',
+     'OPENECON_COMPUTE_ORIGIN': 'https://openecon-sandbox-123456789012.us-central1.run.app',
+     'OPENECON_COMPUTE_IMAGE': 'image@sha256:' + 'a' * 64,
+     'OPENECON_BROKER_CALLER_SUB': '108062605432490492564'},
+])
+def test_retired_compute_settings_never_create_an_execution_backend(monkeypatch, configuration, legacy):
+    for key, value in legacy.items():
         monkeypatch.setenv(key, value)
+    kwargs = team_app()
+    assert 'runner' not in kwargs
+    assert not any('compute' in key or 'runner' in key for key in kwargs)
 
 
-@pytest.mark.parametrize('explicit_jobs', [False, True])
-def test_existing_jobs_deployments_without_sandbox_configuration_unchanged(monkeypatch, configuration, explicit_jobs):
-    sandbox, jobs, sandbox_factory, jobs_factory = configuration
-    if explicit_jobs:
-        monkeypatch.setenv('OPENECON_RUNNER', 'jobs')
-    assert team_app() is jobs
-    sandbox_factory.assert_not_called()
-    jobs_factory.assert_called_once_with('openecon-test', 'us-central1', 'openecon-compute',
-        service_account='compute@openecon-test.iam.gserviceaccount.com')
-
-
-@pytest.mark.parametrize('backend', ['jobs', 'sandbox'])
-def test_cutover_and_rollback_keep_both_execution_handle_readers(monkeypatch, configuration, backend):
-    sandbox, jobs, sandbox_factory, jobs_factory = configuration
-    add_sandbox(monkeypatch)
-    monkeypatch.setenv('OPENECON_RUNNER', backend)
-    runner = team_app()
-    assert isinstance(runner, MigratingSandboxRunner)
-    runner.start('input', timeout_seconds=15)
-    (jobs if backend == 'jobs' else sandbox).start.assert_called_once_with('input', timeout_seconds=15)
-    (sandbox if backend == 'jobs' else jobs).start.assert_not_called()
-    handle = 'sandbox:' + 'a' * 32 + ':' + 'b' * 32
-    runner.status(handle)
-    runner.cancel(handle)
-    sandbox.status.assert_called_once_with(handle)
-    sandbox.cancel.assert_called_once_with(handle)
-    jobs.status.assert_not_called()
-    jobs.cancel.assert_not_called()
-    assert jobs_factory.call_count == sandbox_factory.call_count == 1
-    assert sandbox_factory.call_args.kwargs['caller_subject'] == '108062605432490492564'
-
-
-def test_sandbox_only_deployment_does_not_require_legacy_job(monkeypatch, configuration):
-    _, _, _, jobs_factory = configuration
-    add_sandbox(monkeypatch)
-    monkeypatch.setenv('OPENECON_RUNNER', 'sandbox')
-    monkeypatch.delenv('OPENECON_COMPUTE_JOB')
-    runner = team_app()
-    with pytest.raises(ValueError, match='legacy'):
-        runner.status('projects/openecon-test/locations/us-central1/operations/old')
-    jobs_factory.assert_not_called()
-
-
-def test_rollback_requires_configured_legacy_job(monkeypatch, configuration):
-    add_sandbox(monkeypatch)
-    monkeypatch.setenv('OPENECON_RUNNER', 'jobs')
-    monkeypatch.delenv('OPENECON_COMPUTE_JOB')
-    with pytest.raises(ValueError, match='launch backend'):
-        team_app()
-
-
-@pytest.mark.parametrize('missing', ['OPENECON_COMPUTE_SERVICE', 'OPENECON_COMPUTE_ORIGIN',
-                                    'OPENECON_COMPUTE_IMAGE'])
-def test_partial_sandbox_configuration_cannot_silently_discard_accepted_handles(monkeypatch, configuration, missing):
-    add_sandbox(monkeypatch)
-    monkeypatch.setenv('OPENECON_RUNNER', 'jobs')
+@pytest.mark.parametrize('missing', REQUIRED_SETTINGS)
+def test_missing_sync_configuration_fails_closed(monkeypatch, configuration, missing):
     monkeypatch.delenv(missing)
-    with pytest.raises(ValueError, match='Sandbox compute requires'):
+    with pytest.raises(ValueError, match='identity and storage'):
         team_app()
-    configuration[2].assert_not_called()
-    configuration[3].assert_not_called()
+    configuration.assert_not_called()
 
 
-def test_unsupported_backend_fails_even_with_complete_sandbox_settings(monkeypatch, configuration):
-    add_sandbox(monkeypatch)
-    monkeypatch.setenv('OPENECON_RUNNER', 'local')
-    with pytest.raises(ValueError, match='supported isolated'):
+def test_firebase_configuration_must_belong_to_the_project(monkeypatch, configuration):
+    monkeypatch.setenv('OPENECON_FIREBASE_CONFIG', json.dumps({
+        'projectId': 'another-project', 'apiKey': 'key',
+        'authDomain': 'another-project.firebaseapp.com', 'appId': 'application'}))
+    with pytest.raises(ValueError, match='Firebase'):
         team_app()
-    configuration[2].assert_not_called()
-    configuration[3].assert_not_called()
+    configuration.assert_not_called()
 
 
-@pytest.mark.parametrize('backend', ['sandbox', 'jobs'])
-def test_real_runner_rejects_missing_caller_subject_for_cutover_and_rollback(monkeypatch, configuration, backend):
-    from openecon import team_sandbox_runner
-    add_sandbox(monkeypatch)
-    monkeypatch.setenv('OPENECON_RUNNER', backend)
-    monkeypatch.delenv('OPENECON_BROKER_CALLER_SUB')
-    monkeypatch.setattr(team_sandbox_runner, 'GoogleSandboxRunner', GoogleSandboxRunner)
-    with pytest.raises(ValueError, match='numeric identity'):
-        team_app()
-    configuration[3].assert_not_called()
+@pytest.mark.parametrize('mode', [None, '', 'single-owner', 'sandbox-broker', 'local'])
+def test_cloud_entry_point_refuses_the_retired_cloud_workbench(monkeypatch, configuration, mode):
+    if mode is None:
+        monkeypatch.delenv('OPENECON_MODE', raising=False)
+    else:
+        monkeypatch.setenv('OPENECON_MODE', mode)
+    with pytest.raises(ValueError, match='desktop app'):
+        cloud_app()
+    configuration.assert_not_called()
+
+
+def test_cloud_entry_point_serves_team_sync(monkeypatch, configuration):
+    monkeypatch.setenv('OPENECON_MODE', 'teams')
+    assert 'runner' not in cloud_app()
+    configuration.assert_called_once()

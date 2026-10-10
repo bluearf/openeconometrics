@@ -28,9 +28,32 @@ Sum weighted influences within each PSU and retain zero-domain PSUs. Taylor cova
 `sum_h (1-f_h)*m_h/(m_h-1) * sum_j centered(u_hj)*centered(u_hj)'`.
 Integer first-stage population PSU counts provide `f_h=m_h/N_h`. Census strata contribute
 zero; singleton certainty requires explicit census FPC. Other singleton strata fail
-at declaration. Optional `deff=True` is limited to equal sampling weights and a named
-SRSWR independent-row reference retaining the full domain geometry. General unequal-weight
-DEFF/DEFT and without-replacement SRS comparisons remain unsupported.
+at declaration. Optional `deff=True` retains the accepted equal-weight SRSWR
+independent-row calculation and supports positive unequal sampling weights with
+a named weighted-population SRSWR plug-in reference. Both retain all original
+design rows. For the existing linearized row influence vector `u_i`, define
+`W=sum(w_i)`, `u_bar=sum(w_i*u_i)/W`, and
+`V_srswr=W/(n-1)*sum(w_i*(u_i-u_bar)*(u_i-u_bar)')`, where `n` is the full
+physical design-row count. Report each diagonal ratio `V_design/V_srswr` in
+`metadata['design_effect']`; a zero reference variance has an undefined (`None`)
+ratio. A census design can have zero design variance with a positive reference.
+
+The unequal-weight reference treats the declared domain and joint missing-data
+eligibility indicators as fixed, including zero influences outside them. It is
+a linearized with-replacement empirical-population comparator, not the exact
+finite-sample variance of a random ratio estimator. It differs from resampling
+rows while retaining their unequal weights, and from dropping out-of-domain rows.
+The saved reference records its complete joint covariance, full-design weight sum,
+sample count, weighted influence mean and centered crossproducts. Restore checks
+their dimensions, geometry, positive semidefiniteness, covariance replay and
+diagonal ratios, even when a modified payload has a recomputed integrity digest.
+Equal-weight results keep their previous serialized output unchanged.
+
+The variance ratio above is named relative to SRSWR. It is not Stata's
+FPC-adjusted SRSWOR `DEFF`, its default subpopulation comparator or `srssubpop`.
+Without-replacement, calibrated/multistage/regression/replicate design effects
+remain unsupported. Unequal-weight moment construction is bounded to 50 million
+`n*k*(k+2)` work units alongside the existing resident-memory and target limits.
 
 ## Replicate conventions
 

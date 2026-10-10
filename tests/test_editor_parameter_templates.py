@@ -60,6 +60,10 @@ def test_unknown_or_noninteger_parameter_tokens_fail(token):
     with pytest.raises(ValueError, match="parameters"):
         generator.decode_catalog(stored)
     with pytest.raises(ValueError, match="parameters"):
+        independent.logical_parsed(stored)
+    # The raw route preserves strict JSON admission before token semantics.
+    raw_message = "Nonfinite or negative-zero JSON number" if isinstance(token, float) and token == 0 else "parameters"
+    with pytest.raises(ValueError, match=raw_message):
         independent.logical(json.dumps(stored))
 
 

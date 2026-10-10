@@ -1,0 +1,213 @@
+{
+  "metadata": {
+    "lab": "12-independent-means",
+    "title": "Comparing Two Delivery Methods",
+    "synthetic": true,
+    "data_file": "delivery_methods.xlsx",
+    "raw_rows": 150
+  },
+  "summary": {
+    "n_A": 65,
+    "n_B": 85,
+    "mean_A": 33.45388680695838,
+    "mean_B": 36.38200739440883,
+    "difference_A_minus_B": -2.928120587450451,
+    "welch_se": 1.2210598043082288,
+    "welch_df": 108.39950888761373,
+    "welch_t": -2.398015704979602,
+    "welch_p": 0.01819303151743927,
+    "welch_ci_low": -5.348371901628235,
+    "welch_ci_high": -0.507869273272668
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "tables": {
+        "statistics": {
+          "index": [
+            "A",
+            "B",
+            "combined"
+          ],
+          "columns": [
+            "n",
+            "mean",
+            "std_dev",
+            "std_error",
+            "ci_low",
+            "ci_high"
+          ],
+          "values": [
+            [
+              65.0,
+              33.45388680695838,
+              3.5901534513332036,
+              0.44530373047064464,
+              32.56429033941888,
+              34.34348327449788
+            ],
+            [
+              85.0,
+              36.38200739440883,
+              10.482308373289019,
+              1.13696597720696,
+              34.121025861112585,
+              38.642988927705076
+            ],
+            [
+              150.0,
+              35.11315513984697,
+              8.342714593772634,
+              0.6811797941471198,
+              33.76713489023665,
+              36.459175389457286
+            ]
+          ],
+          "attrs": {}
+        },
+        "test": {
+          "index": [
+            "equal_variances",
+            "unequal_variances"
+          ],
+          "columns": [
+            "statistic",
+            "df",
+            "p_value",
+            "p_less",
+            "p_greater",
+            "mean_difference",
+            "std_error",
+            "ci_low",
+            "ci_high"
+          ],
+          "values": [
+            [
+              -2.1560318983938234,
+              148.0,
+              0.032697100283234984,
+              0.016348550141617492,
+              0.9836514498583825,
+              -2.9281205874504517,
+              1.3581063386083527,
+              -5.6119050718938155,
+              -0.2443361030070874
+            ],
+            [
+              -2.398015704979602,
+              108.39950888761373,
+              0.01819303151743927,
+              0.009096515758719635,
+              0.9909034842412804,
+              -2.9281205874504517,
+              1.2210598043082288,
+              -5.348371901628235,
+              -0.507869273272668
+            ]
+          ],
+          "attrs": {}
+        },
+        "levene": {
+          "index": [
+            "levene_mean"
+          ],
+          "columns": [
+            "statistic",
+            "df1",
+            "df2",
+            "p_value"
+          ],
+          "values": [
+            [
+              60.57176179428424,
+              1.0,
+              148.0,
+              1.1277601500027656e-12
+            ]
+          ],
+          "attrs": {}
+        },
+        "effect_sizes": {
+          "index": [
+            "cohens_d",
+            "hedges_g",
+            "glass_delta"
+          ],
+          "columns": [
+            "standardizer",
+            "estimate"
+          ],
+          "values": [
+            [
+              8.242411406459166,
+              -0.3552504774459365
+            ],
+            [
+              8.284476464969373,
+              -0.3534466661631438
+            ],
+            [
+              10.482308373289019,
+              -0.2793392908485576
+            ]
+          ],
+          "attrs": {}
+        }
+      },
+      "attrs": {
+        "kind": "independent",
+        "statistic": -2.1560318983938234,
+        "df": 148.0,
+        "p_value": 0.032697100283234984,
+        "p_less": 0.016348550141617492,
+        "p_greater": 0.9836514498583825,
+        "one_sided_p_value": 0.016348550141617492,
+        "distribution": "t",
+        "n": 150,
+        "n_missing": 0,
+        "mu": 0.0,
+        "alpha": 0.05,
+        "groups": [
+          "A",
+          "B"
+        ],
+        "cohens_d": -0.3552504774459365,
+        "hedges_g": -0.3534466661631438,
+        "glass_delta": -0.2793392908485576,
+        "glass_delta_first": -0.8155976136237558,
+        "levene_statistic": 60.57176179428424,
+        "levene_p_value": 1.1277601500027656e-12,
+        "missing": "listwise"
+      }
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "bar",
+        "title": "Comparing Two Delivery Methods",
+        "xlabel": "Method",
+        "ylabel": "Mean delivery time (minutes)",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              "A",
+              "B"
+            ],
+            "y": [
+              33.45388680695838,
+              36.38200739440883
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "native_se_matches_unpooled_formula": true,
+    "welch_df_matches_satterthwaite": true,
+    "difference_orientation": true,
+    "samples_partition_raw_rows": true
+  }
+}

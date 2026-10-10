@@ -12,7 +12,7 @@ from typing import TYPE_CHECKING
 # function export with that module as a side effect of normal Python imports.
 from openecon.latex import Latex, latex, regression_table, to_latex
 
-__version__ = "0.3.19a1"
+__version__ = "0.3.20a1"
 
 if TYPE_CHECKING:
     from openecon.analysis import AnalysisError, capabilities, fit, ols, logit, probit
@@ -52,6 +52,21 @@ __all__ += ["Hypergraph", "hypergraph", "read_hypergraph"]
 __all__ += ["NetworkMatchingResult"]
 __all__ += ["SurveyDesign", "survey_design", "SurveyResult", "IRTResult", "MIResult", "MIDiagnosticResult", "MIPoolResult", "MIJointResult"]
 __all__ += ["MIDiscreteResult", "MIDeltaResult", "MIPassiveResult", "MILincomResult"]
+__all__ += ["NormalInverseGammaPrior", "PosteriorBundle", "PosteriorContrast", "PosteriorDraws", "CFAState"]
+__all__ += ["PosteriorHypothesisComparison", "PosteriorHypothesisDraws", "SEMState", "CLRConfidenceSet", "CLRTestState"]
+__all__ += ["WeibullIntervalFit", "WeibullIntervalPrediction", "stinterval_weibull_regression",
+            "restore_interval_weibull_regression", "interval_weibull_regression_predict",
+            "restore_interval_weibull_prediction"]
+__all__ += ["SplitState", "CartState", "CartQueryState", "prediction_split", "split_restore",
+            "cart", "cart_restore", "cart_predict", "cart_prediction_restore"]
+__all__ += [
+    "bayes_hypothesis", "bayes_hypothesis_restore", "bayes_hypothesis_predict",
+    "bayes_hypothesis_draws", "bayes_hypothesis_draws_restore",
+    "latent_sem", "latent_sem_covariance", "latent_sem_restore", "sem_effects", "latent_scores",
+    "dfactor", "dfactor_restore", "dfactor_nowcast", "dfactor_forecast",
+    "iv_clr_confidence_set", "iv_clr_restore", "iv_clr_test", "iv_clr_test_restore",
+    "finite_mixture", "finite_mixture_restore", "finite_mixture_predict",
+]
 
 __all__ += ["SurveyRegressionResult", "SurveyReplicateMarginsResult"]
 __all__ += ["SurveyTwoStageDesign", "survey_two_stage_design", "SurveyTwoStageResult", "SurveyTwoStageRegressionResult"]
@@ -63,7 +78,94 @@ __all__ += ['SurveyFullyStratifiedThreeStageDesign', 'survey_fully_stratified_th
 
 __all__ += ["SurveyFourStageDesign", "survey_four_stage_design", "SurveyFourStageResult", "SurveyFourStageRegressionResult"]
 
+__all__ += ['SurveyFullyStratifiedFourStageDesign', 'survey_fully_stratified_four_stage_design', 'SurveyFullyStratifiedFourStageResult', 'SurveyFullyStratifiedFourStageRegressionResult']
+
+__all__ += ['bayes_var',
+ 'bayes_var_predict',
+ 'bayes_var_contrast',
+ 'bayes_var_draws',
+ 'bayes_var_forecast',
+ 'bayes_var_irf',
+ 'MatrixNormalInverseWishartPrior',
+ 'BayesianVARPosterior',
+ 'BayesianVARSource',
+ 'PosteriorAlgebra',
+ 'RangeIndexState',
+ 'PlainIndexState',
+ 'DatetimeIndexState',
+ 'BayesianVARPrediction',
+ 'BayesianVARContrast',
+ 'BayesianVARDraws',
+ 'BayesianVARForecast',
+ 'BayesianVARImpulse',
+ 'MomentAvailability',
+ 'MonteCarloSummary',
+ 'bayes_var_restore',
+ 'bayes_var_predict_restore',
+ 'bayes_var_contrast_restore',
+ 'bayes_var_draws_restore',
+ 'bayes_var_forecast_restore',
+ 'bayes_var_irf_restore',
+ 'bayes_var_prior_restore',
+ 'bayes_var_tables',
+ 'bayes_var_state_json']
+
+__all__ += ["BMAResult", "BMAPrediction", "BMADraws", "bayes_bma", "bayes_bma_restore",
+            "bayes_bma_predict", "bayes_bma_prediction_restore", "bayes_bma_draws", "bayes_bma_draws_restore"]
+
 _EXPORTS = {
+    "WeibullIntervalFit": ("openecon.econometrics.survival_ext.weibull_regression", "WeibullIntervalFit"),
+    "WeibullIntervalPrediction": ("openecon.econometrics.survival_ext.weibull_regression", "WeibullIntervalPrediction"),
+    "BMAResult": ("openecon.econometrics.bayesian.bma", "BMAResult"),
+    "BMAPrediction": ("openecon.econometrics.bayesian.bma_query", "BMAPrediction"),
+    "BMADraws": ("openecon.econometrics.bayesian.bma_draws", "BMADraws"),
+    'bayes_var': ('openecon.econometrics.bayesian_var.api', 'bayes_var'),
+    'bayes_var_predict': ('openecon.econometrics.bayesian_var.api', 'bayes_var_predict'),
+    'bayes_var_contrast': ('openecon.econometrics.bayesian_var.api', 'bayes_var_contrast'),
+    'bayes_var_draws': ('openecon.econometrics.bayesian_var.draws', 'bayes_var_draws'),
+    'bayes_var_forecast': ('openecon.econometrics.bayesian_var.forecast', 'bayes_var_forecast'),
+    'bayes_var_irf': ('openecon.econometrics.bayesian_var.impulse', 'bayes_var_irf'),
+    'MatrixNormalInverseWishartPrior': ('openecon.econometrics.bayesian_var.posterior', 'MatrixNormalInverseWishartPrior'),
+    'BayesianVARPosterior': ('openecon.econometrics.bayesian_var.posterior', 'BayesianVARPosterior'),
+    'BayesianVARSource': ('openecon.econometrics.bayesian_var.posterior', 'BayesianVARSource'),
+    'PosteriorAlgebra': ('openecon.econometrics.bayesian_var.posterior', 'PosteriorAlgebra'),
+    'RangeIndexState': ('openecon.econometrics.bayesian_var.posterior', 'RangeIndexState'),
+    'PlainIndexState': ('openecon.econometrics.bayesian_var.posterior', 'PlainIndexState'),
+    'DatetimeIndexState': ('openecon.econometrics.bayesian_var.posterior', 'DatetimeIndexState'),
+    'BayesianVARPrediction': ('openecon.econometrics.bayesian_var.api', 'BayesianVARPrediction'),
+    'BayesianVARContrast': ('openecon.econometrics.bayesian_var.api', 'BayesianVARContrast'),
+    'BayesianVARDraws': ('openecon.econometrics.bayesian_var.draws', 'BayesianVARDraws'),
+    'BayesianVARForecast': ('openecon.econometrics.bayesian_var.forecast', 'BayesianVARForecast'),
+    'BayesianVARImpulse': ('openecon.econometrics.bayesian_var.impulse', 'BayesianVARImpulse'),
+    'MomentAvailability': ('openecon.econometrics.bayesian_var.forecast', 'MomentAvailability'),
+    'MonteCarloSummary': ('openecon.econometrics.bayesian_var.forecast', 'MonteCarloSummary'),
+    'bayes_var_restore': ('openecon.econometrics.bayesian_var_public.transport', 'bayes_var_restore'),
+    'bayes_var_predict_restore': ('openecon.econometrics.bayesian_var_public.transport', 'bayes_var_predict_restore'),
+    'bayes_var_contrast_restore': ('openecon.econometrics.bayesian_var_public.transport', 'bayes_var_contrast_restore'),
+    'bayes_var_draws_restore': ('openecon.econometrics.bayesian_var_public.transport', 'bayes_var_draws_restore'),
+    'bayes_var_forecast_restore': ('openecon.econometrics.bayesian_var_public.transport', 'bayes_var_forecast_restore'),
+    'bayes_var_irf_restore': ('openecon.econometrics.bayesian_var_public.transport', 'bayes_var_irf_restore'),
+    'bayes_var_prior_restore': ('openecon.econometrics.bayesian_var_public.transport', 'bayes_var_prior_restore'),
+    'bayes_var_tables': ('openecon.econometrics.bayesian_var_public.tables', 'bayes_var_tables'),
+    'bayes_var_state_json': ('openecon.econometrics.bayesian_var_public.tables', 'bayes_var_state_json'),
+    'SurveyFullyStratifiedFourStageDesign': ('openecon.survey_fully_stratified_four_stage', 'SurveyFullyStratifiedFourStageDesign'),
+    'survey_fully_stratified_four_stage_design': ('openecon.survey_fully_stratified_four_stage', 'survey_fully_stratified_four_stage_design'),
+    'SurveyFullyStratifiedFourStageResult': ('openecon.econometrics.survey.fully_stratified_four_stage_targets', 'SurveyFullyStratifiedFourStageResult'),
+    'SurveyFullyStratifiedFourStageRegressionResult': ('openecon.econometrics.survey.fully_stratified_four_stage_regression_state', 'SurveyFullyStratifiedFourStageRegressionResult'),
+
+    "SplitState": ("openecon.econometrics.supervised.split", "SplitState"),
+    "CartState": ("openecon.econometrics.supervised.cart", "CartState"),
+    "CartQueryState": ("openecon.econometrics.supervised.cart", "CartQueryState"),
+    "PosteriorHypothesisComparison": ("openecon.econometrics.bayesian.hypothesis", "PosteriorHypothesisComparison"),
+    "PosteriorHypothesisDraws": ("openecon.econometrics.bayesian.hypothesis", "PosteriorHypothesisDraws"),
+    "SEMState": ("openecon.econometrics.latent.sem", "SEMState"),
+    "CLRConfidenceSet": ("openecon.econometrics.weakiv.api", "CLRConfidenceSet"),
+    "CLRTestState": ("openecon.econometrics.weakiv.api", "CLRTestState"),
+    "NormalInverseGammaPrior": ("openecon.econometrics.bayesian.posterior", "NormalInverseGammaPrior"),
+    "PosteriorBundle": ("openecon.econometrics.bayesian.posterior", "PosteriorBundle"),
+    "PosteriorContrast": ("openecon.econometrics.bayesian.posterior", "PosteriorContrast"),
+    "PosteriorDraws": ("openecon.econometrics.bayesian.posterior", "PosteriorDraws"),
+    "CFAState": ("openecon.econometrics.latent.cfa", "CFAState"),
     "SurveyFourStageDesign": ("openecon.survey_four_stage", "SurveyFourStageDesign"),
     "survey_four_stage_design": ("openecon.survey_four_stage", "survey_four_stage_design"),
     "SurveyFourStageResult": ("openecon.econometrics.survey.four_stage_targets", "SurveyFourStageResult"),

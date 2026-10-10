@@ -87,13 +87,10 @@ class ModelSpec(BaseModel):
 
         if self.outcome in self.predictors:
             raise ValueError("The outcome must not also be a predictor.")
-        if self.estimator in {"logit", "probit"}:
-            # The core binary estimators keep their explicit covariance contract
-            # here, where the editor's parameter catalogue reads it.
-            if self.covariance is None:
-                self.covariance = "cluster" if self.cluster else "nonrobust"
-            if self.covariance not in {"nonrobust", "cluster"}:
-                raise ValueError("Binary models support nonrobust or cluster covariance.")
+        if (self.estimator in {"logit", "probit"} and self.covariance is not None
+                and self.covariance not in {"nonrobust", "cluster", "opg", "robust"}):
+            raise ValueError("Binary models support nonrobust or cluster covariance without "
+                             "weights; weighted fits also support opg and robust.")
         self.covariance = validate_spec(self)
         allowed = set(self.predictors)
         for names in self.columns.values():

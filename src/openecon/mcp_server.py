@@ -227,12 +227,24 @@ def create_mcp_server(workspace: Path | str = ".openecon") -> FastMCP:
 
     @server.tool(annotations=read_only)
     @_tool_errors
-    def get_result(result_id: str, include_diagnostics: bool = False) -> dict[str, Any]:
+    def get_result(
+        result_id: str, include_diagnostics: bool = False, include_latex: bool = False
+    ) -> dict[str, Any]:
         """Read a saved model's compact result. Optional diagnostics add coefficient
         covariance and scalar diagnostics. Sample positions, fitted values and residual
         rows are never returned. Coefficient labels may contain categorical values.
+        include_latex=True adds complete, bounded publication LaTeX, a renderable
+        mathematical table, inference/sample notes and required LaTeX packages.
+        It regenerates aggregate values without refitting or changing the saved
+        result. Unsupported inference or oversized exports return an explicit error.
         """
-        return compact_result(store.get_result(result_id), include_diagnostics=include_diagnostics)
+        saved = store.get_result(result_id)
+        result = compact_result(saved, include_diagnostics=include_diagnostics)
+        if include_latex:
+            from openecon.mcp_latex import result_latex_fields
+
+            result.update(result_latex_fields(saved))
+        return result
 
     @server.tool(annotations=read_only)
     @_tool_errors

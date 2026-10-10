@@ -1,0 +1,21 @@
+{
+  "filename": "parcel_weights.xlsx",
+  "description": "From Parcel Weights to Standard Scores; original synthetic teaching data.",
+  "observation_unit": "One synthetic parcel.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710007,
+  "columns": [
+    {
+      "name": "parcel_id",
+      "description": "Parcel identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "grams",
+      "description": "Weight from a normal population with mean 1000 and SD 12",
+      "unit": "grams",
+      "missing": 0
+    }
+  ]
+}

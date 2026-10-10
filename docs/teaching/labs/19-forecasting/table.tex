@@ -1,0 +1,41 @@
+\begin{table}[htbp]
+\centering
+\caption{Synthetic inflation: train-only AR(1)}
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lc@{}}
+\toprule
+Dependent variable: & inflation \\
+ & (1) \\
+ & Training sample AR(1) \\
+\midrule
+{[inflation]} &  \\
+Intercept & $2.728$ \\
+ & $(0.111)$ \\[0.35em]
+{[ARMA]} &  \\
+ARMA:L1.ar & $0.704$ \\
+ & $(0.057)$ \\[0.35em]
+{[Other parameters]} &  \\
+/sigma & $0.420$ \\
+ & $(0.023)$ \\[0.35em]
+\midrule
+Observations & 160 \\
+Log likelihood & -88.448 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\footnotesize
+\raggedright
+\textit{Notes:} Standard errors are in parentheses.\par
+(1) ARIMA: conventional standard errors; normal z inference; 95\% confidence level (alpha = 0.05); estimation sample 160 of 160 observations; covariance correction: observed information (OIM): numerical Hessian of the analytic gradient; scale-parameter inference: /sigma is tested one-sided against zero and its confidence interval is truncated at zero, as in Stata; method: ml.\par
+Quarters 1–160 only; exact Gaussian maximum likelihood.\par
+Intercept is the long-run mean, not the recursion constant.\par
+Forecast evaluation uses previously untouched quarters 161–180.\par
+\end{minipage}
+\endgroup
+\end{table}

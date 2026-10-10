@@ -1,0 +1,33 @@
+{
+  "filename": "cournot_competition.xlsx",
+  "description": "Cournot Competition and the Number of Firms; original synthetic teaching data.",
+  "observation_unit": "One symmetric industry-size scenario.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720019,
+  "columns": [
+    {
+      "name": "firms",
+      "description": "Number of identical firms",
+      "unit": "integer",
+      "missing": 0
+    },
+    {
+      "name": "intercept",
+      "description": "Inverse demand intercept",
+      "unit": "currency/unit",
+      "missing": 0
+    },
+    {
+      "name": "slope",
+      "description": "Inverse demand slope",
+      "unit": "currency/unit\u00b2",
+      "missing": 0
+    },
+    {
+      "name": "mc",
+      "description": "Constant marginal cost",
+      "unit": "currency/unit",
+      "missing": 0
+    }
+  ]
+}

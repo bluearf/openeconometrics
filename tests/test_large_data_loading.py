@@ -137,7 +137,6 @@ def test_wide_csv_routes_without_dense_parse_and_duplicate_header_still_fails(tm
 def test_local_upload_has_no_csv_parquet_transfer_cap_and_streams_bundle_file(tmp_path, monkeypatch):
     from fastapi.testclient import TestClient
     import openecon.server as server
-    monkeypatch.setattr(server, "MAX_FILE_BYTES", 64)
     monkeypatch.setattr(data, "MAX_FILE_BYTES", 64)
     contents = pd.DataFrame({"x": range(21), "y": [3. + i + math.sin(i) for i in range(21)]}).to_csv(index=False).encode()
     assert len(contents) > 64

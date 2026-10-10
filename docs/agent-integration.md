@@ -90,6 +90,15 @@ server; remote serving requires a separate authentication and access-control des
 
 ## Connect Codex or Claude Code
 
+For a Codex plugin with a reusable analysis skill and the same ten MCP tools,
+see the [OpenEconometrics plugin](../plugins/openeconometrics/README.md). Register
+the repository's local marketplace, install the plugin, and explicitly configure
+an existing runtime and workspace before connecting. The plugin stores results
+in that selected workspace. The direct MCP commands below remain available.
+See the dated [initial plugin verification](validation/codex-plugin-0.1.1.md)
+and [saved-result LaTeX verification](validation/codex-plugin-0.1.2.md)
+for the actual installed-client checks and their limits.
+
 In the desktop application, open the project first, then choose **Connect agent**.
 Copy the command for Codex or Claude Code. It points to the application's bundled
 `openecon-runtime` executable and the active project's absolute workspace. The
@@ -159,7 +168,7 @@ synthetic analysis before using research data.
 | `start_analysis(dataset_id, spec, request_id, timeout_seconds=300)` | Starts a bounded background fit and returns its job immediately. The request ID must be a UUID. |
 | `get_analysis_job(job_id)` | Reads durable status; completed jobs include the compact saved result. |
 | `cancel_analysis_job(job_id)` | Requests cancellation; poll until terminal to confirm the worker has stopped. |
-| `get_result(result_id, include_diagnostics=False)` | Returns a saved compact summary; optional diagnostics add coefficient covariance and scalar diagnostics. |
+| `get_result(result_id, include_diagnostics=False, include_latex=False)` | Returns a saved compact summary; optional diagnostics add coefficient covariance and scalar diagnostics. LaTeX adds a publication table, math preview, inference notes and package requirements from the saved aggregate result. |
 | `list_results` | Lists saved compact summaries. |
 
 Compact results include coefficients, inference settings, model metrics, warnings,
@@ -169,6 +178,16 @@ encoding maps. Coefficient names can include category labels. Column names,
 aggregate statistics and model outputs may themselves be sensitive; excluding raw
 rows does not make a response anonymous. A connected client may forward tool
 responses to its LLM provider, according to its own settings.
+
+`include_latex=True` reads the saved result without refitting or changing its
+files. The optional `latex`, `latex_math`, `latex_notes` and `latex_packages`
+fields use the existing publication formatter and its actual saved inference.
+Ordinary labels are escaped. Observation arrays, arbitrary stored TeX and hidden
+prediction state are excluded. Unsupported inference or oversized presentation
+returns an explicit formatting error; the normal saved result remains available.
+Use `latex_math` for a rendered preview and the full `latex` source with the
+declared packages for an authorized `.tex` export. Older runtimes need an update
+before this optional argument appears in their connected tool schema.
 
 `include_preview=True` explicitly exposes raw values to the client. Request it
 only when the user intends to share those rows. Workspace files remain local;

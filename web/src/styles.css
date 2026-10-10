@@ -166,7 +166,8 @@ a {
   gap: 10px;
   margin-left: auto;
 }
-.save-state {
+.save-state,
+.desktop-run-note {
   color: var(--muted);
   font-size: 11px;
   white-space: nowrap;
@@ -547,19 +548,13 @@ a {
   color: var(--muted);
 }
 .output-warning,
-.historical-note,
-.cloud-notice {
+.historical-note {
   padding: 10px 12px;
   border-left: 2px solid var(--ink);
   background: var(--tint);
   font-size: 12px;
   line-height: 1.6;
   color: var(--ink);
-}
-.cloud-notice {
-  margin: 0;
-  flex-shrink: 0;
-  border-bottom: 1px solid var(--line);
 }
 .text-output,
 .source-echo,

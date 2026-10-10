@@ -156,3 +156,19 @@ def fitted_models():
             pd.DataFrame(values, columns=["a", "b"]), ["a", "b"], intercept=False, tolerance=1e-6
         ),
     )
+    # Keep the full family-inventory assertion meaningful as native families grow.
+    # Append fixtures so earlier deterministic examples retain their exact draws.
+    integrated = series.copy()
+    integrated["x"] = series.x.cumsum()
+    integrated["y"] = 1.3 * integrated.x + series.y
+    yield "dols", oe.dols(data=integrated, y="y", x=["x"], time="time", leads=1, lags=1)
+    # Six longer panels keep this all-coefficients preview fixture compact.
+    # Long/truncated previews have a separate explicit 90-coefficient case.
+    dfe_data = d.assign(id=np.repeat(np.arange(6), 60), t=np.tile(np.arange(60), 6))
+    yield "dfe", oe.dfe(data=dfe_data, y="y", x=["x"], panel="id", time="t")
+    yield "lp", oe.lp(data=series, y="y", x=["x"], time="time", horizons=2, lags=1)
+    yield "mediation", oe.mediation(data=d, y="y", x=["x"], mediators=["p"], controls=["z"])
+    yield "arfima", oe.arfima(series, "y", d=0.2, terms=32, time="time")
+    yield "bspline_regress", oe.bspline_regress(data=d, y="y", x=["x"], knots={"x": [-1., 0., 1.]})
+    yield "dmlirm", oe.dmlirm(data=d, y="y", treatment="binary", x=["x", "z"])
+    yield "cfregress", oe.cfregress(data=d, y="y", endogenous="p", instruments=["z"], x=["x"])

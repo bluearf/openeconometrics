@@ -15,6 +15,8 @@ from pydantic import ValidationError
 import pytest
 import torch
 
+from scripts.torch_test_state import preserve_torch_default_device
+
 import openecon as oe
 from openecon.analysis_contracts import AnalysisError
 from openecon.resources import use_workspace_budget
@@ -815,19 +817,19 @@ def test_cpu_float64_contract_ignores_ambient_default_device_and_dtype(method, c
     frame = fixture()
     design = declare(frame)
     expected = complete_states[method]
-    previous_device, previous_dtype = torch.get_default_device(), torch.get_default_dtype()
-    try:
-        torch.set_default_device("meta")
-        torch.set_default_dtype(torch.float32)
-        with torch.inference_mode():
-            actual = run(frame, design, method)
-            restored = type(actual).model_validate_json(actual.model_dump_json())
-            pd.testing.assert_frame_equal(restored.to_frame(), expected.to_frame())
-        assert torch.get_default_device().type == "meta"
-        assert torch.get_default_dtype() == torch.float32
-    finally:
-        torch.set_default_device(previous_device)
-        torch.set_default_dtype(previous_dtype)
+    previous_dtype = torch.get_default_dtype()
+    with preserve_torch_default_device():
+        try:
+            torch.set_default_device("meta")
+            torch.set_default_dtype(torch.float32)
+            with torch.inference_mode():
+                actual = run(frame, design, method)
+                restored = type(actual).model_validate_json(actual.model_dump_json())
+                pd.testing.assert_frame_equal(restored.to_frame(), expected.to_frame())
+            assert torch.get_default_device().type == "meta"
+            assert torch.get_default_dtype() == torch.float32
+        finally:
+            torch.set_default_dtype(previous_dtype)
 
 
 @pytest.mark.parametrize("method", METHODS)

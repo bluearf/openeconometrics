@@ -7,6 +7,8 @@ import pandas as pd
 import pytest
 import torch
 
+from scripts.torch_test_state import preserve_torch_default_device
+
 from openecon.analysis_contracts import AnalysisError
 from openecon.econometrics.categorical import frequency_scaling as fs
 from openecon.econometrics.categorical.frequency import _seal
@@ -353,15 +355,12 @@ def test_global_workspace_refusal_and_default_device_pinning():
     with use_workspace_budget(1), pytest.raises(AnalysisError) as caught:
         mca_fit(large)
     assert caught.value.code == "workspace_limit"
-    prior = torch.get_default_device()
-    try:
+    with preserve_torch_default_device():
         torch.set_default_device("meta")
         fit = mca_fit()
         query = fs.mca_fweight_project(fit, categorical_sample())
         assert fit.attrs["device"] == query.attrs["device"] == "cpu"
         assert torch.get_default_device().type == "meta"
-    finally:
-        torch.set_default_device(prior)
 
 
 def test_private_overals_generator_preserves_global_random_state():

@@ -2,8 +2,8 @@
 
 The score and tree routing/splitting follow IBM's TwoStep algorithm guide:
 https://public.dhe.ibm.com/software/analytics/spss/support/Stats/Docs/Statistics/Algorithms/14.0/twostep_cluster.pdf
-This implementation refuses its explicit tree limits rather than rebuilding,
-and returns the complete hierarchy without automatic selection/refinement.
+Adaptive rebuilding is explicit and bounded; legacy insertion still refuses
+tree fullness. The hierarchy retains every declared non-noise cut.
 All continuous summaries use CPU float64 parallel Welford updates.
 """
 
@@ -260,6 +260,7 @@ class TreeResult:
     split_count: int
     distance_evaluations: int
     roundoff_clamps: int = 0
+    noise_cf: CF | None = None
 
 
 @dataclass(frozen=True)
@@ -309,9 +310,10 @@ def _cf_dict(cf: CF) -> dict:
 
 
 class _Tree:
-    def __init__(self, globalvar, threshold, branch_factor, max_preclusters, max_nodes):
+    def __init__(self, globalvar, threshold, branch_factor, max_preclusters, max_nodes, budget=None):
         self.globalvar, self.threshold, self.branch_factor = globalvar, threshold, branch_factor
         self.max_preclusters, self.max_nodes = max_preclusters, max_nodes
+        self.budget = budget
         self.node_count = self.entry_count = self.precluster_count = 0
         self.split_count = self.distance_evaluations = self.roundoff_clamps = 0
         self.root = self._node(True)
@@ -330,9 +332,13 @@ class _Tree:
         return _Entry(self.entry_count - 1, cf, child)
 
     def _loss(self, a, b):
+        if self.budget is not None:
+            self.budget.charge_distance()
         distance, clamp = _distance(a, b, self.globalvar)
         self.distance_evaluations += 1
         self.roundoff_clamps += clamp
+        if self.budget is not None:
+            self.budget.clamps += clamp
         return distance
 
     def _closest(self, entries, incoming):
@@ -454,6 +460,10 @@ def build_tree(
     branch_factor: int,
     max_preclusters: int,
     max_nodes: int,
+    rebuild: bool = False,
+    max_rebuilds: int = 16,
+    noise_fraction: float = 0.0,
+    max_work: int = 300_000_000,
 ) -> TreeResult:
     """Sequential balanced CF-tree insertion with absolute merge-loss absorption."""
     if (
@@ -530,6 +540,18 @@ def build_tree(
             raise AnalysisError(
                 "invalid_tree_limit", f"TwoStep {name} must be an integer in {minimum}..{maximum}."
             )
+    if type(rebuild) is not bool or type(max_rebuilds) is not int or not 0 <= max_rebuilds <= 64:
+        raise AnalysisError("invalid_tree_limit", "rebuild must be bool and max_rebuilds an integer in 0..64.")
+    if type(max_work) is not int or max_work < 1:
+        raise AnalysisError("invalid_tree_limit", "max_work must be a positive integer.")
+    if isinstance(noise_fraction, bool) or not isinstance(noise_fraction, (int, float)) or not math.isfinite(noise_fraction) or not 0 <= noise_fraction <= 1 or noise_fraction > 0 and not rebuild:
+        raise AnalysisError("invalid_tree_limit", "noise_fraction must be finite in 0..1 and requires adaptive rebuilding.")
+    if rebuild:
+        from .adaptive import build_adaptive
+        return build_adaptive(X, codes, tuple(levels), globalvar.detach(), row_order,
+                              threshold=float(threshold), branch_factor=branch_factor,
+                              max_preclusters=max_preclusters, max_nodes=max_nodes,
+                              max_rebuilds=max_rebuilds, noise_fraction=float(noise_fraction), max_work=max_work)
     tree = _Tree(globalvar.detach(), float(threshold), branch_factor, max_preclusters, max_nodes)
     for row in row_order.tolist():
         tree.insert(singleton(X[row], codes[row], tuple(levels), row))

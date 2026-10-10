@@ -21,6 +21,11 @@ from openecon.survey import SurveyDesign, _identity, _scalar
 
 FLOAT = torch.float64
 MAX_TARGETS = 32
+MAX_DEFF_WORK = 50_000_000
+SRSWR_WEIGHTED_REFERENCE = (
+    "unequal-weight weighted-population SRSWR plug-in, full original row geometry, "
+    "fixed eligibility, no FPC"
+)
 
 
 def digest(value):
@@ -175,6 +180,11 @@ class SurveyResult(BaseModel):
         if self.method == "taylor" and self.df != self.design.validation.design_df:
             raise ValueError("Taylor inference df must retain the complete design geometry.")
         if (
+            "srs_reference_state" in self.metadata
+            or self.metadata.get("srs_reference") == SRSWR_WEIGHTED_REFERENCE
+        ):
+            validate_srswr_reference(self, cov)
+        if (
             digest(self.model_dump(mode="json", exclude={"integrity_sha256"}))
             != self.integrity_sha256
         ):
@@ -205,6 +215,153 @@ class SurveyResult(BaseModel):
             labels=["linear contrast"],
             null=[number(null, "null")],
         )
+
+
+def validate_srswr_reference(state, covariance):
+    """Replay the named weighted-population comparator from bounded saved moments."""
+    metadata = state.metadata
+
+    def scalar(value):
+        if type(value) not in (int, float):
+            return False
+        try:
+            return math.isfinite(value)
+        except (OverflowError, ValueError):
+            return False
+
+    record = metadata.get("srs_reference_state")
+    expected = {
+        "schema_version", "law", "n_design", "sum_design_weights",
+        "weighted_influence_mean", "weighted_centered_crossproducts", "fpc_applied",
+        "eligibility",
+    }
+    if (
+        state.method != "taylor"
+        or metadata.get("srs_reference") != SRSWR_WEIGHTED_REFERENCE
+        or not isinstance(record, dict)
+        or set(record) != expected
+        or record.get("schema_version") != "survey-srswr-weighted-v1"
+        or record.get("law") != "full-design-weighted-population-srswr-linearized"
+        or record.get("fpc_applied") is not False
+        or record.get("eligibility") != "fixed-domain-and-joint-complete-case-indicator"
+    ):
+        raise ValueError("Saved SRSWR reference law is unsupported or incomplete.")
+    n, k = record.get("n_design"), len(state.labels)
+    population = record.get("sum_design_weights")
+    if (
+        type(n) is not int
+        or n < 2
+        or n != state.design.validation.nobs
+        or n * k * (k + 2) > MAX_DEFF_WORK
+        or not scalar(population)
+        or population <= 0
+        or not math.isclose(
+            population, state.design.validation.sum_weights, rel_tol=1e-12, abs_tol=0.0
+        )
+    ):
+        raise ValueError("Saved SRSWR full-design sample/weight geometry is inconsistent.")
+
+    def vector(value, width):
+        if (
+            not isinstance(value, list)
+            or len(value) != width
+            or any(not scalar(v) for v in value)
+        ):
+            raise ValueError("Saved SRSWR moments must be finite and correctly dimensioned.")
+        return value
+
+    mean = torch.tensor(vector(record.get("weighted_influence_mean"), k), dtype=FLOAT)
+
+    def matrix(value):
+        if not isinstance(value, list) or len(value) != k:
+            raise ValueError("Saved SRSWR covariance/moments dimensions are inconsistent.")
+        tensor = torch.tensor([vector(row, k) for row in value], dtype=FLOAT)
+        scale = max(float(tensor.abs().max()), 1e-300)
+        if (
+            not torch.allclose(tensor, tensor.T, atol=scale * 1e-12, rtol=1e-12)
+            or (tensor.diagonal() < 0).any()
+            or float(torch.linalg.eigvalsh(tensor / scale).min()) < -1e-10
+        ):
+            raise ValueError("Saved SRSWR covariance/moments must be symmetric positive semidefinite.")
+        return tensor
+
+    moments = matrix(record.get("weighted_centered_crossproducts"))
+    reference = matrix(metadata.get("srs_covariance"))
+    replay = population / (n - 1) * moments
+    scale = max(float(reference.abs().max()), 1e-300)
+    if (
+        not torch.isfinite(replay).all()
+        or not torch.allclose(reference, replay, atol=scale * 1e-12, rtol=1e-12)
+    ):
+        raise ValueError("Saved SRSWR covariance differs from its complete moment replay.")
+    psus = metadata.get("psu_influence_sums")
+    if not isinstance(psus, list) or len(psus) != state.design.validation.n_psu:
+        raise ValueError("Saved SRSWR weighted influence geometry is inconsistent.")
+    psu_values = torch.tensor([vector(row, k) for row in psus], dtype=FLOAT)
+    summed = psu_values.sum(0) / population
+    mean_scale = max(
+        float(psu_values.abs().sum(0).max()) / population,
+        math.sqrt(float(moments.diagonal().max())) / math.sqrt(population),
+        1e-300,
+    )
+    if not math.isfinite(mean_scale):
+        raise ValueError("Saved SRSWR moment scale is not finite.")
+    if not torch.allclose(mean, summed, atol=mean_scale * 1e-10, rtol=1e-10):
+        raise ValueError("Saved SRSWR mean differs from the complete PSU influence sums.")
+    target_mean = (
+        torch.tensor(state.estimates, dtype=FLOAT) / population
+        if state.target == "total" else torch.zeros(k, dtype=FLOAT)
+    )
+    if not torch.allclose(mean, target_mean, atol=mean_scale * 1e-10, rtol=1e-10):
+        raise ValueError("Saved SRSWR mean is inconsistent with the target estimating equation.")
+    groups, corrections = metadata.get("stratum_psu_indices"), metadata.get("fpc_multipliers")
+    strata = state.design.validation.strata
+    if (
+        not isinstance(groups, list)
+        or len(groups) != len(strata)
+        or any(
+            not isinstance(rows, list)
+            or len(rows) != stratum.n_psu
+            or any(type(index) is not int for index in rows)
+            for rows, stratum in zip(groups, strata)
+        )
+        or sorted(index for rows in groups for index in rows) != list(range(len(psus)))
+        or not isinstance(corrections, list)
+        or len(corrections) != len(strata)
+        or any(
+            type(value) not in (int, float)
+            or value != (1.0 - stratum.n_psu / stratum.population_psu
+                         if stratum.population_psu else 1.0)
+            for value, stratum in zip(corrections, strata)
+        )
+    ):
+        raise ValueError("Saved SRSWR Taylor strata/FPC geometry is inconsistent.")
+    design_replay = torch.zeros_like(covariance)
+    for rows, correction in zip(groups, corrections):
+        if correction:
+            block = psu_values[rows]
+            centered = block - block.mean(0)
+            design_replay += correction * len(rows) / (len(rows) - 1) * (centered.T @ centered)
+    cov_scale = max(float(covariance.abs().max()), 1e-300)
+    if not torch.allclose(covariance, design_replay, atol=cov_scale * 1e-12, rtol=1e-12):
+        raise ValueError("Saved SRSWR numerator differs from complete Taylor covariance replay.")
+    effects = metadata.get("design_effect")
+    if not isinstance(effects, list) or len(effects) != k:
+        raise ValueError("Saved SRSWR design-effect dimensions are inconsistent.")
+    for i, effect in enumerate(effects):
+        denominator = float(reference[i, i])
+        if denominator <= 0:
+            if effect is not None:
+                raise ValueError("Zero SRSWR variance has an undefined design effect.")
+        else:
+            ratio = float(covariance[i, i]) / denominator
+            if (
+                not scalar(effect)
+                or effect < 0
+                or not math.isfinite(ratio)
+                or not math.isclose(effect, ratio, rel_tol=1e-12, abs_tol=0.0)
+            ):
+                raise ValueError("Saved SRSWR design effect differs from its covariance ratio.")
 
 
 def inference_frame(state, *, estimates=None, covariance=None, labels=None, null=None):

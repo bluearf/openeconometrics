@@ -1057,7 +1057,7 @@ function TeamShell({
             key={`${user.uid}:${selected.id}`}
             client={client}
             readOnly={!canEditProject(selected.role)}
-            isolatedRuns={!isDesktop()}
+            syncOnly={!isDesktop()}
             projectName={selected.name}
             toolbarTarget={toolbarTarget}
             onControls={registerControls}

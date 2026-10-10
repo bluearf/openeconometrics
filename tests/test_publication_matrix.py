@@ -22,7 +22,8 @@ def matrix():
 
 CASES = ("ols", "logit", "areg", "xtreg_robust", "xtreg_dk", "ivregress", "glm", "mlogit",
          "ologit", "tobit", "zinb", "qreg", "arima", "arch", "var", "nardl", "streg", "stcox",
-         "ahreg", "didregress", "mixed", "sureg")
+         "ahreg", "didregress", "mixed", "sureg", "dols", "dfe", "lp", "mediation",
+         "arfima", "bspline_regress", "dmlirm", "cfregress")
 
 
 @pytest.mark.parametrize("name", CASES)

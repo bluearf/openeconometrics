@@ -386,6 +386,8 @@ reproduced and raises `suest_mismatch`. Supported providers:
 | `glm` | analytic family/link quasi-score and observed Hessian, including trials and offsets; unit dispersion cancels from the sandwich |
 | `nbreg` | analytic count and dispersion scores for the fitted mean/constant parameterization |
 | `tobit`, `intreg`, `truncreg` | analytic density, censoring, interval or truncation probabilities; Hessian transformed to the reported sigma or log-sigma parameter |
+| `cloglog` | Bernoulli likelihood with `p = 1-exp(-exp(eta))`, `eta=x'b+offset`; score `x [y A-(1-y) B]`, `A=exp(eta)/expm1(exp(eta))`, `B=exp(eta)`; observed Hessian |
+| `fracreg` logit/probit | Bernoulli quasi-likelihood `y log G(eta)+(1-y) log(1-G(eta))`, including 0, 1 and interior responses; logit score `x(y-p)`, probit score `x [y phi(eta)/Phi(eta)-(1-y) phi(eta)/Phi(-eta)]`; observed Hessian |
 
 Frequency, analytic and probability weights are supported when all input
 models use the same weight type and values on their union sample. Frequency
@@ -399,6 +401,36 @@ The input fits may carry any covariance (including a bundle returned by
 `oe.bootstrap`/`oe.jackknife`, whose estimates and specification are the
 original fit's); suest recomputes everything from the scores and records each
 input's covariance in `extra['models']`.
+
+For `cloglog` and `fracreg`, reconstruction verifies the complete saved
+coefficient design, treatment coding, omitted columns, link, physical sample
+positions, effective/original observation counts, dropped rows, sample hash
+and recorded convergence. A stationary subset is refused even when it reproduces
+the saved estimates. JSON restoration needs no refit. `cloglog`
+retains its offset and native frequency/probability-weight domain; `fracreg`
+retains its native frequency/probability/normalized analytic-weight convention
+and has no offset role in this API. Importance weights remain refused. Fractional
+probit uses the fractional Bernoulli QML derivatives; the binary sign shortcut
+`q=2y-1` is not valid for interior responses. These formulas follow the
+[cloglog](https://www.stata.com/manuals/rcloglog.pdf) and
+[fracreg](https://www.stata.com/manuals/rfracreg.pdf) likelihood definitions;
+native analytic weights are an OpenEcon convention, not a claim of Stata parity.
+
+These saved score calculations run on resident CPU float64 and preserve the
+caller's default device and NumPy/Torch random states. Dense work is admitted up
+to `N*P^2+P^3 = 100,000,000` for each new provider and
+`sum(N_m)*P_joint^2+P_joint^3 = 500,000,000` for a joint system containing it.
+Individual work admission checks the reported parameter width, the complete
+encoded width before design allocation/rank screening, and the kept width after
+screening. Omitted columns and unused category levels count in that pre-screen
+width. Early named-buffer plans also obey `OPENECON_WORKSPACE_MB` (default 512 MiB),
+before score reconstruction and dense joint allocation. The joint union estimate
+uses the conservative sum of model sample sizes; guards are implementation
+resource bounds, not statistical sample-size limits or process RSS limits.
+The joint plan is saved in provenance. A reported-coordinate information matrix
+singular at float64 precision raises `singular_information` with a request to
+center/rescale and refit; stationarity tolerances are not relaxed. Dataset replay,
+survey designs and other score providers remain outside this extension.
 
 **Result.** Terms are `<name>:<term>` (`m1:x1`, `m1:/lnvar`, `m2:/cut1`)
 grouped in equations `<name>` (or `<name>_<equation>`; OLS fits use

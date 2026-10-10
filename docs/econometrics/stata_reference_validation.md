@@ -1,5 +1,14 @@
 # Published Stata reference validation
 
+## Licensed executable comparison canceled - 9 October 2026
+
+At the project owner's explicit request, MARKET-111 / GitHub#28 was canceled
+as not planned. Licensed Stata/SPSS/EViews execution is no longer a method
+issue closure condition. The records below preserve historical scope and
+published-reference evidence; they are not successful licensed vendor runs.
+Global parity remains false. Independent numerical and packaged/native
+runtime validation continue under the shared MARKET-73 contract.
+
 The pinned 74-row numeric projection of Stata's [r19 `auto.dta`](https://www.stata-press.com/data/r19/auto.dta) is compared with three official publications. This is a source-run reference check. No Stata executable was run and no installed desktop package is certified by it.
 
 | Native specification | Published reference | Checked output |

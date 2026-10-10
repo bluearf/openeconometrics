@@ -7,6 +7,8 @@ import pytest
 from scipy import special, stats
 import torch
 
+from scripts.torch_test_state import preserve_torch_default_device
+
 import openecon as oe
 from openecon.analysis_contracts import AnalysisError
 from openecon.econometrics.survey.common import digest
@@ -471,20 +473,19 @@ def test_impossible_native_score_evaluation_count_fails_even_with_coherent_work(
 def test_fit_restore_and_conditional_targets_ignore_ambient_torch_device_and_dtype(family, models):
     expected = models[family]
     old_dtype = torch.get_default_dtype()
-    old_device = torch.get_default_device()
-    try:
-        torch.set_default_dtype(torch.float32)
-        torch.set_default_device("meta")
-        fitted = run(family, tolerance=1e-11)
-        restored = type(fitted).model_validate_json(fitted.model_dump_json())
-        assert restored.model_dump(mode="json") == expected.model_dump(mode="json")
-        predicted = restored.predict(pd.DataFrame({"x": [-0.2, 0.4], "z": [0.3, -0.1]}))
-        combination = restored.lincom([0.0, 1.0, 0.0])
-        assert np.isfinite(predicted.estimate).all()
-        assert np.isfinite(combination.estimate).all()
-    finally:
-        torch.set_default_device(old_device)
-        torch.set_default_dtype(old_dtype)
+    with preserve_torch_default_device():
+        try:
+            torch.set_default_dtype(torch.float32)
+            torch.set_default_device("meta")
+            fitted = run(family, tolerance=1e-11)
+            restored = type(fitted).model_validate_json(fitted.model_dump_json())
+            assert restored.model_dump(mode="json") == expected.model_dump(mode="json")
+            predicted = restored.predict(pd.DataFrame({"x": [-0.2, 0.4], "z": [0.3, -0.1]}))
+            combination = restored.lincom([0.0, 1.0, 0.0])
+            assert np.isfinite(predicted.estimate).all()
+            assert np.isfinite(combination.estimate).all()
+        finally:
+            torch.set_default_dtype(old_dtype)
 
 
 @pytest.mark.parametrize("family", FAMILIES)

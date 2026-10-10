@@ -1,0 +1,32 @@
+{
+  "filename": "scholarship_cutoff.xlsx",
+  "description": "Fictional students, eligibility scores, grant assignment and first-year credits around a score cutoff of 50.",
+  "observation_unit": "One independently observed fictional student.",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "student",
+      "description": "Student observation identifier.",
+      "unit": "Integer identifier 0–599",
+      "missing": 0
+    },
+    {
+      "name": "score",
+      "description": "Grant eligibility score; the award cutoff is 50.",
+      "unit": "Eligibility score points",
+      "missing": 0
+    },
+    {
+      "name": "awarded",
+      "description": "Whether the eligibility score is at least 50.",
+      "unit": "Binary 0/1",
+      "missing": 0
+    },
+    {
+      "name": "credits",
+      "description": "First-year academic progress.",
+      "unit": "Credits completed",
+      "missing": 0
+    }
+  ]
+}

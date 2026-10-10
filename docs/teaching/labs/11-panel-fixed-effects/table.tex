@@ -1,0 +1,42 @@
+\begin{table}[htbp]
+\centering
+\caption{Comparing Firms to Themselves: original synthetic data}
+\label{tab:11-panel-fixed-effects}
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Dependent variable: & productivity & productivity \\
+ & (1) & (2) \\
+ & Pooled, cluster firm & Firm FE, cluster firm \\
+\midrule
+investment & $4.5080$ & $2.0644$ \\
+ & $(0.1481)$ & $(0.0946)$ \\[0.35em]
+trend & $-0.4131$ & $0.8458$ \\
+ & $(0.1280)$ & $(0.1009)$ \\[0.35em]
+Constant & $24.9139$ & $39.9354$ \\
+ & $(0.9664)$ & $(0.6039)$ \\[0.35em]
+\midrule
+Observations & 360 & 360 \\
+$R^{2}$ & 0.8627 &  \\
+$\text{Adjusted }R^{2}$ & 0.8620 &  \\
+$\text{Within }R^{2}$ &  & 0.8246 \\
+$\text{Between }R^{2}$ &  & 0.9523 \\
+$\text{Overall }R^{2}$ &  & 0.7668 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\footnotesize
+\raggedright
+\textit{Notes:} Standard errors are in parentheses.\par
+(1) OLS: cluster-robust standard errors; clustered by firm (60 clusters); finite-sample covariance factor = 1.02265; Student t inference (df = 59); 95\% confidence level (alpha = 0.05); estimation sample 360 of 360 observations; model F(2, 59) = 591.428, p = 9.22647e-40.\par
+(2) XTREG: cluster-robust standard errors; clustered by firm (60 clusters); Student t inference (df = 59); 95\% confidence level (alpha = 0.05); estimation sample 360 of 360 observations; covariance correction: CR1: G/(G-1) * (N-1)/(N-K); finite-sample covariance factor: 1.02265; residual df: 298; model form: fe; absorbed effects: 60.\par
+Original synthetic observations. Inference conventions and exact estimation samples are retained in the model notes; no empirical policy claim.\par
+\end{minipage}
+\endgroup
+\end{table}

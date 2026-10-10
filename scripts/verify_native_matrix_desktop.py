@@ -48,10 +48,8 @@ def bundled_identity(app, expected_identifier="org.openecon.qa.networkmodels"):
     hashes = {}
     # The local bundle deliberately excludes cloud/team server and CLI entry
     # points. They are outside this local analysis acceptance denominator.
-    nonlocal_modules = {"team_job", "team_dispatch", "cloud", "team_history", "team_recovery",
-        "team_sandbox_broker", "team_storage", "team_server", "desktop_cloud", "team_runner",
-        "team_sandbox_worker", "team_cloud", "cli", "team_sandbox_runner", "team_auth",
-        "sandbox_privileges", "entrypoints", "team_sandbox_auth", "team_store", "sandbox_rootfs",
+    nonlocal_modules = {"cloud", "team_history", "team_recovery", "team_storage", "team_server",
+        "desktop_cloud", "team_cloud", "cli", "team_auth", "entrypoints", "team_store",
         "team_transfer"}  # Server-side membership/storage routes, imported only by team_server.
     for source in sorted((ROOT / "src/openecon").rglob("*.py")):
         module = str(source.relative_to(ROOT / "src")).removesuffix(".py").replace("/", ".")

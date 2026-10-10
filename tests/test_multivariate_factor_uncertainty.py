@@ -11,6 +11,8 @@ import pytest
 from scipy.linalg import orthogonal_procrustes
 import torch
 
+from scripts.torch_test_state import preserve_torch_default_device
+
 from openecon.analysis_contracts import AnalysisError
 from openecon.dataset import Dataset
 from openecon.econometrics.core import TableSet
@@ -485,14 +487,11 @@ def test_duplicate_anchors_are_valid_and_strict_complete_state_hash():
 
 def test_resident_cpu_does_not_inherit_or_change_unrelated_default_device():
     frame, _ = fixture(n=203)
-    before = torch.get_default_device()
-    try:
+    with preserve_torch_default_device():
         torch.set_default_device("meta")
         result = u.factor_multifactor_bootstrap(frame, list(frame), factors=2, replications=39)
         assert torch.get_default_device().type == "meta"
         assert result.attrs["device"] == "cpu"
-    finally:
-        torch.set_default_device(before)
 
 
 @pytest.mark.parametrize("rotated", [False, True])

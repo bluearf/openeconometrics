@@ -81,26 +81,74 @@ def inference(estimate, variance, df, level):
     return [estimate, se, df, statistic, p_value, estimate-critical*se, estimate+critical*se]
 
 
+def individual_covariance(x, q, bread, residual, method, cluster_ids):
+    """Full profile-score sandwich, without ridge, profile deletion or clipping."""
+    n, p = x.shape
+    multiplier, df, cluster_count = 1.0, n-p, None
+    if method == "nonrobust":
+        return bread*(float(residual@residual)/df), df, multiplier, cluster_count
+    scores = x*residual[:, None]
+    if method in ("hc2", "hc3"):
+        complement = 1-torch.sum(q*q, dim=1)
+        if bool((complement <= 1e-12).any()):
+            raise AnalysisError("unit_leverage", "HC2/HC3 require every profile leverage to be below one.")
+        scores = scores/complement[:, None]**(0.5 if method == "hc2" else 1.0)
+    if method.startswith("cr"):
+        lookup = {}
+        codes = []
+        for value in cluster_ids:
+            codes.append(lookup.setdefault(c.key(value), len(lookup)))
+        cluster_count = len(lookup)
+        if cluster_count < 2:
+            raise AnalysisError("insufficient_clusters", "Each retained respondent needs at least two declared clusters.")
+        grouped = torch.zeros((cluster_count, p), dtype=torch.float64)
+        grouped.index_add_(0, torch.tensor(codes, dtype=torch.int64), scores)
+        scores, df = grouped, cluster_count-1
+        if method == "cr1":
+            multiplier = cluster_count/(cluster_count-1)*(n-1)/(n-p)
+    elif method == "hc1":
+        multiplier = n/(n-p)
+    covariance = multiplier* bread@(scores.T@scores)@bread
+    return (covariance+covariance.T)/2, df, multiplier, cluster_count
+
+
 @resident_cpu
 def conjoint_fit(plan, responses, attributes=None, *, factors=None, subject="subject", profile="profile_id",
-                 score="score", missing="raise", covariance="nonrobust", level=0.95,
+                 score="score", missing="raise", covariance="nonrobust", cluster=None, level=0.95,
                  max_work=100_000_000, device="cpu", weights=None):
-    """Fit scored full-profile individual part-worth OLS and full iid t uncertainty.
+    """Fit scored conjoint OLS with full iid, HC0..HC3 or within-subject CR0/CR1 covariance.
 
     Discrete factors use sum-zero effects coding. Linear and ideal/anti-ideal
     quadratic factors fit a centred/scaled design then export raw-scale
     coefficients and full transformed covariance. No concavity is forced.
     Missing='drop_subjects' excludes entire incomplete respondents explicitly.
-    Equal-subject group utilities are descriptive; no group sampling CI is inferred.
+    The default iid Gaussian t is exact; robust t is an approximate convention.
+    Cluster names a response column, joined by the original subject/profile IDs.
+    Equal-subject group utilities here remain descriptive; see conjoint_group_mean.
     """
     level = confidence(level)
-    if covariance != "nonrobust":
-        raise AnalysisError("unsupported_covariance", "Only conditional iid within-respondent OLS covariance is supported.")
+    if covariance not in ("nonrobust", "hc0", "hc1", "hc2", "hc3", "cr0", "cr1"):
+        raise AnalysisError("unsupported_covariance", "Choose nonrobust, hc0, hc1, hc2, hc3, cr0 or cr1.")
+    clustered = covariance in ("cr0", "cr1")
+    if clustered != (cluster is not None):
+        raise AnalysisError("inapplicable_option", "A response cluster column is required only for cr0/cr1.")
     data, attributes = c.profiles(plan, attributes, profile=profile)
     attributes, modes, p = c.definition(attributes, factors)
     groups, dropped, original_n = scored(responses, data, subject, profile, score, missing)
+    if clustered:
+        c.name(cluster)
+        response_frame = c.source(responses)
+        if cluster in (subject, profile, score) or cluster not in response_frame.columns:
+            raise AnalysisError("invalid_cluster", "Cluster must be a separate existing response column.")
+        for group in groups:
+            group["cluster_ids"] = [c.label(v) for v in response_frame.iloc[group["positions"]][cluster]]
     n, subjects = len(data), len(groups)
-    settings = c.guard("conjoint_fit", n, p, subjects, device=device, weights=weights, max_work=max_work)
+    extra = {} if covariance == "nonrobust" else {
+        "robust_profile_scores_and_cluster_sums": 16*n*p+8*n,
+    }
+    work = None if covariance == "nonrobust" else subjects*(3*n*p*p+3*p**3)
+    settings = c.guard("conjoint_fit", n, p, subjects, device=device, weights=weights,
+                       max_work=max_work, work=work, extra_buffers=extra)
     if n <= p:
         raise AnalysisError("insufficient_df", "The training design needs more profiles than free coefficients.")
     x, terms, mapping, anchors, transform = c.coding(data, attributes, modes)
@@ -124,14 +172,15 @@ def conjoint_fit(plan, responses, attributes=None, *, factors=None, subject="sub
         residual = (y-origin) - fitted_centered
         beta[0] += origin
         sse = float(residual@residual)
-        covariance_scaled = unit_covariance*(sse/df)
+        covariance_scaled, inference_df, multiplier, cluster_count = individual_covariance(
+            x, q, unit_covariance, residual, covariance, group.get("cluster_ids"))
         raw_beta = transform@beta
         raw_cov = transform@covariance_scaled@transform.T
         if not torch.isfinite(raw_beta).all() or not torch.isfinite(raw_cov).all():
             raise AnalysisError("numerical_failure", "Conjoint coefficient/covariance transformation overflowed.")
         raw_parameters.append(raw_beta)
         for j, term in enumerate(terms):
-            coefficients.append([who, term, *inference(float(raw_beta[j]), float(raw_cov[j, j]), df, level)])
+            coefficients.append([who, term, *inference(float(raw_beta[j]), float(raw_cov[j, j]), inference_df, level)])
             covariances.append([who, term, *raw_cov[j].tolist()])
         for item in mapping:
             attr = item["attribute"]
@@ -139,7 +188,7 @@ def conjoint_fit(plan, responses, attributes=None, *, factors=None, subject="sub
                 vector = c.level_vector(item, value, attributes[attr], p)@transform
                 estimate = float(vector@beta)
                 variance = float(vector@covariance_scaled@vector)
-                utility_rows.append([who, attr, value, *inference(estimate, variance, df, level)])
+                utility_rows.append([who, attr, value, *inference(estimate, variance, inference_df, level)])
         fitted = origin+fitted_centered
         total = float(((y-y.mean())**2).sum())
         diagnostics.append([who, n, p, df, sse, sse/df, None if total == 0 else 1-sse/total,
@@ -147,7 +196,10 @@ def conjoint_fit(plan, responses, attributes=None, *, factors=None, subject="sub
         fitted_rows.extend([who, c.label(card), float(yy), float(pred), float(res)]
                            for card, yy, pred, res in zip(data[profile], y, fitted, residual))
         records.append({"subject": who, "parameters_scaled": beta.tolist(), "covariance_scaled": covariance_scaled.tolist(),
-                        "df": df, "sample_positions": group["positions"], "sample_labels": group["labels"]})
+                        "df": inference_df, "sample_positions": group["positions"], "sample_labels": group["labels"]})
+        if covariance != "nonrobust":
+            records[-1].update(residual_df=df, covariance_multiplier=multiplier,
+                               n_clusters=cluster_count, cluster_ids=group.get("cluster_ids"))
     group_beta = torch.stack(raw_parameters).mean(0)
     group_utilities = [[item["attribute"], value, float(c.level_vector(item, value, attributes[item["attribute"]], p)@group_beta)]
                        for item in mapping for value in attributes[item["attribute"]]]
@@ -159,6 +211,10 @@ def conjoint_fit(plan, responses, attributes=None, *, factors=None, subject="sub
              "original_response_rows": original_n, "dropped_subjects": dropped, "missing": missing,
              "covariance": covariance, "level": level, "settings": settings,
              "solver": "direct normalized full-rank float64 QR", "converged": True}
+    if clustered:
+        state["cluster_column"] = cluster
+    infer_note = ("conditional iid individual OLS t; group descriptive" if covariance == "nonrobust" else
+                  "approximate individual robust t; within-subject clusters only; group descriptive")
     inference_columns = ["estimate", "std_error", "df", "t", "p_value", "ci_low", "ci_high"]
     return c.seal("conjoint_fit", {
         "coefficients": table(coefficients, columns=["subject", "term", *inference_columns]),
@@ -169,7 +225,7 @@ def conjoint_fit(plan, responses, attributes=None, *, factors=None, subject="sub
         "diagnostics": table(diagnostics, columns=["subject", "profiles", "coefficients", "df", "sse", "sigma2", "r_squared", "condition"]),
         "fitted": table(fitted_rows, columns=["subject", "profile_id", "observed", "fitted", "residual"]),
         "training_plan": table(data.to_numpy().tolist(), columns=data.columns),
-    }, state, n_subjects=subjects, n_profiles=n, inference="conditional iid individual OLS t; group descriptive",
+    }, state, n_subjects=subjects, n_profiles=n, inference=infer_note,
        covariance=covariance, group_weighting="equal complete subjects", **settings)
 
 
@@ -192,7 +248,7 @@ def evaluated(result, plan, profile, device, weights, max_work):
 @resident_cpu
 def conjoint_predict(result, plan, *, profile="profile_id", level=0.95,
                      max_work=100_000_000, device="cpu", weights=None):
-    """Predict every saved subject/profile fitted mean with full-covariance conditional t CI.
+    """Predict saved subject/profile means with full iid or approximate robust t covariance.
 
     Only declared levels are accepted. No response-noise interval, refit,
     extrapolation or cross-subject covariance is inferred.
@@ -209,4 +265,6 @@ def conjoint_predict(result, plan, *, profile="profile_id", level=0.95,
     return c.seal("conjoint_predict", {
         "predictions": table(rows, columns=["subject", "profile_id", "predicted", "std_error", "df", "ci_low", "ci_high"]),
     }, {"fit_integrity_sha256": result.attrs["integrity_sha256"], "profile_ids": [c.label(v) for v in data[profile]],
-        "level": level, "settings": settings}, inference="conditional fitted mean iid t; not future response", **settings)
+        "level": level, "settings": settings},
+        inference=("conditional fitted mean iid t; not future response" if state["covariance"] == "nonrobust" else
+                   "conditional fitted mean approximate robust t; not future response"), **settings)

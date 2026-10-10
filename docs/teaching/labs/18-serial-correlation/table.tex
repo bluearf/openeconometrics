@@ -1,0 +1,38 @@
+\begin{table}[htbp]
+\centering
+\caption{Synthetic sales: HC1 and calendar-aware HAC}
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Dependent variable: & sales & sales & sales \\
+ & (1) & (2) & (3) \\
+ & HC1 & HAC4 & HAC8 \\
+\midrule
+advertising & $1.420$ & $1.420$ & $1.420$ \\
+ & $(0.115)$ & $(0.198)$ & $(0.225)$ \\[0.35em]
+Constant & $9.916$ & $9.916$ & $9.916$ \\
+ & $(0.618)$ & $(1.078)$ & $(1.229)$ \\[0.35em]
+\midrule
+Observations & 197 & 197 & 197 \\
+$R^{2}$ & 0.432 & 0.432 & 0.432 \\
+$\text{Adjusted }R^{2}$ & 0.430 & 0.430 & 0.430 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\footnotesize
+\raggedright
+\textit{Notes:} Standard errors are in parentheses.\par
+(1) OLS: HC1 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1.01026; Student t inference (df = 195); 95\% confidence level (alpha = 0.05); estimation sample 197 of 197 observations; model F(1, 195) = 153.54, p = 2.18944e-26.\par
+(2) OLS: heteroskedasticity and autocorrelation consistent (HAC) standard errors; bartlett kernel, lags = 4; bandwidth = 5; lag selection: explicit; actual calendar gaps retained; finite-sample covariance factor = 1.01026; Student t inference (df = 195); 95\% confidence level (alpha = 0.05); estimation sample 197 of 197 observations; model F(1, 195) = 51.6731, p = 1.36251e-11.\par
+(3) OLS: heteroskedasticity and autocorrelation consistent (HAC) standard errors; bartlett kernel, lags = 8; bandwidth = 9; lag selection: explicit; actual calendar gaps retained; finite-sample covariance factor = 1.01026; Student t inference (df = 195); 95\% confidence level (alpha = 0.05); estimation sample 197 of 197 observations; model F(1, 195) = 39.9789, p = 1.71344e-09.\par
+Identical 197 observations; original quarter labels retained after three explicit exclusions.\par
+Bartlett HAC uses the declared calendar distance; Student t(195) intervals.\par
+\end{minipage}
+\endgroup
+\end{table}

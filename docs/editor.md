@@ -13,7 +13,7 @@ follows the white/navy workbench.
 | Ctrl+Space | Request completion at the cursor. |
 | Enter while the completion menu is open | Insert the selected suggestion; normal undo remains available. |
 | Escape | Dismiss the current help or completion popup. |
-| Cmd/Ctrl+Enter | Run the selected code or current line in the local console; run the complete script in the cloud edition. |
+| Cmd/Ctrl+Enter | Run the selected code or current line in the local console. The browser team page has no Run command; team projects run in the desktop app. |
 | Cmd/Ctrl+Shift+Enter | Run the complete script. |
 
 Informational function documentation closes after eight seconds. Parameter hints

@@ -7,6 +7,8 @@ import pandas as pd
 import pytest
 import torch
 
+from scripts.torch_test_state import preserve_torch_default_device
+
 from openecon.analysis_contracts import AnalysisError
 from openecon.econometrics.systems import nonlinear_sur as core
 from openecon.resources import use_workspace_budget
@@ -262,22 +264,22 @@ def test_typed_duplicate_multiindex_and_mapping_series_alignment():
 
 def test_native_cpu_float64_under_adversarial_defaults_and_inference(fitted):
     frame, eqs = sample()
-    dtype, device = torch.get_default_dtype(), torch.get_default_device()
+    dtype = torch.get_default_dtype()
     grad, threads = torch.is_grad_enabled(), torch.get_num_threads()
     before = frame.copy(deep=True)
-    try:
-        torch.set_default_dtype(torch.float32)
-        torch.set_default_device("meta")
-        with torch.inference_mode():
-            result = core.nlsur(frame, eqs)
-            restored = core.nlsur_restore(result)
-        np.testing.assert_allclose(result["parameters"].estimate, fitted["oim"]["parameters"].estimate, rtol=1e-12)
-        pd.testing.assert_frame_equal(restored["covariance"], result["covariance"])
-        assert torch.get_default_device().type == "meta"
-        assert torch.get_default_dtype() == torch.float32
-    finally:
-        torch.set_default_dtype(dtype)
-        torch.set_default_device(device)
+    with preserve_torch_default_device():
+        try:
+            torch.set_default_dtype(torch.float32)
+            torch.set_default_device("meta")
+            with torch.inference_mode():
+                result = core.nlsur(frame, eqs)
+                restored = core.nlsur_restore(result)
+            np.testing.assert_allclose(result["parameters"].estimate, fitted["oim"]["parameters"].estimate, rtol=1e-12)
+            pd.testing.assert_frame_equal(restored["covariance"], result["covariance"])
+            assert torch.get_default_device().type == "meta"
+            assert torch.get_default_dtype() == torch.float32
+        finally:
+            torch.set_default_dtype(dtype)
     assert torch.is_grad_enabled() == grad and torch.get_num_threads() == threads
     pd.testing.assert_frame_equal(frame, before)
 

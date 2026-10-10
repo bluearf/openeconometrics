@@ -1,6 +1,6 @@
 [package]
 name = "openecon-desktop"
-version = "0.3.45"
+version = "0.3.46"
 description = "OpenEconometrics local Python desktop workspace"
 authors = ["OpenEconometrics contributors"]
 edition = "2021"
@@ -15,7 +15,7 @@ qa-metrics = []
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = ["dynamic-acl"] }
+tauri = { version = "~2.12.1", features = ["dynamic-acl"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 reqwest = { version = "0.12", default-features = false, features = ["json", "multipart", "stream", "rustls-tls-native-roots"] }
@@ -30,6 +30,9 @@ url = "2"
 open = "5"
 fs2 = "0.4"
 socket2 = "0.6"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2-app-kit = { version = "=0.3.2", default-features = false, features = ["NSView", "NSWindow"] }
 
 [target.'cfg(all(target_os = "macos", target_arch = "aarch64"))'.dependencies]
 sha2 = { version = "0.10", features = ["asm-aarch64"] }

@@ -130,3 +130,5 @@ sample/design/result layer and the numerical rules.
 The [deferred research plans](../research/README.md) define staged scope and
 acceptance for latent SEM, Bayesian, supervised prediction and mixture families.
 These are planning deliverables; their implementation trackers remain open.
+
+- [Four selections with strata at every stage](../SURVEY_FULLY_STRATIFIED_FOUR_STAGE.md): eight methods with complete SSU/TSU/FSU frames and all four covariance components.

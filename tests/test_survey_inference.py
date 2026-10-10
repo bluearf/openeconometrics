@@ -343,7 +343,6 @@ def test_json_restore_full_inference_latex_and_contrast(tmp_path, i):
         "changed_design",
         "unknown_category",
         "denominator",
-        "unsupported_deff",
         "nonscalar",
     ],
 )
@@ -384,10 +383,6 @@ def test_explicit_target_failures(case):
 
         def call():
             return oe.survey_ratio(frame, design, "y", "x")
-    elif case == "unsupported_deff":
-
-        def call():
-            return oe.survey_mean(frame, design, "y", deff=True)
     elif case == "nonscalar":
         frame["y"] = frame.y.astype(object)
         frame.at[0, "y"] = [1.0, 2.0]

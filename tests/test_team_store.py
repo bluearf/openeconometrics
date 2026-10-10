@@ -4,7 +4,6 @@ from copy import deepcopy
 import json
 from pathlib import Path
 from dataclasses import replace
-from datetime import datetime, timedelta, timezone
 from threading import Barrier
 from types import SimpleNamespace
 
@@ -12,7 +11,7 @@ import pytest
 
 from openecon.team_auth import TeamIdentity
 from openecon.team_store import (FirestoreDocuments, MemoryDocuments, TeamError, TeamStore,
-                                 filename, now, validate_environment_manifest)
+                                 filename, validate_environment_manifest)
 
 
 @pytest.mark.parametrize('case', json.loads((Path(__file__).parent / 'fixtures/project-create.json').read_text()),
@@ -242,9 +241,7 @@ def invoke(team, action, user):
         "invite": lambda: store.invite(pid, user, "recipient@example.com", "viewer"),
         "change_member": lambda: store.change_member(pid, team.editor.uid, user, "viewer"),
         "revoke_invite": lambda: store.revoke_invite(pid, "unknown", user),
-        "begin_run": lambda: store.begin_run(pid, user, "print(1)", 60),
         "add_file": lambda: store.add_file(pid, user, {"id": "file1", "name": "data.csv", "size_bytes": 5}),
-        "request_cancel": lambda: store.request_cancel(pid, user),
     }
     return calls[action]()
 
@@ -262,34 +259,6 @@ def test_signup_does_not_enable_application_and_verified_bootstrap_is_required(t
     assert caught.value.code == "EMAIL_UNVERIFIED"
 
 
-def test_dispatch_claim_is_atomic_and_cannot_launch_twice(team):
-    run = team.store.begin_run(team.pid, team.owner, 'print(1)', 60)
-    def claim():
-        try:
-            return team.store.claim_run_dispatch(team.pid, run['id'], operation='sandbox:one',
-                                                execution='sandbox:one')['state']
-        except TeamError as error:
-            return error.code
-    with ThreadPoolExecutor(max_workers=2) as pool:
-        results = list(pool.map(lambda _: claim(), range(2)))
-    assert sorted(results) == ['RUN_ALREADY_DISPATCHED', 'running']
-
-
-@pytest.mark.parametrize('failed,cancel', [(False, False), (True, False), (False, True)])
-def test_dispatch_return_cannot_reopen_a_terminal_run(team, failed, cancel):
-    run = team.store.begin_run(team.pid, team.owner, 'print(1)', 60)
-    team.store.claim_run_dispatch(team.pid, run['id'], operation='sandbox:one', execution='sandbox:one')
-    if cancel:
-        team.store.request_cancel(team.pid, team.owner)
-    finished = team.store.finish_run(team.pid, run['id'], {'key': 'record'}, {'status': 'ok'}, failed=failed)
-    attached = team.store.attach_run_execution(team.pid, run['id'], operation='sandbox:one',
-                                              execution='sandbox:one')
-    assert attached == finished
-    assert team.store.project(team.pid, team.owner)['active_run'] is None
-    with pytest.raises(TeamError, match='already'):
-        team.store.claim_run_dispatch(team.pid, run['id'], operation='sandbox:one', execution='sandbox:one')
-
-
 def test_accepted_invitation_enables_account_without_changing_project_role(team):
     profile = team.store.me(team.viewer)
     assert profile["enabled"]
@@ -300,8 +269,7 @@ def test_accepted_invitation_enables_account_without_changing_project_role(team)
 
 
 @pytest.mark.parametrize("action", ["project", "members", "script", "environment", "runs", "save_script", "save_environment",
-                                    "invite", "change_member", "revoke_invite", "begin_run",
-                                    "add_file", "request_cancel"])
+                                    "invite", "change_member", "revoke_invite", "add_file"])
 def test_nonmember_cannot_read_or_mutate_even_with_exact_project_id(team, action):
     before = deepcopy(team.db.data)
     with pytest.raises(TeamError) as caught:
@@ -311,8 +279,8 @@ def test_nonmember_cannot_read_or_mutate_even_with_exact_project_id(team, action
 
 
 @pytest.mark.parametrize("action", ["save_script", "save_environment", "invite", "change_member", "revoke_invite",
-                                    "begin_run", "add_file", "request_cancel"])
-def test_viewer_cannot_mutate_or_execute(team, action):
+                                    "add_file"])
+def test_viewer_cannot_mutate(team, action):
     before = deepcopy(team.db.data)
     with pytest.raises(TeamError) as caught:
         invoke(team, action, team.viewer)
@@ -441,53 +409,6 @@ def test_concurrent_invitation_acceptance_cannot_replay_membership_creation(team
     assert team.db.get(f"oe_users/{team.outsider.uid}")["project_ids"] == [team.pid]
 
 
-def test_concurrent_runs_share_a_durable_project_lock(team):
-    outcomes = race([
-        lambda: team.store.begin_run(team.pid, team.owner, "print(1)", 60),
-        lambda: team.store.begin_run(team.pid, team.editor, "print(2)", 60),
-    ])
-    assert sorted(status for status, _ in outcomes) == ["CONSOLE_BUSY", "ok"]
-    project = team.store.project(team.pid, team.owner)
-    assert project["run_count"] == project["daily_runs"] == 1
-    winner = next(value for status, value in outcomes if status == "ok")
-    assert project["active_run"] == winner["id"]
-
-
-@pytest.mark.parametrize('python_seconds,lease_seconds', [(.05, 1021), (60, 1080), (120, 1140)])
-def test_queue_allowance_has_a_finite_deadline_without_extending_python_limit(
-        team, monkeypatch, python_seconds, lease_seconds):
-    created = datetime(2026, 10, 1, 10, tzinfo=timezone.utc)
-    monkeypatch.setattr('openecon.team_store.now', lambda: created.isoformat())
-    run = team.store.begin_run(team.pid, team.editor, 'print(1)', python_seconds)
-    assert datetime.fromisoformat(run['deadline']) == created + timedelta(seconds=lease_seconds)
-    assert run['timeout_seconds'] == python_seconds
-    assert team.db.get('oe_limits/compute')['active'][run['id']] == run['deadline']
-
-
-@pytest.mark.parametrize('duration', [0, -1, 121, True, float('inf'), float('nan')])
-def test_unbounded_code_limits_cannot_create_an_unbounded_control_lease(team, duration):
-    before = deepcopy(team.db.data)
-    with pytest.raises(TeamError) as caught:
-        team.store.begin_run(team.pid, team.editor, 'print(1)', duration)
-    assert caught.value.code == 'INVALID_TIMEOUT'
-    assert team.db.data == before
-
-
-def test_queued_runs_still_occupy_global_capacity_after_five_minutes(team, monkeypatch):
-    created = datetime(2026, 10, 1, 10, tzinfo=timezone.utc)
-    clock = [created]
-    monkeypatch.setattr('openecon.team_store.now', lambda: clock[0].isoformat())
-    projects = [team.pid] + [team.store.create_project(team.owner, f'Project {i}')['id']
-                             for i in range(4)]
-    runs = [team.store.begin_run(pid, team.owner, 'print(1)', 60) for pid in projects[:4]]
-    clock[0] += timedelta(seconds=301)
-    with pytest.raises(TeamError) as caught:
-        team.store.begin_run(projects[4], team.owner, 'print(2)', 60)
-    assert caught.value.code == 'CAPACITY_LIMIT'
-    assert set(team.db.get('oe_limits/compute')['active']) == {run['id'] for run in runs}
-    assert team.db.get('oe_limits/compute')['runs'] == 4
-
-
 def test_project_limit_is_atomic_for_simultaneous_last_slot(team):
     for index in range(3):
         team.store.create_project(team.owner, f"Existing {index}")
@@ -499,57 +420,14 @@ def test_project_limit_is_atomic_for_simultaneous_last_slot(team):
     assert len(team.store.projects(team.owner)) == 5
 
 
-def test_daily_run_limit_and_next_day_reset(team, monkeypatch):
-    project = team.db.data[f"oe_projects/{team.pid}"]
-    today = now()[:10]
-    project.update(run_day=today, daily_runs=99)
-    run = team.store.begin_run(team.pid, team.editor, "print(1)", 60)
-    team.store.finish_run(team.pid, run["id"], {"object": "result"}, {"status": "ok"})
-    with pytest.raises(TeamError) as caught:
-        team.store.begin_run(team.pid, team.editor, "print(2)", 60)
-    assert caught.value.code == "RUN_LIMIT"
-    assert team.store.project(team.pid, team.owner)["daily_runs"] == 100
-    monkeypatch.setattr("openecon.team_store.now", lambda: "2099-01-01T00:00:00+00:00")
-    team.store.begin_run(team.pid, team.editor, "print(3)", 60)
-    assert team.store.project(team.pid, team.owner)["daily_runs"] == 1
-
-
-@pytest.mark.parametrize("role", [None, "viewer"])
-def test_results_are_not_published_after_removal_or_demotion(team, role):
-    run = team.store.begin_run(team.pid, team.editor, "print(1)", 60)
-    team.store.change_member(team.pid, team.editor.uid, team.owner, role)
-    finished = team.store.finish_run(team.pid, run["id"], {"object": "late-result"}, {"status": "ok"})
-    assert finished["state"] == "cancelled" and finished["result"] is None
-    assert finished["record_summary"]["status"] == "interrupted"
-    assert team.store.project(team.pid, team.owner)["active_run"] is None
-
-
-def test_cancel_discards_late_output_and_finish_is_idempotent(team):
-    run = team.store.begin_run(team.pid, team.editor, "print(1)", 60)
-    team.store.request_cancel(team.pid, team.owner)
-    first = team.store.finish_run(team.pid, run["id"], {"object": "late-result"}, {"status": "ok"})
-    assert first["state"] == "cancelled" and first["result"] is None
-    second = team.store.begin_run(team.pid, team.owner, "print(2)", 60)
-    assert team.store.finish_run(team.pid, run["id"], {"object": "replay"}, {}) == first
-    assert team.store.project(team.pid, team.owner)["active_run"] == second["id"]
-
-
-def test_failed_job_releases_project_lock_without_refunding_execution_quota(team):
-    run = team.store.begin_run(team.pid, team.editor, "raise RuntimeError()", 60)
-    finished = team.store.finish_run(team.pid, run["id"], None, {"status": "error"}, failed=True)
-    assert finished["state"] == "failed"
-    project = team.store.project(team.pid, team.owner)
-    assert project["active_run"] is None and project["daily_runs"] == 1
-
-
-def test_run_inputs_are_an_immutable_snapshot_of_project_file_metadata(team):
-    source = {"id": "file1", "name": "data.csv", "size_bytes": 5, "generation": "1"}
-    team.store.add_file(team.pid, team.editor, source)
-    run = team.store.begin_run(team.pid, team.editor, "print(1)", 60)
-    source["generation"] = "attacker-change"
-    team.store.add_file(team.pid, team.editor, {"id": "file2", "name": "other.csv", "size_bytes": 2})
-    stored = team.store.run(team.pid, run["id"])
-    assert stored["files"] == [{"id": "file1", "name": "data.csv", "size_bytes": 5, "generation": "1"}]
+def test_store_has_no_run_lifecycle_after_cloud_execution_retirement(team):
+    for name in ('begin_run', 'update_run', 'finish_run', 'request_cancel',
+                 'claim_run_dispatch', 'attach_run_execution'):
+        assert not hasattr(team.store, name)
+    legacy = {'id': 'e' * 32, 'state': 'running', 'created_at': '2026-10-02T10:00:00+00:00'}
+    team.db.put(f'oe_projects/{team.pid}/runs/{legacy["id"]}', legacy)
+    assert team.store.run(team.pid, legacy['id']) == legacy
+    assert team.store.runs(team.pid, team.viewer) == [legacy]
 
 
 def test_file_quota_and_duplicate_names_do_not_mutate_project(team):
@@ -629,7 +507,11 @@ def test_project_rename_only_changes_name_metadata_pending_labels_and_one_audit(
     team.store.save_script(team.pid, team.owner, 'unsaved = (\n    42', 0)
     team.store.save_environment(team.pid, team.owner, package_manifest(), 0)
     team.store.add_file(team.pid, team.owner, {'id': 'd' * 32, 'name': 'data.csv', 'size_bytes': 42})
-    run = team.store.begin_run(team.pid, team.owner, 'print(1)', 60)
+    run = {'id': 'e' * 32, 'state': 'running', 'created_at': '2026-10-02T10:00:00+00:00'}
+    team.db.put(f'oe_projects/{team.pid}/runs/{run["id"]}', run)
+    project = team.db.get(f'oe_projects/{team.pid}')
+    project['active_run'] = run['id']  # Retired cloud backend marker, preserved as stored.
+    team.db.put(f'oe_projects/{team.pid}', project)
     pending = team.store.invite(team.pid, team.owner, 'pending@example.com', 'editor')
     expired = team.store.invite(team.pid, team.owner, 'expired@example.com', 'viewer')
     expired_path = f'oe_invitations/{expired["id"]}'

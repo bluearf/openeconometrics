@@ -256,6 +256,70 @@ test("a stale list arriving after cancellation cannot resurrect a removed journa
   await refreshing;
   assert.equal(h.actions.getSnapshot().transfers.length, 0);
 });
+for (const action of ["cancel", "resume"] as const) {
+  test(`a list started during ${action} cannot restore its successfully removed journal`, async () => {
+    const operation = deferred<{ status: number; body: unknown }>(),
+      pendingList = deferred<{ status: number; body: unknown }>();
+    let listed = 0;
+    const h = await fixture({
+      async invoke(next) {
+        if (next === "list")
+          return ++listed === 1
+            ? { status: 200, body: { transfers: [view] } }
+            : pendingList.promise;
+        assert.equal(next, action);
+        return operation.promise;
+      },
+    });
+    const completing =
+      action === "cancel" ? h.actions.cancel(id) : h.actions.resume(id);
+    const refreshing = h.actions.refresh();
+    operation.resolve({
+      status: 200,
+      body:
+        action === "cancel"
+          ? { cancelled: true, request_id: id }
+          : { state: "ready", file },
+    });
+    await completing;
+    assert.equal(h.actions.getSnapshot().transfers.length, 0);
+    pendingList.resolve({ status: 200, body: { transfers: [view] } });
+    await refreshing;
+    assert.equal(h.actions.getSnapshot().transfers.length, 0);
+    assert.deepEqual(h.imports, action === "resume" ? [file] : []);
+  });
+}
+test("a list started during a refused cancellation preserves the ready state and explanation", async () => {
+  const cancellation = deferred<{ status: number; body: unknown }>(),
+    pendingList = deferred<{ status: number; body: unknown }>();
+  let listed = 0;
+  const h = await fixture({
+    async invoke(action) {
+      if (action === "list")
+        return ++listed === 1
+          ? { status: 200, body: { transfers: [view] } }
+          : pendingList.promise;
+      assert.equal(action, "cancel");
+      return cancellation.promise;
+    },
+  });
+  const cancelling = h.actions.cancel(id),
+    refreshing = h.actions.refresh();
+  cancellation.resolve({
+    status: 409,
+    body: { detail: { code: "TRANSFER_COMPLETE" } },
+  });
+  await assert.rejects(
+    cancelling,
+    (error) => error instanceof ApiError && error.code === "TRANSFER_COMPLETE",
+  );
+  assert.equal(h.actions.getSnapshot().transfers[0].state, "ready");
+  pendingList.resolve({ status: 200, body: { transfers: [view] } });
+  await refreshing;
+  assert.equal(h.actions.getSnapshot().transfers[0].state, "ready");
+  assert.match(h.actions.getSnapshot().error, /already complete/);
+  assert.deepEqual(h.imports, []);
+});
 test("a second large transfer cannot be resumed while the first is active", async () => {
   const second = { ...view, request_id: "e".repeat(32) };
   const pending = deferred<{ status: number; body: unknown }>();

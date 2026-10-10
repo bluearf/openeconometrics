@@ -1,0 +1,20 @@
+{
+  "name": "openeconometrics",
+  "interface": {
+    "displayName": "OpenEconometrics"
+  },
+  "plugins": [
+    {
+      "name": "openeconometrics",
+      "source": {
+        "source": "local",
+        "path": "./plugins/openeconometrics"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Education & Research"
+    }
+  ]
+}

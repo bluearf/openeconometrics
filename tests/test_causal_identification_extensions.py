@@ -11,6 +11,8 @@ from scipy.optimize import linprog
 from scipy.stats import norm
 import torch
 
+from scripts.torch_test_state import preserve_torch_default_device
+
 from openecon.analysis_contracts import AnalysisError
 from openecon.dataset import Dataset
 from openecon.econometrics.causal_design import common as m
@@ -405,16 +407,16 @@ def test_ignored_unselected_outcomes_do_not_change_full_scientific_identity():
 def test_private_rng_default_dtype_device_and_early_budget_admission(method, monkeypatch):
     torch.manual_seed(139)
     before = torch.random.get_rng_state().clone()
-    dtype, device = torch.get_default_dtype(), torch.get_default_device()
-    try:
-        torch.set_default_dtype(torch.float32)
-        torch.set_default_device("meta")
-        out = method()
-        assert out.attrs["dtype"] == "float64"
-        assert torch.equal(before, torch.random.get_rng_state())
-    finally:
-        torch.set_default_dtype(dtype)
-        torch.set_default_device(device)
+    dtype = torch.get_default_dtype()
+    with preserve_torch_default_device():
+        try:
+            torch.set_default_dtype(torch.float32)
+            torch.set_default_device("meta")
+            out = method()
+            assert out.attrs["dtype"] == "float64"
+            assert torch.equal(before, torch.random.get_rng_state())
+        finally:
+            torch.set_default_dtype(dtype)
 
     def forbidden(*args, **kwargs):
         raise AssertionError("sample allocation preceded preflight")

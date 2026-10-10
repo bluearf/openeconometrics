@@ -1,0 +1,253 @@
+{
+  "schema": "openecon.chan2020.original-archive-pins.v1",
+  "source_url": "https://joshuachan.org/code/large_BVAR_code.zip",
+  "archive": {
+    "bytes": 2151457,
+    "md5": "c3146389152b3fd9206312631a108ab6",
+    "sha256": "16a5ec716c1f68364c361f99e5308577991efc60533f20b416f88e120bdae938"
+  },
+  "official_immutable_commit": "bc956326f1ade861637f91afecf714ac1f7fe1bf",
+  "official_legacy_prefix": "replications/chan2020_springer_largebvar/legacy/",
+  "all_members": [
+    {
+      "path": "BAAFFM.xls",
+      "bytes": 49152,
+      "sha256": "f175db8428699c9fb1989ad654a0fb8fc80c85031c514baae9be4b142b33a26a",
+      "Git_blob_sha1": "bd05eef584a088ee0ab2b735f3fd5cdcaccd6b29"
+    },
+    {
+      "path": "employMvMd.xlsx",
+      "bytes": 1687623,
+      "sha256": "df1f85e40b9cd9847418596e643eaa2fed3d40a0ad8a464e62c5d9a979046c57",
+      "Git_blob_sha1": "2c2972a72a9475c9ffc15cf4d205941c846148c6"
+    },
+    {
+      "path": "FEDFUNDS.xls",
+      "bytes": 48640,
+      "sha256": "ffdbda1e91fc169e866bae2e3fe4c64e331b5318c09a5b98a927b0493d8108b4",
+      "Git_blob_sha1": "98178447410df8adf9d33804682a89d40826298e"
+    },
+    {
+      "path": "forecast_BVAR_CSV.m",
+      "bytes": 3528,
+      "sha256": "85b2cc7a70806a1e1ff880f1b3f08e896f370bc394770f8600780811c079f93d",
+      "Git_blob_sha1": "5fa9df661cc87dffd9c258c29bd8855850717908"
+    },
+    {
+      "path": "forecast_BVAR_CSV_t.m",
+      "bytes": 3975,
+      "sha256": "9482230f5a547abdfd535a0bbf924d02ba226a61a10d27be55778bcdab16e462",
+      "Git_blob_sha1": "641de3a0f6ae2662baa1588dc772bc52505f07ee"
+    },
+    {
+      "path": "forecast_BVAR_CSV_t_MA.m",
+      "bytes": 5322,
+      "sha256": "52620b3c9538ba677339e1c502881c63e473766a2eb7232260bfc4685b779700",
+      "Git_blob_sha1": "139544133f18944753985329907564a90fc3f9fd"
+    },
+    {
+      "path": "forecast_BVAR_IP.m",
+      "bytes": 2474,
+      "sha256": "05ca4a603b3ea88e8e9b1bc201cf629b79854d3be053c31c5c486b1f7675d242",
+      "Git_blob_sha1": "01f4148de04e4e8e5b69eaf9f2d5f282cf173276"
+    },
+    {
+      "path": "forecast_BVAR_Minn.m",
+      "bytes": 2301,
+      "sha256": "f2ac28205dbc31d14a6dddbdb84c7bf071ec1fce244220a043b69f45f7f28ad9",
+      "Git_blob_sha1": "d0ebc09e3082cc4b02e215813efdf37dba6862bf"
+    },
+    {
+      "path": "forecast_BVAR_NCP.m",
+      "bytes": 2342,
+      "sha256": "88a2a3a80f90904122e64cc4afd9aa74178e07dac5b8a7ec9e78c6b5bd310c9b",
+      "Git_blob_sha1": "c3bccdc87bdab82a8d73134428079f2aec95f650"
+    },
+    {
+      "path": "forecast_BVAR_small.m",
+      "bytes": 2479,
+      "sha256": "1738f556294afd641d83ac5c808466bc5d7613b1e92ffc4de4130d5efaea04ba",
+      "Git_blob_sha1": "751f948ac11c8df8099b18b3b07a97736bdcfca2"
+    },
+    {
+      "path": "forecast_BVAR_SSVS.m",
+      "bytes": 2753,
+      "sha256": "70c03ac2ca7637e807e7838acd9c02b83a4e4aa89e9db534e311760dfc2bb91e",
+      "Git_blob_sha1": "d79a2cd790fc4b6e6a394f7c766ec3f133cdd2f7"
+    },
+    {
+      "path": "GS1.xls",
+      "bytes": 49664,
+      "sha256": "260d2bf10cb38d45b3e4aaa5bac421a97e8de5bb9bf3d74517c8b5ebe97da369",
+      "Git_blob_sha1": "170d0bca5658b85f1ef84fd8560727f9f12ca7ea"
+    },
+    {
+      "path": "GS10.xls",
+      "bytes": 49664,
+      "sha256": "1778eaf870ebf8c5de381da99a6ddaa2b2305961de18537a34bc981fc9eefeb3",
+      "Git_blob_sha1": "d6b08d32133b4ea6876082521ca0a122d73fb57b"
+    },
+    {
+      "path": "hMvMd.xlsx",
+      "bytes": 1448951,
+      "sha256": "87686f951ce53ee719918ced5da5dc6db954d5e982c32fa4b2f53d34184339cb",
+      "Git_blob_sha1": "20733afb9b67d236e2cb77238d414e8b45c22c55"
+    },
+    {
+      "path": "hstartsMvMd.xlsx",
+      "bytes": 1311733,
+      "sha256": "8dcb90f8ba36b5b3eff2090a49177da89c5c03e42cc44cc7149dc07654fd607c",
+      "Git_blob_sha1": "97fb64c4df86349829a27937906f97537a5702ce"
+    },
+    {
+      "path": "iptMvMd.xlsx",
+      "bytes": 2225263,
+      "sha256": "ed29d122ba6e194d243ab05e594e88696bc7ded578b821b6868fbe1f2f068153",
+      "Git_blob_sha1": "87e3db1d6bd795f1fe365bfc069eedbd89df524b"
+    },
+    {
+      "path": "ISM-MAN_NEWORDERS.xls",
+      "bytes": 58880,
+      "sha256": "c1f3efd528bf4a02e553cdc65315515c669a34f62a87eef6a8df9cc0a4d43341",
+      "Git_blob_sha1": "57e03bfd5ac42634a43aafe50b9b8fc559c4f5c9"
+    },
+    {
+      "path": "ISM-MAN_PMI.csv",
+      "bytes": 12829,
+      "sha256": "cf6850c02dff6fec0cbbb4bba746788b0b6bda823f92f0046c6a8149f026fbcf",
+      "Git_blob_sha1": "9fdfff05909f431cdd9ac19c76d84ed8347bf4c7"
+    },
+    {
+      "path": "llike_CSV_MA.m",
+      "bytes": 598,
+      "sha256": "8bc3b6d8735246a4007f53e82848d9a388997b8e37054fb854bd262bad7a8423",
+      "Git_blob_sha1": "1c004bf85a8402c33147cbce6df53760a908e4e1"
+    },
+    {
+      "path": "loaddata.m",
+      "bytes": 1842,
+      "sha256": "2fe508a6e388eceaefd0e5b3b2d12b7de4c74ab5800af3e8b50e04af1d0e4f6e",
+      "Git_blob_sha1": "45f584ac71cd0cdba815581011f900b207e4c59c"
+    },
+    {
+      "path": "main_forecasting.m",
+      "bytes": 7282,
+      "sha256": "b17fd19fa3b1f282d614a9d50bfeebc277ded18e6e26ef4a952b8eee722fefb6",
+      "Git_blob_sha1": "187e97fc0408ff7e762541c3e4f9eb7d4572d3a1"
+    },
+    {
+      "path": "npiQvQd.xlsx",
+      "bytes": 188584,
+      "sha256": "b8fcdeab146322deb6947db02a6742201b2cfaff108f0316874941595a8ebc27",
+      "Git_blob_sha1": "27030e358c24bb86a85b555d88e30dfbbfbd0c4c"
+    },
+    {
+      "path": "pconQvQd.xlsx",
+      "bytes": 188453,
+      "sha256": "afe469e2d98635b0fd5be54d51ef2389deac6661995e4364f3e25282f5178547",
+      "Git_blob_sha1": "0f2c7a614c172806f103d935e6d66fcc6649bf4f"
+    },
+    {
+      "path": "pimpQvQd.xlsx",
+      "bytes": 185614,
+      "sha256": "68c54e0e40be34f33035c2728b595e4c7461c311e9ac1a0e1304e456fb525253",
+      "Git_blob_sha1": "c0f595e75aee281d5b0b42e158e33f09f945da82"
+    },
+    {
+      "path": "prior_Minn.m",
+      "bytes": 1141,
+      "sha256": "cda750a0f51c976e2d2b7a766a7aef99e714b1caa50f00fd4dd8aad5c7fd8283",
+      "Git_blob_sha1": "b0f09462d7794ab1f7d5cc7569be32eebccd8559"
+    },
+    {
+      "path": "prior_NC.m",
+      "bytes": 898,
+      "sha256": "9892e0b4ab2b65e787da8249d4c2f12e6e052a86200670deaaabf24779446289",
+      "Git_blob_sha1": "8c43f044bb0530892250cac786206842a6a27d4d"
+    },
+    {
+      "path": "RCONQvQd.xlsx",
+      "bytes": 183585,
+      "sha256": "a67fcdaa3537357949eba5937ad1ccbc707a5cce1c6aa48669671383f4253382",
+      "Git_blob_sha1": "781c7e9c5cb4779da238f5cb23826cac99cedfac"
+    },
+    {
+      "path": "README.txt",
+      "bytes": 656,
+      "sha256": "8f58a7108d72f020cb0c3060a499aab6f46c873e20f42e756f7877503d40eab1",
+      "Git_blob_sha1": "3eb6480f335429d63ed438621554f2a9e1b15948"
+    },
+    {
+      "path": "rinvbfQvQd.xlsx",
+      "bytes": 182774,
+      "sha256": "b9223bdb3153eb80655f667da278f2d35e909ab8521d96a8a1fc77796113127b",
+      "Git_blob_sha1": "852dc4595c1f890881a9af7e11578af7fd5be05b"
+    },
+    {
+      "path": "rinvresidQvQd.xlsx",
+      "bytes": 181248,
+      "sha256": "ae0ab3373735dc15c913ea285c701efa6d314fed3733e86024a5d32b4f811125",
+      "Git_blob_sha1": "40352adfbe88a935952060b9073d32fff11bf523"
+    },
+    {
+      "path": "RNXQvQd.xlsx",
+      "bytes": 182115,
+      "sha256": "d2e0e8fe90db31c963b11b3521adb0a32f3f369fee1cb774170d81cf0c648fe4",
+      "Git_blob_sha1": "ba53f9ed52065e6fe20e774cfa9101345a52e9b7"
+    },
+    {
+      "path": "ROUTPUTQvQd.xlsx",
+      "bytes": 184632,
+      "sha256": "b053fb4cafb29c89f608c689368c12b5755338967cb2324a37b43ea9a746a716",
+      "Git_blob_sha1": "adc9f5b33f23eaa892bbdca384e82a8159687ffa"
+    },
+    {
+      "path": "rucQvMd.xlsx",
+      "bytes": 435608,
+      "sha256": "e824d223d7ea55cdefbc138a37ae356846bfd7aba267e2e402b8995c1ceb7b45",
+      "Git_blob_sha1": "1e9a17daf05656db782abf8b5d0ab8e4c8c0132e"
+    },
+    {
+      "path": "sample_h.m",
+      "bytes": 1371,
+      "sha256": "8596a0be3f06a332ba67ae39c0331d74cc6a2970ce07ced405b8e073ec6dc53f",
+      "Git_blob_sha1": "967c7df4351d5c509e8b7160c062fdea92c4304a"
+    },
+    {
+      "path": "sample_nu.m",
+      "bytes": 1054,
+      "sha256": "98fe5cd64b746e3b92a87c0c4909596a65f32fdedcbd4540c98bb324ee4e8440",
+      "Git_blob_sha1": "cf6d5196e0d79a80e355efeace207d28fb10fdc4"
+    },
+    {
+      "path": "sample_psi.m",
+      "bytes": 1074,
+      "sha256": "3f9a0ef63b73535bf5bbc517adba3e8ebb1728e674b2ee7c1302115430ea8c40",
+      "Git_blob_sha1": "029fae6901edb3f84764cc08bb1918e24d4ce73f"
+    },
+    {
+      "path": "SP500.xlsx",
+      "bytes": 22122,
+      "sha256": "28d554790c28ed2e7546802f88252b11a3e01e4ed002badb340f0f80fde7e0b7",
+      "Git_blob_sha1": "5e3f714039741a5353f6bea529a2b20a8d1eed32"
+    },
+    {
+      "path": "SURform2.m",
+      "bytes": 185,
+      "sha256": "d380f3b1327a573a4109421a4d116d506344f8f98c21ea3fad243b254d019252",
+      "Git_blob_sha1": "5af57dca6e992c15c099d8033769c8951d684d35"
+    },
+    {
+      "path": "SVRW.m",
+      "bytes": 1337,
+      "sha256": "ba7f98264532658528b531424c0d932bf3c2ade7aac053c24957191adcf07e3c",
+      "Git_blob_sha1": "9fcf6938f03a5e65acf7ec1f8fa662d7826d8b72"
+    }
+  ],
+  "only_numerically_loaded_members": [
+    "prior_NC.m",
+    "forecast_BVAR_NCP.m"
+  ],
+  "all_external_original_data_unused": true,
+  "acquisition_qualification": "New official acquisition; no claim to recovering an earlier lost local archive."
+}

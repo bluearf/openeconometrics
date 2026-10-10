@@ -393,7 +393,10 @@ function Invoke-NormalUiCore([string]$Mode, [int]$Port) {
     }
     $Result = Join-Path $Output "installed-native-ui-$Mode.json"
     $UiArguments = @((Join-Path $DesktopRoot 'scripts/verify_windows_ui.mjs'), '--port', "$Port", '--output', $Result, '--mode', $Mode, '--project-name', $UiProjectName)
-    if ($null -eq $DiagnosticProducer) { $UiArguments += @('--regularized-all-family', 'true') }
+    if ($null -eq $DiagnosticProducer) { $UiArguments += @('--regularized-all-family', 'true', '--saved-binomial', 'true', '--source-sha', $SourceCommit) }
+    if ($null -eq $DiagnosticProducer -and $Mode -eq 'reopen') {
+        $UiArguments += @('--original-receipt', (Join-Path $Output 'installed-native-ui-create.json'))
+    }
     $Controller = New-OwnedProcess -Executable $ControllerNode -UiController -Arguments $UiArguments
     try { Wait-OwnedProcess -Owned $Controller -TimeoutSeconds 600 -Name "installed-native-ui-$Mode-controller" | Out-Null }
     catch {
@@ -407,6 +410,8 @@ function Invoke-NormalUiCore([string]$Mode, [int]$Port) {
     if ($null -eq $DiagnosticProducer) {
         $RegularizedGate = if ($Mode -eq 'create') { 'normal_ui_run_four_regularized_methods_complete_state_and_tables' } else { 'cold_reopen_four_regularized_tables_without_refit' }
         if ($Record.regularized_all_family_enabled -ne $true -or $Record.checks.four_regularized_tables_rendered -ne $true -or $Record.checks[$RegularizedGate] -ne $true -or $Record.original_user_command_count -ne 1 -or $Record.regularized.saved_files.Count -ne 10 -or $Record.regularized.tables.Count -ne 4 -or $Record.regularized.rows_per_table -ne 4) { throw 'The actual native UI did not complete its four-family model/persistence gate.' }
+        $SavedBinomialGate = if ($Mode -eq 'create') { 'normal_ui_run_saved_binomial_full_state_and_tables' } else { 'cold_reopen_saved_binomial_tables_without_refit' }
+        if ($Record.saved_binomial_enabled -ne $true -or $Record.checks.eight_saved_binomial_tables_rendered -ne $true -or $Record.checks[$SavedBinomialGate] -ne $true -or $Record.saved_binomial.source_sha -cne $SourceCommit -or $Record.saved_binomial.saved_files.Count -ne 10 -or $Record.saved_binomial.tables.Count -ne 8 -or $Record.saved_binomial.rows_per_table -ne 7) { throw 'The actual native UI did not complete its eight saved-binomial full-state/table gate.' }
     }
     $Screenshot = Capture-NativeWindow -Process $Native.process -Name "installed-native-$Mode.png"
     if (-not $Native.process.CloseMainWindow()) { throw 'The normal native application did not receive its close request.' }
@@ -438,6 +443,8 @@ function Get-NativeProjectSnapshot([string]$DataRoot) {
     if ($null -eq $DiagnosticProducer) {
         $RequiredFiles += @('regularized-all-family-models.json', 'regularized-all-family-data.csv')
         foreach ($Method in @('ridge', 'lasso', 'elasticnet', 'pls')) { $RequiredFiles += @("regularized-all-family-$Method.json", "regularized-all-family-$Method.tex") }
+        $RequiredFiles += @('saved-binomial-suest-models.json', 'saved-binomial-suest-data.parquet')
+        foreach ($Case in @('cloglog_offset', 'cloglog_frequency_cluster', 'fractional_logit_corners', 'fractional_probit_corners', 'fractional_logit_frequency', 'fractional_probit_probability_cluster', 'fractional_logit_analytic', 'fractional_probit_analytic_cluster')) { $RequiredFiles += "saved-binomial-suest-$Case.tex" }
     }
     foreach ($Required in $RequiredFiles) {
         if (-not $Rows.Contains($Required)) { throw "The actual UI project's required saved data/result/history file is missing: $Required" }
@@ -452,6 +459,17 @@ function Assert-RegularizedUiFiles([string]$UiReceiptFile, $Snapshot, $Previous 
     foreach ($Name in $Saved.Keys) {
         if (-not $Snapshot.files.Contains($Name) -or $Saved[$Name].sha256 -cne $Snapshot.files[$Name].sha256 -or $Saved[$Name].bytes -ne $Snapshot.files[$Name].bytes) { throw 'A UI regularized saved marker differs from the actual native project file bytes.' }
         if ($null -ne $Previous -and (-not $Previous.ContainsKey($Name) -or $Previous[$Name].sha256 -cne $Snapshot.files[$Name].sha256 -or $Previous[$Name].bytes -ne $Snapshot.files[$Name].bytes)) { throw 'A saved regularized artifact changed across cold reopening or reinstall.' }
+    }
+    return $Saved
+}
+
+function Assert-SavedBinomialUiFiles([string]$UiReceiptFile, $Snapshot, $Previous = $null) {
+    $Ui = Get-Content -LiteralPath $UiReceiptFile -Raw | ConvertFrom-Json -AsHashtable
+    $Saved = $Ui.saved_binomial.saved_files
+    if ($Saved.Count -ne 10) { throw 'The UI receipt lacks its exact ten saved-binomial files.' }
+    foreach ($Name in $Saved.Keys) {
+        if (-not $Snapshot.files.Contains($Name) -or $Saved[$Name].sha256 -cne $Snapshot.files[$Name].sha256 -or $Saved[$Name].bytes -ne $Snapshot.files[$Name].bytes) { throw 'A saved-binomial UI marker differs from the actual native project file bytes.' }
+        if ($null -ne $Previous -and (-not $Previous.ContainsKey($Name) -or $Previous[$Name].sha256 -cne $Snapshot.files[$Name].sha256 -or $Previous[$Name].bytes -ne $Snapshot.files[$Name].bytes)) { throw 'A saved-binomial artifact changed across cold reopening or reinstall.' }
     }
     return $Saved
 }
@@ -639,10 +657,13 @@ try {
     $Receipt.observed_native_data_root = $ObservedNativeDataRoot
     $Receipt.native_profile_used_knownfolder = $ObservedNativeDataRoot -eq $KnownFolderDataRoot
     $RegularizedCreatedFiles = $null
+    $SavedBinomialCreatedFiles = $null
     if ($null -eq $DiagnosticProducer) {
         $CreatedSnapshot = Get-NativeProjectSnapshot -DataRoot $ObservedNativeDataRoot
         $RegularizedCreatedFiles = Assert-RegularizedUiFiles -UiReceiptFile $Receipt.native_ui_create.receipt -Snapshot $CreatedSnapshot
         $Receipt.native_regularized_files_after_create = $RegularizedCreatedFiles
+        $SavedBinomialCreatedFiles = Assert-SavedBinomialUiFiles -UiReceiptFile $Receipt.native_ui_create.receipt -Snapshot $CreatedSnapshot
+        $Receipt.native_saved_binomial_files_after_create = $SavedBinomialCreatedFiles
     }
     $ProfileSentinel = Join-Path $ObservedNativeDataRoot 'owned-reinstall-sentinel.txt'
     if (-not (Test-Path -LiteralPath (Split-Path -Parent $ProfileSentinel) -PathType Container)) { throw 'Native application did not create its expected isolated profile.' }
@@ -683,6 +704,20 @@ try {
         if ($RegularizedReceipt.status -cne 'passed' -or $RegularizedReceipt.source_sha -cne $SourceCommit -or $RegularizedReceipt.sdk_version -cne $ExpectedSdk -or $RegularizedReceipt.runtime_sha256 -cne (Get-FileHash -LiteralPath $Runtime -Algorithm SHA256).Hash.ToLowerInvariant() -or $RegularizedReceipt.compiled_modules_equal_source.Count -ne 12 -or $RegularizedReceipt.tables -ne 8 -or $RegularizedReceipt.rows_per_table -ne 4 -or $RegularizedReceipt.four_complete_models_equal_after_restart -ne $true -or $RegularizedReceipt.saved_replay_with_fit_disabled -ne $true -or $RegularizedReceipt.code_stdout_outputs_events_equal_after_restart -ne $true -or $RegularizedReceipt.editor_script_equal_after_restart -ne $true -or $RegularizedReceipt.no_worker_needed_for_history -ne $true -or $RegularizedReceipt.owned_runtime_stopped -ne $true -or $RegularizedReceipt.temporary_profile_removed -ne $true -or $RegularizedReceipt.source_path_injected -ne $false) { throw 'Frozen regularized receipt did not complete its exact source, four-model and cleanup gates.' }
         $Receipt.installed_regularized_all_family = @{ file = $RegularizedOutput; sha256 = (Get-FileHash -LiteralPath $RegularizedOutput -Algorithm SHA256).Hash.ToLowerInvariant(); archive_inspection_python = $BuildInspectorPython; all_calculations_in_installed_frozen_worker = $true; compiled_module_count = 12; tables = 8 }
         $Receipt.checks.installed_frozen_four_regularized_methods_full_state_and_cold_replay = $true
+        $SavedBinomialOutput = Join-Path $Output 'installed-saved-binomial-suest.json'
+        & $BuildInspectorPython -I (Join-Path $ProjectRoot 'scripts/verify_saved_binomial_runtime.py') --runtime $Runtime --output $SavedBinomialOutput --sdk-version $ExpectedSdk --source-sha $SourceCommit
+        if ($LASTEXITCODE -ne 0) { throw 'Installed frozen saved-binomial acceptance failed.' }
+        $SavedBinomialReceipt = Get-Content -LiteralPath $SavedBinomialOutput -Raw | ConvertFrom-Json -AsHashtable
+        if ($SavedBinomialReceipt.status -cne 'passed' -or $SavedBinomialReceipt.source_sha -cne $SourceCommit -or $SavedBinomialReceipt.runtime_sha256 -cne (Get-FileHash -LiteralPath $Runtime -Algorithm SHA256).Hash.ToLowerInvariant() -or $SavedBinomialReceipt.compiled_modules_equal_source.Count -ne 26 -or $SavedBinomialReceipt.component_models -ne 16 -or $SavedBinomialReceipt.joint_systems -ne 8 -or $SavedBinomialReceipt.sixteen_complete_models_and_eight_joint_states_equal_after_restart -ne $true -or $SavedBinomialReceipt.saved_replay_with_fit_disabled -ne $true -or $SavedBinomialReceipt.code_stdout_outputs_events_equal_after_restart -ne $true -or $SavedBinomialReceipt.editor_script_equal_after_restart -ne $true -or $SavedBinomialReceipt.no_worker_needed_for_history -ne $true -or $SavedBinomialReceipt.owned_runtime_stopped -ne $true -or $SavedBinomialReceipt.temporary_profile_removed -ne $true -or $SavedBinomialReceipt.source_path_injected -ne $false) { throw 'Frozen saved-binomial receipt did not complete its exact compiled source/state/replay/cleanup gates.' }
+        $Receipt.installed_saved_binomial_suest = @{ file = $SavedBinomialOutput; sha256 = (Get-FileHash -LiteralPath $SavedBinomialOutput -Algorithm SHA256).Hash.ToLowerInvariant(); compiled_module_count = 26; joint_systems = 8; all_calculations_in_installed_frozen_worker = $true }
+        $Receipt.checks.installed_frozen_saved_binomial_full_state_and_cold_replay = $true
+        $TwoStepOutput = Join-Path $Output 'installed-twostep-adaptive.json'
+        & $BuildInspectorPython -I (Join-Path $ProjectRoot 'scripts/verify_twostep_adaptive_runtime.py') --runtime $Runtime --output $TwoStepOutput --sdk-version $ExpectedSdk --source-sha $SourceCommit
+        if ($LASTEXITCODE -ne 0) { throw 'Installed frozen adaptive TwoStep acceptance failed.' }
+        $TwoStepReceipt = Get-Content -LiteralPath $TwoStepOutput -Raw | ConvertFrom-Json -AsHashtable
+        if ($TwoStepReceipt.status -cne 'passed' -or $TwoStepReceipt.source_sha -cne $SourceCommit -or $TwoStepReceipt.runtime_sha256 -cne (Get-FileHash -LiteralPath $Runtime -Algorithm SHA256).Hash.ToLowerInvariant() -or $TwoStepReceipt.compiled_modules_equal_source.Count -ne 10 -or $TwoStepReceipt.four_complete_saved_states.cases.Count -ne 4 -or $TwoStepReceipt.four_complete_saved_states.files.Count -ne 9 -or $TwoStepReceipt.fit_disabled_saved_replay -ne $true -or $TwoStepReceipt.cold_history_without_worker -ne $true -or $TwoStepReceipt.owned_runtime_stopped -ne $true -or $TwoStepReceipt.temporary_profile_removed -ne $true -or $TwoStepReceipt.source_path_injected -ne $false -or $TwoStepReceipt.native_window_verified -ne $false) { throw 'TwoStep did not prove exact installed source, full state, cold replay and cleanup.' }
+        $Receipt.installed_twostep_adaptive = @{ file = $TwoStepOutput; sha256 = (Get-FileHash -LiteralPath $TwoStepOutput -Algorithm SHA256).Hash.ToLowerInvariant(); compiled_module_count = 10; cases = 4; all_calculations_in_installed_frozen_worker = $true }
+        $Receipt.checks.installed_frozen_twostep_adaptive_full_state_and_cold_replay = $true
     }
     $PreviousNativeSha = 'c9ae7c7570e936a3f7d3233ab42c3848d20686ac7906f45d36ec2dc67efba647'
     $PreviousRuntimeSha = '8169d70dc79e4675b256591647e0a6ac1310fb1736c7f2cbb5ff3829255ce582'
@@ -721,6 +756,8 @@ try {
     if ($null -eq $DiagnosticProducer) {
         $Receipt.native_regularized_files_after_cold_reopen = Assert-RegularizedUiFiles -UiReceiptFile $Receipt.native_ui_reopen.receipt -Snapshot $BeforeUninstallProject -Previous $RegularizedCreatedFiles
         $Receipt.checks.native_four_regularized_saved_markers_match_actual_files_after_create_and_cold_reopen = $true
+        $Receipt.native_saved_binomial_files_after_cold_reopen = Assert-SavedBinomialUiFiles -UiReceiptFile $Receipt.native_ui_reopen.receipt -Snapshot $BeforeUninstallProject -Previous $SavedBinomialCreatedFiles
+        $Receipt.checks.native_eight_saved_binomial_tables_and_saved_files_match_after_cold_reopen = $true
     }
     $Uninstallers = @(Get-ChildItem -LiteralPath $InstallDirectory -File | Where-Object { $_.Name -match '^uninstall.*\.exe$' })
     if ($Uninstallers.Count -ne 1) { throw 'Exactly one installed NSIS uninstaller is required.' }

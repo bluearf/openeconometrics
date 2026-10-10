@@ -1,0 +1,43 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "openeconometrics",
+  "version": "0.1.3",
+  "description": "Run reproducible local OpenEconometrics analyses directly from Codex.",
+  "author": {
+    "name": "OpenEconometrics contributors"
+  },
+  "homepage": "https://openeconometrics.com",
+  "repository": "https://github.com/bluearf/openeconometrics",
+  "license": "Apache-2.0",
+  "keywords": [
+    "econometrics",
+    "statistics",
+    "local-data",
+    "research",
+    "codex"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "OpenEconometrics",
+        "shortDescription": "Local econometrics in Codex",
+        "longDescription": "Inspect local research datasets, run supported statistical and econometric models, and read saved results with publication LaTeX tables directly in Codex using your configured OpenEconometrics workspace. Supports bounded background analysis, cancellation and persistent local results.",
+        "developerName": "OpenEconometrics contributors",
+        "category": "Education & Research",
+        "capabilities": [
+          "Read",
+          "Write"
+        ],
+        "websiteURL": "https://openeconometrics.com",
+        "defaultPrompt": [
+          "Inspect my datasets and available analysis methods.",
+          "Run a synthetic OLS example and return a LaTeX regression table.",
+          "Show my saved analyses and their assumptions."
+        ],
+        "brandColor": "#2563EB",
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/icon.png"
+      }
+    }
+  }
+}
