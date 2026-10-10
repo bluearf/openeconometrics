@@ -13,9 +13,13 @@ Every additional chapter supplies a descriptively named Excel workbook. Import i
 
 Microeconomics chapters 01–19 evaluate stated model scenarios through Python arithmetic and native OpenEconometrics tables/charts. Their workbooks contain feasible plans, schedules or model inputs; they do not pretend to estimate consumer behavior from empirical observations. Chapter 20 fits a synthetic demand regression. Advanced chapters preserve complete fitted models, including full covariance, declared inference and retained sample positions. The exact assumptions and limits are stated in each handout.
 
+## Read and download
+
+Read the [public course catalogue](https://github.com/bluearf/openeconometrics/blob/main/teaching/COURSES.md) or download the separate editions linked below. The standalone public teaching directory has its own source manifest; it does not change the previously published SDK snapshot.
+
 ## Offline editions
 
-Build each additional series with `scripts/build_teaching_handouts.py --course statistics`, `--course microeconomics` or `--course advanced-econometrics` using the optional pinned [renderer dependencies](requirements-build.txt) and local KaTeX assets. Source Markdown, Excel, Python, figures, LaTeX and full instructor references are versioned here. Build outputs are written under `output/teaching/<course>/` and verification receipts under `artifacts/teaching/`. Download the separate student and instructor distributions from the [teaching release](https://github.com/bluearf/openeconometrics/releases/tag/teaching-v0.1.0).
+Build each additional series with `scripts/build_teaching_handouts.py --course statistics`, `--course microeconomics` or `--course advanced-econometrics` using the optional pinned [renderer dependencies](requirements-build.txt) and local KaTeX assets. Source Markdown, Excel, Python, figures, LaTeX and full instructor references are versioned here. Build outputs are written under `output/teaching/<course>/` and verification receipts under `artifacts/teaching/`. Download the separate student and instructor distributions from the [teaching release](https://github.com/bluearf/openeconometrics/releases/tag/teaching-v0.1.1).
 
 Each student ZIP contains a navigable offline course, a combined reading PDF, 20 workbooks, runnable scripts, figures and LaTeX table fragments. Each instructor ZIP additionally contains worked answers, full references and original mechanisms. Follow the corresponding instructor guide to reproduce, print and verify an edition. Course registers record completed implementation, numerical verification and editorial checks. The user has authorized distribution; this does not imply a textbook author or publisher endorsement.
 

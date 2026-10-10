@@ -169,12 +169,15 @@ def manual_iv(data):
     x = torch.column_stack((ones, tensor(data.background), tensor(data.schooling)))
     z = torch.column_stack((ones, tensor(data.background), tensor(data.offer)))
     y = tensor(data.log_earnings)
-    xhat = z @ torch.linalg.lstsq(z, x).solution
-    bread = torch.linalg.inv(xhat.T @ x)
-    beta = bread @ (xhat.T @ y)
+    # Exactly identified IV solves Z'(y-X beta)=0. Avoid forming the
+    # projected normal equations: their conditioning magnifies roundoff in
+    # the intentionally weak-instrument example. The estimand is unchanged.
+    moment = z.T @ x
+    beta = torch.linalg.solve(moment, z.T @ y)
     residual = y - x @ beta
-    scores = xhat * residual[:, None]
-    covariance = len(data) / (len(data) - 3) * bread @ (scores.T @ scores) @ bread.T
+    loading = torch.linalg.solve(moment, z.T)
+    scores = loading * residual
+    covariance = len(data) / (len(data) - 3) * scores @ scores.T
     return beta, covariance
 
 

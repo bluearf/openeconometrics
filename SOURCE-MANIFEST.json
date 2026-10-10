@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_commit": "6e48a80a05dd10303e79f2edba2fddffb38d137f",
+  "source_commit": "6768c16e9ac6e32d31176d0dd24c1c0932921218",
   "publication_state": "prepared source snapshot; public access requires separate verification",
   "history": "new snapshot only; private Git history, branches, PRs and issues excluded",
   "research_data": "external fixture bytes excluded; obtain separately from original providers under their terms",
@@ -4913,9 +4913,9 @@
     },
     {
       "path": "docs/teaching/instructors/13-instrumental-variables.md",
-      "bytes": 3388,
-      "sha256": "d0bb6be39d78e9433642fd5edf3df7d757c846bf7277d15bb8b5422e928e8693",
-      "original_sha256": "d0bb6be39d78e9433642fd5edf3df7d757c846bf7277d15bb8b5422e928e8693",
+      "bytes": 4082,
+      "sha256": "3093f11d73047aaebb6e9307e2086801d09e61a1e76c7f24e81dcfe1d29e9406",
+      "original_sha256": "3093f11d73047aaebb6e9307e2086801d09e61a1e76c7f24e81dcfe1d29e9406",
       "transformed": false
     },
     {
@@ -5697,9 +5697,9 @@
     },
     {
       "path": "docs/teaching/labs/13-instrumental-variables/lab.py",
-      "bytes": 11568,
-      "sha256": "ebf5e829a9a0e9ca442418798d7c8f3b0cb6d3c2008c0256b068e65d2f5aa5f2",
-      "original_sha256": "ebf5e829a9a0e9ca442418798d7c8f3b0cb6d3c2008c0256b068e65d2f5aa5f2",
+      "bytes": 11754,
+      "sha256": "bd957819b83308bf09c4105877fac313e27a9268552e0ee1a57acdbc801e69f2",
+      "original_sha256": "bd957819b83308bf09c4105877fac313e27a9268552e0ee1a57acdbc801e69f2",
       "transformed": false
     },
     {
@@ -21649,6 +21649,13 @@
       "transformed": false
     },
     {
+      "path": "tests/test_teaching_iv_precision.py",
+      "bytes": 2325,
+      "sha256": "ee6d150e8b1205a3598f125be82f7bfc30620f74151fd40056c6c414231e2399",
+      "original_sha256": "ee6d150e8b1205a3598f125be82f7bfc30620f74151fd40056c6c414231e2399",
+      "transformed": false
+    },
+    {
       "path": "tests/test_team_assets.py",
       "bytes": 3010,
       "sha256": "bf426fe062e030cf83aad31a46b8fcc3e084a20f63f3ae3cea025a7112f330b1",
@@ -30448,5 +30455,5 @@
     "tests/fixtures/supervised-cart-native-reference.json",
     "tests/fixtures/supervised-cart-native-source-inputs.json"
   ],
-  "source_files_sha256": "b6058d8f5ca9b6bbc21c18fbfcccd2573ab7c53c967faf4f020e9ccc654a964d"
+  "source_files_sha256": "714288273203bc711b82ef0145dc692bfc8724b5c55fd2c2ea414090512b6375"
 }

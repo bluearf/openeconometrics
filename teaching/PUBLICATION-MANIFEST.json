@@ -1,5 +1,5 @@
 {
-  "private_source_commit": "fa2e13a4300678d41b9d72c89ddc0c55bbd309b3",
+  "private_source_commit": "6768c16e9ac6e32d31176d0dd24c1c0932921218",
   "course_count": 4,
   "chapters": 80,
   "prepared_workbooks": 79,
@@ -15,9 +15,9 @@
     {
       "path": "teaching/COURSES.md",
       "source_path": "docs/teaching/COURSES.md",
-      "source_sha256": "8cdf25b5dbceb17535952156f73f5f0eb01047d01a56dfb8b60896cee7e42a6a",
-      "sha256": "b8ac11d05e78044f0781461502db0d96f7eadb6e78ef7d9c834f8b3fd1070149",
-      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
+      "source_sha256": "3bb0599aac30bdb38ba6bbbaf38d5d9f2433c0dab13abcde3bbf981690d99b91",
+      "sha256": "5f196efcfe9e2096900ae9576ea2d778033c31c5cffd763f56b171fbacf33835",
+      "transformation": "Standalone public entry files use index.md; method-document links use the public docs directory; the download link selects teaching patch v0.1.1."
     },
     {
       "path": "teaching/INSTRUCTORS.md",
@@ -1422,9 +1422,9 @@
     {
       "path": "teaching/instructors/13-instrumental-variables.md",
       "source_path": "docs/teaching/instructors/13-instrumental-variables.md",
-      "source_sha256": "d0bb6be39d78e9433642fd5edf3df7d757c846bf7277d15bb8b5422e928e8693",
-      "sha256": "1f6596621572dbc19f2a25bfe9b106b45acabb7fc435050e7ac30abb6e10cc20",
-      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
+      "source_sha256": "3093f11d73047aaebb6e9307e2086801d09e61a1e76c7f24e81dcfe1d29e9406",
+      "sha256": "bf197050a4207f0e41790ad179f5be86579ff4be8466c161bb28d6ff294567d0",
+      "transformation": "Standalone public entry files use index.md; method-document links use the public docs directory; the download link selects teaching patch v0.1.1."
     },
     {
       "path": "teaching/instructors/14-randomized-program.md",
@@ -2206,8 +2206,8 @@
     {
       "path": "teaching/labs/13-instrumental-variables/lab.py",
       "source_path": "docs/teaching/labs/13-instrumental-variables/lab.py",
-      "source_sha256": "ebf5e829a9a0e9ca442418798d7c8f3b0cb6d3c2008c0256b068e65d2f5aa5f2",
-      "sha256": "ebf5e829a9a0e9ca442418798d7c8f3b0cb6d3c2008c0256b068e65d2f5aa5f2",
+      "source_sha256": "bd957819b83308bf09c4105877fac313e27a9268552e0ee1a57acdbc801e69f2",
+      "sha256": "bd957819b83308bf09c4105877fac313e27a9268552e0ee1a57acdbc801e69f2",
       "transformation": null
     },
     {
