@@ -51,7 +51,7 @@ model state to `reference.json` and an OpenEconometrics publication table to
 not a standalone document. The checked-in [reference results](../labs/15-difference-in-differences/reference.json)
 and [LaTeX table](../labs/15-difference-in-differences/table.tex) retain the lab's actual fit and uncertainty.
 
-For implementation details, see the [native DiD documentation](../../econometrics/teffects.md#2-difference-in-differences-didregress).
+For implementation details, see the [native DiD documentation](../../docs/econometrics/teffects.md#2-difference-in-differences-didregress).
 
 **Prepared input:** [policy_panel.xlsx](../labs/15-difference-in-differences/policy_panel.xlsx). Use the stored observations for the published analysis. The [original generator](generators/15-difference-in-differences.py) supports new dataset editions; update results and answers when changing observations. The employment_no_policy column is a labeled teaching oracle and is excluded from model fitting.
 
