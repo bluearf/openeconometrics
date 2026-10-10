@@ -13,7 +13,11 @@ ROOT = DESKTOP.parent
 
 def main() -> None:
     lock = tomllib.loads((ROOT / "uv.lock").read_text())
-    torch = [item["version"] for item in lock["package"] if item["name"] == "torch"]
+    # Linux's CPU index uses a local version suffix; Windows installs that same
+    # upstream version separately. Reject different upstream versions, rather
+    # than rejecting the platform variants recorded together in the lock.
+    torch = sorted({item["version"].removesuffix("+cpu")
+                    for item in lock["package"] if item["name"] == "torch"})
     if len(torch) != 1:
         raise SystemExit("The runtime lock must contain one unambiguous PyTorch version.")
     output = DESKTOP / "build" / "locked-runtime-dependencies.txt"

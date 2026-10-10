@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_commit": "61b755236b32d612f10e1d689daad8794bd8c827",
+  "source_commit": "3249ef576fa288e8921f0860c11b258e7cbe44d0",
   "publication_state": "prepared source snapshot; public access requires separate verification",
   "history": "new snapshot only; private Git history, branches, PRs and issues excluded",
   "research_data": "external fixture bytes excluded; obtain separately from original providers under their terms",
@@ -580,9 +580,9 @@
     },
     {
       "path": "desktop/scripts/export_locked_runtime.py",
-      "bytes": 1254,
-      "sha256": "c67d97c013263e77d500feec5c20786cbc570ea942bff438e1dedbc6c68c4b4f",
-      "original_sha256": "c67d97c013263e77d500feec5c20786cbc570ea942bff438e1dedbc6c68c4b4f",
+      "bytes": 1535,
+      "sha256": "77c3a51618fdbed669d0e2e4bc74096b7e58692438fb6f63a7629acf26b3463b",
+      "original_sha256": "77c3a51618fdbed669d0e2e4bc74096b7e58692438fb6f63a7629acf26b3463b",
       "transformed": false
     },
     {
@@ -692,9 +692,9 @@
     },
     {
       "path": "desktop/src-tauri/Cargo.toml",
-      "bytes": 1291,
-      "sha256": "ba24943ede2e29a46d50b96e204a3be73ed0a8d6a2f51f360caa0e83db511cb4",
-      "original_sha256": "ba24943ede2e29a46d50b96e204a3be73ed0a8d6a2f51f360caa0e83db511cb4",
+      "bytes": 1337,
+      "sha256": "d96970b2de5ebfd11cc4aca9c38e6824fd724bb2d2707157265260c0ac2265f7",
+      "original_sha256": "d96970b2de5ebfd11cc4aca9c38e6824fd724bb2d2707157265260c0ac2265f7",
       "transformed": false
     },
     {
@@ -853,9 +853,9 @@
     },
     {
       "path": "desktop/src-tauri/src/broker.rs",
-      "bytes": 53713,
-      "sha256": "8328dc0cc891e8aa1470f503be77603c914062fcffa0508c7469fdafc417c273",
-      "original_sha256": "8328dc0cc891e8aa1470f503be77603c914062fcffa0508c7469fdafc417c273",
+      "bytes": 54595,
+      "sha256": "53da0f95f462e979f63dd63fa96c88a7f7887e8b5d87353726795d553b3ec6ba",
+      "original_sha256": "53da0f95f462e979f63dd63fa96c88a7f7887e8b5d87353726795d553b3ec6ba",
       "transformed": false
     },
     {
@@ -17590,9 +17590,9 @@
     },
     {
       "path": "tests/test_deploy_build_metadata.py",
-      "bytes": 3681,
-      "sha256": "9cff2b731c904576ad6c1a88a4389a36c66b06d02a60e720f15229dbb7edddf5",
-      "original_sha256": "9cff2b731c904576ad6c1a88a4389a36c66b06d02a60e720f15229dbb7edddf5",
+      "bytes": 6268,
+      "sha256": "ae01a09bef19712111c8d8256e8eb14173eb5276f304d1bf6db90e1371f0b648",
+      "original_sha256": "ae01a09bef19712111c8d8256e8eb14173eb5276f304d1bf6db90e1371f0b648",
       "transformed": false
     },
     {
@@ -30476,7 +30476,7 @@
     "tests/fixtures/supervised-cart-native-reference.json",
     "tests/fixtures/supervised-cart-native-source-inputs.json"
   ],
-  "source_files_sha256": "b8d0b9ea530d35f55a898c731baf0301be8d6957d815d43f467b1619896a53b1",
+  "source_files_sha256": "ad42799d2c41386cc12ced961ab22f1b1af5a2a16b764eba322d3d214b0c8ea0",
   "publication_documentation_transforms": [
     {
       "path": "README.md",
