@@ -1287,6 +1287,52 @@ def test_real_packages_are_required_and_replayed_against_checkout(artifact_copy,
         validate(artifact_copy)
 
 
+@pytest.mark.parametrize("attack", [None, "metadata_missing", "metadata_changed", "source_missing",
+    "source_extra", "source_size", "source_bytes", "duplicate_late", "symlink_late",
+    "hardlink_late", "traversal_late", "absolute_late"])
+def test_sdist_complete_validation_in_arbitrary_archive_order(tmp_path, attack):
+    """Late unsafe headers and rehashed source changes must still refuse."""
+    project = {"name": "openecon", "version": "0.0.1"}
+    prefix = "openecon-0.0.1/"
+    sources = {"a.py": b"VALUE = 1\n", "z.py": b"VALUE = 2\n"}
+    contents = [(prefix + "src/openecon/z.py", sources["z.py"]),
+                (prefix + "README.md", b"Documentation\n"),
+                (prefix + "PKG-INFO", b"Name: openecon\nVersion: 0.0.1\n"),
+                (prefix + "src/openecon/a.py", sources["a.py"])]
+    if attack == "metadata_missing":
+        contents = [item for item in contents if not item[0].endswith("PKG-INFO")]
+    elif attack == "metadata_changed":
+        contents[2] = (contents[2][0], b"Name: openecon\nVersion: 99\n")
+    elif attack == "source_missing":
+        contents.pop()
+    elif attack == "source_extra":
+        contents.append((prefix + "src/openecon/extra.py", b"EXTRA = 1\n"))
+    elif attack in ("source_size", "source_bytes"):
+        contents[0] = (contents[0][0], b"VALUE = 3\n" + (b"extra" if attack == "source_size" else b""))
+    elif attack == "duplicate_late":
+        contents.append(contents[1])
+    elif attack == "traversal_late":
+        contents.append((prefix + "../outside", b"unsafe"))
+    elif attack == "absolute_late":
+        contents.append(("/outside", b"unsafe"))
+    path = tmp_path / "openecon-0.0.1.tar.gz"
+    with tarfile.open(path, "w:gz") as archive:
+        for name, raw in contents:
+            member = tarfile.TarInfo(name)
+            member.size = len(raw)
+            archive.addfile(member, io.BytesIO(raw))
+        if attack in ("symlink_late", "hardlink_late"):
+            member = tarfile.TarInfo(prefix + "late-link")
+            member.type = tarfile.SYMTYPE if attack == "symlink_late" else tarfile.LNKTYPE
+            member.linkname = contents[0][0]
+            archive.addfile(member)
+    if attack is None:
+        validator.check_package(path, project, "openecon", sources, wheel=False)
+    else:
+        with pytest.raises(ValueError):
+            validator.check_package(path, project, "openecon", sources, wheel=False)
+
+
 @pytest.mark.parametrize("attack", ["traversal", "symlink", "duplicate_json"])
 def test_artifacts_cannot_escape_or_ambiguously_replace_receipt_metadata(
     artifact_copy, tmp_path, attack

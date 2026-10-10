@@ -771,6 +771,22 @@ pub async fn upload(client: &Client, root: &Dir, project: &str, token: &str, loc
 mod tests {
     use super::*;
     #[test]
+    fn native_model_json_preserves_float_bits_across_request_and_response() {
+        // Values observed in an actual saved HC3 model's interval, predictions
+        // and p-value. The native JSON broker must not round these a second time.
+        let raw = "[1.8183335056294878,44.726301815618164,-1.5466964797787845,1.4552615370818851e-180]";
+        let expected: [f64; 4] = [1.8183335056294878, 44.726301815618164,
+                                 -1.5466964797787845, 1.4552615370818851e-180];
+        let mut value: Value = serde_json::from_str(raw).unwrap();
+        for _ in 0..3 {
+            for (index, original) in expected.iter().enumerate() {
+                assert_eq!(value[index].as_f64().unwrap().to_bits(), original.to_bits());
+            }
+            value = serde_json::from_slice(&serde_json::to_vec(&value).unwrap()).unwrap();
+        }
+    }
+
+    #[test]
     fn account_link_routes_are_canonical_and_do_not_allow_native_completion() {
         let id = "a".repeat(32);
         for (method, path) in [

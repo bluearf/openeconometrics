@@ -1,11 +1,73 @@
 """Required package descriptions, notices and frontend tools reach Docker stages."""
 
+import importlib.util
+import json
 from pathlib import Path
 import shlex
 import tomllib
 
+import pytest
+
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+@pytest.mark.parametrize("versions", [["2.14.0"], ["2.14.0", "2.14.0+cpu"]])
+def test_windows_runtime_export_retains_locked_markers_and_cpu_version(
+    tmp_path, monkeypatch, capsys, versions,
+):
+    spec = importlib.util.spec_from_file_location(
+        "runtime_export", ROOT / "desktop/scripts/export_locked_runtime.py",
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    (tmp_path / "uv.lock").write_text("\n".join(
+        f'[[package]]\nname = "torch"\nversion = "{version}"\n' for version in versions
+    ))
+    monkeypatch.setattr(module, "ROOT", tmp_path)
+    monkeypatch.setattr(module, "DESKTOP", tmp_path / "desktop")
+    calls = []
+
+    def locked_export(command, *, cwd, check):
+        calls.append(command)
+        assert cwd == tmp_path and check is True
+        assert command[2:6] == ["uv", "export", "--locked", "--no-dev"]
+        assert command[command.index("--extra") + 1] == "desktop"
+        assert command[command.index("--no-emit-package") + 1] == "torch"
+        output = Path(command[command.index("--output-file") + 1])
+        output.write_text('colorama==0.4.6 ; sys_platform == "win32"\n')
+
+    monkeypatch.setattr(module.subprocess, "run", locked_export)
+    module.main()
+    result = json.loads(capsys.readouterr().out)
+    assert result["torch_version"] == "2.14.0" and len(calls) == 1
+    assert Path(result["requirements"]).read_text() == (
+        'colorama==0.4.6 ; sys_platform == "win32"\n'
+    )
+
+
+@pytest.mark.parametrize("versions", [[], ["2.14.0", "2.15.0+cpu"]])
+def test_windows_runtime_export_rejects_ambiguous_lock_before_export(
+    tmp_path, monkeypatch, versions,
+):
+    spec = importlib.util.spec_from_file_location(
+        "runtime_export_invalid", ROOT / "desktop/scripts/export_locked_runtime.py",
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    (tmp_path / "uv.lock").write_text("package = []\n" if not versions else "\n".join(
+        f'[[package]]\nname = "torch"\nversion = "{version}"\n' for version in versions
+    ))
+    monkeypatch.setattr(module, "ROOT", tmp_path)
+    monkeypatch.setattr(module, "DESKTOP", tmp_path / "desktop")
+
+    def unexpected_export(*args, **kwargs):
+        pytest.fail("An ambiguous lock must not start dependency export")
+
+    monkeypatch.setattr(module.subprocess, "run", unexpected_export)
+    with pytest.raises(SystemExit, match="one unambiguous PyTorch version"):
+        module.main()
+    assert not (tmp_path / "desktop/build").exists()
 
 
 def test_default_deny_deploy_context_retains_package_build_metadata():

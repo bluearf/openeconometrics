@@ -1464,45 +1464,39 @@ def check_package(path, project, package, sources, wheel):
                 )
     else:
         require(path.name == distribution + ".tar.gz", "Unexpected sdist filename")
-        with tarfile.open(path, "r:gz") as archive:
-            members = archive.getmembers()
-            names = [member.name for member in members]
-            require(len(names) == len(set(names)), "Duplicate sdist member")
-            require(
-                all(
+        # Read compressed members in archive order. Random extractfile(name)
+        # seeks repeatedly inflated the same gzip stream for each source file.
+        # Every header, duplicate, source byte and metadata field is still checked.
+        prefix = distribution + "/src/" + package + "/"
+        expected_sources = {prefix + name: raw for name, raw in sources.items()}
+        names, python_members, metadata_seen = set(), set(), False
+        with tarfile.open(path, "r|gz") as archive:
+            for member in archive:
+                require(member.name not in names, "Duplicate sdist member")
+                names.add(member.name)
+                require(
                     not PurePosixPath(member.name).is_absolute()
                     and ".." not in PurePosixPath(member.name).parts
-                    and (member.isfile() or member.isdir())
-                    for member in members
-                ),
-                "Unsafe sdist member",
-            )
-            metadata = archive.extractfile(distribution + "/PKG-INFO")
-            require(metadata is not None, "Missing sdist metadata")
-            metadata_matches(metadata.read(), project)
-            prefix = distribution + "/src/" + package + "/"
-            python_members = {
-                member.name
-                for member in members
-                if member.isfile()
-                and member.name.startswith(prefix)
-                and member.name.endswith(".py")
-            }
-            require(
-                python_members == {prefix + name for name in sources},
-                "Sdist Python source inventory differs from checkout",
-            )
-            for name, raw in sources.items():
-                require(
-                    archive.getmember(distribution + "/src/" + package + "/" + name).size
-                    == len(raw),
-                    "Sdist source size differs from tested checkout",
+                    and (member.isfile() or member.isdir()),
+                    "Unsafe sdist member",
                 )
-                member = archive.extractfile(distribution + "/src/" + package + "/" + name)
-                require(
-                    member is not None and member.read() == raw,
-                    "Sdist source differs from tested checkout",
-                )
+                if member.name == distribution + "/PKG-INFO":
+                    metadata = archive.extractfile(member)
+                    require(metadata is not None, "Missing sdist metadata")
+                    metadata_matches(metadata.read(), project)
+                    metadata_seen = True
+                elif member.isfile() and member.name.startswith(prefix) and member.name.endswith(".py"):
+                    python_members.add(member.name)
+                    require(member.name in expected_sources,
+                            "Sdist Python source inventory differs from checkout")
+                    raw = expected_sources[member.name]
+                    require(member.size == len(raw), "Sdist source size differs from tested checkout")
+                    source = archive.extractfile(member)
+                    require(source is not None and source.read() == raw,
+                            "Sdist source differs from tested checkout")
+        require(metadata_seen, "Missing sdist metadata")
+        require(python_members == set(expected_sources),
+                "Sdist Python source inventory differs from checkout")
 
 
 def packages(directory, report, root):

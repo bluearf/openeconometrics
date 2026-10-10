@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_commit": "623d13b4922eeed80c25f72cd1dea795fc286191",
+  "source_commit": "3249ef576fa288e8921f0860c11b258e7cbe44d0",
   "publication_state": "prepared source snapshot; public access requires separate verification",
   "history": "new snapshot only; private Git history, branches, PRs and issues excluded",
   "research_data": "external fixture bytes excluded; obtain separately from original providers under their terms",
@@ -111,17 +111,17 @@
     },
     {
       "path": "PYPI-README.md",
-      "bytes": 3059,
-      "sha256": "f3cf30c587ed9bdc7fe10eeac944ffbfc88f4c91b25e6f1a329a39ac95d36763",
+      "bytes": 3637,
+      "sha256": "a23ef49293444071d304dbccafc94825533a79458712ac552c7cd3c82f0e67fb",
       "original_sha256": "f3cf30c587ed9bdc7fe10eeac944ffbfc88f4c91b25e6f1a329a39ac95d36763",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "README.md",
-      "bytes": 22885,
-      "sha256": "dcb26e20a9b33d62c21cbd6a82d1c3a26d906a77ec088058daf44fa51d46725c",
+      "bytes": 23040,
+      "sha256": "b07e50ea99d697a8f526e79ee4c06257b8dd761f37b4b9e9339f4f1673666229",
       "original_sha256": "dcb26e20a9b33d62c21cbd6a82d1c3a26d906a77ec088058daf44fa51d46725c",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "SECURITY.md",
@@ -580,9 +580,9 @@
     },
     {
       "path": "desktop/scripts/export_locked_runtime.py",
-      "bytes": 1254,
-      "sha256": "c67d97c013263e77d500feec5c20786cbc570ea942bff438e1dedbc6c68c4b4f",
-      "original_sha256": "c67d97c013263e77d500feec5c20786cbc570ea942bff438e1dedbc6c68c4b4f",
+      "bytes": 1535,
+      "sha256": "77c3a51618fdbed669d0e2e4bc74096b7e58692438fb6f63a7629acf26b3463b",
+      "original_sha256": "77c3a51618fdbed669d0e2e4bc74096b7e58692438fb6f63a7629acf26b3463b",
       "transformed": false
     },
     {
@@ -692,9 +692,9 @@
     },
     {
       "path": "desktop/src-tauri/Cargo.toml",
-      "bytes": 1291,
-      "sha256": "ba24943ede2e29a46d50b96e204a3be73ed0a8d6a2f51f360caa0e83db511cb4",
-      "original_sha256": "ba24943ede2e29a46d50b96e204a3be73ed0a8d6a2f51f360caa0e83db511cb4",
+      "bytes": 1337,
+      "sha256": "d96970b2de5ebfd11cc4aca9c38e6824fd724bb2d2707157265260c0ac2265f7",
+      "original_sha256": "d96970b2de5ebfd11cc4aca9c38e6824fd724bb2d2707157265260c0ac2265f7",
       "transformed": false
     },
     {
@@ -853,9 +853,9 @@
     },
     {
       "path": "desktop/src-tauri/src/broker.rs",
-      "bytes": 53713,
-      "sha256": "8328dc0cc891e8aa1470f503be77603c914062fcffa0508c7469fdafc417c273",
-      "original_sha256": "8328dc0cc891e8aa1470f503be77603c914062fcffa0508c7469fdafc417c273",
+      "bytes": 54595,
+      "sha256": "53da0f95f462e979f63dd63fa96c88a7f7887e8b5d87353726795d553b3ec6ba",
+      "original_sha256": "53da0f95f462e979f63dd63fa96c88a7f7887e8b5d87353726795d553b3ec6ba",
       "transformed": false
     },
     {
@@ -8679,9 +8679,9 @@
     },
     {
       "path": "docs/validation/actions-performance-2026-10-09.md",
-      "bytes": 6834,
-      "sha256": "32cec74207396e634b42238ff5e662bfa9dbd61df9e69c822d622d27300c9369",
-      "original_sha256": "32cec74207396e634b42238ff5e662bfa9dbd61df9e69c822d622d27300c9369",
+      "bytes": 8613,
+      "sha256": "8df3955f3d3cbaaa0a5385ea20ccc1640d07d689d8db013083e11d425c2ad5a0",
+      "original_sha256": "8df3955f3d3cbaaa0a5385ea20ccc1640d07d689d8db013083e11d425c2ad5a0",
       "transformed": false
     },
     {
@@ -8798,10 +8798,10 @@
     },
     {
       "path": "packages/openecon-charts/PYPI-README.md",
-      "bytes": 2546,
-      "sha256": "9441ec309e081b5d5eb5028623bd178a788a9ebfcfde96b4653da3482f1e1a0a",
+      "bytes": 2831,
+      "sha256": "a707263b3813760659c3db0405d026ed5cf05bfc3b6694b6d3a1d57c9efff729",
       "original_sha256": "9441ec309e081b5d5eb5028623bd178a788a9ebfcfde96b4653da3482f1e1a0a",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "packages/openecon-charts/README.md",
@@ -9603,9 +9603,9 @@
     },
     {
       "path": "scripts/run_parallel_sdk_groups.py",
-      "bytes": 916250,
-      "sha256": "09dbfd2bf6e159b2507f2a9733e15c5b33372a60f28b85d42282eefc546c266f",
-      "original_sha256": "09dbfd2bf6e159b2507f2a9733e15c5b33372a60f28b85d42282eefc546c266f",
+      "bytes": 890126,
+      "sha256": "d382ef7b01e3ab681f2c9b94d6a8124097563c8872bfe3a987a35d4dc873f79e",
+      "original_sha256": "d382ef7b01e3ab681f2c9b94d6a8124097563c8872bfe3a987a35d4dc873f79e",
       "transformed": false
     },
     {
@@ -10793,9 +10793,9 @@
     },
     {
       "path": "scripts/verify_parallel_merge_gate.py",
-      "bytes": 113134,
-      "sha256": "25843580196d4bef6fdb89671c7702bb0c0a23af3a739897676e5e61a2e25e77",
-      "original_sha256": "25843580196d4bef6fdb89671c7702bb0c0a23af3a739897676e5e61a2e25e77",
+      "bytes": 113409,
+      "sha256": "89dc9886eb88cce48494f3456430b75727a711acd72103e0738dd257fb9fbc02",
+      "original_sha256": "89dc9886eb88cce48494f3456430b75727a711acd72103e0738dd257fb9fbc02",
       "transformed": false
     },
     {
@@ -17590,9 +17590,9 @@
     },
     {
       "path": "tests/test_deploy_build_metadata.py",
-      "bytes": 3681,
-      "sha256": "9cff2b731c904576ad6c1a88a4389a36c66b06d02a60e720f15229dbb7edddf5",
-      "original_sha256": "9cff2b731c904576ad6c1a88a4389a36c66b06d02a60e720f15229dbb7edddf5",
+      "bytes": 6268,
+      "sha256": "ae01a09bef19712111c8d8256e8eb14173eb5276f304d1bf6db90e1371f0b648",
+      "original_sha256": "ae01a09bef19712111c8d8256e8eb14173eb5276f304d1bf6db90e1371f0b648",
       "transformed": false
     },
     {
@@ -20726,9 +20726,9 @@
     },
     {
       "path": "tests/test_parallel_merge_gate.py",
-      "bytes": 121513,
-      "sha256": "b23552747c2824ebfda7edd2e6a4a1ed8f77ef16a4eb6a92d1faba90ebb04a25",
-      "original_sha256": "b23552747c2824ebfda7edd2e6a4a1ed8f77ef16a4eb6a92d1faba90ebb04a25",
+      "bytes": 123931,
+      "sha256": "7eeb90d487dadd53e2b79aaefa84bfff2f8ed5a1b73cf7313f5f46baf86daf8f",
+      "original_sha256": "7eeb90d487dadd53e2b79aaefa84bfff2f8ed5a1b73cf7313f5f46baf86daf8f",
       "transformed": false
     },
     {
@@ -30476,5 +30476,25 @@
     "tests/fixtures/supervised-cart-native-reference.json",
     "tests/fixtures/supervised-cart-native-source-inputs.json"
   ],
-  "source_files_sha256": "ee67fc4f87d3ac334022834e807b1eef4b09b67457d5660815d530ddc79382d6"
+  "source_files_sha256": "ad42799d2c41386cc12ced961ab22f1b1af5a2a16b764eba322d3d214b0c8ea0",
+  "publication_documentation_transforms": [
+    {
+      "path": "README.md",
+      "snapshot_sha256": "dcb26e20a9b33d62c21cbd6a82d1c3a26d906a77ec088058daf44fa51d46725c",
+      "published_sha256": "b07e50ea99d697a8f526e79ee4c06257b8dd761f37b4b9e9339f4f1673666229",
+      "reason": "Correct frozen alpha package versions and select explicit GitHub artifacts; retain the separately verified immutable PyPI pair. Production code and Python examples are unchanged."
+    },
+    {
+      "path": "PYPI-README.md",
+      "snapshot_sha256": "f3cf30c587ed9bdc7fe10eeac944ffbfc88f4c91b25e6f1a329a39ac95d36763",
+      "published_sha256": "a23ef49293444071d304dbccafc94825533a79458712ac552c7cd3c82f0e67fb",
+      "reason": "Correct frozen alpha package versions and select explicit GitHub artifacts; retain the separately verified immutable PyPI pair. Production code and Python examples are unchanged."
+    },
+    {
+      "path": "packages/openecon-charts/PYPI-README.md",
+      "snapshot_sha256": "9441ec309e081b5d5eb5028623bd178a788a9ebfcfde96b4653da3482f1e1a0a",
+      "published_sha256": "a707263b3813760659c3db0405d026ed5cf05bfc3b6694b6d3a1d57c9efff729",
+      "reason": "Correct frozen alpha package versions and select explicit GitHub artifacts; retain the separately verified immutable PyPI pair. Production code and Python examples are unchanged."
+    }
+  ]
 }
