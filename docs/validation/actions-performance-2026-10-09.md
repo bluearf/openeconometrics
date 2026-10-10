@@ -1,0 +1,34 @@
+# GitHub Actions failure and performance investigation
+
+Investigated on 2026-10-09 against main `83091ae7eda517c2954efb373f7e5d79e68dcc3f`. The newest 50 `Verify OpenEconometrics` runs contained 21 successes, 19 failures and 10 cancellations. Cancellation is distinct from a failed check; the workflow cancels superseded runs. The successful median in the larger 80-run sample was 898.5 seconds. Historical failures do not imply a current regression on every branch.
+
+## Failure evidence
+
+- [Run 37975346308](https://github.com/bluearf/openecon/actions/runs/37975346308) passed all eight SDK jobs. Its final gate correctly rejected a parent mismatch: the tested merge's actual base was `769f5b5618b6d03f88cebfd999286995373678b6`, while the event retained `3ad8b093eb8a7e45624bd79fd2b9623725a92898`. This wasted a full test run before reporting an obsolete source binding.
+- Of the 19 recent failures, 13 had SDK test-step failures, two had SDK timeouts, three exceeded the 900-second aggregate cohort deadline, and two had parent mismatches. One run belongs to two categories. Uploaded direct group logs/JUnit identify the actual failing tests; intentionally failing nested safety fixtures were excluded.
+- Historical failures include incomplete PID readiness markers, log-readiness races, exact subtraction of floating-point clock values, browser lifecycle/provisioning, outdated scope fixtures and scientific saved-reference mismatches. Several already have main fixes. [Run 37976988484](https://github.com/bluearf/openecon/actions/runs/37976988484) records a genuine CART saved-state SHA mismatch in another feature branch; no scientific expectation is weakened by this CI change.
+- The outer `sdk-*.log` usually reports only `SDK child process failed`. Actual test names and tracebacks live in `sdk-*-groups/group-*/pytest.log`, which previously required downloading artifacts to diagnose.
+
+## Measured cost
+
+[Main run 37977888490](https://github.com/bluearf/openecon/actions/runs/37977888490) took 899 seconds and approximately 100.48 runner minutes. Runner queues were only 1–3 seconds. Both minors executed the complete 11,939-node suite with zero failures/errors/skips.
+
+Each of the eight SDK jobs installs both locked Python environments. A nominal uv cache hit restored approximately 104 KiB; prebuilt packages were pruned before caching. Sampled jobs redownloaded approximately 3,939 MiB, including 2,575 MiB of CUDA/Triton packages, despite execution using float64 CPU kernels. Across eight jobs this is roughly 31 GiB of downloads. Each shard also repeats about 90–122 seconds of lint/catalogue/editor/frontend/build/package work, as required by the existing independent evidence contract. The slowest SDK step was 628.691 seconds; full collection alone took around 21–23 seconds per shard.
+
+## Changes and preservation
+
+Updated on 2026-10-10 to the current quick/daily policy: PR, merge-queue and main-push checks remain quick; the eight-shard full workflow remains daily/manual. Preflight applies only to the daily/manual workflow. No per-PR full workflow has been restored. The CPU lock also benefits the two quick Python jobs. The Docker CPU installer normalizes the two locked Torch variants and refuses divergent public versions, preserving its CPU-only image contract.
+
+
+- A cheap source preflight reuses the final gate's unchanged source/parent/tree validator. An obsolete event fails before any of the eight numerical jobs starts. It then runs the exact Ruff version from `uv.lock`. The daily full gate still fails when preflight fails or is cancelled.
+- Preflight expands only the original Ruff source directories and configuration files, excluding historical evidence archives. A full-versus-sparse file discovery comparison finds the same 1,741 Ruff inputs and identical configuration bytes; the sparse Ruff check passes. These selected paths contain approximately 33 MiB of tracked blobs versus approximately 1,512 MiB for the complete tree. Component jobs still check out full history and all scientific fixtures.
+- Linux x86_64 uv environments select the official exact `torch==2.14.0+cpu` build. Other platforms retain their existing PyPI selection. All unrelated locked versions and sources are unchanged relative to current main. A platform-scoped constraint prevents an accidental upgrade to a different public PyTorch version. Future PyTorch upgrades must update that constraint deliberately. The [official uv PyTorch guide](https://docs.astral.sh/uv/guides/integration/pytorch/) describes explicit accelerator indexes and platform markers.
+- Cache invalidation uses only the actual root lock and two project manifests, excluding historical evidence snapshots. Existing cache pruning is retained; caching several gigabytes of accelerator wheels is not assumed to be faster.
+- Two lifecycle fixtures already on current main publish completely written PID markers atomically. A deterministic real-process regression holds a temporary marker empty and proves the public readiness marker remains absent until the exact PID is available. Existing readiness deadlines and TERM/KILL proofs are retained.
+- Failed step and failed child-group log tails already on current main appear directly in Actions output. Reads are confined to the receipt directory, capped at 16 KiB per log, and printed with workflow-command interpretation disabled. Original complete artifacts remain retained.
+
+The two Python minors, all eight shards, full historical component checkouts, every original selector, repeated common checks, package/source replay, and the original 900-second cohort clock remain required. The final aggregate validator, gate producer and SDK execution/partition runner are unchanged. Full history remains necessary because selected preservation tests read historical Git objects.
+
+Local validation: all 798 merge-gate/parallel-gate/SDK-ownership tests passed with zero failures/errors/skips; independent review, Ruff, Actionlint and whitespace checks passed. Capability declarations and editor entries remain intact; only their project-source provenance was refreshed. Twenty platform/minor dependency graph checks and both exact frozen Linux sync dry runs selected the CPU build and removed 19 unused accelerator dependencies only on Linux x86_64. Official index hashes match the locked CPU wheels. Actual Linux binary installation, full scientific equivalence and any elapsed-time improvement require the fresh hosted gate; its results are attached to the PR rather than inferred from dry runs.
+
+Bounded audit summaries, provider metadata, copied failed-log examples and local receipts are retained under `artifacts/actions-audit/` in the development worktree. This change does not disable tests, relax numerical tolerances, increase acceptance deadlines or suppress genuine reference failures.

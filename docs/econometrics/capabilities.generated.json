@@ -20105,7 +20105,7 @@
   "source_fingerprints": {
     "desktop/src-tauri/tauri.conf.json": "9510b66925486f20d06359728321a7591f6a2620793092c486f14f126265fa3b",
     "packages/openecon-charts/pyproject.toml": "f78bad50758400d5719b85df59878e42609c32f69e49ed4dd4d4658e4179789e",
-    "pyproject.toml": "16bd37eb38df4e6665a2bc502271b003a34c0334e9305944d1bdd3be34e02182",
+    "pyproject.toml": "7c58a3355b16f7581d071be8fbefb56cb06e1afd87d5578cf4a1afed7d343092",
     "src/openecon/__init__.py": "a1f1848e93b83ca0beceef8ef89fa9e497e684b0a7cce43743fdd6273059c0ef",
     "src/openecon/analysis_contracts.py": "69cca9181eb2e6ccd6d5866e9a4554ec902b7d12cd69f2647ba9172fcd9398b9",
     "src/openecon/dataset.py": "cfc19b714a6807ab33b3e8264cdda2d92e9418bfd909ca9532082fcd1b516616",
@@ -20213,7 +20213,7 @@
     "src/openecon/source_readers.py": "6c90b8870ba76a6a906889f8f2dbd318223f45189332993d59c13cdd1b53a18c",
     "src/openecon/survey.py": "1d03d66d8ca4223f9699d0e57d31ac38bbfb3242c8ac8c245427f925628f85ec"
   },
-  "source_ref": "a2c91d4f26a8a32e0f796de09bdcb1b07c848578",
+  "source_ref": "fca01bfb12e1b5e35851233e23bc4cc87d84abf7",
   "stata_parity_validated": false,
   "state_space_paths": {
     "budgets": {
