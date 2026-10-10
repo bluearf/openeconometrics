@@ -111,17 +111,17 @@
     },
     {
       "path": "PYPI-README.md",
-      "bytes": 3059,
-      "sha256": "f3cf30c587ed9bdc7fe10eeac944ffbfc88f4c91b25e6f1a329a39ac95d36763",
+      "bytes": 3637,
+      "sha256": "a23ef49293444071d304dbccafc94825533a79458712ac552c7cd3c82f0e67fb",
       "original_sha256": "f3cf30c587ed9bdc7fe10eeac944ffbfc88f4c91b25e6f1a329a39ac95d36763",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "README.md",
-      "bytes": 22885,
-      "sha256": "dcb26e20a9b33d62c21cbd6a82d1c3a26d906a77ec088058daf44fa51d46725c",
+      "bytes": 23040,
+      "sha256": "b07e50ea99d697a8f526e79ee4c06257b8dd761f37b4b9e9339f4f1673666229",
       "original_sha256": "dcb26e20a9b33d62c21cbd6a82d1c3a26d906a77ec088058daf44fa51d46725c",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "SECURITY.md",
@@ -8798,10 +8798,10 @@
     },
     {
       "path": "packages/openecon-charts/PYPI-README.md",
-      "bytes": 2546,
-      "sha256": "9441ec309e081b5d5eb5028623bd178a788a9ebfcfde96b4653da3482f1e1a0a",
+      "bytes": 2831,
+      "sha256": "a707263b3813760659c3db0405d026ed5cf05bfc3b6694b6d3a1d57c9efff729",
       "original_sha256": "9441ec309e081b5d5eb5028623bd178a788a9ebfcfde96b4653da3482f1e1a0a",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "packages/openecon-charts/README.md",
@@ -30476,5 +30476,25 @@
     "tests/fixtures/supervised-cart-native-reference.json",
     "tests/fixtures/supervised-cart-native-source-inputs.json"
   ],
-  "source_files_sha256": "ee67fc4f87d3ac334022834e807b1eef4b09b67457d5660815d530ddc79382d6"
+  "source_files_sha256": "1cc91db919edd7d44002d0a4acda61b73463d8dad075f95ee3b1cb825ceeedd2",
+  "publication_documentation_transforms": [
+    {
+      "path": "README.md",
+      "snapshot_sha256": "dcb26e20a9b33d62c21cbd6a82d1c3a26d906a77ec088058daf44fa51d46725c",
+      "published_sha256": "b07e50ea99d697a8f526e79ee4c06257b8dd761f37b4b9e9339f4f1673666229",
+      "reason": "Correct frozen alpha package versions and select explicit GitHub artifacts; retain the separately verified immutable PyPI pair. Production code and Python examples are unchanged."
+    },
+    {
+      "path": "PYPI-README.md",
+      "snapshot_sha256": "f3cf30c587ed9bdc7fe10eeac944ffbfc88f4c91b25e6f1a329a39ac95d36763",
+      "published_sha256": "a23ef49293444071d304dbccafc94825533a79458712ac552c7cd3c82f0e67fb",
+      "reason": "Correct frozen alpha package versions and select explicit GitHub artifacts; retain the separately verified immutable PyPI pair. Production code and Python examples are unchanged."
+    },
+    {
+      "path": "packages/openecon-charts/PYPI-README.md",
+      "snapshot_sha256": "9441ec309e081b5d5eb5028623bd178a788a9ebfcfde96b4653da3482f1e1a0a",
+      "published_sha256": "a707263b3813760659c3db0405d026ed5cf05bfc3b6694b6d3a1d57c9efff729",
+      "reason": "Correct frozen alpha package versions and select explicit GitHub artifacts; retain the separately verified immutable PyPI pair. Production code and Python examples are unchanged."
+    }
+  ]
 }

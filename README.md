@@ -18,15 +18,13 @@ Reviewed source snapshots and Mac alpha releases are distributed through
 Mac packages require Apple Silicon and macOS 15 or later. Read each release's
 checksum and signing status before installation. Developer ID signing and
 notarization remain pending. The published PyPI alpha packages are
-[openecon 0.3.18a4](https://pypi.org/project/openecon/0.3.18a4/) and
-[openecon-charts 0.3.0a2](https://pypi.org/project/openecon-charts/0.3.0a2/).
+[openecon 0.3.19a1](https://pypi.org/project/openecon/0.3.19a1/) and
+[openecon-charts 0.3.1a1](https://pypi.org/project/openecon-charts/0.3.1a1/).
 Their scope follows the reviewed public snapshot. See
 [PUBLIC-SOURCE.md](https://github.com/bluearf/openeconometrics/blob/main/PUBLIC-SOURCE.md) and `SOURCE-MANIFEST.json` in the
 public snapshot for its precise source and external-fixture boundary.
 
-This checkout prepares SDK **0.3.19a1** and charts **0.3.1a1**. Those versions
-require their own frozen public-source manifest, wheel/sdist installation checks
-and verified PyPI publication; the published pair above retains its earlier scope.
+The frozen Mac **0.3.46** alpha includes SDK **0.3.20a1** and charts **0.3.2a1** wheels and source distributions in its [GitHub release](https://github.com/bluearf/openeconometrics/releases/tag/v0.3.46-alpha.1). Install those exact assets using [the package instructions](PYPI-README.md). They are separate from the published PyPI pair above; later development commits may have additional capabilities.
 
 Distribution preserves the [third-party notices](THIRD_PARTY.md). See
 [contribution guidelines](CONTRIBUTING.md) and the [private security-reporting
@@ -97,12 +95,12 @@ Relative file paths in the console resolve inside the active workspace (`.openec
 Install the published alpha on Python 3.11–3.14:
 
 ```sh
-python -m pip install 'openecon==0.3.18a4'
+python -m pip install 'openecon==0.3.19a1'
 ```
 
-This version installs its exact chart dependency, `openecon-charts==0.3.0a2`.
-The current source candidate is `openecon==0.3.19a1` with
-`openecon-charts==0.3.1a1`; it has not replaced the published pair above.
+This version installs its exact chart dependency, `openecon-charts==0.3.1a1`.
+The frozen GitHub alpha pair is `openecon==0.3.20a1` with
+`openecon-charts==0.3.2a1`; it has not replaced the PyPI pair above.
 The source checkout and desktop candidate have separate release scope;
 see [distribution versions and extras](docs/distribution.md).
 
@@ -232,7 +230,7 @@ chart.save_html("chart.html")
 ```
 
 Install the published chart alpha independently with
-`python -m pip install 'openecon-charts==0.3.0a2'`. From this checkout,
+`python -m pip install 'openecon-charts==0.3.1a1'`. From this checkout,
 use `python -m pip install ./packages/openecon-charts` for the current source version.
 The workspace launcher installs it alongside OpenEconometrics. For distributable wheels,
 build both using `uv build --all-packages` and install both wheels together.
