@@ -1,6 +1,6 @@
 # Instructor notes · Lab 09
 
-The student handout is [here](../labs/09-robust-uncertainty/README.md). Preserve the comparison's same rows, intercept and regressors. The deliberately modest difference between classical and robust slope SEs helps students reject the rule that visible heteroskedasticity must greatly enlarge every SE.
+The student handout is [here](../labs/09-robust-uncertainty/index.md). Preserve the comparison's same rows, intercept and regressors. The deliberately modest difference between classical and robust slope SEs helps students reject the rule that visible heteroskedasticity must greatly enlarge every SE.
 
 ## Worked answers
 

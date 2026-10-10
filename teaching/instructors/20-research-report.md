@@ -1,6 +1,6 @@
 # Instructor notes · Lab 20: From Research Question to Finished Report
 
-The [student handout](../labs/20-research-report/README.md) and
+The [student handout](../labs/20-research-report/index.md) and
 [source](../labs/20-research-report/lab.py) form a coherent original
 observational-school capstone. The numerical workflow is reproducible, but
 the observed controls do not identify the known structural tutoring effect.

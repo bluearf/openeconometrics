@@ -1,6 +1,6 @@
 # Instructor notes · Lab 14
 
-The [student handout](../labs/14-randomized-program/README.md) keeps randomized assignment central. The oracle potential-participation columns are for teaching only and must never be included as empirical adjustment covariates.
+The [student handout](../labs/14-randomized-program/index.md) keeps randomized assignment central. The oracle potential-participation columns are for teaching only and must never be included as empirical adjustment covariates.
 
 ## Worked answers
 

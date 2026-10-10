@@ -1,6 +1,6 @@
 # Instructor notes · Lab 13
 
-The [student handout](../labs/13-instrumental-variables/README.md) separates three dimensions: identifying information, instrument validity and uncertainty. Avoid presenting a rule of thumb such as F>10 as a universal validity certificate.
+The [student handout](../labs/13-instrumental-variables/index.md) separates three dimensions: identifying information, instrument validity and uncertainty. Avoid presenting a rule of thumb such as F>10 as a universal validity certificate.
 
 ## Worked answers
 

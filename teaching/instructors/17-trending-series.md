@@ -1,6 +1,6 @@
 # Instructor notes · Lab 17: The Trap of Trending Series
 
-The [student handout](../labs/17-trending-series/README.md) uses two independent
+The [student handout](../labs/17-trending-series/index.md) uses two independent
 random walks with drift. The [source](../labs/17-trending-series/lab.py) reads
 the prepared workbook, fits levels and differences, and runs native ADF and KPSS tests.
 The lesson is about a valid numerical calculation with an invalid usual

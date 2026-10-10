@@ -1,6 +1,6 @@
 # Instructor notes · Lab 10
 
-Emphasize that a difference between significance labels is not a significance test of a difference. The simulation's highly correlated regressors make the sum precise while their decomposition remains much less precise. See the [student handout](../labs/10-joint-tests/README.md).
+Emphasize that a difference between significance labels is not a significance test of a difference. The simulation's highly correlated regressors make the sum precise while their decomposition remains much less precise. See the [student handout](../labs/10-joint-tests/index.md).
 
 ## Worked answers
 

@@ -1,6 +1,6 @@
 # Instructor notes · Lab 18: Accounting for Persistent Shocks
 
-The [student handout](../labs/18-serial-correlation/README.md) compares HC1,
+The [student handout](../labs/18-serial-correlation/index.md) compares HC1,
 Bartlett HAC(4), and Bartlett HAC(8) for one original synthetic advertising
 regression. The [source](../labs/18-serial-correlation/lab.py) uses a persistent
 regressor and persistent independent demand shocks, with three explicitly

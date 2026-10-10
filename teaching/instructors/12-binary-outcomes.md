@@ -1,6 +1,6 @@
 # Instructor notes · Lab 12
 
-Use the [student handout](../labs/12-binary-outcomes/README.md) to distinguish index coefficients, odds ratios, finite probability changes and derivatives. Education is treated as numerical; the AME is not automatically an exact discrete one-year difference.
+Use the [student handout](../labs/12-binary-outcomes/index.md) to distinguish index coefficients, odds ratios, finite probability changes and derivatives. Education is treated as numerical; the AME is not automatically an exact discrete one-year difference.
 
 ## Worked answers
 

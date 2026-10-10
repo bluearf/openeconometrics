@@ -1,6 +1,6 @@
 # Instructor notes · Lab 11
 
-Use the [student handout](../labs/11-panel-fixed-effects/README.md) to separate comparison, common trend and uncertainty unit. The native scatterplot removes firm means but does not residualize the trend; students should not treat its visual slope as the complete adjusted coefficient.
+Use the [student handout](../labs/11-panel-fixed-effects/index.md) to separate comparison, common trend and uncertainty unit. The native scatterplot removes firm means but does not residualize the trend; students should not treat its visual slope as the complete adjusted coefficient.
 
 ## Worked answers
 

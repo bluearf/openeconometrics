@@ -4,10 +4,10 @@ These four English courses use original explanations, synthetic observations, eq
 
 | Course | Chapters | Student entry | Instructor entry | Focus |
 |---|---:|---|---|---|
-| Econometrics | 20 | [Course](README.md) | [Guide](INSTRUCTORS.md) | Regression, policy evaluation and introductory time series |
-| Statistics | 20 | [Course](statistics/README.md) | [Guide](statistics/INSTRUCTORS.md) | Data, probability, sampling, intervals, tests and reporting |
-| Microeconomics | 20 | [Course](microeconomics/README.md) | [Guide](microeconomics/INSTRUCTORS.md) | Consumer choice, production, markets, strategic interaction and welfare |
-| Advanced Econometrics | 20 | [Course](advanced-econometrics/README.md) | [Guide](advanced-econometrics/INSTRUCTORS.md) | Projection algebra, covariance, panel transformations, IV, likelihood and dynamic responses |
+| Econometrics | 20 | [Course](index.md) | [Guide](INSTRUCTORS.md) | Regression, policy evaluation and introductory time series |
+| Statistics | 20 | [Course](statistics/index.md) | [Guide](statistics/INSTRUCTORS.md) | Data, probability, sampling, intervals, tests and reporting |
+| Microeconomics | 20 | [Course](microeconomics/index.md) | [Guide](microeconomics/INSTRUCTORS.md) | Consumer choice, production, markets, strategic interaction and welfare |
+| Advanced Econometrics | 20 | [Course](advanced-econometrics/index.md) | [Guide](advanced-econometrics/INSTRUCTORS.md) | Projection algebra, covariance, panel transformations, IV, likelihood and dynamic responses |
 
 Every additional chapter supplies a descriptively named Excel workbook. Import it without renaming, open the corresponding complete `lab.py` in a new Python document and run the whole file. For ordinary Python, keep the workbook beside the script or select an explicit `data_path`. Students use the stored rows; original generation belongs to instructor preparation. The Statistics sampling/bootstrap chapters resample the supplied population/sample because resampling is the lesson.
 

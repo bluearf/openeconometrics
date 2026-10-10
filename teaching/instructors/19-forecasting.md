@@ -1,6 +1,6 @@
 # Instructor notes · Lab 19: Forecasting Inflation Without Looking Ahead
 
-The [student handout](../labs/19-forecasting/README.md) and
+The [student handout](../labs/19-forecasting/index.md) and
 [source](../labs/19-forecasting/lab.py) use an original synthetic AR(1)
 inflation series. The full history has 180 observations, but estimation uses
 only the first 160. All twenty predictions are dynamic forecasts from the

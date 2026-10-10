@@ -1,6 +1,6 @@
 # Instructor notes · Lab 16: What Happens Around an Eligibility Cutoff?
 
-The [student handout](../labs/16-regression-discontinuity/README.md) and
+The [student handout](../labs/16-regression-discontinuity/index.md) and
 [executable lab](../labs/16-regression-discontinuity/lab.py) use an original
 sharp grant-eligibility design. All observations are synthetic. The central
 distinctions are local versus whole-group comparisons, point-fit versus bias

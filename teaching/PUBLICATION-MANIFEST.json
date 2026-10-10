@@ -16,8 +16,8 @@
       "path": "teaching/COURSES.md",
       "source_path": "docs/teaching/COURSES.md",
       "source_sha256": "8cdf25b5dbceb17535952156f73f5f0eb01047d01a56dfb8b60896cee7e42a6a",
-      "sha256": "8cdf25b5dbceb17535952156f73f5f0eb01047d01a56dfb8b60896cee7e42a6a",
-      "transformation": null
+      "sha256": "b8ac11d05e78044f0781461502db0d96f7eadb6e78ef7d9c834f8b3fd1070149",
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/INSTRUCTORS.md",
@@ -27,11 +27,11 @@
       "transformation": null
     },
     {
-      "path": "teaching/README.md",
+      "path": "teaching/index.md",
       "source_path": "docs/teaching/README.md",
       "source_sha256": "23e6222cec6b5007927db8b05e101e1e4fe6fd9a5720afbb68397f2e38234f4a",
-      "sha256": "23e6222cec6b5007927db8b05e101e1e4fe6fd9a5720afbb68397f2e38234f4a",
-      "transformation": null
+      "sha256": "5c522ca4c03632821aeb997dd38895c067e00ab65348d9f2a6f950d6f8cb9b47",
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/TASKS.md",
@@ -48,11 +48,11 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/README.md",
+      "path": "teaching/advanced-econometrics/index.md",
       "source_path": "docs/teaching/advanced-econometrics/README.md",
       "source_sha256": "0a765ef7f209eab9f049ade866d0ae56051144d1810c5fbe208868588c218170",
-      "sha256": "0a765ef7f209eab9f049ade866d0ae56051144d1810c5fbe208868588c218170",
-      "transformation": null
+      "sha256": "68dcd0e04b44d9d96970ba73e7ceda0dee3d49bef78b041e8192d7e1c0e26f13",
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/advanced-econometrics/TASKS.md",
@@ -349,7 +349,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/01-partialling-out/README.md",
+      "path": "teaching/advanced-econometrics/labs/01-partialling-out/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/01-partialling-out/README.md",
       "source_sha256": "98d6ea2f68e3fd2d3a1c7345d69a382769dcfcae89b202db28c01b2cc6d929b3",
       "sha256": "98d6ea2f68e3fd2d3a1c7345d69a382769dcfcae89b202db28c01b2cc6d929b3",
@@ -398,7 +398,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/02-omitted-variable-bias/README.md",
+      "path": "teaching/advanced-econometrics/labs/02-omitted-variable-bias/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/02-omitted-variable-bias/README.md",
       "source_sha256": "62b9b23439c0eea8eec4c969fba9130cf4bfb0d05b5d3fa4ad06ded2a5306bd9",
       "sha256": "62b9b23439c0eea8eec4c969fba9130cf4bfb0d05b5d3fa4ad06ded2a5306bd9",
@@ -447,7 +447,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/03-measurement-error/README.md",
+      "path": "teaching/advanced-econometrics/labs/03-measurement-error/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/03-measurement-error/README.md",
       "source_sha256": "97894489824fe2f22d2e4ae41656c296120b75d702e44cd73f9415adea8f4546",
       "sha256": "97894489824fe2f22d2e4ae41656c296120b75d702e44cd73f9415adea8f4546",
@@ -496,7 +496,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/04-collinearity/README.md",
+      "path": "teaching/advanced-econometrics/labs/04-collinearity/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/04-collinearity/README.md",
       "source_sha256": "3d6fae51ae1d3518e2d80c446c6867b882b27cabf9bda760f9fb1246b00abf90",
       "sha256": "3d6fae51ae1d3518e2d80c446c6867b882b27cabf9bda760f9fb1246b00abf90",
@@ -545,7 +545,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/05-leverage-influence/README.md",
+      "path": "teaching/advanced-econometrics/labs/05-leverage-influence/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/05-leverage-influence/README.md",
       "source_sha256": "b165bde4793ebe6b1c8ab127fe54d22752498272516678916d2a5d29d463b0f9",
       "sha256": "b165bde4793ebe6b1c8ab127fe54d22752498272516678916d2a5d29d463b0f9",
@@ -594,7 +594,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/06-weighted-least-squares/README.md",
+      "path": "teaching/advanced-econometrics/labs/06-weighted-least-squares/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/06-weighted-least-squares/README.md",
       "source_sha256": "498296966587ffbed4b5a5801503c1f2cf83695c1cc432a74c3daa1ca0f4627e",
       "sha256": "498296966587ffbed4b5a5801503c1f2cf83695c1cc432a74c3daa1ca0f4627e",
@@ -643,7 +643,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/07-clustered-inference/README.md",
+      "path": "teaching/advanced-econometrics/labs/07-clustered-inference/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/07-clustered-inference/README.md",
       "source_sha256": "c16de609059c273386d13eba68df9389f8a2e922a54d6754913725e759ff756c",
       "sha256": "c16de609059c273386d13eba68df9389f8a2e922a54d6754913725e759ff756c",
@@ -692,7 +692,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/08-hac-inference/README.md",
+      "path": "teaching/advanced-econometrics/labs/08-hac-inference/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/08-hac-inference/README.md",
       "source_sha256": "c43e73e0761494c5dae28cc32e44c60741b40af12b3d257ed78a22e4e327b08e",
       "sha256": "c43e73e0761494c5dae28cc32e44c60741b40af12b3d257ed78a22e4e327b08e",
@@ -741,7 +741,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/09-joint-restrictions/README.md",
+      "path": "teaching/advanced-econometrics/labs/09-joint-restrictions/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/09-joint-restrictions/README.md",
       "source_sha256": "1ed3dbf9743d779c4e614c2c7ff4015326dd05605439782a7bb052fe7fb2abca",
       "sha256": "1ed3dbf9743d779c4e614c2c7ff4015326dd05605439782a7bb052fe7fb2abca",
@@ -790,7 +790,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/10-nonlinear-delta/README.md",
+      "path": "teaching/advanced-econometrics/labs/10-nonlinear-delta/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/10-nonlinear-delta/README.md",
       "source_sha256": "d522f5359beac9d46b0f5ebd9f7b0e158e6da1898aaa1acaf9dbea5e49f02475",
       "sha256": "d522f5359beac9d46b0f5ebd9f7b0e158e6da1898aaa1acaf9dbea5e49f02475",
@@ -839,7 +839,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/11-common-sample/README.md",
+      "path": "teaching/advanced-econometrics/labs/11-common-sample/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/11-common-sample/README.md",
       "source_sha256": "51a9971f2bef58cfa38dccf27746ae2f5ce2ffe9ecb79a211e3a4d8ca518be19",
       "sha256": "51a9971f2bef58cfa38dccf27746ae2f5ce2ffe9ecb79a211e3a4d8ca518be19",
@@ -888,7 +888,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/12-polynomial-centering/README.md",
+      "path": "teaching/advanced-econometrics/labs/12-polynomial-centering/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/12-polynomial-centering/README.md",
       "source_sha256": "3ab161318e6b3e114541e38c329229b70b2ce044ac73a69dbc336035e9819395",
       "sha256": "3ab161318e6b3e114541e38c329229b70b2ce044ac73a69dbc336035e9819395",
@@ -937,7 +937,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/13-fixed-effects-algebra/README.md",
+      "path": "teaching/advanced-econometrics/labs/13-fixed-effects-algebra/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/13-fixed-effects-algebra/README.md",
       "source_sha256": "2adaa26b697a41ad7a227aace287c0221171ebf2dbde999d7b74ca360231fbd7",
       "sha256": "2adaa26b697a41ad7a227aace287c0221171ebf2dbde999d7b74ca360231fbd7",
@@ -986,7 +986,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/14-first-differences/README.md",
+      "path": "teaching/advanced-econometrics/labs/14-first-differences/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/14-first-differences/README.md",
       "source_sha256": "d9a98714685390f6765d486b838f40c8fbef05d0294228a24a4b9985cdbfd2bd",
       "sha256": "d9a98714685390f6765d486b838f40c8fbef05d0294228a24a4b9985cdbfd2bd",
@@ -1035,7 +1035,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/15-iv-moment-condition/README.md",
+      "path": "teaching/advanced-econometrics/labs/15-iv-moment-condition/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/15-iv-moment-condition/README.md",
       "source_sha256": "288f53082fea92b2c07111c78a412b12b36dbec423cf9f17cee9fe4811b7c64b",
       "sha256": "288f53082fea92b2c07111c78a412b12b36dbec423cf9f17cee9fe4811b7c64b",
@@ -1084,7 +1084,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/16-weak-instruments/README.md",
+      "path": "teaching/advanced-econometrics/labs/16-weak-instruments/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/16-weak-instruments/README.md",
       "source_sha256": "cef189ad9323f274a695ee03dfb01cd0eb3768fffcc7bd975fad1d5614b0f7ce",
       "sha256": "cef189ad9323f274a695ee03dfb01cd0eb3768fffcc7bd975fad1d5614b0f7ce",
@@ -1133,7 +1133,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/17-logit-marginal-effects/README.md",
+      "path": "teaching/advanced-econometrics/labs/17-logit-marginal-effects/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/17-logit-marginal-effects/README.md",
       "source_sha256": "a65b0735352b616dbb76faa4ae73e6d96f03ee2277f30318cc025616ffc5a9de",
       "sha256": "a65b0735352b616dbb76faa4ae73e6d96f03ee2277f30318cc025616ffc5a9de",
@@ -1182,7 +1182,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/18-poisson-exposure/README.md",
+      "path": "teaching/advanced-econometrics/labs/18-poisson-exposure/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/18-poisson-exposure/README.md",
       "source_sha256": "bca85a36e58bb1e95ed4328401f8c90e8d1fef802941dc7801c9e197eb933113",
       "sha256": "bca85a36e58bb1e95ed4328401f8c90e8d1fef802941dc7801c9e197eb933113",
@@ -1231,7 +1231,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/19-local-projections/README.md",
+      "path": "teaching/advanced-econometrics/labs/19-local-projections/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/19-local-projections/README.md",
       "source_sha256": "475ffdcc2a60051c3108f70da6229c7e657ffa49a6980aa12a86ca91947ae50e",
       "sha256": "475ffdcc2a60051c3108f70da6229c7e657ffa49a6980aa12a86ca91947ae50e",
@@ -1280,7 +1280,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/advanced-econometrics/labs/20-specification-report/README.md",
+      "path": "teaching/advanced-econometrics/labs/20-specification-report/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/20-specification-report/README.md",
       "source_sha256": "aaf823766fc5f182c91a85043de63a00435c3d3848d2779e553f66febbd1ed32",
       "sha256": "aaf823766fc5f182c91a85043de63a00435c3d3848d2779e553f66febbd1ed32",
@@ -1375,7 +1375,7 @@
       "source_path": "docs/teaching/instructors/06-controls.md",
       "source_sha256": "bfedf6c81b6324726e5c685189e5d26047f2701dd2bf550a22432fbf6688c0a7",
       "sha256": "b457de7577b44e61fa30bf226ab3449e7ad50d6fc1e408d2c30d96d68abdd696",
-      "transformation": "relative documentation links adjusted for standalone teaching directory"
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/instructors/07-interactions.md",
@@ -1395,85 +1395,85 @@
       "path": "teaching/instructors/09-robust-uncertainty.md",
       "source_path": "docs/teaching/instructors/09-robust-uncertainty.md",
       "source_sha256": "100065e0430261c9db24b752bbf6678152bc6303edf270a5a5a00b13461ce5cb",
-      "sha256": "100065e0430261c9db24b752bbf6678152bc6303edf270a5a5a00b13461ce5cb",
-      "transformation": null
+      "sha256": "5745c0728b27f1c1061729ff9fba0108426a5a4c24c8427deda92b051ef15eaf",
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/instructors/10-joint-tests.md",
       "source_path": "docs/teaching/instructors/10-joint-tests.md",
       "source_sha256": "1c5a81b653e00eba91f7165df72ad5a3f7045cae49d377119fe661d3d965f317",
-      "sha256": "1c5a81b653e00eba91f7165df72ad5a3f7045cae49d377119fe661d3d965f317",
-      "transformation": null
+      "sha256": "4b4dddfcb56a35255f0d3359402015070b255d997f24d2c26fd7ad19c12adb55",
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/instructors/11-panel-fixed-effects.md",
       "source_path": "docs/teaching/instructors/11-panel-fixed-effects.md",
       "source_sha256": "15fd6abb8b21c2e9191cca8f608f0e6693d3503b2ba063bea5ea8371143db915",
-      "sha256": "15fd6abb8b21c2e9191cca8f608f0e6693d3503b2ba063bea5ea8371143db915",
-      "transformation": null
+      "sha256": "2648e4c400a1c1f61fc7dc42bb5a9518f232c70cbda36177280fa91cc9f0029c",
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/instructors/12-binary-outcomes.md",
       "source_path": "docs/teaching/instructors/12-binary-outcomes.md",
       "source_sha256": "5d6bb8bd0cc420181ce1f1734d1df110082b154ede46e0fc14ba29f5a406e631",
-      "sha256": "5d6bb8bd0cc420181ce1f1734d1df110082b154ede46e0fc14ba29f5a406e631",
-      "transformation": null
+      "sha256": "30b960e8ac792a4cacbd06f41be40dc2c3578f531d44071686f374b61d69d736",
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/instructors/13-instrumental-variables.md",
       "source_path": "docs/teaching/instructors/13-instrumental-variables.md",
       "source_sha256": "d0bb6be39d78e9433642fd5edf3df7d757c846bf7277d15bb8b5422e928e8693",
-      "sha256": "d0bb6be39d78e9433642fd5edf3df7d757c846bf7277d15bb8b5422e928e8693",
-      "transformation": null
+      "sha256": "1f6596621572dbc19f2a25bfe9b106b45acabb7fc435050e7ac30abb6e10cc20",
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/instructors/14-randomized-program.md",
       "source_path": "docs/teaching/instructors/14-randomized-program.md",
       "source_sha256": "a809048f507daad54bfe4a2dc27f7cc88ea6cd124b77b7b768f205d6c75ed1a0",
-      "sha256": "a809048f507daad54bfe4a2dc27f7cc88ea6cd124b77b7b768f205d6c75ed1a0",
-      "transformation": null
+      "sha256": "437787008713f5d78484a1e023fb36e2d09b08042a6ac312f984745a8e439625",
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/instructors/15-difference-in-differences.md",
       "source_path": "docs/teaching/instructors/15-difference-in-differences.md",
       "source_sha256": "6acaf5a7d946c4010409283943e5aee72c2d22ca749537e9cc41b606f1324e6d",
       "sha256": "3d85052898f5fc81def6cf371e459482129a0f52f114b80d05e9c2a1e195f8fd",
-      "transformation": "relative documentation links adjusted for standalone teaching directory"
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/instructors/16-regression-discontinuity.md",
       "source_path": "docs/teaching/instructors/16-regression-discontinuity.md",
       "source_sha256": "4ac2d148325106bfb0febe849b5497a427c368a5cf88f569b0799694d2f518ad",
-      "sha256": "4ac2d148325106bfb0febe849b5497a427c368a5cf88f569b0799694d2f518ad",
-      "transformation": null
+      "sha256": "9eceb4042fbd41cd4bac01fc11539b41f72c5ea3afe99a8a93eaacb5151325a5",
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/instructors/17-trending-series.md",
       "source_path": "docs/teaching/instructors/17-trending-series.md",
       "source_sha256": "0fc2b1dc574a9498a77f2b20f482d1e2ccacd95c45afd950fd9689a3109b28b7",
-      "sha256": "0fc2b1dc574a9498a77f2b20f482d1e2ccacd95c45afd950fd9689a3109b28b7",
-      "transformation": null
+      "sha256": "d4e6fc675da2098aca9d2c4b29aa4fff7b5d4d029e050eb0f3acc78800467335",
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/instructors/18-serial-correlation.md",
       "source_path": "docs/teaching/instructors/18-serial-correlation.md",
       "source_sha256": "6021ce6e0cc652fd0f67855972a621b62c61163eec8f2f55b4e9d06d70b13617",
-      "sha256": "6021ce6e0cc652fd0f67855972a621b62c61163eec8f2f55b4e9d06d70b13617",
-      "transformation": null
+      "sha256": "129f7cd46438304a17936b37e6c7c849990dcc4cae548c418e89744ec34a8945",
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/instructors/19-forecasting.md",
       "source_path": "docs/teaching/instructors/19-forecasting.md",
       "source_sha256": "5833586e728665dd600ca10b9676721cda7fe155945c2b755a11fee017b96c83",
-      "sha256": "5833586e728665dd600ca10b9676721cda7fe155945c2b755a11fee017b96c83",
-      "transformation": null
+      "sha256": "67dacae2978b9bba7c336b26ef7d50358264261fa736431f1362131a277d312d",
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/instructors/20-research-report.md",
       "source_path": "docs/teaching/instructors/20-research-report.md",
       "source_sha256": "8bd8894cf5d0c2a5cc6536482a59f15ebba7a64252faa4673ebab4ed5340d180",
-      "sha256": "8bd8894cf5d0c2a5cc6536482a59f15ebba7a64252faa4673ebab4ed5340d180",
-      "transformation": null
+      "sha256": "2ddd6ea4dc8a2786f4616937692405d63b03901d2008ee88c30c13a59b8e19b3",
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/instructors/generators/01-economic-question.py",
@@ -1609,7 +1609,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/01-economic-question/README.md",
+      "path": "teaching/labs/01-economic-question/index.md",
       "source_path": "docs/teaching/labs/01-economic-question/README.md",
       "source_sha256": "b873f959ba2057cf8758b8597803a04fbb0710def11f72ed2beca3c1daa8f648",
       "sha256": "b873f959ba2057cf8758b8597803a04fbb0710def11f72ed2beca3c1daa8f648",
@@ -1658,7 +1658,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/02-wage-distributions/README.md",
+      "path": "teaching/labs/02-wage-distributions/index.md",
       "source_path": "docs/teaching/labs/02-wage-distributions/README.md",
       "source_sha256": "1bed2bcf0c1dbfbe7269ecbca777b244860762459eb998bb636f935d9d569433",
       "sha256": "1bed2bcf0c1dbfbe7269ecbca777b244860762459eb998bb636f935d9d569433",
@@ -1707,7 +1707,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/03-sampling/README.md",
+      "path": "teaching/labs/03-sampling/index.md",
       "source_path": "docs/teaching/labs/03-sampling/README.md",
       "source_sha256": "04d11c82ac4c88dd533bf7276827020fa59d5d772874a53252b8117a4d4993fe",
       "sha256": "04d11c82ac4c88dd533bf7276827020fa59d5d772874a53252b8117a4d4993fe",
@@ -1742,7 +1742,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/04-class-size/README.md",
+      "path": "teaching/labs/04-class-size/index.md",
       "source_path": "docs/teaching/labs/04-class-size/README.md",
       "source_sha256": "8716835fc5bef03f303cd420765a8432833560bb252a17a20f6ed3c56bb04ee0",
       "sha256": "8716835fc5bef03f303cd420765a8432833560bb252a17a20f6ed3c56bb04ee0",
@@ -1791,7 +1791,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/05-inference/README.md",
+      "path": "teaching/labs/05-inference/index.md",
       "source_path": "docs/teaching/labs/05-inference/README.md",
       "source_sha256": "d99c4f7f706c57bdba309af0c7cfaa565cef83b02a0730755bfbf7537473d815",
       "sha256": "d99c4f7f706c57bdba309af0c7cfaa565cef83b02a0730755bfbf7537473d815",
@@ -1840,7 +1840,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/06-controls/README.md",
+      "path": "teaching/labs/06-controls/index.md",
       "source_path": "docs/teaching/labs/06-controls/README.md",
       "source_sha256": "0232250661f76146c196bed654a9d78741a8180df70d10878259263b07f7a28d",
       "sha256": "0232250661f76146c196bed654a9d78741a8180df70d10878259263b07f7a28d",
@@ -1889,7 +1889,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/07-interactions/README.md",
+      "path": "teaching/labs/07-interactions/index.md",
       "source_path": "docs/teaching/labs/07-interactions/README.md",
       "source_sha256": "6a78a5ff0b68a5833a0ffa653fb0c0710362f700c08125a0a5dfe02ed024c373",
       "sha256": "6a78a5ff0b68a5833a0ffa653fb0c0710362f700c08125a0a5dfe02ed024c373",
@@ -1938,7 +1938,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/08-functional-form/README.md",
+      "path": "teaching/labs/08-functional-form/index.md",
       "source_path": "docs/teaching/labs/08-functional-form/README.md",
       "source_sha256": "67aa17b446f4d36f474f968cf76f8dee0510e70ec73c2e38d56dff3421085886",
       "sha256": "67aa17b446f4d36f474f968cf76f8dee0510e70ec73c2e38d56dff3421085886",
@@ -1987,7 +1987,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/09-robust-uncertainty/README.md",
+      "path": "teaching/labs/09-robust-uncertainty/index.md",
       "source_path": "docs/teaching/labs/09-robust-uncertainty/README.md",
       "source_sha256": "6c3eb5ba6b89035d2e51608c3ba7a04c88fc2f7ee95958550883818207069c2c",
       "sha256": "6c3eb5ba6b89035d2e51608c3ba7a04c88fc2f7ee95958550883818207069c2c",
@@ -2036,7 +2036,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/10-joint-tests/README.md",
+      "path": "teaching/labs/10-joint-tests/index.md",
       "source_path": "docs/teaching/labs/10-joint-tests/README.md",
       "source_sha256": "edbf3aad2c8c8acd46f5df24eff7c33a377c88a0e60c1b9461e97216a99a6bd4",
       "sha256": "edbf3aad2c8c8acd46f5df24eff7c33a377c88a0e60c1b9461e97216a99a6bd4",
@@ -2085,7 +2085,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/11-panel-fixed-effects/README.md",
+      "path": "teaching/labs/11-panel-fixed-effects/index.md",
       "source_path": "docs/teaching/labs/11-panel-fixed-effects/README.md",
       "source_sha256": "7def83e84618fed3d91bb3aead360c32645d87509221c0ec83036502f59963eb",
       "sha256": "7def83e84618fed3d91bb3aead360c32645d87509221c0ec83036502f59963eb",
@@ -2134,7 +2134,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/12-binary-outcomes/README.md",
+      "path": "teaching/labs/12-binary-outcomes/index.md",
       "source_path": "docs/teaching/labs/12-binary-outcomes/README.md",
       "source_sha256": "064a15e21c756bbb26ea19d688f9fbb197d9c1d7923ed1a2febcef1f93d37363",
       "sha256": "064a15e21c756bbb26ea19d688f9fbb197d9c1d7923ed1a2febcef1f93d37363",
@@ -2183,7 +2183,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/13-instrumental-variables/README.md",
+      "path": "teaching/labs/13-instrumental-variables/index.md",
       "source_path": "docs/teaching/labs/13-instrumental-variables/README.md",
       "source_sha256": "1e3472fedf9be162c3b0790a6a0c6dbc87dd289de2a83ec79cebe9ec64a84136",
       "sha256": "1e3472fedf9be162c3b0790a6a0c6dbc87dd289de2a83ec79cebe9ec64a84136",
@@ -2232,7 +2232,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/14-randomized-program/README.md",
+      "path": "teaching/labs/14-randomized-program/index.md",
       "source_path": "docs/teaching/labs/14-randomized-program/README.md",
       "source_sha256": "f6d7d12afe5e7b536d0fc246b43aa7083bf7afe0a7ff2446172f58a4e97f692f",
       "sha256": "f6d7d12afe5e7b536d0fc246b43aa7083bf7afe0a7ff2446172f58a4e97f692f",
@@ -2281,7 +2281,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/15-difference-in-differences/README.md",
+      "path": "teaching/labs/15-difference-in-differences/index.md",
       "source_path": "docs/teaching/labs/15-difference-in-differences/README.md",
       "source_sha256": "9ddaf97a524cef2470393d63b38825ae37d612f69cec72ab134fd756b0c4f408",
       "sha256": "9ddaf97a524cef2470393d63b38825ae37d612f69cec72ab134fd756b0c4f408",
@@ -2330,7 +2330,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/16-regression-discontinuity/README.md",
+      "path": "teaching/labs/16-regression-discontinuity/index.md",
       "source_path": "docs/teaching/labs/16-regression-discontinuity/README.md",
       "source_sha256": "1f70ca635d32430157b7d2eb5c782e360c6592baf664b2479e883eba7a50572c",
       "sha256": "1f70ca635d32430157b7d2eb5c782e360c6592baf664b2479e883eba7a50572c",
@@ -2379,7 +2379,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/17-trending-series/README.md",
+      "path": "teaching/labs/17-trending-series/index.md",
       "source_path": "docs/teaching/labs/17-trending-series/README.md",
       "source_sha256": "bf80217744e2456d34e1ac439690b9825e01e318c40d290dba8c5777dc0b9c14",
       "sha256": "bf80217744e2456d34e1ac439690b9825e01e318c40d290dba8c5777dc0b9c14",
@@ -2428,7 +2428,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/18-serial-correlation/README.md",
+      "path": "teaching/labs/18-serial-correlation/index.md",
       "source_path": "docs/teaching/labs/18-serial-correlation/README.md",
       "source_sha256": "8dfff1fea5adacec3ef81f0cb949e9d4e9323d0f613359280fa21d4d2b7f5866",
       "sha256": "8dfff1fea5adacec3ef81f0cb949e9d4e9323d0f613359280fa21d4d2b7f5866",
@@ -2477,7 +2477,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/19-forecasting/README.md",
+      "path": "teaching/labs/19-forecasting/index.md",
       "source_path": "docs/teaching/labs/19-forecasting/README.md",
       "source_sha256": "e2f9846ddcad2305f207f280dd2dd1a8cd90e8a37d1e8c4dff3dd1c417fe4958",
       "sha256": "e2f9846ddcad2305f207f280dd2dd1a8cd90e8a37d1e8c4dff3dd1c417fe4958",
@@ -2526,7 +2526,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/labs/20-research-report/README.md",
+      "path": "teaching/labs/20-research-report/index.md",
       "source_path": "docs/teaching/labs/20-research-report/README.md",
       "source_sha256": "6bc5c068fa51c38f934f5a602a98e2c987e6b920ce2e67ed5e9ca7337da79856",
       "sha256": "6bc5c068fa51c38f934f5a602a98e2c987e6b920ce2e67ed5e9ca7337da79856",
@@ -2582,11 +2582,11 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/README.md",
+      "path": "teaching/microeconomics/index.md",
       "source_path": "docs/teaching/microeconomics/README.md",
       "source_sha256": "9cefe30bc5e8f2c42c9a175bb95975cc7ba8f5b356acb5b9b729c7a549f76ed4",
-      "sha256": "9cefe30bc5e8f2c42c9a175bb95975cc7ba8f5b356acb5b9b729c7a549f76ed4",
-      "transformation": null
+      "sha256": "93106d3bf0fd4cf80e0fb00d697636e62c06fea6c930da3534b866b93622f89a",
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/microeconomics/TASKS.md",
@@ -2883,7 +2883,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/01-production-frontier/README.md",
+      "path": "teaching/microeconomics/labs/01-production-frontier/index.md",
       "source_path": "docs/teaching/microeconomics/labs/01-production-frontier/README.md",
       "source_sha256": "e7199952b612da68f503892070ec47b270e6cd9584b393b6194a7965e6f3af71",
       "sha256": "e7199952b612da68f503892070ec47b270e6cd9584b393b6194a7965e6f3af71",
@@ -2932,7 +2932,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/02-comparative-advantage/README.md",
+      "path": "teaching/microeconomics/labs/02-comparative-advantage/index.md",
       "source_path": "docs/teaching/microeconomics/labs/02-comparative-advantage/README.md",
       "source_sha256": "11dde36ea61035a380a8e39159c96c866d4f12f80a7361c2784249f7b571bc6e",
       "sha256": "11dde36ea61035a380a8e39159c96c866d4f12f80a7361c2784249f7b571bc6e",
@@ -2981,7 +2981,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/03-market-equilibrium/README.md",
+      "path": "teaching/microeconomics/labs/03-market-equilibrium/index.md",
       "source_path": "docs/teaching/microeconomics/labs/03-market-equilibrium/README.md",
       "source_sha256": "5be590157538a0642f0cf7310e82750f7023ffcf01c342bf75a82728e466ec20",
       "sha256": "5be590157538a0642f0cf7310e82750f7023ffcf01c342bf75a82728e466ec20",
@@ -3030,7 +3030,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/04-elasticity-revenue/README.md",
+      "path": "teaching/microeconomics/labs/04-elasticity-revenue/index.md",
       "source_path": "docs/teaching/microeconomics/labs/04-elasticity-revenue/README.md",
       "source_sha256": "7c513f0f8338ca9953387d1c473c10ce9431191ad3f529aa3ab9ce75449de795",
       "sha256": "7c513f0f8338ca9953387d1c473c10ce9431191ad3f529aa3ab9ce75449de795",
@@ -3079,7 +3079,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/05-consumer-choice/README.md",
+      "path": "teaching/microeconomics/labs/05-consumer-choice/index.md",
       "source_path": "docs/teaching/microeconomics/labs/05-consumer-choice/README.md",
       "source_sha256": "3e41c1d80d97d7d5de74c80de10a3387a89ef44b91f53e15d1deb7dfb8131add",
       "sha256": "3e41c1d80d97d7d5de74c80de10a3387a89ef44b91f53e15d1deb7dfb8131add",
@@ -3128,7 +3128,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/06-demand-comparative-statics/README.md",
+      "path": "teaching/microeconomics/labs/06-demand-comparative-statics/index.md",
       "source_path": "docs/teaching/microeconomics/labs/06-demand-comparative-statics/README.md",
       "source_sha256": "053b90d4fa0242be6b37a8a9612b15d14b1e5391ab3371ed85a9a8d2d3629339",
       "sha256": "053b90d4fa0242be6b37a8a9612b15d14b1e5391ab3371ed85a9a8d2d3629339",
@@ -3177,7 +3177,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/07-substitution-income/README.md",
+      "path": "teaching/microeconomics/labs/07-substitution-income/index.md",
       "source_path": "docs/teaching/microeconomics/labs/07-substitution-income/README.md",
       "source_sha256": "f5a4d58554b9001d221d58e7a7e880f3d6108b6f283758f06d244750b5aedcc7",
       "sha256": "f5a4d58554b9001d221d58e7a7e880f3d6108b6f283758f06d244750b5aedcc7",
@@ -3226,7 +3226,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/08-revealed-preference/README.md",
+      "path": "teaching/microeconomics/labs/08-revealed-preference/index.md",
       "source_path": "docs/teaching/microeconomics/labs/08-revealed-preference/README.md",
       "source_sha256": "bcd44fc7876185fb9d12eaee4e62a7f43cff549ec54893e61812b8ee5ff8ec74",
       "sha256": "bcd44fc7876185fb9d12eaee4e62a7f43cff549ec54893e61812b8ee5ff8ec74",
@@ -3275,7 +3275,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/09-production-input/README.md",
+      "path": "teaching/microeconomics/labs/09-production-input/index.md",
       "source_path": "docs/teaching/microeconomics/labs/09-production-input/README.md",
       "source_sha256": "6b07d46ac4ee4973daa7dc833ff090ff2ed160905ec29c617080e9713a0aaf02",
       "sha256": "6b07d46ac4ee4973daa7dc833ff090ff2ed160905ec29c617080e9713a0aaf02",
@@ -3324,7 +3324,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/10-cost-curves/README.md",
+      "path": "teaching/microeconomics/labs/10-cost-curves/index.md",
       "source_path": "docs/teaching/microeconomics/labs/10-cost-curves/README.md",
       "source_sha256": "edc03ad6f7d39b94df3b46e07096e739e5e30e3c122fb448fce7b89fca6bbfb6",
       "sha256": "edc03ad6f7d39b94df3b46e07096e739e5e30e3c122fb448fce7b89fca6bbfb6",
@@ -3373,7 +3373,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/11-conditional-inputs/README.md",
+      "path": "teaching/microeconomics/labs/11-conditional-inputs/index.md",
       "source_path": "docs/teaching/microeconomics/labs/11-conditional-inputs/README.md",
       "source_sha256": "1df524c7041afdaf041bb4a72a31b1ee86ddc9d2c66b9d19e666d49408e7c128",
       "sha256": "1df524c7041afdaf041bb4a72a31b1ee86ddc9d2c66b9d19e666d49408e7c128",
@@ -3422,7 +3422,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/12-competitive-supply/README.md",
+      "path": "teaching/microeconomics/labs/12-competitive-supply/index.md",
       "source_path": "docs/teaching/microeconomics/labs/12-competitive-supply/README.md",
       "source_sha256": "6ab9aff991b0a4c41bec469c685d323e236a059051d83a7464b481268295e7a6",
       "sha256": "6ab9aff991b0a4c41bec469c685d323e236a059051d83a7464b481268295e7a6",
@@ -3471,7 +3471,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/13-monopoly-welfare/README.md",
+      "path": "teaching/microeconomics/labs/13-monopoly-welfare/index.md",
       "source_path": "docs/teaching/microeconomics/labs/13-monopoly-welfare/README.md",
       "source_sha256": "5cc929dec88bc937f7ae7d880a4bf273f5ec51961f1a25938d8e675315f4cd85",
       "sha256": "5cc929dec88bc937f7ae7d880a4bf273f5ec51961f1a25938d8e675315f4cd85",
@@ -3520,7 +3520,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/14-price-ceiling/README.md",
+      "path": "teaching/microeconomics/labs/14-price-ceiling/index.md",
       "source_path": "docs/teaching/microeconomics/labs/14-price-ceiling/README.md",
       "source_sha256": "c3fd50b4b4205ca5d649291ebc645282c690c593a748560381f132d1ab79cdfc",
       "sha256": "c3fd50b4b4205ca5d649291ebc645282c690c593a748560381f132d1ab79cdfc",
@@ -3569,7 +3569,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/15-tax-incidence/README.md",
+      "path": "teaching/microeconomics/labs/15-tax-incidence/index.md",
       "source_path": "docs/teaching/microeconomics/labs/15-tax-incidence/README.md",
       "source_sha256": "706db25fa8e980a7bbadb175fab5499d335497c3eff376d1b0e503fd88d17a7f",
       "sha256": "706db25fa8e980a7bbadb175fab5499d335497c3eff376d1b0e503fd88d17a7f",
@@ -3618,7 +3618,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/16-subsidy-welfare/README.md",
+      "path": "teaching/microeconomics/labs/16-subsidy-welfare/index.md",
       "source_path": "docs/teaching/microeconomics/labs/16-subsidy-welfare/README.md",
       "source_sha256": "9ce7459e053a35d64096725aaf627dba41acb4089c818653bae627feace7d731",
       "sha256": "9ce7459e053a35d64096725aaf627dba41acb4089c818653bae627feace7d731",
@@ -3667,7 +3667,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/17-external-cost/README.md",
+      "path": "teaching/microeconomics/labs/17-external-cost/index.md",
       "source_path": "docs/teaching/microeconomics/labs/17-external-cost/README.md",
       "source_sha256": "0e00fddbf50fd7458793806e09f359f4637fb9be62671967d3cf4f82ebdd7fc3",
       "sha256": "0e00fddbf50fd7458793806e09f359f4637fb9be62671967d3cf4f82ebdd7fc3",
@@ -3716,7 +3716,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/18-public-good/README.md",
+      "path": "teaching/microeconomics/labs/18-public-good/index.md",
       "source_path": "docs/teaching/microeconomics/labs/18-public-good/README.md",
       "source_sha256": "297b23562c5fb6169722425f6fa85d9cbfc9b85638990244a86205876f82180e",
       "sha256": "297b23562c5fb6169722425f6fa85d9cbfc9b85638990244a86205876f82180e",
@@ -3765,7 +3765,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/19-cournot-competition/README.md",
+      "path": "teaching/microeconomics/labs/19-cournot-competition/index.md",
       "source_path": "docs/teaching/microeconomics/labs/19-cournot-competition/README.md",
       "source_sha256": "c240690cc65c976644a7a7b4a336d47142c6fbcf91a9919b9e4e0e615d503ca8",
       "sha256": "c240690cc65c976644a7a7b4a336d47142c6fbcf91a9919b9e4e0e615d503ca8",
@@ -3814,7 +3814,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/microeconomics/labs/20-estimated-demand/README.md",
+      "path": "teaching/microeconomics/labs/20-estimated-demand/index.md",
       "source_path": "docs/teaching/microeconomics/labs/20-estimated-demand/README.md",
       "source_sha256": "e6cd8c73467ff01a4cd6af449ec38cc4aab64cf6faccab24f9da71369aa9e7a7",
       "sha256": "e6cd8c73467ff01a4cd6af449ec38cc4aab64cf6faccab24f9da71369aa9e7a7",
@@ -3877,11 +3877,11 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/README.md",
+      "path": "teaching/statistics/index.md",
       "source_path": "docs/teaching/statistics/README.md",
       "source_sha256": "1efcc60cb542ffe127b86f8a1840525a38fbf6e8a0e6b0fa3c457b4fadc4a69f",
-      "sha256": "1efcc60cb542ffe127b86f8a1840525a38fbf6e8a0e6b0fa3c457b4fadc4a69f",
-      "transformation": null
+      "sha256": "7d98ecf917599c9eabaa63c1976189808e2cde0a9053d502c643b9b7e486f1ba",
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/statistics/TASKS.md",
@@ -4178,7 +4178,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/01-measurement/README.md",
+      "path": "teaching/statistics/labs/01-measurement/index.md",
       "source_path": "docs/teaching/statistics/labs/01-measurement/README.md",
       "source_sha256": "5f1af65fce94e15b1ebcb7dac410efdee2b2cd46403d860d3f2d0b7f6d2e37d2",
       "sha256": "5f1af65fce94e15b1ebcb7dac410efdee2b2cd46403d860d3f2d0b7f6d2e37d2",
@@ -4227,7 +4227,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/02-center/README.md",
+      "path": "teaching/statistics/labs/02-center/index.md",
       "source_path": "docs/teaching/statistics/labs/02-center/README.md",
       "source_sha256": "f246a3bd37b00f4545b6cc26477a14f814e19a156a6dc9de5888b20ef7ced95a",
       "sha256": "f246a3bd37b00f4545b6cc26477a14f814e19a156a6dc9de5888b20ef7ced95a",
@@ -4276,7 +4276,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/03-spread/README.md",
+      "path": "teaching/statistics/labs/03-spread/index.md",
       "source_path": "docs/teaching/statistics/labs/03-spread/README.md",
       "source_sha256": "c694a830ff2681568340672fa35571ef6d8fc5316b0691566be46588b331f96c",
       "sha256": "c694a830ff2681568340672fa35571ef6d8fc5316b0691566be46588b331f96c",
@@ -4325,7 +4325,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/04-conditional-probability/README.md",
+      "path": "teaching/statistics/labs/04-conditional-probability/index.md",
       "source_path": "docs/teaching/statistics/labs/04-conditional-probability/README.md",
       "source_sha256": "7b9a85bc87c162e73fccf78ac2c61e5b881c3994a3efe19dc14ff24dd995991d",
       "sha256": "7b9a85bc87c162e73fccf78ac2c61e5b881c3994a3efe19dc14ff24dd995991d",
@@ -4374,7 +4374,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/05-bayes/README.md",
+      "path": "teaching/statistics/labs/05-bayes/index.md",
       "source_path": "docs/teaching/statistics/labs/05-bayes/README.md",
       "source_sha256": "bb8dc7ebbeea39776f39db12cacd2e76fee06a2daba82959fed8328eba8af1a2",
       "sha256": "bb8dc7ebbeea39776f39db12cacd2e76fee06a2daba82959fed8328eba8af1a2",
@@ -4423,7 +4423,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/06-discrete-model/README.md",
+      "path": "teaching/statistics/labs/06-discrete-model/index.md",
       "source_path": "docs/teaching/statistics/labs/06-discrete-model/README.md",
       "source_sha256": "13f41f98b7efef48a70eee8c6a43d292443c4a9823c6cfa3b2201e25409e5ee5",
       "sha256": "13f41f98b7efef48a70eee8c6a43d292443c4a9823c6cfa3b2201e25409e5ee5",
@@ -4472,7 +4472,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/07-normal-model/README.md",
+      "path": "teaching/statistics/labs/07-normal-model/index.md",
       "source_path": "docs/teaching/statistics/labs/07-normal-model/README.md",
       "source_sha256": "13aa5d047c033ad7cef0e382dfc91ae479c4fa7245be5d7ae475544659e8961e",
       "sha256": "13aa5d047c033ad7cef0e382dfc91ae479c4fa7245be5d7ae475544659e8961e",
@@ -4521,7 +4521,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/08-sampling-means/README.md",
+      "path": "teaching/statistics/labs/08-sampling-means/index.md",
       "source_path": "docs/teaching/statistics/labs/08-sampling-means/README.md",
       "source_sha256": "1b848b2a360fa049ee11237a9b366cb3969c344bdf0547853441af61e48cc41c",
       "sha256": "1b848b2a360fa049ee11237a9b366cb3969c344bdf0547853441af61e48cc41c",
@@ -4570,7 +4570,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/09-confidence-intervals/README.md",
+      "path": "teaching/statistics/labs/09-confidence-intervals/index.md",
       "source_path": "docs/teaching/statistics/labs/09-confidence-intervals/README.md",
       "source_sha256": "8ef533079c222a9321298006f52167114e48b0cd71f15a9628e1248ea5194775",
       "sha256": "8ef533079c222a9321298006f52167114e48b0cd71f15a9628e1248ea5194775",
@@ -4619,7 +4619,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/10-mean-test/README.md",
+      "path": "teaching/statistics/labs/10-mean-test/index.md",
       "source_path": "docs/teaching/statistics/labs/10-mean-test/README.md",
       "source_sha256": "da6e16b4d5a13339833634a9c647e41b86745b7cd3ec4f826666988b326b3f79",
       "sha256": "da6e16b4d5a13339833634a9c647e41b86745b7cd3ec4f826666988b326b3f79",
@@ -4668,7 +4668,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/11-one-proportion/README.md",
+      "path": "teaching/statistics/labs/11-one-proportion/index.md",
       "source_path": "docs/teaching/statistics/labs/11-one-proportion/README.md",
       "source_sha256": "bb513cdaf7025ff53c76eac1c0e479a69e730bc66350e405a705dcff7ffe79fa",
       "sha256": "bb513cdaf7025ff53c76eac1c0e479a69e730bc66350e405a705dcff7ffe79fa",
@@ -4717,7 +4717,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/12-independent-means/README.md",
+      "path": "teaching/statistics/labs/12-independent-means/index.md",
       "source_path": "docs/teaching/statistics/labs/12-independent-means/README.md",
       "source_sha256": "0bcd4ad1af9d15cad4679979a4a5f8fff67fcd500d68e8b27f595e1071604957",
       "sha256": "0bcd4ad1af9d15cad4679979a4a5f8fff67fcd500d68e8b27f595e1071604957",
@@ -4766,7 +4766,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/13-paired-means/README.md",
+      "path": "teaching/statistics/labs/13-paired-means/index.md",
       "source_path": "docs/teaching/statistics/labs/13-paired-means/README.md",
       "source_sha256": "5dceee9dae4e5613eb7ead11cbaf9d5a7ab730876cd9f8151946119001d59b03",
       "sha256": "5dceee9dae4e5613eb7ead11cbaf9d5a7ab730876cd9f8151946119001d59b03",
@@ -4815,7 +4815,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/14-two-proportions/README.md",
+      "path": "teaching/statistics/labs/14-two-proportions/index.md",
       "source_path": "docs/teaching/statistics/labs/14-two-proportions/README.md",
       "source_sha256": "53010998b650233cbcf0fb977f2de838e1288d853813e0e2d6f5003ed096e9de",
       "sha256": "53010998b650233cbcf0fb977f2de838e1288d853813e0e2d6f5003ed096e9de",
@@ -4864,7 +4864,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/15-correlation/README.md",
+      "path": "teaching/statistics/labs/15-correlation/index.md",
       "source_path": "docs/teaching/statistics/labs/15-correlation/README.md",
       "source_sha256": "52d3a1a18eb66ef7406cf1b88f54e8b801e19038ecf18b019b64492f8056adb0",
       "sha256": "52d3a1a18eb66ef7406cf1b88f54e8b801e19038ecf18b019b64492f8056adb0",
@@ -4913,7 +4913,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/16-categorical-independence/README.md",
+      "path": "teaching/statistics/labs/16-categorical-independence/index.md",
       "source_path": "docs/teaching/statistics/labs/16-categorical-independence/README.md",
       "source_sha256": "bc199cf573777783f6a88963d965aa82a978895d87a5b160874e7cd1367bd761",
       "sha256": "bc199cf573777783f6a88963d965aa82a978895d87a5b160874e7cd1367bd761",
@@ -4962,7 +4962,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/17-anova/README.md",
+      "path": "teaching/statistics/labs/17-anova/index.md",
       "source_path": "docs/teaching/statistics/labs/17-anova/README.md",
       "source_sha256": "b442fd1a7d5e49cc0283cae32b56d2056f5479ba03f4791654c0a63291a512ad",
       "sha256": "b442fd1a7d5e49cc0283cae32b56d2056f5479ba03f4791654c0a63291a512ad",
@@ -5011,7 +5011,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/18-rank-comparisons/README.md",
+      "path": "teaching/statistics/labs/18-rank-comparisons/index.md",
       "source_path": "docs/teaching/statistics/labs/18-rank-comparisons/README.md",
       "source_sha256": "85fb27cee7c9d7ddf1a4199906fe043a1e5732d9ceb930a8632e670a03c1d6d1",
       "sha256": "85fb27cee7c9d7ddf1a4199906fe043a1e5732d9ceb930a8632e670a03c1d6d1",
@@ -5060,7 +5060,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/19-bootstrap/README.md",
+      "path": "teaching/statistics/labs/19-bootstrap/index.md",
       "source_path": "docs/teaching/statistics/labs/19-bootstrap/README.md",
       "source_sha256": "630c812fec79f3cd80f68695c04f6776f720c04cca0a21fa792f331415d7d725",
       "sha256": "630c812fec79f3cd80f68695c04f6776f720c04cca0a21fa792f331415d7d725",
@@ -5109,7 +5109,7 @@
       "transformation": null
     },
     {
-      "path": "teaching/statistics/labs/20-statistical-report/README.md",
+      "path": "teaching/statistics/labs/20-statistical-report/index.md",
       "source_path": "docs/teaching/statistics/labs/20-statistical-report/README.md",
       "source_sha256": "b87ee61dab58ea825ebe26e7a12323e00a17a68e71d11035a46cbab55fb2b66f",
       "sha256": "b87ee61dab58ea825ebe26e7a12323e00a17a68e71d11035a46cbab55fb2b66f",
