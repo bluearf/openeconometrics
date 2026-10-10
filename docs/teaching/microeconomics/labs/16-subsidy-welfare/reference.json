@@ -1,0 +1,99 @@
+{
+  "metadata": {
+    "lab": "16-subsidy-welfare",
+    "title": "A Producer Subsidy and Overproduction",
+    "synthetic": true,
+    "data_file": "subsidy_welfare.xlsx",
+    "raw_rows": 101
+  },
+  "summary": {
+    "unit_subsidy": 10.0,
+    "buyer_price": 30.0,
+    "seller_receipt": 40.0,
+    "subsidized_quantity": 60.0,
+    "consumer_surplus": 900.0,
+    "producer_surplus": 900.0,
+    "government_expense": 600.0,
+    "net_total_surplus": 1200.0,
+    "deadweight_loss": 50.0
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "index": [
+        "unit_subsidy",
+        "buyer_price",
+        "seller_receipt",
+        "subsidized_quantity",
+        "consumer_surplus",
+        "producer_surplus",
+        "government_expense",
+        "net_total_surplus",
+        "deadweight_loss"
+      ],
+      "columns": [
+        "value"
+      ],
+      "values": [
+        [
+          10.0
+        ],
+        [
+          30.0
+        ],
+        [
+          40.0
+        ],
+        [
+          60.0
+        ],
+        [
+          900.0
+        ],
+        [
+          900.0
+        ],
+        [
+          600.0
+        ],
+        [
+          1200.0
+        ],
+        [
+          50.0
+        ]
+      ],
+      "attrs": {}
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "bar",
+        "title": "A Producer Subsidy and Overproduction",
+        "xlabel": "Accounting component",
+        "ylabel": "Currency/day",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              "CS",
+              "PS",
+              "Government expense"
+            ],
+            "y": [
+              900.0,
+              900.0,
+              600.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "subsidy_wedge": true,
+    "overproduction": true,
+    "fiscal_cost_subtracted": true
+  }
+}

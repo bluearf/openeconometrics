@@ -1,0 +1,33 @@
+{
+  "filename": "household_measurements.xlsx",
+  "description": "What Does One Row Represent?; original synthetic teaching data.",
+  "observation_unit": "One synthetic household.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710001,
+  "columns": [
+    {
+      "name": "household_id",
+      "description": "Stable household identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "region",
+      "description": "Synthetic region label",
+      "unit": "North or South",
+      "missing": 0
+    },
+    {
+      "name": "household_size",
+      "description": "People in the household",
+      "unit": "people",
+      "missing": 0
+    },
+    {
+      "name": "monthly_spending",
+      "description": "Reported monthly spending",
+      "unit": "hypothetical currency/month",
+      "missing": 4
+    }
+  ]
+}

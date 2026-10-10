@@ -1,0 +1,21 @@
+{
+  "filename": "app_opt_in.xlsx",
+  "description": "How Uncertain Is an Opt-In Rate?; original synthetic teaching data.",
+  "observation_unit": "One synthetic invited app user.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710011,
+  "columns": [
+    {
+      "name": "user_id",
+      "description": "Invited user identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "opt_in",
+      "description": "Observed response",
+      "unit": "0=no, 1=yes",
+      "missing": 0
+    }
+  ]
+}

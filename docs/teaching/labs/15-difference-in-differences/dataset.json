@@ -1,0 +1,50 @@
+{
+  "filename": "policy_panel.xlsx",
+  "description": "Balanced fictional region-year panel around a common 2018 training subsidy.",
+  "observation_unit": "One region observed in one year.",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "region",
+      "description": "Region identifier and independent policy assignment/uncertainty unit.",
+      "unit": "Integer identifier 0–59",
+      "missing": 0
+    },
+    {
+      "name": "year",
+      "description": "Calendar year of the observation.",
+      "unit": "Year 2015–2020",
+      "missing": 0
+    },
+    {
+      "name": "treated",
+      "description": "Whether the region receives the subsidy during the study; 1 for regions 0–29.",
+      "unit": "Binary 0/1",
+      "missing": 0
+    },
+    {
+      "name": "post",
+      "description": "Whether the calendar year is 2018 or later.",
+      "unit": "Binary 0/1",
+      "missing": 0
+    },
+    {
+      "name": "treated_post",
+      "description": "Actual policy exposure, equal to treated multiplied by post.",
+      "unit": "Binary 0/1",
+      "missing": 0
+    },
+    {
+      "name": "employment_rate",
+      "description": "Observed synthetic employment rate.",
+      "unit": "Percent of working-age population",
+      "missing": 0
+    },
+    {
+      "name": "employment_no_policy",
+      "description": "Synthetic untreated potential outcome supplied as a teaching oracle; excluded from all model fitting.",
+      "unit": "Percent of working-age population",
+      "missing": 0
+    }
+  ]
+}

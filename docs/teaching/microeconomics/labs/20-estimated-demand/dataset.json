@@ -1,0 +1,33 @@
+{
+  "filename": "estimated_demand.xlsx",
+  "description": "From a Demand Model to an Estimated Elasticity; original synthetic teaching data.",
+  "observation_unit": "One synthetic market with exogenous prices and income.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720020,
+  "columns": [
+    {
+      "name": "market_id",
+      "description": "Market identifier",
+      "unit": "ID",
+      "missing": 0
+    },
+    {
+      "name": "price",
+      "description": "Exogenous price",
+      "unit": "currency/unit",
+      "missing": 0
+    },
+    {
+      "name": "income",
+      "description": "Exogenous income index",
+      "unit": "currency",
+      "missing": 0
+    },
+    {
+      "name": "quantity",
+      "description": "Observed demand",
+      "unit": "units/day",
+      "missing": 0
+    }
+  ]
+}

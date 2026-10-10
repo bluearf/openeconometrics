@@ -1,0 +1,182 @@
+{
+  "metadata": {
+    "lab": "09-confidence-intervals",
+    "title": "What Does a Confidence Interval Cover?",
+    "synthetic": true,
+    "data_file": "service_waits.xlsx",
+    "raw_rows": 72
+  },
+  "summary": {
+    "raw_encounters": 72,
+    "observed_encounters": 70,
+    "missing_waits": 2,
+    "mean_minutes": 10.601184217754952,
+    "standard_error": 0.27513221037004887,
+    "df": 69.0,
+    "ci95_low": 10.0523104761289,
+    "ci95_high": 11.150057959381,
+    "ci99_low": 9.872365382598485,
+    "ci99_high": 11.330003052911415
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "tables": {
+        "statistics": {
+          "index": [
+            "minutes"
+          ],
+          "columns": [
+            "n",
+            "mean",
+            "std_dev",
+            "std_error",
+            "ci_low",
+            "ci_high"
+          ],
+          "values": [
+            [
+              70.0,
+              10.60118421775495,
+              2.3019212242858393,
+              0.27513221037004887,
+              10.0523104761289,
+              11.150057959381
+            ]
+          ],
+          "attrs": {}
+        },
+        "test": {
+          "index": [
+            "one_sample"
+          ],
+          "columns": [
+            "statistic",
+            "df",
+            "p_value",
+            "p_less",
+            "p_greater",
+            "mean_difference",
+            "std_error",
+            "ci_low",
+            "ci_high"
+          ],
+          "values": [
+            [
+              2.185073921175446,
+              69.0,
+              0.03228200659990105,
+              0.9838589967000495,
+              0.016141003299950524,
+              0.6011842177549505,
+              0.27513221037004887,
+              0.05231047612890116,
+              1.1500579593809999
+            ]
+          ],
+          "attrs": {}
+        },
+        "effect_sizes": {
+          "index": [
+            "cohens_d",
+            "hedges_g"
+          ],
+          "columns": [
+            "standardizer",
+            "estimate"
+          ],
+          "values": [
+            [
+              2.3019212242858393,
+              0.26116628640993794
+            ],
+            [
+              2.3273256693558557,
+              0.2583154672639102
+            ]
+          ],
+          "attrs": {}
+        }
+      },
+      "attrs": {
+        "kind": "one_sample",
+        "statistic": 2.185073921175446,
+        "df": 69.0,
+        "p_value": 0.03228200659990105,
+        "p_less": 0.9838589967000495,
+        "p_greater": 0.016141003299950524,
+        "one_sided_p_value": 0.016141003299950524,
+        "distribution": "t",
+        "n": 70,
+        "n_missing": 0,
+        "mu": 10.0,
+        "alpha": 0.05,
+        "cohens_d": 0.26116628640993794,
+        "hedges_g": 0.2583154672639102,
+        "glass_delta": null,
+        "missing": "listwise"
+      }
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "hist",
+        "title": "What Does a Confidence Interval Cover?",
+        "xlabel": "Waiting time (minutes)",
+        "ylabel": "Encounters",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              5.766194397028462,
+              6.354387027655503,
+              6.9425796582825425,
+              7.530772288909583,
+              8.118964919536623,
+              8.707157550163664,
+              9.295350180790702,
+              9.883542811417744,
+              10.471735442044785,
+              11.059928072671823,
+              11.648120703298865,
+              12.236313333925903,
+              12.824505964552944,
+              13.412698595179986,
+              14.000891225807024,
+              14.589083856434065,
+              15.177276487061107,
+              15.765469117688145
+            ],
+            "y": [
+              1.0,
+              0.0,
+              4.0,
+              5.0,
+              4.0,
+              4.0,
+              5.0,
+              8.0,
+              7.0,
+              7.0,
+              3.0,
+              6.0,
+              5.0,
+              3.0,
+              5.0,
+              2.0,
+              0.0,
+              1.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "native_se_matches_sample_formula": true,
+    "df_is_n_minus_one": true,
+    "ci_symmetric_about_mean": true,
+    "higher_confidence_wider": true
+  }
+}

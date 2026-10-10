@@ -1,0 +1,110 @@
+{
+  "metadata": {
+    "lab": "07-normal-model",
+    "title": "From Parcel Weights to Standard Scores",
+    "synthetic": true,
+    "data_file": "parcel_weights.xlsx",
+    "raw_rows": 500
+  },
+  "summary": {
+    "parcels": 500,
+    "sample_mean_grams": 999.6685570082926,
+    "sample_sd_grams": 11.513875746602313,
+    "sample_mean_z": -0.027620249308943662,
+    "sample_sd_z": 0.9594896455501929,
+    "model_fraction_above_1012": 0.15865525393145705,
+    "observed_fraction_above_1012": 0.138,
+    "model_fraction_within_two_sd": 0.9544997361036416
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "index": [
+        "grams"
+      ],
+      "columns": [
+        "n",
+        "mean",
+        "std_dev",
+        "min",
+        "max"
+      ],
+      "values": [
+        [
+          500.0,
+          999.6685570082926,
+          11.513875746602313,
+          961.1138499894436,
+          1030.7745606143644
+        ]
+      ],
+      "attrs": {
+        "percentile_method": "stata",
+        "moments": "spss",
+        "alpha": 0.05,
+        "missing": "variable-wise",
+        "n": 500
+      }
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "hist",
+        "title": "From Parcel Weights to Standard Scores",
+        "xlabel": "Standard score relative to known population",
+        "ylabel": "Parcels",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              -3.079260855914608,
+              -2.7567575659844192,
+              -2.4342542760542303,
+              -2.111750986124041,
+              -1.789247696193852,
+              -1.4667444062636628,
+              -1.1442411163334736,
+              -0.8217378264032845,
+              -0.49923453647309535,
+              -0.17673124654290615,
+              0.14577204338728297,
+              0.46827533331747206,
+              0.7907786232476612,
+              1.1132819131778504,
+              1.4357852031080394,
+              1.7582884930382285,
+              2.0807917829684177,
+              2.403295072898607
+            ],
+            "y": [
+              1.0,
+              2.0,
+              1.0,
+              8.0,
+              9.0,
+              14.0,
+              45.0,
+              51.0,
+              64.0,
+              63.0,
+              59.0,
+              63.0,
+              46.0,
+              27.0,
+              19.0,
+              17.0,
+              2.0,
+              9.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "linear_standardization_mean": true,
+    "linear_standardization_sd": true,
+    "tail_complement": true
+  }
+}

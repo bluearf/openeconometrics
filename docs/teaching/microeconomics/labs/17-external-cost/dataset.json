@@ -1,0 +1,33 @@
+{
+  "filename": "external_cost.xlsx",
+  "description": "An External Cost and a Corrective Tax; original synthetic teaching data.",
+  "observation_unit": "One potential market trade with an external cost.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720017,
+  "columns": [
+    {
+      "name": "quantity",
+      "description": "Output",
+      "unit": "units/day",
+      "missing": 0
+    },
+    {
+      "name": "demand_price",
+      "description": "Marginal benefit 60\u2212.5q",
+      "unit": "currency/unit",
+      "missing": 0
+    },
+    {
+      "name": "private_mc",
+      "description": "Private marginal cost 10+.5q",
+      "unit": "currency/unit",
+      "missing": 0
+    },
+    {
+      "name": "external_mc",
+      "description": "Marginal external damage",
+      "unit": "currency/unit",
+      "missing": 0
+    }
+  ]
+}

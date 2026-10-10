@@ -1,0 +1,27 @@
+{
+  "filename": "conditional_inputs.xlsx",
+  "description": "Cost Minimization with Two Inputs; original synthetic teaching data.",
+  "observation_unit": "One target output/input-price scenario.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720011,
+  "columns": [
+    {
+      "name": "output",
+      "description": "Target output",
+      "unit": "units/day",
+      "missing": 0
+    },
+    {
+      "name": "wage",
+      "description": "Labor price",
+      "unit": "currency/L",
+      "missing": 0
+    },
+    {
+      "name": "rental",
+      "description": "Capital rental",
+      "unit": "currency/K",
+      "missing": 0
+    }
+  ]
+}

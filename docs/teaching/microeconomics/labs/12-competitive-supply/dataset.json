@@ -1,0 +1,33 @@
+{
+  "filename": "competitive_supply.xlsx",
+  "description": "Competitive Supply and Shutdown; original synthetic teaching data.",
+  "observation_unit": "One output-price scenario for a firm.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720012,
+  "columns": [
+    {
+      "name": "price",
+      "description": "Output price",
+      "unit": "currency/unit",
+      "missing": 0
+    },
+    {
+      "name": "fixed_cost",
+      "description": "Unavoidable short-run fixed cost",
+      "unit": "currency/day",
+      "missing": 0
+    },
+    {
+      "name": "linear_cost",
+      "description": "Linear variable cost coefficient",
+      "unit": "currency/unit",
+      "missing": 0
+    },
+    {
+      "name": "quadratic_cost",
+      "description": "Quadratic coefficient",
+      "unit": "currency/unit\u00b2",
+      "missing": 0
+    }
+  ]
+}

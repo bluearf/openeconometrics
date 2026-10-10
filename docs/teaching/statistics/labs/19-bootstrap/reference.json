@@ -1,0 +1,182 @@
+{
+  "metadata": {
+    "lab": "19-bootstrap",
+    "title": "Resampling the Observed Baskets",
+    "synthetic": true,
+    "data_file": "bootstrap_baskets.xlsx",
+    "raw_rows": 90
+  },
+  "summary": {
+    "baskets": 90,
+    "resamples": 1999,
+    "sample_mean": 24.927685227922957,
+    "bootstrap_mean": 24.891837861645463,
+    "bootstrap_se": 2.865314523237725,
+    "empirical_distribution_exact_se": 2.8941189320841803,
+    "percentile_low": 20.246852532908978,
+    "percentile_high": 31.170676700126123,
+    "t_interval_low": 19.144916322605376,
+    "t_interval_high": 30.710454133240546
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "tables": {
+        "statistics": {
+          "index": [
+            "spending"
+          ],
+          "columns": [
+            "n",
+            "mean",
+            "std_dev",
+            "std_error",
+            "ci_low",
+            "ci_high"
+          ],
+          "values": [
+            [
+              90.0,
+              24.92768522792296,
+              27.60983939245952,
+              2.9103326103870546,
+              19.144916322605376,
+              30.710454133240546
+            ]
+          ],
+          "attrs": {}
+        },
+        "test": {
+          "index": [
+            "one_sample"
+          ],
+          "columns": [
+            "statistic",
+            "df",
+            "p_value",
+            "p_less",
+            "p_greater",
+            "mean_difference",
+            "std_error",
+            "ci_low",
+            "ci_high"
+          ],
+          "values": [
+            [
+              8.565235856188872,
+              89.0,
+              2.9789718991132844e-13,
+              0.999999999999851,
+              1.4894859495566422e-13,
+              24.92768522792296,
+              2.9103326103870546,
+              19.144916322605376,
+              30.710454133240546
+            ]
+          ],
+          "attrs": {}
+        },
+        "effect_sizes": {
+          "index": [
+            "cohens_d",
+            "hedges_g"
+          ],
+          "columns": [
+            "standardizer",
+            "estimate"
+          ],
+          "values": [
+            [
+              27.60983939245952,
+              0.9028551334033085
+            ],
+            [
+              27.845262230479328,
+              0.8952217803370945
+            ]
+          ],
+          "attrs": {}
+        }
+      },
+      "attrs": {
+        "kind": "one_sample",
+        "statistic": 8.565235856188872,
+        "df": 89.0,
+        "p_value": 2.9789718991132844e-13,
+        "p_less": 0.999999999999851,
+        "p_greater": 1.4894859495566422e-13,
+        "one_sided_p_value": 1.4894859495566422e-13,
+        "distribution": "t",
+        "n": 90,
+        "n_missing": 0,
+        "mu": 0.0,
+        "alpha": 0.05,
+        "cohens_d": 0.9028551334033085,
+        "hedges_g": 0.8952217803370945,
+        "glass_delta": null,
+        "missing": "listwise"
+      }
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "hist",
+        "title": "Resampling the Observed Baskets",
+        "xlabel": "Bootstrap mean spending",
+        "ylabel": "Resamples",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              17.572864897593032,
+              18.671210565027213,
+              19.769556232461394,
+              20.867901899895575,
+              21.966247567329756,
+              23.064593234763937,
+              24.162938902198118,
+              25.2612845696323,
+              26.35963023706648,
+              27.45797590450066,
+              28.55632157193484,
+              29.654667239369022,
+              30.753012906803203,
+              31.851358574237384,
+              32.94970424167157,
+              34.04804990910574,
+              35.14639557653993,
+              36.244741243974104
+            ],
+            "y": [
+              4.0,
+              8.0,
+              45.0,
+              156.0,
+              213.0,
+              276.0,
+              322.0,
+              273.0,
+              241.0,
+              185.0,
+              106.0,
+              82.0,
+              42.0,
+              26.0,
+              9.0,
+              7.0,
+              3.0,
+              1.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "bootstrap_replicates_within_observed_support": true,
+    "bootstrap_center_close_with_monte_carlo_tolerance": true,
+    "bootstrap_se_close_to_empirical_target": true,
+    "retains_all_baskets_per_resample": true
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "filename": "forecast_series.xlsx",
+  "description": "Original synthetic inflation series for a fixed-origin forecast at quarter 160.",
+  "observation_unit": "One quarter; train on 1–160, evaluate on 161–180.",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "quarter",
+      "description": "Consecutive calendar index; values 161–180 are held-out outcomes.",
+      "unit": "Quarter index 1–180",
+      "missing": 0
+    },
+    {
+      "name": "inflation",
+      "description": "Synthetic quarterly inflation rate.",
+      "unit": "Percent; differences are percentage points",
+      "missing": 0
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "filename": "productivity_joint_tests.xlsx",
+  "description": "380 synthetic workers with correlated coaching and software exposure for joint hypothesis tests.",
+  "observation_unit": "One synthetic worker",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "worker",
+      "description": "Synthetic worker identifier; excluded from regression.",
+      "unit": "Identifier",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "coaching",
+      "description": "Coaching exposure during the reporting period.",
+      "unit": "Hours per reporting period",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "software",
+      "description": "Software use during the reporting period.",
+      "unit": "Hours per reporting period",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "tenure",
+      "description": "Time with employer.",
+      "unit": "Years",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "productivity",
+      "description": "Synthetic worker output index.",
+      "unit": "Index points",
+      "missing": "None in the supplied workbook"
+    }
+  ]
+}

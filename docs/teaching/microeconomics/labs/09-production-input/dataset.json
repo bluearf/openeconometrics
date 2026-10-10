@@ -1,0 +1,21 @@
+{
+  "filename": "production_input.xlsx",
+  "description": "Marginal Product and Labor Demand; original synthetic teaching data.",
+  "observation_unit": "One short-run labor input plan.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720009,
+  "columns": [
+    {
+      "name": "labor",
+      "description": "Labor input",
+      "unit": "worker-days",
+      "missing": 0
+    },
+    {
+      "name": "output",
+      "description": "Output 10 sqrt(L)",
+      "unit": "units/day",
+      "missing": 0
+    }
+  ]
+}

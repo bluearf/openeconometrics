@@ -1,0 +1,103 @@
+{
+  "metadata": {
+    "lab": "15-tax-incidence",
+    "title": "A Unit Tax: Incidence and Deadweight Loss",
+    "synthetic": true,
+    "data_file": "tax_incidence.xlsx",
+    "raw_rows": 101
+  },
+  "summary": {
+    "unit_tax": 10.0,
+    "buyer_price": 40.0,
+    "seller_net_price": 30.0,
+    "taxed_quantity": 40.0,
+    "buyer_burden_per_unit": 5.0,
+    "seller_burden_per_unit": 5.0,
+    "tax_revenue": 400.0,
+    "consumer_surplus": 400.0,
+    "producer_surplus": 400.0,
+    "deadweight_loss": 50.0
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "index": [
+        "unit_tax",
+        "buyer_price",
+        "seller_net_price",
+        "taxed_quantity",
+        "buyer_burden_per_unit",
+        "seller_burden_per_unit",
+        "tax_revenue",
+        "consumer_surplus",
+        "producer_surplus",
+        "deadweight_loss"
+      ],
+      "columns": [
+        "value"
+      ],
+      "values": [
+        [
+          10.0
+        ],
+        [
+          40.0
+        ],
+        [
+          30.0
+        ],
+        [
+          40.0
+        ],
+        [
+          5.0
+        ],
+        [
+          5.0
+        ],
+        [
+          400.0
+        ],
+        [
+          400.0
+        ],
+        [
+          400.0
+        ],
+        [
+          50.0
+        ]
+      ],
+      "attrs": {}
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "bar",
+        "title": "A Unit Tax: Incidence and Deadweight Loss",
+        "xlabel": "Price measure",
+        "ylabel": "Currency/unit",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              "Buyer price",
+              "Seller net price",
+              "Baseline price"
+            ],
+            "y": [
+              40.0,
+              30.0,
+              35.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "tax_wedge": true,
+    "government_included": true
+  }
+}

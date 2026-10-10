@@ -312,3 +312,7 @@ OpenEconometrics code is licensed under [Apache-2.0](LICENSE). Dependencies reta
 Library-only users can install `openecon` without the web/CLI/MCP layers. See [distribution extras and measured dependencies](docs/distribution.md).
 
 [Nonlinear SUR](docs/econometrics/nonlinear-sur.md): bounded shared-parameter Gaussian systems with complete saved-state replay and joint postestimation.
+
+## Teaching courses
+
+Explore [80 English teaching labs](docs/teaching/COURSES.md) across Econometrics, Statistics, Microeconomics and Advanced Econometrics. Each course includes runnable OpenEconometrics code, mathematical explanations, computed results and exercises. Use the supplied named Excel workbooks for identical class results. Student handouts and instructor answer guides are distributed separately in the [teaching release](https://github.com/bluearf/openeconometrics/releases/tag/teaching-v0.1.0).

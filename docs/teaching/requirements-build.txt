@@ -1,0 +1,4 @@
+# Optional handout tools; not application runtime dependencies.
+Markdown==3.8.2
+matplotlib==3.10.8
+pypdf==6.10.0
