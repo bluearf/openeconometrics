@@ -1,0 +1,27 @@
+{
+  "filename": "customer_ratings.xlsx",
+  "description": "Comparing Ordinal Customer Ratings; original synthetic teaching data.",
+  "observation_unit": "One synthetic independent customer rating.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710018,
+  "columns": [
+    {
+      "name": "customer_id",
+      "description": "Customer identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "service",
+      "description": "Service group",
+      "unit": "A or B",
+      "missing": 0
+    },
+    {
+      "name": "rating",
+      "description": "Ordered satisfaction response",
+      "unit": "integer scale 1\u20137",
+      "missing": 0
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "filename": "filling_volumes.xlsx",
+  "description": "Is the Filling Process Centered on Its Target?; original synthetic teaching data.",
+  "observation_unit": "One synthetic filled container.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710010,
+  "columns": [
+    {
+      "name": "container_id",
+      "description": "Container identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "milliliters",
+      "description": "Filled volume",
+      "unit": "milliliters",
+      "missing": 0
+    }
+  ]
+}

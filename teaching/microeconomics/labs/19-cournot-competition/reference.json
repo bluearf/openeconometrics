@@ -1,0 +1,107 @@
+{
+  "metadata": {
+    "lab": "19-cournot-competition",
+    "title": "Cournot Competition and the Number of Firms",
+    "synthetic": true,
+    "data_file": "cournot_competition.xlsx",
+    "raw_rows": 10
+  },
+  "summary": {
+    "duopoly_output_per_firm": 26.666666666666668,
+    "duopoly_total_output": 53.333333333333336,
+    "duopoly_price": 46.666666666666664,
+    "duopoly_profit_per_firm": 711.1111111111111,
+    "monopoly_quantity": 40.0,
+    "ten_firm_quantity": 72.72727272727272,
+    "ten_firm_price": 27.27272727272728,
+    "competitive_limit_quantity": 80.0
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "index": [
+        "duopoly_output_per_firm",
+        "duopoly_total_output",
+        "duopoly_price",
+        "duopoly_profit_per_firm",
+        "monopoly_quantity",
+        "ten_firm_quantity",
+        "ten_firm_price",
+        "competitive_limit_quantity"
+      ],
+      "columns": [
+        "value"
+      ],
+      "values": [
+        [
+          26.666666666666668
+        ],
+        [
+          53.333333333333336
+        ],
+        [
+          46.666666666666664
+        ],
+        [
+          711.1111111111111
+        ],
+        [
+          40.0
+        ],
+        [
+          72.72727272727272
+        ],
+        [
+          27.27272727272728
+        ],
+        [
+          80.0
+        ]
+      ],
+      "attrs": {}
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "line",
+        "title": "Cournot Competition and the Number of Firms",
+        "xlabel": "Number of firms",
+        "ylabel": "Equilibrium price (currency/unit)",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "y": [
+              60.0,
+              46.666666666666664,
+              40.0,
+              36.0,
+              33.33333333333333,
+              31.42857142857143,
+              30.0,
+              28.888888888888886,
+              28.0,
+              27.27272727272728
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "symmetric_best_response": true,
+    "more_firms_lower_price": true
+  }
+}

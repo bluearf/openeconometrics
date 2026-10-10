@@ -1,0 +1,21 @@
+{
+  "filename": "spending_population.xlsx",
+  "description": "Why Do Averages Vary Less Than Observations?; original synthetic teaching data.",
+  "observation_unit": "One member of the finite synthetic population sampled with replacement.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710008,
+  "columns": [
+    {
+      "name": "person_id",
+      "description": "Population member identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "spending",
+      "description": "Positive daily spending",
+      "unit": "hypothetical currency/day",
+      "missing": 0
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "filename": "demand_comparative_statics.xlsx",
+  "description": "Income and Price Comparative Statics; original synthetic teaching data.",
+  "observation_unit": "One consumer budget scenario.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720006,
+  "columns": [
+    {
+      "name": "scenario",
+      "description": "Scenario label",
+      "unit": "text",
+      "missing": 0
+    },
+    {
+      "name": "income",
+      "description": "Budget",
+      "unit": "currency",
+      "missing": 0
+    },
+    {
+      "name": "px",
+      "description": "Price X",
+      "unit": "currency/X",
+      "missing": 0
+    },
+    {
+      "name": "py",
+      "description": "Price Y",
+      "unit": "currency/Y",
+      "missing": 0
+    },
+    {
+      "name": "alpha",
+      "description": "X share",
+      "unit": "fraction",
+      "missing": 0
+    }
+  ]
+}

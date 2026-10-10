@@ -1,0 +1,38 @@
+{
+  "filename": "firm_panel.xlsx",
+  "description": "Balanced panel of 60 synthetic firms observed in 2015–2020; keep firm-year order.",
+  "observation_unit": "One synthetic firm-year",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "firm",
+      "description": "Synthetic firm identifier; panel and cluster unit, 0–59.",
+      "unit": "Identifier",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "year",
+      "description": "Recorded calendar year, 2015–2020.",
+      "unit": "Calendar year",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "trend",
+      "description": "Calendar year minus 2015, taking values 0–5.",
+      "unit": "Years since 2015",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "investment",
+      "description": "Firm investment per worker.",
+      "unit": "Thousand hypothetical currency units per worker",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "productivity",
+      "description": "Synthetic firm productivity index.",
+      "unit": "Index points",
+      "missing": "None in the supplied workbook"
+    }
+  ]
+}

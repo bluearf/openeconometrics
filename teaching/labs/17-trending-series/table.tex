@@ -1,0 +1,39 @@
+\begin{table}[htbp]
+\centering
+\caption{Independent synthetic series: levels versus changes}
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Dependent variable: & index\_y & change\_y \\
+ & (1) & (2) \\
+ & Levels (spurious) & First differences \\
+\midrule
+index\_x & $0.954$ &  \\
+ & $(0.017)$ &  \\[0.35em]
+change\_x &  & $-0.015$ \\
+ &  & $(0.067)$ \\[0.35em]
+Constant & $-22.359$ & $0.316$ \\
+ & $(2.503)$ & $(0.069)$ \\[0.35em]
+\midrule
+Observations & 240 & 239 \\
+$R^{2}$ & 0.929 & $2.682 \times 10^{-4}$ \\
+$\text{Adjusted }R^{2}$ & 0.929 & -0.004 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\footnotesize
+\raggedright
+\textit{Notes:} Standard errors are in parentheses.\par
+(1) OLS: conventional standard errors; Student t inference (df = 238); 95\% confidence level (alpha = 0.05); estimation sample 240 of 240 observations; model F(1, 238) = 3135.73, p = 4.97186e-139.\par
+(2) OLS: HC3 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1; Student t inference (df = 237); 95\% confidence level (alpha = 0.05); estimation sample 239 of 239 observations; model F(1, 237) = 0.052755, p = 0.818535.\par
+Different outcomes and samples; coefficients are not the same estimand.\par
+The usual level-regression significance is misleading for independent nonstationary series.\par
+\end{minipage}
+\endgroup
+\end{table}

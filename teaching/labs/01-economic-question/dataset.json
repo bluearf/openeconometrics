@@ -1,0 +1,32 @@
+{
+  "filename": "training_and_wages.xlsx",
+  "description": "Fixed training participation, prior skill and follow-up wages for descriptive comparison and standardization.",
+  "observation_unit": "One synthetic worker observed once.",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "worker_id",
+      "description": "Worker identifier from 1 to 600; a row label, not an economic regressor.",
+      "unit": "Identifier",
+      "missing": "No missing values."
+    },
+    {
+      "name": "prior_skill",
+      "description": "Prior skill category measured before participation: 0 = lower, 1 = higher.",
+      "unit": "Binary indicator (0 or 1)",
+      "missing": "No missing values."
+    },
+    {
+      "name": "trained",
+      "description": "Observed training participation: 1 = participant, 0 = nonparticipant.",
+      "unit": "Binary indicator (0 or 1)",
+      "missing": "No missing values."
+    },
+    {
+      "name": "hourly_wage",
+      "description": "Follow-up hourly earnings at one common date.",
+      "unit": "Hypothetical currency units per hour",
+      "missing": "No missing values."
+    }
+  ]
+}

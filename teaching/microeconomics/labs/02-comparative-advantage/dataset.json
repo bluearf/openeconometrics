@@ -1,0 +1,33 @@
+{
+  "filename": "comparative_advantage.xlsx",
+  "description": "Comparative Advantage and Trading Prices; original synthetic teaching data.",
+  "observation_unit": "One synthetic economy and its unit labor requirements.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720002,
+  "columns": [
+    {
+      "name": "economy",
+      "description": "Economy label",
+      "unit": "A or B",
+      "missing": 0
+    },
+    {
+      "name": "labor_x",
+      "description": "Labor required per X",
+      "unit": "hours/X",
+      "missing": 0
+    },
+    {
+      "name": "labor_y",
+      "description": "Labor required per Y",
+      "unit": "hours/Y",
+      "missing": 0
+    },
+    {
+      "name": "hours",
+      "description": "Available labor",
+      "unit": "hours",
+      "missing": 0
+    }
+  ]
+}

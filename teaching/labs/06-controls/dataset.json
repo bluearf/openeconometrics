@@ -1,0 +1,38 @@
+{
+  "filename": "wages_and_controls.xlsx",
+  "description": "Fixed education, experience and earnings with twelve missing experience reports to teach common-sample comparison.",
+  "observation_unit": "One synthetic worker observed once.",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "worker_id",
+      "description": "Worker identifier from 1 to 600; preserves the selected workers.",
+      "unit": "Identifier",
+      "missing": "No missing values."
+    },
+    {
+      "name": "education",
+      "description": "Completed years of schooling from 10 through 18.",
+      "unit": "Years",
+      "missing": "No missing values."
+    },
+    {
+      "name": "experience",
+      "description": "Work experience between 2 and 40 years when observed.",
+      "unit": "Years",
+      "missing": "Twelve blank reports for worker IDs 1, 51, 101, 151, 201, 251, 301, 351, 401, 451, 501 and 551; retain the blanks in the workbook, then select a common complete-case sample before both primary fits."
+    },
+    {
+      "name": "log_earnings",
+      "description": "Natural logarithm of hourly earnings measured in the stated currency unit.",
+      "unit": "Natural log of hypothetical currency units per hour",
+      "missing": "No missing values."
+    },
+    {
+      "name": "hourly_earnings",
+      "description": "Hourly earnings; equals exp(log_earnings).",
+      "unit": "Hypothetical currency units per hour",
+      "missing": "No missing values."
+    }
+  ]
+}

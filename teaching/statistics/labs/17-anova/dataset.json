@@ -1,0 +1,27 @@
+{
+  "filename": "training_formats.xlsx",
+  "description": "Comparing Three Training Formats; original synthetic teaching data.",
+  "observation_unit": "One synthetic independently assigned trainee.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710017,
+  "columns": [
+    {
+      "name": "trainee_id",
+      "description": "Trainee identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "format",
+      "description": "Assigned format",
+      "unit": "A, B or C",
+      "missing": 0
+    },
+    {
+      "name": "score",
+      "description": "Post-training test score",
+      "unit": "points",
+      "missing": 0
+    }
+  ]
+}

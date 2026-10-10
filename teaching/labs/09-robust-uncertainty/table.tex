@@ -1,0 +1,38 @@
+\begin{table}[htbp]
+\centering
+\caption{Same Coefficient, Different Standard Error?: original synthetic data}
+\label{tab:09-robust-uncertainty}
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Dependent variable: & spending & spending & spending \\
+ & (1) & (2) & (3) \\
+ & nonrobust & HC1 & HC3 \\
+\midrule
+income\_thousands & $44.1692$ & $44.1692$ & $44.1692$ \\
+ & $(1.3665)$ & $(1.3697)$ & $(1.3755)$ \\[0.35em]
+Constant & $120.8442$ & $120.8442$ & $120.8442$ \\
+ & $(8.5606)$ & $(6.1841)$ & $(6.2086)$ \\[0.35em]
+\midrule
+Observations & 420 & 420 & 420 \\
+$R^{2}$ & 0.7142 & 0.7142 & 0.7142 \\
+$\text{Adjusted }R^{2}$ & 0.7136 & 0.7136 & 0.7136 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\footnotesize
+\raggedright
+\textit{Notes:} Standard errors are in parentheses.\par
+(1) OLS: conventional standard errors; Student t inference (df = 418); 95\% confidence level (alpha = 0.05); estimation sample 420 of 420 observations; model F(1, 418) = 1044.77, p = 9.28299e-116.\par
+(2) OLS: HC1 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1.00478; Student t inference (df = 418); 95\% confidence level (alpha = 0.05); estimation sample 420 of 420 observations; model F(1, 418) = 1039.88, p = 1.87004e-115.\par
+(3) OLS: HC3 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1; Student t inference (df = 418); 95\% confidence level (alpha = 0.05); estimation sample 420 of 420 observations; model F(1, 418) = 1031.17, p = 6.55386e-115.\par
+Original synthetic observations. Inference conventions and exact estimation samples are retained in the model notes; no empirical policy claim.\par
+\end{minipage}
+\endgroup
+\end{table}

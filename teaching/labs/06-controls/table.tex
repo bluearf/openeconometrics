@@ -1,0 +1,39 @@
+\begin{table}[htbp]
+\centering
+\caption{Education and synthetic log hourly earnings: a common sample}
+\label{tab:lab06}
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Dependent variable: & log\_earnings & log\_earnings \\
+ & (1) & (2) \\
+ & Education only & Education and experience \\
+\midrule
+Education (years) & $0.0458$ & $0.0817$ \\
+ & $(0.0045)$ & $(0.0043)$ \\[0.35em]
+Experience (years) &  & $0.0290$ \\
+ &  & $(0.0015)$ \\[0.35em]
+Constant & $2.2443$ & $1.1695$ \\
+ & $(0.0654)$ & $(0.0803)$ \\[0.35em]
+\midrule
+Observations & 588 & 588 \\
+$R^{2}$ & 0.1408 & 0.4490 \\
+$\text{Adjusted }R^{2}$ & 0.1393 & 0.4471 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\footnotesize
+\raggedright
+\textit{Notes:} Standard errors are in parentheses.\par
+(1) OLS: HC1 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1.00341; Student t inference (df = 586); 95\% confidence level (alpha = 0.05); estimation sample 588 of 588 observations; model F(1, 586) = 103.246, p = 1.88895e-22.\par
+(2) OLS: HC1 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1.00513; Student t inference (df = 585); 95\% confidence level (alpha = 0.05); estimation sample 588 of 588 observations; model F(2, 585) = 237.268, p = 3.52181e-76.\par
+Original synthetic workers. Both models use the same 588 complete cases. HC1 standard errors; 95 percent Student-t inference. Estimates are not population evidence.\par
+\end{minipage}
+\endgroup
+\end{table}

@@ -1,0 +1,45 @@
+{
+  "filename": "specification_report.xlsx",
+  "description": "A Reproducible Treatment-Effect Report; original synthetic teaching data.",
+  "observation_unit": "One synthetic independent unit; dependence is stated explicitly where groups are supplied.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 730020,
+  "columns": [
+    {
+      "name": "row_id",
+      "description": "Stable record identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "x",
+      "description": "Predetermined baseline covariate",
+      "unit": "baseline units",
+      "missing": 0
+    },
+    {
+      "name": "z",
+      "description": "Second predetermined baseline covariate",
+      "unit": "baseline units",
+      "missing": 0
+    },
+    {
+      "name": "y",
+      "description": "Outcome",
+      "unit": "outcome units",
+      "missing": 0
+    },
+    {
+      "name": "treat",
+      "description": "Randomized treatment",
+      "unit": "0 or 1",
+      "missing": 0
+    },
+    {
+      "name": "interaction",
+      "description": "Treatment times centered baseline",
+      "unit": "treat \u00d7 baseline",
+      "missing": 0
+    }
+  ]
+}

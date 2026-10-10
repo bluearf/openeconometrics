@@ -1,0 +1,221 @@
+{
+  "metadata": {
+    "lab": "20-statistical-report",
+    "title": "From a Question to a Statistical Report",
+    "synthetic": true,
+    "data_file": "campus_cafe_offer.xlsx",
+    "raw_rows": 240
+  },
+  "summary": {
+    "randomized_customers": 240,
+    "spending_observed": 234,
+    "spending_missing": 6,
+    "n_A_spending": 120,
+    "n_B_spending": 114,
+    "mean_A_spending": 17.31274697760115,
+    "mean_B_spending": 19.470561128757552,
+    "spending_difference_A_minus_B": -2.1578141511564013,
+    "welch_se": 0.7539168944229289,
+    "welch_df": 225.91823125668787,
+    "welch_t": -2.862137945334227,
+    "primary_p": 0.004603237289816583,
+    "primary_ci_low": -3.643422531875422,
+    "primary_ci_high": -0.672205770437384,
+    "return_rate_difference_A_minus_B": 0.024999999999999967,
+    "secondary_p": 0.6738080872067587,
+    "holm_primary_p": 0.009206474579633165,
+    "holm_secondary_p": 0.6738080872067587
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "tables": {
+        "statistics": {
+          "index": [
+            "A",
+            "B",
+            "combined"
+          ],
+          "columns": [
+            "n",
+            "mean",
+            "std_dev",
+            "std_error",
+            "ci_low",
+            "ci_high"
+          ],
+          "values": [
+            [
+              120.0,
+              17.31274697760115,
+              5.421421954752683,
+              0.4949058497286327,
+              16.33278396569567,
+              18.292709989506633
+            ],
+            [
+              114.0,
+              19.470561128757556,
+              6.072422311605072,
+              0.5687344578981423,
+              18.343795591047414,
+              20.597326666467698
+            ],
+            [
+              234.0,
+              18.36398976919017,
+              5.8363335220749155,
+              0.3815330579089192,
+              17.61229425456937,
+              19.11568528381097
+            ]
+          ],
+          "attrs": {}
+        },
+        "test": {
+          "index": [
+            "equal_variances",
+            "unequal_variances"
+          ],
+          "columns": [
+            "statistic",
+            "df",
+            "p_value",
+            "p_less",
+            "p_greater",
+            "mean_difference",
+            "std_error",
+            "ci_low",
+            "ci_high"
+          ],
+          "values": [
+            [
+              -2.8704725891329717,
+              232.0,
+              0.004477398202307744,
+              0.002238699101153872,
+              0.9977613008988462,
+              -2.157814151156403,
+              0.7517278371949799,
+              -3.6388998606080607,
+              -0.6767284417047457
+            ],
+            [
+              -2.862137945334227,
+              225.91823125668787,
+              0.004603237289816583,
+              0.0023016186449082913,
+              0.9976983813550917,
+              -2.157814151156403,
+              0.7539168944229289,
+              -3.643422531875422,
+              -0.672205770437384
+            ]
+          ],
+          "attrs": {}
+        },
+        "levene": {
+          "index": [
+            "levene_mean"
+          ],
+          "columns": [
+            "statistic",
+            "df1",
+            "df2",
+            "p_value"
+          ],
+          "values": [
+            [
+              1.000601127380557,
+              1.0,
+              232.0,
+              0.31820726172169644
+            ]
+          ],
+          "attrs": {}
+        },
+        "effect_sizes": {
+          "index": [
+            "cohens_d",
+            "hedges_g",
+            "glass_delta"
+          ],
+          "columns": [
+            "standardizer",
+            "estimate"
+          ],
+          "values": [
+            [
+              5.7477219790005645,
+              -0.3754207595704919
+            ],
+            [
+              5.766386783584882,
+              -0.3742055869888978
+            ],
+            [
+              6.072422311605072,
+              -0.35534652243019743
+            ]
+          ],
+          "attrs": {}
+        }
+      },
+      "attrs": {
+        "kind": "independent",
+        "statistic": -2.8704725891329717,
+        "df": 232.0,
+        "p_value": 0.004477398202307744,
+        "p_less": 0.002238699101153872,
+        "p_greater": 0.9977613008988462,
+        "one_sided_p_value": 0.002238699101153872,
+        "distribution": "t",
+        "n": 234,
+        "n_missing": 0,
+        "mu": 0.0,
+        "alpha": 0.05,
+        "groups": [
+          "A",
+          "B"
+        ],
+        "cohens_d": -0.3754207595704919,
+        "hedges_g": -0.3742055869888978,
+        "glass_delta": -0.35534652243019743,
+        "glass_delta_first": -0.39801627122285843,
+        "levene_statistic": 1.000601127380557,
+        "levene_p_value": 0.31820726172169644,
+        "missing": "listwise"
+      }
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "bar",
+        "title": "From a Question to a Statistical Report",
+        "xlabel": "Randomized offer",
+        "ylabel": "Observed mean spending (currency)",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              "A",
+              "B"
+            ],
+            "y": [
+              17.31274697760115,
+              19.470561128757552
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "primary_welch_se": true,
+    "primary_t_uses_same_rows": true,
+    "sample_accounting": true,
+    "holm_does_not_reduce_p": true,
+    "distinct_customer_ids": true
+  }
+}
