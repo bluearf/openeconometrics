@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_commit": "6768c16e9ac6e32d31176d0dd24c1c0932921218",
+  "source_commit": "623d13b4922eeed80c25f72cd1dea795fc286191",
   "publication_state": "prepared source snapshot; public access requires separate verification",
   "history": "new snapshot only; private Git history, branches, PRs and issues excluded",
   "research_data": "external fixture bytes excluded; obtain separately from original providers under their terms",
@@ -994,8 +994,8 @@
     {
       "path": "docs/capabilities.md",
       "bytes": 83935,
-      "sha256": "97bcfece69049c91f65ed2c76d54b83b48491d798ecac445d60f5c4ce571ccd5",
-      "original_sha256": "97bcfece69049c91f65ed2c76d54b83b48491d798ecac445d60f5c4ce571ccd5",
+      "sha256": "1a07e29f61d8cdf26c0bae2195a02dfbc45fc5446709452b092440adc2acacdf",
+      "original_sha256": "1a07e29f61d8cdf26c0bae2195a02dfbc45fc5446709452b092440adc2acacdf",
       "transformed": false
     },
     {
@@ -1162,8 +1162,8 @@
     {
       "path": "docs/econometrics/capabilities.generated.json",
       "bytes": 734991,
-      "sha256": "496206f9ecf981f8c3f189d896e38a97845122cfb6c98fa8c47cc3b7016fe175",
-      "original_sha256": "3380a7d38b9ba2edbcb05eeb016853654bed725367ed557eaf52c43f89cbd5f5",
+      "sha256": "949d3a923053b4c6b0ae0234dc7a70be4d03da9340cec6d1fcc9163dd9df37df",
+      "original_sha256": "88c6ba1c2e216e49e7639f95a54c240d41d4c7dedb71cc25b5906c65d28459f4",
       "transformed": true
     },
     {
@@ -8678,6 +8678,13 @@
       "transformed": false
     },
     {
+      "path": "docs/validation/actions-performance-2026-10-09.md",
+      "bytes": 6834,
+      "sha256": "32cec74207396e634b42238ff5e662bfa9dbd61df9e69c822d622d27300c9369",
+      "original_sha256": "32cec74207396e634b42238ff5e662bfa9dbd61df9e69c822d622d27300c9369",
+      "transformed": false
+    },
+    {
       "path": "docs/validation/ci-cadence.md",
       "bytes": 2655,
       "sha256": "5dcf7f9642a120ff543803ab25a9bb2ec3887522117d384639ff1f01c7d3b9d0",
@@ -9141,9 +9148,9 @@
     },
     {
       "path": "pyproject.toml",
-      "bytes": 2344,
-      "sha256": "16bd37eb38df4e6665a2bc502271b003a34c0334e9305944d1bdd3be34e02182",
-      "original_sha256": "bb79d122146d3dac7ffdde205faff72a8fd6970e57c20cf204d0500534f1c5fb",
+      "bytes": 2670,
+      "sha256": "7c58a3355b16f7581d071be8fbefb56cb06e1afd87d5578cf4a1afed7d343092",
+      "original_sha256": "cd2ab046a0a202447aba7dd442aca600d1224f513797b8a5d9bfb59ba8502076",
       "transformed": true
     },
     {
@@ -10159,6 +10166,13 @@
       "bytes": 3239,
       "sha256": "8cd96a0ccfec5709f89b2c2a37e3b06645b5e79c2e283d6b0e5f1eb9e8c2fa46",
       "original_sha256": "8cd96a0ccfec5709f89b2c2a37e3b06645b5e79c2e283d6b0e5f1eb9e8c2fa46",
+      "transformed": false
+    },
+    {
+      "path": "scripts/verify_ci_preflight.py",
+      "bytes": 2369,
+      "sha256": "bbb10a4d6c8a3cf9047f5dde0763c927ff12134a3e69a264e9ddf0fbba8db8e9",
+      "original_sha256": "bbb10a4d6c8a3cf9047f5dde0763c927ff12134a3e69a264e9ddf0fbba8db8e9",
       "transformed": false
     },
     {
@@ -17421,6 +17435,13 @@
       "transformed": false
     },
     {
+      "path": "tests/test_ci_preflight.py",
+      "bytes": 3566,
+      "sha256": "76c618168d11b10f538cfa382f1a5fa029285e721cba83552226aef9eb9fa6fe",
+      "original_sha256": "76c618168d11b10f538cfa382f1a5fa029285e721cba83552226aef9eb9fa6fe",
+      "transformed": false
+    },
+    {
       "path": "tests/test_cleanup_releases.py",
       "bytes": 29650,
       "sha256": "4505c424992a19d5c8d46201c60469a3169ef2180d900164896469810bc3a3f5",
@@ -21881,9 +21902,9 @@
     },
     {
       "path": "uv.lock",
-      "bytes": 418404,
-      "sha256": "b1d47ef763035993734ec6b57b60b612fbafd99e9c656ea801495c8227849c47",
-      "original_sha256": "b1d47ef763035993734ec6b57b60b612fbafd99e9c656ea801495c8227849c47",
+      "bytes": 423958,
+      "sha256": "989c86bcd08922637a2ba53745eec17b31905507de5ad3197a417ba5b4cc0db0",
+      "original_sha256": "989c86bcd08922637a2ba53745eec17b31905507de5ad3197a417ba5b4cc0db0",
       "transformed": false
     },
     {
@@ -23673,8 +23694,8 @@
     {
       "document": "docs/econometrics/capabilities.generated.json",
       "field": "source_fingerprints.pyproject.toml",
-      "original": "bb79d122146d3dac7ffdde205faff72a8fd6970e57c20cf204d0500534f1c5fb",
-      "published": "16bd37eb38df4e6665a2bc502271b003a34c0334e9305944d1bdd3be34e02182",
+      "original": "cd2ab046a0a202447aba7dd442aca600d1224f513797b8a5d9bfb59ba8502076",
+      "published": "7c58a3355b16f7581d071be8fbefb56cb06e1afd87d5578cf4a1afed7d343092",
       "reason": "exact derived fingerprint of the recorded public-only private-fixture omission; all capability fields and production source retained"
     }
   ],
@@ -30455,5 +30476,5 @@
     "tests/fixtures/supervised-cart-native-reference.json",
     "tests/fixtures/supervised-cart-native-source-inputs.json"
   ],
-  "source_files_sha256": "714288273203bc711b82ef0145dc692bfc8724b5c55fd2c2ea414090512b6375"
+  "source_files_sha256": "ee67fc4f87d3ac334022834e807b1eef4b09b67457d5660815d530ddc79382d6"
 }

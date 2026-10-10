@@ -54,11 +54,22 @@ include = [
   "scripts", "benchmarks", "packages/openecon-charts", "README.md", "PYPI-README.md", "LICENSE", "NOTICE", "THIRD_PARTY.md", "CONTRIBUTING.md", "SECURITY.md", "web/public", "pyproject.toml", "uv.lock", ".python-version", "SOURCE-MANIFEST.json", "PUBLIC-SOURCE.md"
 ]
 
+[tool.uv]
+constraint-dependencies = [
+  "torch==2.14.0+cpu ; sys_platform == 'linux' and platform_machine == 'x86_64'"
+]
+
 [tool.uv.workspace]
 members = ["packages/openecon-charts"]
 
 [tool.uv.sources]
 openecon-charts = { workspace = true }
+torch = { index = "pytorch-cpu", marker = "sys_platform == 'linux' and platform_machine == 'x86_64'" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "packages/openecon-charts/tests"]
