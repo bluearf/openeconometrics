@@ -28,11 +28,23 @@ ROOT_FILES = {
     "NOTICE",
     "THIRD_PARTY.md",
     "CONTRIBUTING.md",
+    "AGENTS.md",
     "SECURITY.md",
     "pyproject.toml",
     "uv.lock",
     ".python-version",
     ".gitignore",
+}
+PLUGIN_FILES = {
+    ".agents/plugins/marketplace.json",
+    *{
+        "plugins/openeconometrics/" + name
+        for name in (
+            ".codex-plugin/plugin.json", ".mcp.json", "LICENSE", "README.md",
+            "assets/icon.png", "mcp.json", "plugin.json", "scripts/launch_mcp.py",
+            "skills/openeconometrics/SKILL.md", "skills/openeconometrics/references/setup.md",
+        )
+    },
 }
 DIRECTORIES = {
     "src",
@@ -51,12 +63,37 @@ def digest(value):
     return hashlib.sha256(value).hexdigest()
 
 
+def teaching_workbook(path):
+    """Publish only named, original workbooks declared by the four course catalogues."""
+    match = re.fullmatch(
+        r"docs/teaching/(?:(statistics|microeconomics|advanced-econometrics)/)?"
+        r"labs/([0-9]{2}-[a-z0-9-]+)/([a-z0-9_]+\.xlsx)", path,
+    )
+    if match is None:
+        return False
+    course, slug, filename = match.groups()
+    directory = ROOT / "docs/teaching" / (course or "")
+    catalogue = directory / "catalog.json"
+    metadata = directory / "labs" / slug / "dataset.json"
+    if not catalogue.is_file() or not metadata.is_file():
+        return False
+    declared = any(
+        lab.get("slug") == slug and lab.get("data_mode") == "prepared_excel"
+        and lab.get("data_file") == filename
+        for lab in json.loads(catalogue.read_text())["labs"]
+    )
+    record = json.loads(metadata.read_text())
+    return declared and record.get("filename") == filename and record.get("source", "").startswith(
+        ("Original synthetic OpenEconometrics teaching data;", "Original OpenEconometrics teaching simulation.")
+    )
+
+
 def included(path):
     """Positive source allowlist, with publication boundaries made explicit."""
-    if path in ROOT_FILES:
+    if path in ROOT_FILES or path in PLUGIN_FILES:
         return True
     parts = Path(path).parts
-    if parts[0] not in DIRECTORIES:
+    if not parts or any(part == ".." for part in parts) or parts[0] not in DIRECTORIES:
         return False
     if any(part == ".env" or part.startswith(".env.") for part in parts):
         return False
@@ -88,7 +125,7 @@ def included(path):
         ".pfx",
         ".dmg",
     }:
-        return path == "src/openecon/examples/wages.csv"
+        return path == "src/openecon/examples/wages.csv" or teaching_workbook(path)
     return True
 
 
@@ -196,6 +233,23 @@ def archive_source(tree: Path, archive: Path):
                     handle.addfile(entry, io.BytesIO(data))
 
 
+def public_capability_fingerprint(data: bytes, original_config: bytes, published_config: bytes):
+    """Update only the derived fingerprint of the recorded public build transformation."""
+    if original_config == published_config:
+        return data, []
+    value = json.loads(data)
+    original, published = digest(original_config), digest(published_config)
+    if value["source_fingerprints"]["pyproject.toml"] != original:
+        raise ValueError("Capability fingerprint differs from the reviewed source configuration")
+    value["source_fingerprints"]["pyproject.toml"] = published
+    return (json.dumps(value, indent=2, ensure_ascii=False, sort_keys=True) + "\n").encode(), [{
+        "document": "docs/econometrics/capabilities.generated.json",
+        "field": "source_fingerprints.pyproject.toml",
+        "original": original, "published": published,
+        "reason": "exact derived fingerprint of the recorded public-only private-fixture omission; all capability fields and production source retained",
+    }]
+
+
 PUBLIC_TEST_POLICY = r"""
 
 # Public snapshot policy: external research fixture bytes are distributed by
@@ -283,6 +337,16 @@ def prepare(output: Path, ref="HEAD"):
                 "transformed": True,
             }
         )
+    fingerprint_updates = []
+    capability = tree / "docs/econometrics/capabilities.generated.json"
+    if private_sdist_fixtures and capability.is_file():
+        original_config = subprocess.check_output(["git", "show", "HEAD:pyproject.toml"], cwd=ROOT)
+        data, fingerprint_updates = public_capability_fingerprint(
+            capability.read_bytes(), original_config, (tree / "pyproject.toml").read_bytes(),
+        )
+        capability.write_bytes(data)
+        record = next(row for row in records if row["path"] == "docs/econometrics/capabilities.generated.json")
+        record.update(bytes=len(data), sha256=digest(data), transformed=digest(data) != record["original_sha256"])
     manifest = {
         "schema_version": 1,
         "source_commit": commit,
@@ -293,6 +357,7 @@ def prepare(output: Path, ref="HEAD"):
         "files": records,
         "internal_evidence_link_boundaries": evidence_links,
         "source_distribution_private_fixture_omissions": private_sdist_fixtures,
+        "public_build_configuration_fingerprint_updates": fingerprint_updates,
         "excluded_paths": excluded,
         "source_files_sha256": digest(json.dumps(records, sort_keys=True).encode()),
     }

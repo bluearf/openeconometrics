@@ -10,6 +10,8 @@ import pandas as pd
 import pytest
 import torch
 
+from scripts.torch_test_state import preserve_torch_default_device
+
 from openecon.analysis_contracts import AnalysisError
 from openecon.econometrics.discrete import nested_logit as nl
 from openecon.resources import use_workspace_budget
@@ -355,18 +357,18 @@ def test_work_and_memory_rejected_before_model_tensor(data, monkeypatch):
 
 
 def test_explicit_cpu_and_float64_ignore_default_device_dtype(data):
-    dtype, device = torch.get_default_dtype(), torch.get_default_device()
-    try:
-        torch.set_default_dtype(torch.float32)
-        torch.set_default_device("meta")
-        model = fit(data, fixed_dissimilarity={"A": 1., "B": 1.})
-        restored = nl.nlogit_restore(portable(model))
-        assert restored.attrs == model.attrs
-        assert state(model)["settings"]["device"] == "cpu"
-        assert state(model)["settings"]["precision"] == "float64"
-    finally:
-        torch.set_default_device(device)
-        torch.set_default_dtype(dtype)
+    dtype = torch.get_default_dtype()
+    with preserve_torch_default_device():
+        try:
+            torch.set_default_dtype(torch.float32)
+            torch.set_default_device("meta")
+            model = fit(data, fixed_dissimilarity={"A": 1., "B": 1.})
+            restored = nl.nlogit_restore(portable(model))
+            assert restored.attrs == model.attrs
+            assert state(model)["settings"]["device"] == "cpu"
+            assert state(model)["settings"]["precision"] == "float64"
+        finally:
+            torch.set_default_dtype(dtype)
 
 
 def test_typed_nests_fixed_declarations_and_cases_survive_json(data):

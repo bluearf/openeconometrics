@@ -12,7 +12,7 @@ import {
   ApiError,
   download,
   loadWorkspaceBootstrap,
-  isExecutionAccepted,
+  CLOUD_EXECUTION_RETIRED,
   submitWorkspaceExecution,
   localClient,
   workspaceDownloadPath,
@@ -560,7 +560,9 @@ export interface WorkbenchControls {
 interface AppProps {
   client?: WorkspaceClient;
   readOnly?: boolean;
-  isolatedRuns?: boolean;
+  /** Browser team view: files, drafts and shared results sync, but analyses
+   * run only in the desktop app. The cloud service never executes code. */
+  syncOnly?: boolean;
   projectName?: string;
   toolbarTarget?: HTMLElement | null;
   onControls?: (controls: WorkbenchControls | null) => void;
@@ -568,7 +570,7 @@ interface AppProps {
 function App({
   client = localClient,
   readOnly = false,
-  isolatedRuns = false,
+  syncOnly = false,
   projectName,
   toolbarTarget,
   onControls,
@@ -589,7 +591,6 @@ function App({
   const [conflictBusy, setConflictBusy] = useState(false);
   const [conflictError, setConflictError] = useState("");
   const mounted = useRef(true);
-  const [cloud, setCloud] = useState(false);
   const [code, setCode] = useState(STARTER),
     [savedCode, setSavedCode] = useState(""),
     [saveState, setSaveState] = useState("Connecting");
@@ -714,7 +715,6 @@ function App({
   const busy = useRef(false),
     initialized = useRef(false);
   const serverRunning = useRef(false);
-  const acceptedRun = useRef<string | null>(null);
   const stateResponses = useRef(new ResponseGate());
   const agentResponses = useRef(new ResponseGate());
   const agentRequest = useRef<AbortController | null>(null);
@@ -1006,30 +1006,17 @@ function App({
       )
         return s;
       setHistory(s.history);
-      const completed = acceptedRun.current
-        ? s.history.find((record) => record.id === acceptedRun.current)
-        : null;
-      if (completed) {
-        acceptedRun.current = null;
-        setSelectedId(completed.id);
-        setOutputTab(
-          completed.status !== "ok" || !completed.outputs.length
-            ? "log"
-            : "results",
-        );
-      } else {
-        const incoming = incomingAgentSelection(
-          historyRef.current,
-          s.history,
-          selectedIdRef.current,
-        );
-        if (incoming) {
-          setSelectedId(incoming);
-          setOutputTab("results");
-        }
+      const incoming = incomingAgentSelection(
+        historyRef.current,
+        s.history,
+        selectedIdRef.current,
+      );
+      if (incoming) {
+        setSelectedId(incoming);
+        setOutputTab("results");
       }
       historyRef.current = s.history;
-      setVariables(isolatedRuns ? [] : s.variables);
+      setVariables(syncOnly ? [] : s.variables);
       setGeneration(s.status.session_generation);
       serverRunning.current = s.status.running;
       setRunning(busy.current || s.status.running);
@@ -1055,7 +1042,7 @@ function App({
       }
       throw failure;
     }
-  }, [api, isolatedRuns]);
+  }, [api, syncOnly]);
   useEffect(() => {
     setConfig(null);
     setShowAgent(false);
@@ -1070,7 +1057,6 @@ function App({
     let active = true;
     mounted.current = true;
     stateResponses.current.invalidate();
-    acceptedRun.current = null;
     initialized.current = false;
     layoutBusyRef.current = false;
     layoutOperation.current = null;
@@ -1114,11 +1100,8 @@ function App({
           !readOnly && !session.read_only,
           selectedFile,
         );
-        setCloud(
-          session.environment === "cloud" || session.environment === "team",
-        );
         setHistory(initialConsole?.history ?? []);
-        setVariables(isolatedRuns ? [] : (initialConsole?.variables ?? []));
+        setVariables(syncOnly ? [] : (initialConsole?.variables ?? []));
         setGeneration(status.session_generation);
         setRunning(status.running);
         serverRunning.current = status.running;
@@ -1143,7 +1126,7 @@ function App({
     client,
     initializeDraft,
     readOnly,
-    isolatedRuns,
+    syncOnly,
     refreshState,
     api,
     scriptSelectionKey,
@@ -1214,8 +1197,7 @@ function App({
     if (
       !ready ||
       accessLost ||
-      (client.teams && !client.desktop) ||
-      (cloud && !client.desktop)
+      (client.teams && !client.desktop)
     )
       return;
     const watcher = watchResultRevisions({
@@ -1236,8 +1218,12 @@ function App({
       },
     });
     return () => watcher.dispose();
-  }, [ready, accessLost, client, cloud, api, refreshState]);
+  }, [ready, accessLost, client, api, refreshState]);
   async function execute(source: string, scriptId?: string) {
+    if (syncOnly) {
+      setError(CLOUD_EXECUTION_RETIRED);
+      return;
+    }
     if (
       cannotEdit ||
       !source.trim() ||
@@ -1252,8 +1238,6 @@ function App({
       return;
     editor.current?.cancelInlineSuggestion();
     inlineProvider?.cancelAll();
-    if (isolatedRuns && scriptId !== undefined)
-      source = editor.current?.getCode() || code;
     busy.current = true;
     qaStart("run");
     stateResponses.current.invalidate();
@@ -1266,17 +1250,6 @@ function App({
       if (!mounted.current) return;
       // Polls or the initial history request may predate this new record.
       stateResponses.current.invalidate();
-      if (isExecutionAccepted(r)) {
-        acceptedRun.current = r.id;
-        serverRunning.current = true;
-        setRunning(true);
-        setSelectedId(r.id);
-        setOutputTab("results");
-        setMobilePane("output");
-        // No placeholder record: only /console supplies validated output.
-        void refreshState().catch(() => {});
-        return;
-      }
       setHistory((items) => [...items.filter((x) => x.id !== r.id), r]);
       qaPaint("run");
       setSelectedId(r.id);
@@ -1287,8 +1260,8 @@ function App({
       if (mounted.current) {
         setError(errorMessage(e));
         if (client.teams && (!(e instanceof ApiError) || e.status >= 500)) {
-          // A lost acceptance response may still have launched a task. Keep
-          // polling the durable lock instead of suggesting a second launch.
+          // A lost local response may leave the desktop run in progress. Keep
+          // polling the local console instead of suggesting a second run.
           stateResponses.current.invalidate();
           serverRunning.current = true;
           void refreshState().catch(() => {});
@@ -1311,7 +1284,7 @@ function App({
     }
   }
   async function interrupt() {
-    if (cannotEdit) return;
+    if (cannotEdit || syncOnly) return;
     stateResponses.current.invalidate();
     try {
       await api("/console/interrupt", { method: "POST" });
@@ -1321,7 +1294,7 @@ function App({
     }
   }
   async function reset() {
-    if (cannotEdit || isolatedRuns) return;
+    if (cannotEdit || syncOnly) return;
     setShowReset(false);
     stateResponses.current.invalidate();
     try {
@@ -1872,10 +1845,10 @@ function App({
         {nativeWorkspace && (
           <InlineSuggestionsSettings onStatusChange={setSuggestionsStatus} />
         )}
-        {!isolatedRuns && (
+        {!syncOnly && (
           <button onClick={() => setShowVariables(true)}>Variables</button>
         )}
-        {!isolatedRuns && (
+        {!syncOnly && (
           <button
             disabled={!ready || cannotEdit}
             onClick={() => void openAgent()}
@@ -1965,12 +1938,6 @@ function App({
           >
             Download local layout and open latest layout
           </button>
-        </div>
-      )}
-      {cloud && !isolatedRuns && (
-        <div className="cloud-notice" role="note">
-          Temporary session. Files are deleted when the server restarts;
-          download any outputs you need.
         </div>
       )}
       <div className="mobile-switch">
@@ -2084,7 +2051,7 @@ function App({
                       ? "Modified"
                       : saveState}
                 </span>
-                {pythonFile && !isolatedRuns && (
+                {pythonFile && !syncOnly && (
                   <button
                     className="subtle-button selection-run"
                     disabled={
@@ -2101,7 +2068,17 @@ function App({
                     Run selection
                   </button>
                 )}
-                {running ? (
+                {syncOnly ? (
+                  pythonFile ? (
+                    <span
+                      className="desktop-run-note"
+                      role="note"
+                      title={CLOUD_EXECUTION_RETIRED}
+                    >
+                      Run in the desktop app
+                    </span>
+                  ) : null
+                ) : running ? (
                   <button
                     className="run-button"
                     disabled={cannotEdit}
@@ -2120,11 +2097,7 @@ function App({
                         activeScript.id,
                       )
                     }
-                    title={
-                      isolatedRuns
-                        ? "Run the entire file in a fresh Python environment (⌘/Ctrl + Enter)"
-                        : "Run the file (⌘/Ctrl + Shift + Enter)"
-                    }
+                    title="Run the file (⌘/Ctrl + Shift + Enter)"
                   >
                     <Symbol name="play" size={13} />
                     Run
@@ -2147,7 +2120,6 @@ function App({
                 if (!cannotEdit) setCode(value);
               }}
               readOnly={cannotEdit || !ready || fileBusy}
-              fullScriptOnly={isolatedRuns}
               onRun={(source) => void execute(source, activeScript.id)}
               onCursor={(line, column) => setCursor([line, column])}
               inlineSuggestionProvider={inlineProvider}
@@ -2354,7 +2326,7 @@ function App({
                       Add code
                     </button>
                   </div>
-                  {!isolatedRuns &&
+                  {!syncOnly &&
                     selected.source !== "mcp" &&
                     selected.session_generation !== generation && (
                       <p className="output-note historical-note">
@@ -2380,10 +2352,10 @@ function App({
                     </div>
                   )}
                   {selected.state_reset &&
-                    (!isolatedRuns || selected.status !== "ok") && (
+                    (!syncOnly || selected.status !== "ok") && (
                       <p className="output-warning">
-                        {isolatedRuns
-                          ? "This run’s environment has closed. Run the entire script to execute it again."
+                        {syncOnly
+                          ? "This shared result was produced on another computer. Run the script in the desktop app to reproduce it."
                           : "The session restarted. Run the code again to recreate its variables."}
                       </p>
                     )}
@@ -2458,7 +2430,7 @@ function App({
                         !selected.error && (
                           <div className="panel-empty">
                             <p>
-                              {isolatedRuns
+                              {syncOnly
                                 ? "No output. Use display(...) to show a result."
                                 : "No output."}
                             </p>
@@ -2469,7 +2441,7 @@ function App({
                 </>
               )}
             </div>
-            {!isolatedRuns && (
+            {!syncOnly && (
               <WorkspaceTerminal
                 ref={terminal}
                 projectId={client.projectId}
@@ -2490,9 +2462,7 @@ function App({
         </span>
         <span
           title={
-            isolatedRuns
-              ? "Each run starts in a fresh Python environment."
-              : "Python session"
+            syncOnly ? "Analyses run in the desktop app." : "Python session"
           }
         >
           Line {cursor[0]}, Column {cursor[1]}

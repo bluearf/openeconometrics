@@ -20,7 +20,7 @@ def static_client(tmp_path, monkeypatch):
     monkeypatch.setattr('openecon.team_server.files',
                         lambda package: tmp_path if package == 'openecon' else resource_files(package))
     origin = 'https://app.example.com'
-    app = create_team_app(store=None, storage=None, runner=None,
+    app = create_team_app(store=None, storage=None,
         auth=TeamAuth('openecon-test'), public_origin=origin,
         firebase_config={'projectId': 'openecon-test', 'authDomain': 'openecon-test.firebaseapp.com'})
     with TestClient(app, base_url=origin) as client:

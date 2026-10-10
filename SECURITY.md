@@ -7,8 +7,9 @@ option is unavailable, contact a repository maintainer privately before sharing
 sensitive details. No response-time or supported-version guarantee is implied.
 
 The local console executes trusted Python with the user's account permissions.
-Its separate worker process is not an operating-system security sandbox. Cloud
-sharing and desktop authentication require their own authorization checks.
+Its separate worker process is not an operating-system security sandbox. The
+cloud team service never executes code; its sharing and desktop authentication
+routes require their own authorization checks.
 
 Before publication, scan the exact source snapshot and intended Git history,
 review reported findings without exposing their values, and check bundled

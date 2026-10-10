@@ -1,77 +1,48 @@
-"""The cloud identity gate must protect every workspace route, including bootstrap."""
+"""The cloud origin gate stays strict; the local server has no cloud execution mode."""
+import inspect
+
 import pytest
 from fastapi.testclient import TestClient
 
-from openecon.cloud import cloud_app
-from openecon.cloud_access import CloudAccess, CloudAuthError
 from openecon.server import create_app
+from openecon.team_server import source_commit, validate_public_origin
 
 
-@pytest.fixture
-def cloud_client(tmp_path, monkeypatch):
-    def verify(self, assertion):
-        if assertion != "verified-owner-assertion":
-            raise CloudAuthError("Not the owner")
-        return {"email": self.owner_email, "sub": "owner-subject"}
-
-    monkeypatch.setattr(CloudAccess, "verify", verify)
-    access = CloudAccess("https://openecon.example", "/projects/123/locations/us-central1/services/openecon",
-                         "owner@example.com")
-    with TestClient(create_app(tmp_path, cloud_access=access), base_url=access.public_origin) as client:
-        yield client
-
-
-@pytest.mark.parametrize("path", ["/", "/api/session", "/api/console", "/api/datasets",
-                                   "/chart-assets/renderer.js"])
-def test_all_cloud_surfaces_require_verified_owner(cloud_client, path):
-    response = cloud_client.get(path, headers={"x-goog-authenticated-user-email": "accounts.google.com:owner@example.com"})
-    assert response.status_code == 403
-    assert response.json()["detail"]["code"] == "OWNER_REQUIRED"
+@pytest.mark.parametrize("origin", [
+    "http://app.example.com", "https://app.example.com/", "https://app.example.com/path",
+    "https://app.example.com:443", "https://user@app.example.com", "https://app.example.com?q=1",
+    "https://app.example.com#fragment", "HTTPS://app.example.com", "https://APP.example.com",
+    " https://app.example.com", "https://app.example.com\n", "https://app.example.com.",
+    "https://app..example.com", "https://*.example.com", "https://app_bad.example.com",
+    "https://127.0.0.1", "https://[::1]", "https://localhost", "https://café.example.com",
+    "https://-app.example.com", "https://app-.example.com", "https://[malformed", None,
+])
+def test_origin_must_be_one_canonical_https_dns_origin(origin):
+    with pytest.raises(ValueError, match="origin"):
+        validate_public_origin(origin)
 
 
-def authorize(client):
-    client.headers["x-goog-iap-jwt-assertion"] = "verified-owner-assertion"
-    response = client.get("/api/session")
-    assert response.status_code == 200
-    client.headers["x-openecon-token"] = response.json()["token"]
-    return response.json()
+def test_canonical_origin_is_accepted():
+    validate_public_origin("https://openecon-291739190496.us-central1.run.app")
 
 
-def test_owner_session_keeps_csrf_and_origin_checks(cloud_client):
-    session = authorize(cloud_client)
-    assert session["environment"] == "cloud" and not session["persistent"]
-    assert session["upload_limit_bytes"] == 24 * 1024 * 1024
-    assert cloud_client.get("/api/console").status_code == 200
-    assert cloud_client.get("/api/console", headers={"x-openecon-token": "invalid"}).status_code == 401
-    assert cloud_client.get("/api/session", headers={"Origin": "https://openecon.example"}).status_code == 200
-    for origin in ("https://evil.example", "http://openecon.example", "https://openecon.example.evil.test"):
-        assert cloud_client.get("/api/session", headers={"Origin": origin}).status_code == 403
-    assert cloud_client.get("/api/session", headers={"Host": "evil.example"}).status_code == 400
+@pytest.mark.parametrize("value,expected", [
+    ("0123456789abcdef0123456789abcdef01234567", "0123456789abcdef0123456789abcdef01234567"),
+    ("a" * 64, "a" * 64),
+    (None, None), ("", None), ("unknown", None), ("0123456", None),
+    ("0123456789ABCDEF0123456789ABCDEF01234567", None), ("a" * 41, None),
+    ("0123456789abcdef0123456789abcdef01234567\n", None), (12345, None),
+])
+def test_source_commit_accepts_only_full_lowercase_commit_ids(value, expected):
+    assert source_commit(value) == expected
 
 
-def test_navigation_from_signin_allowed_but_cross_site_api_denied(cloud_client):
-    authorize(cloud_client)
-    headers = {"sec-fetch-site": "cross-site", "sec-fetch-mode": "navigate", "sec-fetch-dest": "document"}
-    assert cloud_client.get("/", headers=headers).status_code == 200
-    assert cloud_client.get("/api/session", headers=headers).status_code == 403
-    assert cloud_client.post("/api/console/reset", headers=headers).status_code == 403
-
-
-def test_cloud_does_not_advertise_container_local_mcp(cloud_client):
-    authorize(cloud_client)
-    config = cloud_client.get("/api/config").json()
-    assert config["mcp_available"] is False
-    assert config["codex_command"] == config["claude_command"] == ""
-    assert config["notice"]
-
-
-def test_health_probe_reveals_no_workspace_state(cloud_client):
-    response = cloud_client.get("/healthz")
-    assert response.status_code == 200 and response.json() == {"status": "ok"}
-
-
-def test_cloud_cannot_start_without_explicit_identity_configuration(monkeypatch):
-    for key in ("OPENECON_PUBLIC_ORIGIN", "OPENECON_IAP_AUDIENCE", "OPENECON_OWNER_EMAIL"):
-        monkeypatch.delenv(key, raising=False)
-    with pytest.raises(ValueError, match="requires"):
-        cloud_app()
+def test_local_server_has_no_cloud_access_mode(tmp_path):
+    assert "cloud_access" not in inspect.signature(create_app).parameters
+    with TestClient(create_app(tmp_path)) as client:
+        session = client.get("/api/session").json()
+        assert session["environment"] == "local" and session["persistent"] is True
+        assert client.get("/api/auth/config").json() == {"mode": "local"}
+        # IAP assertions are not an identity source for the loopback server.
+        assert client.get("/api/console", headers={"x-goog-iap-jwt-assertion": "x"}).status_code == 401
+        assert client.get("/healthz").status_code != 200

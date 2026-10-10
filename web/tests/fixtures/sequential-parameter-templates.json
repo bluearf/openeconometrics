@@ -1,0 +1,890 @@
+[
+  {
+    "token": 41,
+    "parameters": [
+      {
+        "name": "result",
+        "kind": "positional-or-keyword",
+        "description": "Any registry fit except time-series models and fits that already use a resampling covariance."
+      },
+      {
+        "name": "data",
+        "kind": "positional-or-keyword",
+        "description": "Exactly the dataset ``result`` was fitted on (verified by hash)."
+      },
+      {
+        "name": "reps",
+        "kind": "keyword-only",
+        "default": "200",
+        "description": "Number of bootstrap replications R (at least 2; 200 by default, use 1000 or more for percentile/bc intervals)."
+      },
+      {
+        "name": "seed",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "Seed (0 to 2**64 - 1) of the ``torch.Generator`` that draws every replicate; the same seed reproduces the result exactly. A random seed is drawn and recorded when omitted."
+      },
+      {
+        "name": "cluster",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "Columns defining resampling clusters and strata."
+      },
+      {
+        "name": "strata",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "Columns defining resampling clusters and strata."
+      },
+      {
+        "name": "size",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "Units drawn per stratum."
+      },
+      {
+        "name": "alpha",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "Level of the intervals (default: the fit's alpha)."
+      },
+      {
+        "name": "ci",
+        "kind": "keyword-only",
+        "default": "'normal'",
+        "description": "Interval type stored in ``extra['bootstrap_ci']``: normal based, percentile (Stata's ``_pctile`` definition) or bias-corrected percentile (z0 = Phi^-1(#{b_r <= b}/R)), BCa delete-unit acceleration or bootstrap-t using each refit's standard error. Advanced intervals currently require unweighted, unst"
+      },
+      {
+        "name": "scheme",
+        "kind": "keyword-only",
+        "default": "'iid'",
+        "description": "Dependent schemes validate explicit-column OLS. Blocks require a regular time column and block_length; wild_cluster requires cluster=."
+      },
+      {
+        "name": "block_length",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "time",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "null",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "Coefficient restrictions for restricted wild cluster-t tests; requires the original covariance clustered on the same column and ci='normal'. Confidence-set inversion is not supplied."
+      },
+      {
+        "name": "wild",
+        "kind": "keyword-only",
+        "default": "'rademacher'",
+        "description": "Wild cluster multiplier distribution."
+      },
+      {
+        "name": "max_refits",
+        "kind": "keyword-only",
+        "default": "10000",
+        "description": "Advanced draw plus BCa acceleration budget (default 10,000)."
+      }
+    ]
+  },
+  {
+    "token": 42,
+    "parameters": [
+      {
+        "name": "path_or_buf",
+        "kind": "positional-or-keyword",
+        "default": "None",
+        "description": "String, path object (implementing os.PathLike[str]), or file-like object implementing a write() function. If None, the result is returned as a string. If a non-binary file object is passed, it should be opened with `newline=''`, disabling universal newlines. If a binary file object is passed, `mode`"
+      },
+      {
+        "name": "sep",
+        "kind": "positional-or-keyword",
+        "default": "','",
+        "description": "String of length 1. Field delimiter for the output file."
+      },
+      {
+        "name": "na_rep",
+        "kind": "positional-or-keyword",
+        "default": "''",
+        "description": "Missing data representation."
+      },
+      {
+        "name": "float_format",
+        "kind": "positional-or-keyword",
+        "default": "None",
+        "description": "Format string for floating point numbers. If a Callable is given, it takes precedence over other numeric formatting parameters, like decimal."
+      },
+      {
+        "name": "columns",
+        "kind": "positional-or-keyword",
+        "default": "None",
+        "description": "Columns to write."
+      },
+      {
+        "name": "header",
+        "kind": "positional-or-keyword",
+        "default": "True",
+        "description": "Write out the column names. If a list of strings is given it is assumed to be aliases for the column names."
+      },
+      {
+        "name": "index",
+        "kind": "positional-or-keyword",
+        "default": "True",
+        "description": "Write row names (index)."
+      },
+      {
+        "name": "index_label",
+        "kind": "positional-or-keyword",
+        "default": "None",
+        "description": "Column label for index column(s) if desired. If None is given, and `header` and `index` are True, then the index names are used. A sequence should be given if the object uses MultiIndex. If False do not print fields for index names. Use index_label=False for easier importing in R."
+      },
+      {
+        "name": "mode",
+        "kind": "positional-or-keyword",
+        "default": "'w'",
+        "description": "Forwarded to either `open(mode=)` or `fsspec.open(mode=)` to control the file opening. Typical values include:"
+      },
+      {
+        "name": "encoding",
+        "kind": "positional-or-keyword",
+        "default": "None",
+        "description": "A string representing the encoding to use in the output file, defaults to 'utf-8'. `encoding` is not supported if `path_or_buf` is a non-binary file object."
+      },
+      {
+        "name": "compression",
+        "kind": "positional-or-keyword",
+        "default": "'infer'"
+      },
+      {
+        "name": "quoting",
+        "kind": "positional-or-keyword",
+        "default": "None"
+      },
+      {
+        "name": "quotechar",
+        "kind": "positional-or-keyword",
+        "default": "'\"'"
+      },
+      {
+        "name": "lineterminator",
+        "kind": "positional-or-keyword",
+        "default": "None"
+      },
+      {
+        "name": "chunksize",
+        "kind": "positional-or-keyword",
+        "default": "None"
+      },
+      {
+        "name": "date_format",
+        "kind": "positional-or-keyword",
+        "default": "None"
+      },
+      {
+        "name": "doublequote",
+        "kind": "positional-or-keyword",
+        "default": "True"
+      },
+      {
+        "name": "escapechar",
+        "kind": "positional-or-keyword",
+        "default": "None"
+      },
+      {
+        "name": "decimal",
+        "kind": "positional-or-keyword",
+        "default": "'.'"
+      },
+      {
+        "name": "errors",
+        "kind": "positional-or-keyword",
+        "default": "'strict'"
+      },
+      {
+        "name": "storage_options",
+        "kind": "positional-or-keyword",
+        "default": "None"
+      }
+    ]
+  },
+  {
+    "token": 43,
+    "parameters": [
+      {
+        "name": "excel_writer",
+        "kind": "positional-or-keyword",
+        "description": "File path or existing ExcelWriter."
+      },
+      {
+        "name": "sheet_name",
+        "kind": "positional-or-keyword",
+        "default": "'Sheet1'",
+        "description": "Name of sheet which will contain DataFrame."
+      },
+      {
+        "name": "na_rep",
+        "kind": "positional-or-keyword",
+        "default": "''",
+        "description": "Missing data representation."
+      },
+      {
+        "name": "float_format",
+        "kind": "positional-or-keyword",
+        "default": "None",
+        "description": "Format string for floating point numbers. For example ``float_format=\"%.2f\"`` will format 0.1234 to 0.12."
+      },
+      {
+        "name": "columns",
+        "kind": "positional-or-keyword",
+        "default": "None",
+        "description": "Columns to write."
+      },
+      {
+        "name": "header",
+        "kind": "positional-or-keyword",
+        "default": "True",
+        "description": "Write out the column names. If a list of string is given it is assumed to be aliases for the column names."
+      },
+      {
+        "name": "index",
+        "kind": "positional-or-keyword",
+        "default": "True",
+        "description": "Write row names (index)."
+      },
+      {
+        "name": "index_label",
+        "kind": "positional-or-keyword",
+        "default": "None",
+        "description": "Column label for index column(s) if desired. If not specified, and `header` and `index` are True, then the index names are used. A sequence should be given if the DataFrame uses MultiIndex."
+      },
+      {
+        "name": "startrow",
+        "kind": "positional-or-keyword",
+        "default": "0",
+        "description": "Upper left cell row to dump data frame."
+      },
+      {
+        "name": "startcol",
+        "kind": "positional-or-keyword",
+        "default": "0",
+        "description": "Upper left cell column to dump data frame."
+      },
+      {
+        "name": "engine",
+        "kind": "positional-or-keyword",
+        "default": "None",
+        "description": "Write engine to use, 'openpyxl' or 'xlsxwriter'. You can also set this via the options ``io.excel.xlsx.writer`` or ``io.excel.xlsm.writer``."
+      },
+      {
+        "name": "merge_cells",
+        "kind": "positional-or-keyword",
+        "default": "True",
+        "description": "Write MultiIndex and Hierarchical Rows as merged cells."
+      },
+      {
+        "name": "inf_rep",
+        "kind": "positional-or-keyword",
+        "default": "'inf'",
+        "description": "Representation for infinity (there is no native representation for infinity in Excel)."
+      },
+      {
+        "name": "freeze_panes",
+        "kind": "positional-or-keyword",
+        "default": "None",
+        "description": "Specifies the one-based bottommost row and rightmost column that is to be frozen."
+      },
+      {
+        "name": "storage_options",
+        "kind": "positional-or-keyword",
+        "default": "None"
+      },
+      {
+        "name": "engine_kwargs",
+        "kind": "positional-or-keyword",
+        "default": "None"
+      }
+    ]
+  },
+  {
+    "token": 44,
+    "parameters": [
+      {
+        "name": "predictors",
+        "kind": "positional-or-keyword",
+        "description": "Mapping from unique predictor names to aligned Network snapshots; all dyads include absent edges as zero."
+      },
+      {
+        "name": "values",
+        "kind": "keyword-only",
+        "default": "'weight'",
+        "description": "'weight' uses aggregate strengths; 'binary' uses edge presence."
+      },
+      {
+        "name": "include_loops",
+        "kind": "keyword-only",
+        "default": "False",
+        "description": "Include diagonal dyads; False excludes them."
+      },
+      {
+        "name": "permutations",
+        "kind": "keyword-only",
+        "default": "999",
+        "description": "Uniform node permutations per coefficient-specific reduced-model residual test; plus-one p-values."
+      },
+      {
+        "name": "seed",
+        "kind": "keyword-only",
+        "default": "0",
+        "description": "Private CPU Torch random seed; predictor names and node labels use canonical order."
+      },
+      {
+        "name": "alternative",
+        "kind": "keyword-only",
+        "default": "'two-sided'",
+        "description": "'two-sided' compares absolute partial correlations; 'greater' and 'less' use the signed statistic."
+      },
+      {
+        "name": "intercept",
+        "kind": "keyword-only",
+        "default": "True",
+        "description": "Fit a constant; the constant receives no fabricated permutation test."
+      },
+      {
+        "name": "method",
+        "kind": "keyword-only",
+        "default": "'freedman_lane'",
+        "description": "'freedman_lane' permutes reduced response residuals; 'dsp' permutes focal predictor residuals and projects nuisance effects again."
+      },
+      {
+        "name": "joint",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "Named coefficient subsets tested together, conditional on remaining predictors; upper-tail partial R-squared."
+      },
+      {
+        "name": "adjustment",
+        "kind": "keyword-only",
+        "default": "'none'",
+        "description": "'none', 'bonferroni', 'holm' or 'bh' over all reported slopes and joint hypotheses; the intercept is excluded."
+      },
+      {
+        "name": "max_work",
+        "kind": "keyword-only",
+        "default": "50000000",
+        "description": "Explicit complete-test structural work budget; no partial permutation p-values."
+      }
+    ]
+  },
+  {
+    "token": 45,
+    "parameters": [
+      {
+        "name": "data",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "y",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "factors",
+        "kind": "positional-or-keyword",
+        "default": "None"
+      },
+      {
+        "name": "covariates",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "interactions",
+        "kind": "keyword-only",
+        "default": "'full'",
+        "description": "``\"none\"`` (main effects only) or a list such as ``[[\"a\", \"b\"]]`` or ``[\"a#b\"]``; a covariate may appear in an interaction. An interaction needs the effects it contains in the model (``a#b#c`` needs ``a#b``, ``a#c`` and ``b#c``; ``a#b#x`` needs ``a#x`` and ``b#x``), otherwise ``invalid_spec``."
+      },
+      {
+        "name": "ss_type",
+        "kind": "keyword-only",
+        "default": "3"
+      },
+      {
+        "name": "within",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "``oe.rm_anova`` with ``factors`` as between-subject factors (Type III, all between-subject interactions; covariates, ``emmeans`` and other values of ``ss_type`` or ``interactions`` are rejected)."
+      },
+      {
+        "name": "subject",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "``oe.rm_anova`` with ``factors`` as between-subject factors (Type III, all between-subject interactions; covariates, ``emmeans`` and other values of ``ss_type`` or ``interactions`` are rejected)."
+      },
+      {
+        "name": "emmeans",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "reported: predictions averaged with equal weights over the levels of the other factors, with covariates at their sample means. Single factors also get pairwise comparisons."
+      },
+      {
+        "name": "adjust",
+        "kind": "keyword-only",
+        "default": "'bonferroni'",
+        "description": "SPSS's default) for the pairwise comparisons and their intervals."
+      },
+      {
+        "name": "homogeneity_of_slopes",
+        "kind": "keyword-only",
+        "default": "False",
+        "description": "tests the ANCOVA assumption of equal slopes."
+      },
+      {
+        "name": "alpha",
+        "kind": "keyword-only",
+        "default": "0.05"
+      },
+      {
+        "name": "missing",
+        "kind": "keyword-only",
+        "default": "'drop'",
+        "description": "``\"raise\"``."
+      }
+    ]
+  },
+  {
+    "token": 46,
+    "parameters": [
+      {
+        "name": "data",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "psu",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "ssu_strata",
+        "kind": "keyword-only",
+        "description": "Typed second-stage stratum identifier nested within each sampled PSU; cells sample SSUs independently."
+      },
+      {
+        "name": "ssu_frame",
+        "kind": "keyword-only",
+        "description": "Explicit sequence of role-keyed mappings for every positive second-stage cell in sampled PSUs, with psu, ssu_strata, population_ssu and optional first-stage strata keys. No zero-sample positive cell or unknown PSU; provenance cannot authenticate externally omitted cells."
+      },
+      {
+        "name": "ssu",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "tsu_strata",
+        "kind": "keyword-only",
+        "description": "Typed terminal sampling-stratum identity within each observed SSU; cells independently select terminal TSUs."
+      },
+      {
+        "name": "tsu_frame",
+        "kind": "keyword-only",
+        "description": "Complete positive terminal-cell frame for every observed SSU; role keys strata when declared, psu, ssu_strata, ssu, tsu_strata and population_tsu. Every positive cell must have sampled rows. Supplied inputs cannot authenticate a cell omitted externally."
+      },
+      {
+        "name": "tsu",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "population_psu",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "population_ssu",
+        "kind": "keyword-only",
+        "description": "Exact SSU population count constant within each second-stage cell; not a pooled PSU count."
+      },
+      {
+        "name": "population_tsu",
+        "kind": "keyword-only",
+        "description": "Exact TSU population count within each terminal sampling cell, not a pooled SSU count."
+      },
+      {
+        "name": "strata",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "max_rows",
+        "kind": "keyword-only",
+        "default": "1000000"
+      },
+      {
+        "name": "max_memory_mb",
+        "kind": "keyword-only",
+        "default": "64",
+        "description": "Explicit complete geometry, cell frame and inference allocation budget."
+      }
+    ]
+  },
+  {
+    "token": 47,
+    "parameters": [
+      {
+        "name": "data",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "moments",
+        "kind": "keyword-only",
+        "description": "``{label: expression}``; labels default to 1, 2, ..."
+      },
+      {
+        "name": "instruments",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "the constant is added unless ``instrument_constant=False``."
+      },
+      {
+        "name": "instrument_constant",
+        "kind": "keyword-only",
+        "default": "True"
+      },
+      {
+        "name": "start",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "``{b=value}`` in the expressions)."
+      },
+      {
+        "name": "wmatrix",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "winitial",
+        "kind": "keyword-only",
+        "default": "'identity'"
+      },
+      {
+        "name": "twostep",
+        "kind": "keyword-only",
+        "default": "True"
+      },
+      {
+        "name": "igmm",
+        "kind": "keyword-only",
+        "default": "False"
+      },
+      {
+        "name": "center",
+        "kind": "keyword-only",
+        "default": "False"
+      },
+      {
+        "name": "covariance",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "cluster",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "lags",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "expand as dummies. weights, weight_type : ``'aweight'``, ``'fweight'`` or ``'pweight'`` (pweights need a robust covariance)."
+      },
+      {
+        "name": "kernel",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "expand as dummies. weights, weight_type : ``'aweight'``, ``'fweight'`` or ``'pweight'`` (pweights need a robust covariance)."
+      },
+      {
+        "name": "panel",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "expand as dummies. weights, weight_type : ``'aweight'``, ``'fweight'`` or ``'pweight'`` (pweights need a robust covariance)."
+      },
+      {
+        "name": "time",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "expand as dummies. weights, weight_type : ``'aweight'``, ``'fweight'`` or ``'pweight'`` (pweights need a robust covariance)."
+      },
+      {
+        "name": "categorical",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "weights",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "weight_type",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "tolerance",
+        "kind": "keyword-only",
+        "default": "1e-08"
+      },
+      {
+        "name": "max_iterations",
+        "kind": "keyword-only",
+        "default": "500"
+      },
+      {
+        "name": "igmm_tolerance",
+        "kind": "keyword-only",
+        "default": "1e-10"
+      },
+      {
+        "name": "igmm_max_iterations",
+        "kind": "keyword-only",
+        "default": "1000"
+      },
+      {
+        "name": "missing",
+        "kind": "keyword-only",
+        "default": "'raise'"
+      },
+      {
+        "name": "alpha",
+        "kind": "keyword-only",
+        "default": "0.05"
+      }
+    ]
+  },
+  {
+    "token": 48,
+    "parameters": [
+      {
+        "name": "data",
+        "kind": "keyword-only",
+        "description": "Complete resident numeric rows; at most 4096 observations and ten controls, with no silent missing-row deletion."
+      },
+      {
+        "name": "y",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "treatment",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "mediator",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "controls",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "Distinct numeric controls in both equations; standardize over these fixed retained rows."
+      },
+      {
+        "name": "mediator_link",
+        "kind": "keyword-only",
+        "default": "'logit'",
+        "description": "Binary mediator likelihood: logit or probit, exact numeric 0/1 with both levels.",
+        "choices": [
+          "'logit'",
+          "'probit'"
+        ]
+      },
+      {
+        "name": "outcome_model",
+        "kind": "keyword-only",
+        "default": "'gaussian'",
+        "description": "Gaussian continuous outcome, logit/probit exact binary outcome, or Poisson integer counts with normalized likelihood.",
+        "choices": [
+          "'gaussian'",
+          "'logit'",
+          "'probit'",
+          "'poisson'"
+        ]
+      },
+      {
+        "name": "interaction",
+        "kind": "keyword-only",
+        "default": "True",
+        "description": "Include the treatment-by-mediator term in the conditional outcome equation."
+      },
+      {
+        "name": "covariance",
+        "kind": "keyword-only",
+        "default": "'HC0'",
+        "description": "Full joint OIM or uncorrected HC0; HC0 retains the empirical cross-equation score blocks.",
+        "choices": [
+          "'OIM'",
+          "'HC0'"
+        ]
+      },
+      {
+        "name": "level",
+        "kind": "keyword-only",
+        "default": "0.95"
+      },
+      {
+        "name": "interpretation",
+        "kind": "keyword-only",
+        "default": "'associational'",
+        "description": "Adjusted associational contrasts by default; causal labels require explicit identification assumptions.",
+        "choices": [
+          "'associational'",
+          "'causal'"
+        ]
+      },
+      {
+        "name": "assumptions",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "device",
+        "kind": "keyword-only",
+        "default": "'cpu'"
+      },
+      {
+        "name": "weights",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "cluster",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "max_iterations",
+        "kind": "keyword-only",
+        "default": "200"
+      },
+      {
+        "name": "tolerance",
+        "kind": "keyword-only",
+        "default": "1e-09"
+      }
+    ]
+  },
+  {
+    "token": 49,
+    "parameters": [
+      {
+        "name": "data",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "columns",
+        "kind": "positional-or-keyword"
+      },
+      {
+        "name": "by",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "``Total`` row per variable. Rows with a missing group are excluded."
+      },
+      {
+        "name": "stats",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "max``):"
+      },
+      {
+        "name": "weights",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "``summarize``: ``\"aweight\"`` (default; analytic weights, rescaled to sum to the number of rows) or ``\"fweight\"`` (frequency weights: a row counts ``w`` times; this is how SPSS's WEIGHT command behaves). Rows with a zero or missing weight are excluded."
+      },
+      {
+        "name": "weight_type",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "``summarize``: ``\"aweight\"`` (default; analytic weights, rescaled to sum to the number of rows) or ``\"fweight\"`` (frequency weights: a row counts ``w`` times; this is how SPSS's WEIGHT command behaves). Rows with a zero or missing weight are excluded."
+      },
+      {
+        "name": "moments",
+        "kind": "keyword-only",
+        "default": "'stata'",
+        "description": "m2^2 with m_r = sum(w (x - mean)^r) / sum(w), so a normal variable has kurtosis 3; ``\"spss\"``: the bias-corrected G1 = g1 sqrt(n(n-1)) / (n-2) and excess G2 = (n-1) ((n+1) g2 - 3(n-1)) / ((n-2)(n-3))."
+      },
+      {
+        "name": "listwise",
+        "kind": "keyword-only",
+        "default": "False",
+        "description": "values (Stata tabstat, SPSS MEANS); True keeps only rows complete in all ``columns`` (Stata's ``casewise``)."
+      },
+      {
+        "name": "total",
+        "kind": "keyword-only",
+        "default": "True"
+      },
+      {
+        "name": "anova",
+        "kind": "keyword-only",
+        "default": "False",
+        "description": "each variable on the groups and eta / eta squared (SPSS ``MEANS /STATISTICS ANOVA``)."
+      }
+    ]
+  },
+  {
+    "token": 50,
+    "parameters": [
+      {
+        "name": "data",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "y",
+        "kind": "keyword-only"
+      },
+      {
+        "name": "method",
+        "kind": "keyword-only",
+        "default": "'hwinters'"
+      },
+      {
+        "name": "alpha",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "seasonal recursions. Any that the method uses and that is left ``None`` is estimated by minimizing the in-sample sum of squared one-step forecast errors; a parameter that the method does not use must stay ``None``. The criterion can have several local minima, so the search descends from the three be"
+      },
+      {
+        "name": "beta",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "seasonal recursions. Any that the method uses and that is left ``None`` is estimated by minimizing the in-sample sum of squared one-step forecast errors; a parameter that the method does not use must stay ``None``. The criterion can have several local minima, so the search descends from the three be"
+      },
+      {
+        "name": "gamma",
+        "kind": "keyword-only",
+        "default": "None",
+        "description": "seasonal recursions. Any that the method uses and that is left ``None`` is estimated by minimizing the in-sample sum of squared one-step forecast errors; a parameter that the method does not use must stay ``None``. The criterion can have several local minima, so the search descends from the three be"
+      },
+      {
+        "name": "period",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "additive",
+        "kind": "keyword-only",
+        "default": "True",
+        "description": "``tssmooth shwinters`` is multiplicative unless its ``additive`` option is given."
+      },
+      {
+        "name": "time",
+        "kind": "keyword-only",
+        "default": "None"
+      },
+      {
+        "name": "forecast",
+        "kind": "keyword-only",
+        "default": "0"
+      }
+    ]
+  }
+]

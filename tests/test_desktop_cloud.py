@@ -39,13 +39,13 @@ def api():
     for role in ('editor', 'viewer'):
         invite = store.invite(project['id'], users['owner'], users[role].email, role)
         store.accept(invite['id'], users[role])
-    storage, runner, issuer = MemoryStorage(), Mock(), Mock(side_effect=lambda uid: f'custom-{uid}')
+    storage, issuer = MemoryStorage(), Mock(side_effect=lambda uid: f'custom-{uid}')
     auth = TeamAuth(PROJECT, verifier=lambda token: claims(token))
-    app = create_team_app(store=store, storage=storage, auth=auth, runner=runner,
+    app = create_team_app(store=store, storage=storage, auth=auth,
                           public_origin=ORIGIN, firebase_config={'projectId': PROJECT,
                           'authDomain': f'{PROJECT}.firebaseapp.com'}, desktop_token_issuer=issuer)
     with TestClient(app, base_url=ORIGIN) as client:
-        yield SimpleNamespace(client=client, store=store, storage=storage, runner=runner,
+        yield SimpleNamespace(client=client, store=store, storage=storage,
                               issuer=issuer, pid=project['id'])
 
 
@@ -130,7 +130,6 @@ def test_local_result_publication_is_data_only_shared_and_idempotent(api):
     assert saved['code'] == record()['code']
     assert 'events' not in saved
     assert api.store.project(api.pid, TeamIdentity('owner','owner@example.com',email_verified=True))['active_run'] is None
-    api.runner.start.assert_not_called()
 
 
 def test_desktop_archive_preserves_output_order_and_persisted_member_readback(api):
@@ -153,7 +152,6 @@ def test_desktop_archive_preserves_output_order_and_persisted_member_readback(ap
     assert [item['type'] for item in saved['outputs']] == ['text', 'latex']
     assert saved['execution_origin'] == 'desktop'
     assert saved['actor_email'] == 'editor@example.com'
-    api.runner.start.assert_not_called()
 
 
 @pytest.mark.parametrize('events', [
@@ -173,7 +171,6 @@ def test_desktop_archive_rejects_malformed_output_order_before_any_save(api, eve
     assert response.json()['detail']['code'] == 'INVALID_RESULT'
     assert not api.storage.objects
     assert api.store.runs(api.pid, TeamIdentity('owner', 'owner@example.com', email_verified=True)) == []
-    api.runner.start.assert_not_called()
 
 
 @pytest.mark.parametrize('uid', ['viewer','outsider'])
@@ -182,7 +179,6 @@ def test_local_results_cannot_bypass_project_write_membership(api, uid):
                                headers=headers(uid), json={'record':record(),'input_files':[]})
     assert response.status_code in {403,404}
     assert not api.storage.objects
-    api.runner.start.assert_not_called()
 
 
 def test_local_result_rejects_unknown_input_and_malformed_table(api):
@@ -200,7 +196,6 @@ def test_publication_does_not_attribute_another_accounts_pending_result_to_curre
         headers=headers('editor'), json={'record': record('owner'), 'input_files': []})
     assert response.status_code == 403
     assert not api.storage.objects
-    api.runner.start.assert_not_called()
 
 
 def test_result_archive_body_budget_is_scoped_and_streamed(api):
@@ -213,7 +208,6 @@ def test_result_archive_body_budget_is_scoped_and_streamed(api):
                                content=iter([b' ' * (1024**2)] * 4))
     assert response.status_code == 413
     assert not api.storage.objects
-    api.runner.start.assert_not_called()
 
 
 def test_custom_token_has_short_expiry_and_no_extra_authority():

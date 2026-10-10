@@ -58,7 +58,6 @@ def test_acknowledgement_retry_survives_changed_input_without_rewriting_archive(
     history = api.client.get(f'/api/projects/{api.pid}/workspace/console',
                              headers=headers('viewer')).json()['history']
     assert len(history) == 1 and history[0]['input_files'] == [file]
-    api.runner.start.assert_not_called()
 
 
 def concurrent_posts(api, monkeypatch, payloads):
@@ -85,7 +84,6 @@ def test_concurrent_identical_posts_share_one_generation_and_both_acknowledge(ap
     assert archived['stdout'] == '42' and archived['actor_email'] == 'editor@example.com'
     events = api.store.db.scan(f'oe_projects/{api.pid}/audit', limit=100)
     assert sum(event['action'] == 'desktop.result_shared' for event in events) == 1
-    api.runner.start.assert_not_called()
 
 
 def test_concurrent_different_bodies_conflict_without_deleting_winning_archive(api, monkeypatch):
@@ -99,7 +97,6 @@ def test_concurrent_different_bodies_conflict_without_deleting_winning_archive(a
     run = stored_run(api, winner.json()['id'])
     assert set(api.storage.objects) == {run['result']['key']}
     assert json.loads(api.storage.get(run['result']))['stdout'] in {'42', 'different result'}
-    api.runner.start.assert_not_called()
 
 
 @pytest.mark.parametrize('field', ['stdout', 'input_files'])
@@ -167,7 +164,6 @@ def test_publication_rechecks_membership_and_inputs_after_upload_and_cleans_own_
     assert response.status_code == status and response.json()['detail']['code'] == code
     assert not api.storage.objects
     assert not api.store.db.scan(f'oe_projects/{api.pid}/runs')
-    api.runner.start.assert_not_called()
 
 
 @pytest.mark.parametrize('failed_confirmation_read', [False, True])
@@ -205,4 +201,3 @@ def test_lost_database_commit_acknowledgement_preserves_committed_blob_for_retry
     repeated = api.client.post(path(api), headers=headers('editor'), json=body())
     assert repeated.status_code == 201 and repeated.json()['id'] == runs[0]['id']
     assert set(api.storage.objects) == {reference['key']}
-    api.runner.start.assert_not_called()

@@ -1,0 +1,27 @@
+{
+  "filename": "market_equilibrium.xlsx",
+  "description": "Market Equilibrium and a Demand Shift; original synthetic teaching data.",
+  "observation_unit": "One hypothetical market price scenario.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720003,
+  "columns": [
+    {
+      "name": "price",
+      "description": "Market price",
+      "unit": "currency/unit",
+      "missing": 0
+    },
+    {
+      "name": "demand",
+      "description": "Quantity demanded",
+      "unit": "units/day",
+      "missing": 0
+    },
+    {
+      "name": "supply",
+      "description": "Quantity supplied",
+      "unit": "units/day",
+      "missing": 0
+    }
+  ]
+}

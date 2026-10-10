@@ -9,6 +9,7 @@ No diffuse initialization, jitter, covariance clipping or row deletion occurs.
 from __future__ import annotations
 
 import math
+from dataclasses import dataclass
 
 import torch
 
@@ -18,6 +19,22 @@ from openecon.resources import plan_workspace
 FLOAT = torch.float64
 MAX_WORK = 50_000_000
 _EPSILON = torch.finfo(FLOAT).eps
+
+
+@dataclass(frozen=True)
+class FactorAdmission:
+    """Internal resident factor geometry; public sspace limits stay fixed.
+
+    A pass is bounded separately from the caller's complete EM/Hessian plan.
+    This profile never estimates a stationary prior or allocates a Lyapunov
+    operator; callers must preadmit those extra operations when requested.
+    """
+
+    max_pass_work: int = 1_000_000_000
+
+    def __post_init__(self):
+        if type(self.max_pass_work) is not int or not 1 <= self.max_pass_work <= 2_000_000_000:
+            raise AnalysisError("invalid_resource_budget", "Factor pass work must be an integer in 1..2000000000.")
 
 
 def _finite(value, name):
@@ -61,40 +78,30 @@ def at(values, key, date):
     return value[date] if value.ndim == dimension + 1 else value
 
 
-def _admit(y, values, *, retain, smoothing=False):
+def _admit(y, values, *, retain, smoothing=False, profile=None):
+    if profile is not None and type(profile) is not FactorAdmission:
+        raise AnalysisError("invalid_resource_budget", "Use the immutable internal FactorAdmission profile.")
+    if profile is not None:
+        profile.__post_init__()
+    max_p, max_m = (96, 128) if profile is not None else (8, 16)
     if (
         not isinstance(y, torch.Tensor)
         or y.device.type != "cpu"
         or y.dtype != FLOAT
         or y.ndim != 2
         or not 1 <= y.shape[0] <= 20000
-        or not 1 <= y.shape[1] <= 8
-        or bool(torch.isinf(y).any())
+        or not 1 <= y.shape[1] <= max_p
         or not isinstance(values, dict)
         or any(key not in values for key in ("Z", "T", "Q", "H", "a0", "P0", "c", "d"))
     ):
         raise AnalysisError(
             "invalid_system",
-            "Use 1..20000 CPU float64 dates with 1..8 measurements and complete system values.",
+            f"Use 1..20000 CPU float64 dates with 1..{max_p} measurements and complete system values.",
         )
     prior = values["a0"]
-    if not isinstance(prior, torch.Tensor) or prior.ndim != 1 or not 1 <= len(prior) <= 16:
-        raise AnalysisError("invalid_system", "a0 must declare 1..16 proper-prior state means.")
+    if not isinstance(prior, torch.Tensor) or prior.ndim != 1 or not 1 <= len(prior) <= max_m:
+        raise AnalysisError("invalid_system", f"a0 must declare 1..{max_m} proper-prior state means.")
     n, p, m = len(y), y.shape[1], len(prior)
-    work = n * (m**3 + p**3 + m*m*p + m*p*p) * (6 if smoothing else 2)
-    if work > MAX_WORK:
-        raise AnalysisError("system_budget", "Kalman/RTS matrix work exceeds 50 million units.")
-    buffers = {"likelihood and mask arrays": n*(p+4)*16,
-               "current moments and matrix factors": (m*m+p*p+m*p)*128}
-    if retain or smoothing:
-        buffers["retained prior/filter/innovation moments"] = n*(4*m*m+3*m+3*p*p+3*p)*16
-    if smoothing:
-        buffers["RTS, lag-one and full disturbance moments"] = n*(
-            7*m*m+5*p*p+6*m*p+3*m+3*p
-        )*16
-    if any(isinstance(value, torch.Tensor) and value.requires_grad for value in values.values()):
-        buffers["differentiable Kalman graph"] = n*(m*m+p*p+m*p)*256
-    workspace = plan_workspace("proper-prior Kalman and RTS", buffers)
     for key, shape in (
         ("a0", (m,)), ("P0", (m, m)), ("Z", (p, m)), ("T", (m, m)),
         ("Q", (m, m)), ("H", (p, p)), ("c", (m,)), ("d", (p,)),
@@ -108,9 +115,29 @@ def _admit(y, values, *, retain, smoothing=False):
             raise AnalysisError(
                 "invalid_system", f"{key} needs fixed shape {shape} or an exact {n}-date schedule."
             )
-        _finite(value, key)
-        if key in {"P0", "Q", "H"}:
-            _covariance(value, key)
+    work = n * (m**3 + p**3 + m*m*p + m*p*p) * (6 if smoothing else 2)
+    if work > (MAX_WORK if profile is None else profile.max_pass_work):
+        raise AnalysisError("system_budget", "Kalman/RTS matrix work exceeds the declared pass budget.")
+    buffers = {"likelihood and mask arrays": n*(p+4)*16,
+               "current moments and matrix factors": (m*m+p*p+m*p)*128}
+    if retain or smoothing:
+        buffers["retained prior/filter/innovation moments"] = n*(4*m*m+3*m+3*p*p+3*p)*16
+    if smoothing:
+        buffers["RTS, lag-one and full disturbance moments"] = n*(
+            7*m*m+5*p*p+6*m*p+3*m+3*p
+        )*16
+    if any(isinstance(value, torch.Tensor) and value.requires_grad for value in values.values()):
+        buffers["differentiable Kalman graph"] = n*(m*m+p*p+m*p)*256
+    if profile is not None and (retain or smoothing):
+        buffers["factor complete numerical state serialization"] = n*(12*m*m+9*p*p+8*m*p+9*m+9*p)*96
+    workspace = plan_workspace("proper-prior Kalman and RTS", buffers)
+    if bool(torch.isinf(y).any()):
+        raise AnalysisError("invalid_system", "Infinite measurements are not missing Gaussian observations.")
+    for key, value in values.items():
+        if key in {"Z", "T", "Q", "H", "a0", "P0", "c", "d"}:
+            _finite(value, key)
+            if key in {"P0", "Q", "H"}:
+                _covariance(value, key)
     return workspace.record()
 
 
@@ -155,6 +182,18 @@ def _conditional_solve(matrix, right, name):
 
 
 def kalman(y, values, *, retain=False):
+    """Filter proper Gaussian observations with the original public limits."""
+    return _kalman(y, values, retain=retain)
+
+
+def factor_kalman(y, values, *, profile, retain=False):
+    """Use the same filter after an explicit larger factor admission plan."""
+    if type(profile) is not FactorAdmission:
+        raise AnalysisError("invalid_resource_budget", "Declare an immutable FactorAdmission profile.")
+    return _kalman(y, values, retain=retain, profile=profile)
+
+
+def _kalman(y, values, *, retain=False, profile=None):
     """Filter per-date observed measurements without deleting any time period.
 
     Retained innovation covariance covers every measurement, even when a
@@ -163,7 +202,7 @@ def kalman(y, values, *, retain=False):
     """
     if type(retain) is not bool:
         raise AnalysisError("invalid_system", "retain must be Boolean.")
-    workspace = _admit(y, values, retain=retain)
+    workspace = _admit(y, values, retain=retain, profile=profile)
     n, p = y.shape
     mean, covariance = values["a0"], values["P0"]
     identity = torch.eye(len(mean), dtype=FLOAT, device="cpu")
@@ -230,6 +269,18 @@ def kalman(y, values, *, retain=False):
 
 
 def smooth(y, values, *, filtered=None):
+    """RTS smoothing with the original proper-prior public limits."""
+    return _smooth(y, values, filtered=filtered)
+
+
+def factor_smooth(y, values, *, profile, filtered=None):
+    """Use the same RTS recursion after an explicit factor admission plan."""
+    if type(profile) is not FactorAdmission:
+        raise AnalysisError("invalid_resource_budget", "Declare an immutable FactorAdmission profile.")
+    return _smooth(y, values, filtered=filtered, profile=profile)
+
+
+def _smooth(y, values, *, filtered=None, profile=None):
     """RTS states, lag-one moments and full posterior disturbance moments.
 
     Lag covariance is Cov(a[t+1],a[t]|all observed Y), with n-1 entries.
@@ -237,8 +288,8 @@ def smooth(y, values, *, filtered=None):
     Cov(u[t],a[t]); process/measurement is Cov(u[t],e[t]). The joint disturbance
     block orders (u,e). Final u is unobserved and retains zero mean/Q[-1].
     """
-    workspace = _admit(y, values, retain=True, smoothing=True)
-    output = kalman(y, values, retain=True) if filtered is None else filtered
+    workspace = _admit(y, values, retain=True, smoothing=True, profile=profile)
+    output = _kalman(y, values, retain=True, profile=profile) if filtered is None else filtered
     required = ("prior_mean", "prior_covariance", "filtered", "filtered_covariance",
                 "observed_mask", "next_mean", "next_covariance")
     if not isinstance(output, dict) or any(key not in output for key in required):

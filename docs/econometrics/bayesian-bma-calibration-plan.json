@@ -1,0 +1,101 @@
+{
+  "schema_version": "openecon.bayesian_bma_calibration_plan.v1",
+  "issue": "MARKET-690",
+  "registered_before_source_and_runs": false,
+  "replications": 256,
+  "n": 40,
+  "optional": [
+    "x1",
+    "x2",
+    "x3"
+  ],
+  "forced": [],
+  "always_intercept": true,
+  "model_masks": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "model_prior_inclusion": [
+    0.2,
+    0.5,
+    0.8
+  ],
+  "per_model_prior": {
+    "mean_full": [
+      0.3,
+      0.5,
+      -0.3,
+      0.2
+    ],
+    "scale_diagonal_full": [
+      1.0,
+      2.0,
+      0.75,
+      1.5
+    ],
+    "shape": "3+.25*popcount(mask)",
+    "scale": "2+.1*popcount(mask)",
+    "subset_coordinates": "Intercept then presentoptional in declaredorder"
+  },
+  "fixed_design": {
+    "x1": "linspace(-1,1,n)",
+    "x2": "sin(.61*row)",
+    "x3": "cos(.43*row)",
+    "rows": "0..n-1"
+  },
+  "seeds": {
+    "prior_model_parameters_data": "NumPyPCG64(6500001+1009*replication)",
+    "randomized_atom_jitter": "NumPyPCG64(6900001+1009*replication)",
+    "production_draw_check": "separateTorchlocal(7300001+1009*replication)"
+  },
+  "targets": [
+    "embedded_beta[x1]",
+    "embedded_beta[x2]",
+    "embedded_beta[x3]",
+    "sigma_squared",
+    "conditional_mean_at_query",
+    "new_outcome_at_query"
+  ],
+  "query": {
+    "x1": 0.25,
+    "x2": -0.5,
+    "x3": 0.75
+  },
+  "cdf_rank": "randomizedexactPIT=F(truth-)+uniform*atom_mass(truth); continuousCDFwhereatom0",
+  "failure_denominator": "all256; any missing/failednonfinite case makesacceptancefail; no replacementseed",
+  "maximum_failures": 0,
+  "simultaneous_probability": 0.025,
+  "cdf_gate": {
+    "rule": "two-sidedDKWunionbound over6targets;all256 denominator",
+    "epsilon": 0.109809726273147,
+    "family_alpha": 0.025,
+    "target_count": 6,
+    "formula": "sqrt(log(2*6/.025)/(2*256))"
+  },
+  "inclusion_gate": {
+    "rule": "for3I_j\u2212PIP_j residual means bounded[-1,1],two-sidedHoeffdingunionbound;no posteriorweighteddatafilter",
+    "maximum_absolute_mean_residual": 0.2069238787298588,
+    "family_alpha": 0.025,
+    "target_count": 3,
+    "formula": "sqrt(2*log(2*3/.025)/256), residual range width=2"
+  },
+  "negative_controls": {
+    "sigma2": "CDFevaluatedat4*true_sigma2 mustrejectsameDKWgate",
+    "inclusion": "firstoptionalreplacePIPwith1-PIP mustrejectsamefixedHoeffdinggate;priorq=.2"
+  },
+  "numerical_reference": "independentNumPyobservation-spaceNIG/SciPyStudent-t/inversegammaCDF;allproductionexactCDF/PIPchecked beforePIT;boundedtolerancesfrozenbefore-run",
+  "cdf_absolute_tolerance": 2e-10,
+  "log_evidence_absolute_tolerance": 2e-09,
+  "mixture_full_moment_tolerance": 2e-09,
+  "protocol_updates": "Initial prospective family allocation corrected before any calibration run; later changes require a new registration and retain all failed receipts.",
+  "initial_prerun_draft_sha256": "5e91096eff9fa02543234736351bba3b84693865f693e7bda6936df87df35749",
+  "registration_status": "Revised family allocation prospectively before any calibration run; exact source pin follows.",
+  "overall_family_error_upper_bound": 0.05,
+  "registered_before_calibration_runs": true
+}

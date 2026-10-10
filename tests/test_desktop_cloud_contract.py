@@ -91,7 +91,6 @@ def test_new_console_model_round_trips_through_shared_archive(api, console_recor
         ).status_code
         == 404
     )
-    api.runner.start.assert_not_called()
 
 
 def test_previous_model_contract_is_still_archived_and_readable(api, console_records):
@@ -113,7 +112,6 @@ def test_previous_model_contract_is_still_archived_and_readable(api, console_rec
     assert saved["outputs"][0]["data"]["coefficients"] == model["coefficients"]
     assert saved["outputs"][0]["data"]["spec"]["covariance"] == "HC3"
     assert saved["outputs"][0]["data"]["tests"] == {}
-    api.runner.start.assert_not_called()
 
 
 @pytest.mark.parametrize(
@@ -138,7 +136,6 @@ def test_new_model_contract_remains_strict_before_storage(api, console_records, 
     assert response.status_code == 422
     assert response.json()["detail"]["code"] == "INVALID_RESULT"
     assert not api.storage.objects
-    api.runner.start.assert_not_called()
 
 
 def test_control_validates_new_model_and_legacy_latex_without_loading_compute(

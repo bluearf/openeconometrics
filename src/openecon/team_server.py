@@ -1,16 +1,20 @@
-"""Authenticated project control plane. User Python only runs in isolated jobs."""
+"""Authenticated team sync backend. It never executes user Python or estimators.
+
+Analyses run in the local desktop app. This service stores accounts, project
+membership, files and desktop-computed results that members choose to share.
+"""
 from __future__ import annotations
 
-import asyncio
 import base64
 import hashlib
 from importlib.resources import files
+import ipaddress
 import json
 import logging
 import math
 from pathlib import Path
 import re
-from urllib.parse import quote, urlparse
+from urllib.parse import quote, urlparse, urlsplit
 from uuid import uuid4
 
 from fastapi import FastAPI, File, Query, Request, UploadFile
@@ -24,14 +28,50 @@ from starlette.middleware.gzip import GZipMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from openecon import __version__
-from openecon.cloud_access import _validate_origin
 from openecon.output_events import validate_output_events
 from openecon.team_auth import TeamAuthError
 from openecon.team_storage import MAX_TRANSFER_BYTES
 from openecon.team_store import (MAX_PROJECT_DESCRIPTION_LENGTH, MAX_PROJECT_NAME_LENGTH,
                                 MAX_PROJECT_NAME_VERSION, TeamError, filename, now,
                                 project_description, project_name)
-from openecon import file_layout, script_contracts
+
+_DNS_LABEL = re.compile(r'[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\Z')
+_SOURCE_COMMIT = re.compile(r'[0-9a-f]{40}(?:[0-9a-f]{24})?\Z')
+CLOUD_EXECUTION_RETIRED = (
+    'Analyses run only in the OpenEconometrics desktop app. Open this project in the desktop '
+    'app to run code; results you share from the desktop appear in the project history.')
+
+
+def validate_public_origin(value: str) -> None:
+    """Accept one canonical HTTPS DNS origin, without path, port or credentials."""
+    if not isinstance(value, str) or not value.isascii():
+        raise ValueError('Cloud public_origin must be a canonical HTTPS origin.')
+    try:
+        parsed = urlsplit(value)
+        host = parsed.hostname or ''
+        valid = (
+            parsed.scheme == 'https'
+            and value == f'https://{host}'
+            and 0 < len(host) <= 253
+            and len(host.split('.')) >= 2
+            and all(_DNS_LABEL.fullmatch(label) for label in host.split('.'))
+        )
+        try:
+            ipaddress.ip_address(host)
+        except ValueError:
+            pass
+        else:
+            valid = False
+    except ValueError:
+        valid = False
+    if not valid:
+        raise ValueError('Cloud public_origin must be a canonical HTTPS DNS origin without '
+                         'a path, port, credentials, query, or fragment.')
+
+
+def source_commit(value) -> str | None:
+    """Return a full lowercase source commit ID, or None when the build bound none."""
+    return value if isinstance(value, str) and _SOURCE_COMMIT.fullmatch(value) else None
 
 
 class VersionedStaticFiles(StaticFiles):
@@ -143,13 +183,6 @@ class FileLayoutBody(StrictBody):
     entries: list[dict] = Field(max_length=2000)
 
 
-class ExecuteBody(StrictBody):
-    code: str = Field(min_length=1, max_length=64000)
-    timeout_seconds: float = Field(default=60, ge=.05, le=120, allow_inf_nan=False)
-    wait_for_result: bool = Field(default=True, strict=True)
-    script_id: str | None = Field(default=None, pattern=r'^(?:analysis|[0-9a-f]{32})$')
-
-
 def json_bytes(value):
     return json.dumps(value, ensure_ascii=False, allow_nan=False).encode()
 
@@ -163,7 +196,11 @@ def error_record(run, message, status='error'):
 
 
 def validate_worker_result(payload, run):
-    """Untrusted JSON is data; reject oversized/malformed output before publish."""
+    """Untrusted JSON is data; reject oversized/malformed output before publish.
+
+    Desktop-shared results use this schema gate. Historical cloud records were
+    published through the same checks and remain readable unchanged.
+    """
     if not isinstance(payload, dict) or payload.get('execution_id') != run['id']:
         raise TeamError('INVALID_RESULT', 'The computation result could not be verified.', 422)
     record = payload.get('record')
@@ -262,8 +299,10 @@ def validate_worker_result(payload, run):
     return trusted, decoded
 
 
-def create_team_app(*, store, storage, auth, runner, public_origin, firebase_config, desktop_token_issuer=None):
-    _validate_origin(public_origin)
+def create_team_app(*, store, storage, auth, public_origin, firebase_config, desktop_token_issuer=None,
+                    source_commit_id=None):
+    validate_public_origin(public_origin)
+    commit = source_commit(source_commit_id)
     # The web configuration may not expand our script/frame trust boundary.
     # Only this verified Firebase project's default authentication host is
     # supported; custom domains require a separate, reviewed allowlist change.
@@ -347,7 +386,8 @@ def create_team_app(*, store, storage, auth, runner, public_origin, firebase_con
     @app.get('/api/auth/config')
     def config():
         return {'mode': 'teams', 'firebase': firebase_config, 'desktop_login_available': True,
-                'account_link_available': True, 'dataset_transfer_available': True}
+                'account_link_available': True, 'dataset_transfer_available': True,
+                'cloud_execution_available': False, 'source_commit': commit}
 
     from openecon.desktop_cloud import attach_desktop_cloud_routes
     attach_desktop_cloud_routes(app, store=store, storage=storage, token_issuer=desktop_token_issuer)
@@ -401,8 +441,13 @@ def create_team_app(*, store, storage, auth, runner, public_origin, firebase_con
 
     def session_payload(project, user):
         return {'token': '', 'version': __version__, 'environment': 'team', 'persistent': True,
-                'upload_limit_bytes': MAX_TRANSFER_BYTES, 'execution_mode': 'isolated',
+                'upload_limit_bytes': MAX_TRANSFER_BYTES, 'execution_mode': 'desktop',
                 'read_only': project['members'][user.uid]['role'] == 'viewer'}
+
+    def idle_status(project):
+        # No cloud computation exists. A legacy active_run marker is retained
+        # unchanged for preservation, but it no longer reports a live run.
+        return {'running': False, 'session_generation': project['run_count'], 'pid': None}
 
     @app.get(prefix + '/session')
     def session(project_id: str, request: Request):
@@ -418,8 +463,7 @@ def create_team_app(*, store, storage, auth, runner, public_origin, firebase_con
         return {'session': session_payload(project, request.state.user), 'draft': draft,
                 'environment': environment,
                 'datasets': [file_public(f) for f in project['files']],
-                'status': {'running': bool(project['active_run']),
-                           'session_generation': project['run_count'], 'pid': None}}
+                'status': idle_status(project)}
 
     @app.get(prefix + '/config')
     def workspace_config(project_id: str, request: Request):
@@ -533,84 +577,19 @@ def create_team_app(*, store, storage, auth, runner, public_origin, firebase_con
         return Response(data, media_type='application/octet-stream',
                         headers={'Content-Disposition': f"attachment; filename*=UTF-8''{quote(item['name'])}"})
 
+    terminal = {'finished', 'failed', 'cancelled'}
+
     def read_record(run):
+        if run['state'] not in terminal:
+            # Cloud execution was retired. A historical run that never reached
+            # a terminal state is shown as stopped; its stored document is unchanged.
+            return error_record(run, 'This cloud run did not finish before cloud execution was retired. '
+                                'Run the analysis in the desktop app.', 'interrupted')
         if run.get('result'):
             from openecon.output_latex import enrich_record
             return enrich_record(json.loads(storage.get(run['result'], maximum=3 * 1024**2)))
         summary = run.get('record_summary') or {}
         return error_record(run, summary.get('message', 'The computation could not be completed.'), summary.get('status', 'error'))
-
-    def settle(project_id, run_id):
-        run = store.run(project_id, run_id)
-        if run['state'] in {'finished', 'failed', 'cancelled'}:
-            return run
-        expired = now() > run['deadline']
-        if run['cancel_requested'] or expired:
-            if run.get('execution'):
-                try:
-                    runner.cancel(run['execution'])
-                except Exception:
-                    # Job's hard platform timeout bounds an unavailable cancel.
-                    pass
-            if not run.get('operation'):
-                if not expired:
-                    return run  # A concurrent start will attach and cancel it.
-            else:
-                try:
-                    status = runner.status(run['operation'])
-                except Exception:
-                    if not expired:
-                        return run
-                    status = {'status': 'failed'}
-                if status.get('execution') and not run.get('execution'):
-                    store.update_run(project_id, run_id, execution=status['execution'])
-                    try:
-                        runner.cancel(status['execution'])
-                    except Exception:
-                        pass
-                if status['status'] in {'queued', 'running'} and not expired:
-                    return run
-            return store.finish_run(project_id, run_id, None,
-                                    {'status': 'interrupted' if run['cancel_requested'] else 'timeout',
-                                     'message': ('The computation was stopped.' if run['cancel_requested'] else
-                                                 'The total wait time for startup and completion has expired. Try again.')}, failed=True)
-        if not run.get('operation'):
-            return run
-        status = runner.status(run['operation'])
-        if status.get('execution') and not run.get('execution'):
-            run = store.update_run(project_id, run_id, execution=status['execution'])
-        if status['status'] in {'queued', 'running'}:
-            return run
-        if status['status'] != 'succeeded':
-            return store.finish_run(project_id, run_id, None,
-                                    {'status': 'error', 'message': 'The isolated computation could not be completed. Your files are preserved.'}, failed=True)
-        try:
-            raw = storage.get(run['output_blob'])
-            payload = json.loads(raw, parse_constant=lambda _: (_ for _ in ()).throw(ValueError('nonfinite')))
-            record, generated = validate_worker_result(payload, run)
-            artifacts = []
-            # Random publication keys make concurrent finalizers harmless. Only
-            # one transaction wins; staged runner output never becomes a head.
-            publication = uuid4().hex
-            for name, content in generated:
-                blob = storage.put(f'projects/{project_id}/results/{run_id}/{publication}/{name}', content)
-                artifacts.append({'name': name, 'size_bytes': len(content), 'blob': blob})
-            record['artifacts'] = [{'name': f['name'], 'size_bytes': f['size_bytes'],
-                                    'url': f'{prefix.replace("{project_id}", project_id)}/runs/{run_id}/files/{index}'}
-                                   for index, f in enumerate(artifacts)]
-            reference = storage.put(f'projects/{project_id}/results/{run_id}/{publication}/record.json',
-                                    json_bytes(record), 'application/json')
-            run = store.finish_run(project_id, run_id, reference, {'status': record['status']})
-            if run.get('result') == reference:
-                store.update_run(project_id, run_id, artifacts=artifacts)
-            else:
-                storage.delete(reference)
-                for artifact in artifacts:
-                    storage.delete(artifact['blob'])
-            return run
-        except (TeamError, ValueError, TypeError, KeyError, RecursionError):
-            return store.finish_run(project_id, run_id, None,
-                                    {'status': 'error', 'message': 'The computation output could not be verified.'}, failed=True)
 
     @app.get(prefix + '/console/history')
     def paged_history(project_id: str, request: Request, cursor: str | None = Query(default=None, max_length=2048),
@@ -628,8 +607,6 @@ def create_team_app(*, store, storage, auth, runner, public_origin, firebase_con
         run = store.run(project_id, run_id)
         if not run:
             raise TeamError('NOT_FOUND', 'Run not found.', 404)
-        if run['state'] not in {'finished', 'failed', 'cancelled'}:
-            raise TeamError('RUN_PENDING', 'This run has not finished yet. Refresh the history.', 409)
         data = json_bytes(read_record(run))
         store.project(project_id, request.state.user)
         if len(data) > 8 * 1024**2:
@@ -639,13 +616,8 @@ def create_team_app(*, store, storage, auth, runner, public_origin, firebase_con
     @app.get(prefix + '/console')
     def console(project_id: str, request: Request):
         project = store.project(project_id, request.state.user)
-        if project['active_run']:
-            settle(project_id, project['active_run'])
-            project = store.project(project_id, request.state.user)
         history, size = [], 0
         for run in reversed(store.runs(project_id, request.state.user)):
-            if run['state'] not in {'finished', 'failed', 'cancelled'}:
-                continue
             estimate = (run.get('result') or {}).get('size', 1024)
             if history and size + estimate > 8 * 1024**2:
                 break
@@ -654,68 +626,16 @@ def create_team_app(*, store, storage, auth, runner, public_origin, firebase_con
             history.append(record)
         history.reverse()
         store.project(project_id, request.state.user)
-        return {'history': history, 'variables': [],
-                'status': {'running': bool(project['active_run']), 'session_generation': project['run_count'], 'pid': None}}
+        return {'history': history, 'variables': [], 'status': idle_status(project)}
 
     @app.post(prefix + '/console/execute')
-    async def execute(project_id: str, body: ExecuteBody, request: Request):
-        if not body.code.strip():
-            raise TeamError('INVALID_CODE', 'Enter the code to run.', 422)
-        user = request.state.user
-        project = await run_in_threadpool(store.project, project_id, user, 'editor')
-        if body.script_id is not None:
-            document = await run_in_threadpool(store.named_script, project_id, user, body.script_id)
-            layout = await run_in_threadpool(store.get_file_layout, project_id, user)
-            name = file_layout.source_name(layout, body.script_id, document['name'])
-            try:
-                script_contracts.require_python(name)
-            except script_contracts.ScriptValidationError as exc:
-                raise TeamError(exc.code, str(exc), 422) from exc
-        if project.get('active_run'):
-            await run_in_threadpool(settle, project_id, project['active_run'])
-        run = await run_in_threadpool(store.begin_run, project_id, user, body.code, body.timeout_seconds)
-        launch_attempted = False
-        try:
-            input_url, output_blob, input_blob = await run_in_threadpool(storage.manifest, project_id, run)
-            await run_in_threadpool(store.update_run, project_id, run['id'], output_blob=output_blob, input_blob=input_blob)
-            launch_attempted = True
-            launched = await run_in_threadpool(runner.start, input_url, timeout_seconds=body.timeout_seconds)
-            run = await run_in_threadpool(store.attach_run_execution, project_id, run['id'],
-                                          operation=launched['operation'], execution=launched.get('execution'))
-        except Exception:
-            if not launch_attempted:
-                await run_in_threadpool(store.finish_run, project_id, run['id'], None,
-                                        {'status': 'error', 'message': 'The computation environment could not be started.'}, failed=True)
-            # A transport error after Run acceptance has an unknown outcome.
-            # Keep its lease until the hard deadline instead of launching again.
-            raise TeamError('RUN_UNAVAILABLE', 'The computation environment could not be started. Try again shortly.', 503) from None
-        while True:
-            try:
-                await run_in_threadpool(store.project, project_id, user, 'editor')
-            except TeamError:
-                await run_in_threadpool(store.update_run, project_id, run['id'], cancel_requested=True)
-                await run_in_threadpool(settle, project_id, run['id'])
-                raise
-            if not body.wait_for_result:
-                # Acceptance never reads worker output or releases the durable
-                # project lock. /console reconciles and validates the result.
-                return JSONResponse({'accepted': True, 'id': run['id']}, status_code=202)
-            run = await run_in_threadpool(settle, project_id, run['id'])
-            if run['state'] in {'finished', 'failed', 'cancelled'}:
-                record = await run_in_threadpool(read_record, run)
-                await run_in_threadpool(store.project, project_id, user, 'editor')
-                return record
-            await asyncio.sleep(2)
-
     @app.post(prefix + '/console/interrupt')
     @app.post(prefix + '/console/reset')
-    def interrupt(project_id: str, request: Request):
-        run = store.request_cancel(project_id, request.state.user)
-        if run:
-            settle(project_id, run['id'])
-        project = store.project(project_id, request.state.user)
-        return {'status': 'interrupted' if run else 'idle', 'session_generation': project['run_count'],
-                'message': 'The stop request has been sent. Project files and history are preserved.'}
+    def cloud_execution_retired(project_id: str, request: Request):
+        # Older browser clients still call these routes. Authentication and the
+        # membership check run first; the request body and code are never read.
+        store.project(project_id, request.state.user)
+        raise TeamError('CLOUD_EXECUTION_RETIRED', CLOUD_EXECUTION_RETIRED, 410)
 
     @app.get(prefix + '/runs/{run_id}/files/{index}')
     def artifact(project_id: str, run_id: str, index: int, request: Request):

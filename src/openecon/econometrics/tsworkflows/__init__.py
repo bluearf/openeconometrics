@@ -78,6 +78,13 @@ ESTIMATORS = (
     ),
 )
 EXPORTS = {
+    "dfactor": "openecon.econometrics.tsworkflows.dfm:dfactor",
+    "dfactor_restore": "openecon.econometrics.tsworkflows.dfm:dfactor_restore",
+    "dfactor_nowcast": "openecon.econometrics.tsworkflows.dfm:dfactor_nowcast",
+    "dfactor_forecast": "openecon.econometrics.tsworkflows.dfm:dfactor_forecast",
+    "sspace_diffuse": "openecon.econometrics.tsworkflows.ssdiffuse:sspace_diffuse",
+    "diffuse_restore": "openecon.econometrics.tsworkflows.ssdiffuse:diffuse_restore",
+    "diffuse_forecast": "openecon.econometrics.tsworkflows.ssdiffuse:diffuse_forecast",
     "umidas_predict": "openecon.econometrics.tsworkflows.umidas:umidas_predict",
     "auto_ets": "openecon.econometrics.tsworkflows.selection:auto_ets",
     "rolling_panel": "openecon.econometrics.tsworkflows.panel_windows:rolling_panel",

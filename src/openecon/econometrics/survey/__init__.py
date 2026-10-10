@@ -2,6 +2,15 @@
 
 ESTIMATORS = ()
 EXPORTS = {
+    "survey_fully_stratified_four_stage_mean": "openecon.econometrics.survey.fully_stratified_four_stage_targets:survey_fully_stratified_four_stage_mean",
+    "survey_fully_stratified_four_stage_total": "openecon.econometrics.survey.fully_stratified_four_stage_targets:survey_fully_stratified_four_stage_total",
+    "survey_fully_stratified_four_stage_ratio": "openecon.econometrics.survey.fully_stratified_four_stage_targets:survey_fully_stratified_four_stage_ratio",
+    "survey_fully_stratified_four_stage_proportion": "openecon.econometrics.survey.fully_stratified_four_stage_targets:survey_fully_stratified_four_stage_proportion",
+    "survey_fully_stratified_four_stage_regress": "openecon.econometrics.survey.fully_stratified_four_stage_regression:survey_fully_stratified_four_stage_regress",
+    "survey_fully_stratified_four_stage_logit": "openecon.econometrics.survey.fully_stratified_four_stage_regression:survey_fully_stratified_four_stage_logit",
+    "survey_fully_stratified_four_stage_probit": "openecon.econometrics.survey.fully_stratified_four_stage_regression:survey_fully_stratified_four_stage_probit",
+    "survey_fully_stratified_four_stage_poisson": "openecon.econometrics.survey.fully_stratified_four_stage_regression:survey_fully_stratified_four_stage_poisson",
+
     "survey_four_stage_mean": "openecon.econometrics.survey.four_stage_targets:survey_four_stage_mean",
     "survey_four_stage_total": "openecon.econometrics.survey.four_stage_targets:survey_four_stage_total",
     "survey_four_stage_ratio": "openecon.econometrics.survey.four_stage_targets:survey_four_stage_ratio",

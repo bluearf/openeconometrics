@@ -6,7 +6,7 @@ import {
   createWorkspaceClient,
   loadWorkspaceBootstrap,
   submitWorkspaceExecution,
-  isExecutionAccepted,
+  canExecuteLocally,
   workspaceDownloadPath,
 } from "../src/api.ts";
 import {
@@ -146,31 +146,42 @@ test("team bootstrap fails closed on lost membership without legacy fallback", a
   assert.deepEqual(calls, ["/api/projects/one/workspace/bootstrap"]);
 });
 
-test("team execution requests asynchronous acceptance without inventing a result", async (t) => {
-  t.mock.method(
-    globalThis,
-    "fetch",
-    async (path: string, options: RequestInit) => {
-      assert.equal(path, "/api/projects/one/workspace/console/execute");
-      assert.equal(
-        new Headers(options.headers).get("Authorization"),
-        "Bearer token",
-      );
-      assert.deepEqual(JSON.parse(String(options.body)), {
-        code: "print(1)",
-        wait_for_result: false,
-      });
-      return json({ accepted: true, id: "run-id" }, 202);
+test("a browser team workspace never sends code to the cloud", async (t) => {
+  const fetched = t.mock.method(globalThis, "fetch", async () => {
+    throw new Error("No request may be sent.");
+  });
+  const client = createWorkspaceClient("one", async () => "token");
+  assert.equal(canExecuteLocally(client), false);
+  await assert.rejects(submitWorkspaceExecution(client, "print(1)"), {
+    status: 410,
+    code: "CLOUD_EXECUTION_RETIRED",
+    message: /desktop app/,
+  });
+  await assert.rejects(submitWorkspaceExecution(client, "print(1)", "analysis"), {
+    code: "CLOUD_EXECUTION_RETIRED",
+  });
+  assert.equal(fetched.mock.callCount(), 0);
+});
+
+test("desktop team execution stays on the local runtime with a synchronous record", async () => {
+  const record = { id: "local-run", status: "ok", outputs: [] };
+  const calls: { path: string; body: unknown }[] = [];
+  const client = {
+    projectId: "one",
+    teams: true,
+    desktop: true,
+    connect: async () => ({ token: "", version: "test", environment: "local" as const }),
+    cancelPending() {},
+    request: async <T,>(path: string, options: RequestInit = {}) => {
+      calls.push({ path, body: JSON.parse(String(options.body)) });
+      return record as T;
     },
-  );
-  const result = await submitWorkspaceExecution(
-    createWorkspaceClient("one", async () => "token"),
-    "print(1)",
-  );
-  assert.equal(isExecutionAccepted(result), true);
-  assert.deepEqual(result, { accepted: true, id: "run-id" });
-  assert.equal("outputs" in result, false);
-  assert.equal("status" in result, false);
+  };
+  assert.equal(canExecuteLocally(client), true);
+  assert.deepEqual(await submitWorkspaceExecution(client, "print(1)", "analysis"), record);
+  assert.deepEqual(calls, [
+    { path: "/console/execute", body: { code: "print(1)", script_id: "analysis" } },
+  ]);
 });
 
 test("local execution keeps the synchronous body and real result response", async (t) => {
@@ -195,25 +206,9 @@ test("local execution keeps the synchronous body and real result response", asyn
   );
   const client = createWorkspaceClient();
   await client.connect();
+  assert.equal(canExecuteLocally(client), true);
   const result = await submitWorkspaceExecution(client, "print(1)");
-  assert.equal(isExecutionAccepted(result), false);
   assert.deepEqual(result, record);
-});
-
-test("invalid acceptance cannot create a phantom pending run", async (t) => {
-  for (const response of [
-    { accepted: false, id: "id" },
-    { accepted: true, id: "" },
-  ]) {
-    t.mock.method(globalThis, "fetch", async () => json(response, 202));
-    await assert.rejects(
-      submitWorkspaceExecution(
-        createWorkspaceClient("one", async () => "token"),
-        "1",
-      ),
-      /run was accepted/,
-    );
-  }
 });
 
 test("local bootstrap establishes its token before fetching persistent console state", async (t) => {

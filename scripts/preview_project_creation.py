@@ -10,7 +10,6 @@ import json
 from pathlib import Path
 import subprocess
 import tempfile
-from types import SimpleNamespace
 
 from fastapi.testclient import TestClient
 from openecon.team_auth import TeamAuth, TeamIdentity
@@ -34,7 +33,7 @@ def main():
             aud=PROJECT, iss=f'https://securetoken.google.com/{PROJECT}',
             firebase={'sign_in_provider': 'password'}, email_verified=True)
     app = create_team_app(store=store, storage=MemoryStorage(), auth=TeamAuth(PROJECT, verifier=verify),
-        runner=SimpleNamespace(), public_origin=ORIGIN,
+        public_origin=ORIGIN,
         firebase_config={'projectId': PROJECT, 'authDomain': f'{PROJECT}.firebaseapp.com'})
     with tempfile.TemporaryDirectory(prefix='openecon-project-form-') as temporary, TestClient(app, base_url=ORIGIN) as client:
         directory = Path(temporary)

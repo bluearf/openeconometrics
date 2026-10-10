@@ -329,6 +329,7 @@ def main():
         "openecon.mcp_launcher", "openecon.mcp_server", "openecon.mcp_jobs", "mcp.server.fastmcp",
         "mcp.server.stdio",
         "openecon.console_worker", "openecon.analysis", "openecon.data", "openecon.survey",
+        "openecon.survey_fully_stratified_four_stage",
         "openecon.project_packages", "openecon.package_installer", "openecon.script_packages",
         "openecon.package_requirements", "openecon.uv_runtime", "uv", "packaging.requirements",
         sysconfig._get_sysconfigdata_name() if os.name != "nt" else "sysconfig",

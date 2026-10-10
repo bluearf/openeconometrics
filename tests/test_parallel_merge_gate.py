@@ -26,13 +26,7 @@ SPEC = importlib.util.spec_from_file_location(
 )
 validator = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(validator)
-SELECTORS = [
-    "tests/test_econ_saved_prediction_linear.py",
-    "tests/test_control_function_common_prediction.py",
-    "tests/test_streaming_control_function_engine.py",
-    "tests/test_control_stream_acceptance.py",
-    "packages/openecon-charts/tests",
-]
+SELECTORS = ['tests/test_econ_saved_prediction_linear.py', 'tests/test_control_function_common_prediction.py', 'tests/test_streaming_control_function_engine.py', 'tests/test_control_stream_acceptance.py', 'tests/test_nested_logit_independent.py', 'tests/test_control_function_stream_state.py', 'packages/openecon-charts/tests', 'tests/test_parallel_sdk_groups.py', 'tests/test_bayesian_hypothesis_oracles.py', 'tests/test_bayesian_hypothesis_state.py', 'tests/test_latent_sem_lifecycle.py', 'tests/test_latent_sem_math.py', 'tests/test_latent_sem_state.py', 'tests/test_dynamic_factor.py', 'tests/test_finite_mixture.py', 'tests/test_weakiv_clr_math.py', 'tests/test_weakiv_clr_state.py', 'tests/test_supervised.py', 'tests/test_supervised_integration_lifecycle.py', 'tests/test_five_model_public_integration.py', 'tests/test_bayesian_var_conjugate.py', 'tests/test_bayesian_var_sbc_protocol.py', 'tests/test_bayesian_var_public_integration.py', 'tests/test_bayesian_var_public_admission_v2.py', 'tests/test_editor_catalog_intern_v2.py']
 
 
 def write_json(path, value):
@@ -118,6 +112,11 @@ def genuine_artifacts(tmp_path_factory):
         "class TestGroup:\n    def test_alpha(self): pass\ndef test_beta(): pass\n"
     )
     (root / SELECTORS[3]).write_text("def test_control(): pass\n")
+    (root / SELECTORS[4]).write_text("def test_nested(): pass\n")
+    (root / SELECTORS[5]).write_text("def test_stream_state(): pass\n")
+    (root / SELECTORS[7]).write_text("def test_controller_fixture(): pass\n")
+    for selector in SELECTORS[8:]:
+        (root / selector).write_text("def test_incoming_scientific_selector_fixture(): pass\n")
     (root / "packages/openecon-charts/tests/test_chart.py").write_text("def test_chart(): pass\n")
     (root / "scripts/verify_merge_candidate.py").write_text("TESTS = " + repr(SELECTORS) + "\n")
     shutil.copyfile(
@@ -129,6 +128,20 @@ def genuine_artifacts(tmp_path_factory):
     )
     shutil.copyfile(ROOT / "scripts/run_parallel_sdk_groups.py",
                     root / "scripts/run_parallel_sdk_groups.py")
+    # This isolated artifact-schema fixture has one available interpreter,
+    # intentionally aliased as both toy virtualenvs. Mock only its version
+    # observation; real production CLI version refusal is tested separately.
+    helper = root / "scripts/run_parallel_sdk_groups.py"
+    source = helper.read_text()
+    observation = 'f"{sys.version_info.major}.{sys.version_info.minor}" == args.component_sdk_version'
+    assert source.count(observation) == 1
+    source = source.replace(observation, 'args.component_sdk_version in ("3.11", "3.13")')
+    # These TOY legacy artifacts deliberately prove all three-child adversaries
+    # with three workers, independently of the machine running this fixture.
+    entry_point = 'if __name__ == "__main__":'
+    assert source.count(entry_point) == 1
+    toy_budget = 'def detect_cpu_budget(*, proc=Path("/proc/self"), system=None):\n    # This copied schema fixture declares three TOY workers; real children,\n    # collection, phases, PID and source Git binding remain independently read.\n    return {"system": "Darwin", "host_cpus": 3, "affinity_cpus": 3,\n            "effective_cpus": 3., "groups": 3, "max_concurrent_children": 3,\n            "threads_per_child": 1, "cgroup": {"status": "not_applicable",\n            "version": None, "views": [], "probes": [], "limits": [], "error": None}}\n\n\n'
+    helper.write_text(source.replace(entry_point, toy_budget + entry_point))
     for version in ("311", "313"):
         (root / f".venv{version}").symlink_to(Path(sys.prefix), target_is_directory=True)
     git(root, "init", "-q")
@@ -222,7 +235,7 @@ def genuine_artifacts(tmp_path_factory):
                 }
             )
         steps[-2].update(
-            tests={"tests": 6, "failures": 0, "errors": 0, "skipped": 0},
+            tests={"tests": 26, "failures": 0, "errors": 0, "skipped": 0},
             junit=xml.name,
             junit_sha256=digest(xml),
             phase_timings=timings.name,
@@ -333,18 +346,18 @@ def test_two_current_artifacts_bind_real_cases_phases_and_package_sources(artifa
     assert result["selected_tests"] == SELECTORS
     assert [item["version"] for item in result["components"]] == ["3.11", "3.13"]
     for component in result["components"]:
-        assert component["JUnit"] == {"tests": 6, "failures": 0, "errors": 0, "skipped": 0}
-        assert component["phase_records"] == 18
+        assert component["JUnit"] == {"tests": 26, "failures": 0, "errors": 0, "skipped": 0}
+        assert component["phase_records"] == 78
         assert component["sdk_groups"]["kind"] == "parallel_sdk_groups"
         cpu_budget = component["sdk_groups"]["cpu_budget"]
-        assert cpu_budget["groups"] == 2 and cpu_budget["threads_per_child"] in (1, 2)
+        assert cpu_budget["groups"] == 3 and cpu_budget["threads_per_child"] in (1, 2)
         assert component["sdk_groups"]["environment"]["OMP_THREAD_LIMIT"] == str(
             cpu_budget["threads_per_child"])
         groups = component["sdk_groups"]["groups"]
-        assert [group["selectors"] for group in groups] == [SELECTORS[:4], SELECTORS[4:]]
-        assert [group["tests"]["tests"] for group in groups] == [5, 1]
-        assert [group["collected_tests"] for group in groups] == [5, 1]
-        assert groups[0]["pid"] != groups[1]["pid"]
+        assert [group["selectors"] for group in groups] == [[SELECTORS[3]], SELECTORS[:3] + SELECTORS[4:6] + SELECTORS[7:], SELECTORS[6:7]]
+        assert [group["tests"]["tests"] for group in groups] == [1, 24, 1]
+        assert [group["collected_tests"] for group in groups] == [1, 24, 1]
+        assert len({group["pid"] for group in groups}) == 3
         assert len(component["packages"]) == 4
         assert all(
             package["verified_python_source_files"] == 1 for package in component["packages"]
@@ -366,19 +379,59 @@ def test_two_current_artifacts_bind_real_cases_phases_and_package_sources(artifa
             assert manifest["environment"][name] == str(manifest["cpu_budget"]["threads_per_child"])
 
 
+def test_preregistered_three_groups_are_complete_disjoint_and_in_source_order():
+    assert validator.SDK_FIXED_GROUPS == (('tests/test_control_stream_acceptance.py',), ('tests/test_econ_saved_prediction_linear.py', 'tests/test_control_function_common_prediction.py', 'tests/test_streaming_control_function_engine.py', 'tests/test_control_function_stream_state.py', 'tests/test_nested_logit_independent.py', 'tests/test_parallel_sdk_groups.py', 'tests/test_bayesian_hypothesis_oracles.py', 'tests/test_bayesian_hypothesis_state.py', 'tests/test_latent_sem_lifecycle.py', 'tests/test_latent_sem_math.py', 'tests/test_latent_sem_state.py', 'tests/test_dynamic_factor.py', 'tests/test_finite_mixture.py', 'tests/test_weakiv_clr_math.py', 'tests/test_weakiv_clr_state.py', 'tests/test_supervised.py', 'tests/test_supervised_integration_lifecycle.py', 'tests/test_five_model_public_integration.py', 'tests/test_bayesian_var_conjugate.py', 'tests/test_bayesian_var_sbc_protocol.py', 'tests/test_bayesian_var_public_integration.py', 'tests/test_bayesian_var_public_admission_v2.py', 'tests/test_editor_catalog_intern_v2.py'))
+    historical_fixed = (('tests/test_control_stream_acceptance.py',), ('tests/test_econ_saved_prediction_linear.py', 'tests/test_control_function_common_prediction.py', 'tests/test_streaming_control_function_engine.py', 'tests/test_control_function_stream_state.py', 'tests/test_nested_logit_independent.py', 'tests/test_parallel_sdk_groups.py', 'tests/test_bayesian_hypothesis_oracles.py', 'tests/test_bayesian_hypothesis_state.py', 'tests/test_latent_sem_lifecycle.py', 'tests/test_latent_sem_math.py', 'tests/test_latent_sem_state.py', 'tests/test_dynamic_factor.py', 'tests/test_finite_mixture.py', 'tests/test_weakiv_clr_math.py', 'tests/test_weakiv_clr_state.py', 'tests/test_supervised.py', 'tests/test_supervised_integration_lifecycle.py', 'tests/test_five_model_public_integration.py'))
+    source = validator.selector_contract(ROOT)
+    assert source[155] == "tests/test_multivariate_score_contrasts.py"
+    fixed = [item for group in validator.SDK_FIXED_GROUPS for item in group]
+    partition = [[item for item in source if item in group] for group in validator.SDK_FIXED_GROUPS]
+    partition.append([item for item in source if item not in fixed])
+    plan = json.loads((ROOT / "docs/econometrics/merge-gate-sdk-groups-plan.json").read_text())
+    assert plan["group_count"] == 3
+    assert plan["fixed_groups"] == [list(group) for group in historical_fixed]
+    baseline = plan["selected_tests"]
+    assert source[:138] == baseline
+    assert source[145:146] == ["tests/test_multivariate_score_uncertainty.py"]
+    assert source[138:142] == ["tests/test_weighted_binary.py", "tests/test_econ_glm.py", "tests/test_econ_glm_oracle.py", "tests/test_econ_saved_prediction_categories.py"]
+    assert plan["effective_groups"] == [[item for item in baseline if item in group] for group in partition]
+    assert list(map(len, partition)) == [1, 23, 136]
+    assert plan["environment"] == validator.GATE_ENVIRONMENT
+    assert plan["selected_test_scope_sha256"] == hashlib.sha256(
+        json.dumps(baseline, separators=(",", ":")).encode()).hexdigest()
+    assert plan["timeout_seconds"] == 900
+    assert len(partition) == 3 and set(sum(partition, [])) == set(source)
+    assert sum(map(len, partition)) == len(source)
+
+
+
 def test_production_four_file_partition_is_complete_disjoint_and_in_source_order():
-    assert validator.SDK_HEAVY_SELECTORS == (
+    # This incoming case retains its heavy-file and complete-scope assertions
+    # while the current legacy receipt requires three independent children.
+    source = validator.selector_contract(ROOT)
+    assert source[155] == "tests/test_multivariate_score_contrasts.py"
+    original_heavy = {
         "tests/test_econ_saved_prediction_linear.py",
         "tests/test_control_function_common_prediction.py",
         "tests/test_streaming_control_function_engine.py",
         "tests/test_control_stream_acceptance.py",
-    )
-    source = validator.selector_contract(ROOT)
-    heavy = [selector for selector in source if selector in validator.SDK_HEAVY_SELECTORS]
-    other = [selector for selector in source if selector not in validator.SDK_HEAVY_SELECTORS]
-    assert heavy == list(validator.SDK_HEAVY_SELECTORS)
-    assert set(heavy).isdisjoint(other) and set(heavy + other) == set(source)
-    assert [selector for selector in source if selector in other] == other
+    }
+    fixed = [item for group in validator.SDK_FIXED_GROUPS for item in group]
+    partition = [[item for item in source if item in group] for group in validator.SDK_FIXED_GROUPS]
+    partition.append([item for item in source if item not in fixed])
+    assert len(source) == 160 and list(map(len, partition)) == [1, 23, 136]
+    plan = json.loads((ROOT / "docs/econometrics/merge-gate-sdk-groups-plan.json").read_text())
+    assert source[:138] == plan["selected_tests"]
+    assert source[145:146] == ["tests/test_multivariate_score_uncertainty.py"]
+    assert source[138:142] == ["tests/test_weighted_binary.py", "tests/test_econ_glm.py", "tests/test_econ_glm_oracle.py", "tests/test_econ_saved_prediction_categories.py"]
+    assert source[:119] == plan["selector_order_qualification"]["current_order_preserving_proposed_union"]
+    assert source[119:124] == plan["twostep_added_selectors"]
+    assert source[124:126] == plan["survey_deff_scope_extension"]["added_selectors"] == ["tests/test_survey_deff.py", "tests/test_survey_inference.py"]
+    assert source[126:138] == plan["PR213_current_main_integration"]["all12_original_scientific_additions"]
+    assert original_heavy <= set(sum(partition[:2], []))
+    assert len(sum(partition, [])) == len(set(sum(partition, []))) == len(source)
+    assert set(sum(partition, [])) == set(source)
+    assert all(group == [item for item in source if item in group] for group in partition)
 
 
 @pytest.mark.parametrize("attack", [
@@ -395,9 +448,9 @@ def test_cpu_budget_and_actual_child_environment_tampering_is_rejected(artifact_
         elif attack == "threads":
             budget["threads_per_child"] = 3
         elif attack == "workers":
-            budget["max_concurrent_children"] = 3
+            budget["max_concurrent_children"] = 4
         elif attack == "groups":
-            budget["groups"] = 3
+            budget["groups"] = 2
         elif attack == "environment":
             manifest["environment"]["OMP_THREAD_LIMIT"] = "99"
         elif attack == "child_environment":
@@ -438,7 +491,7 @@ def test_cpu_budget_and_actual_child_environment_tampering_is_rejected(artifact_
 
 def test_receipt_quota_chain_honors_nonroot_mount_mapping_and_rejects_reordering():
     budget = {"system": "Linux", "host_cpus": 8, "affinity_cpus": 8,
-              "effective_cpus": 2.0, "groups": 2, "max_concurrent_children": 2, "threads_per_child": 1,
+              "effective_cpus": 2.0, "groups": 3, "max_concurrent_children": 2, "threads_per_child": 1,
               "cgroup": {"status": "limited", "version": 2, "error": None,
                          "views": [{"membership": "/tenant/job", "mount_root": "/tenant",
                                     "mountpoint": "/sys/fs/cgroup"}],
@@ -467,7 +520,7 @@ def test_limiting_ancestor_or_probe_cannot_be_omitted_from_rebound_receipt(versi
     parent = "/sys/fs/cgroup/tenant/" + name
     mount = "/sys/fs/cgroup/" + name
     budget = {"system": "Linux", "host_cpus": 8, "affinity_cpus": 8,
-              "effective_cpus": 2.0, "groups": 2, "max_concurrent_children": 2, "threads_per_child": 1,
+              "effective_cpus": 2.0, "groups": 3, "max_concurrent_children": 2, "threads_per_child": 1,
               "cgroup": {"status": "limited", "version": version, "error": None,
                          "views": [{"membership": "/tenant/job", "mount_root": "/",
                                     "mountpoint": "/sys/fs/cgroup"}],
@@ -501,7 +554,7 @@ def test_limiting_ancestor_or_probe_cannot_be_omitted_from_rebound_receipt(versi
 @pytest.mark.parametrize("status", ["unavailable", "malformed"])
 def test_failed_cpu_probe_receipt_may_be_partial_only_with_conservative_allocation(status):
     budget = {"system": "Linux", "host_cpus": 8, "affinity_cpus": 8,
-              "effective_cpus": 1.0, "groups": 2, "max_concurrent_children": 1, "threads_per_child": 1,
+              "effective_cpus": 1.0, "groups": 3, "max_concurrent_children": 1, "threads_per_child": 1,
               "cgroup": {"status": status, "version": 2, "error": "fixture quota read failed",
                          "views": [{"membership": "/tenant/job", "mount_root": "/",
                                     "mountpoint": "/sys/fs/cgroup"}],
@@ -523,11 +576,99 @@ def test_previous_two_file_partition_cannot_be_replayed_as_the_rebalanced_source
     component = artifact_copy[1][0]
 
     def old_partition(manifest):
+        manifest["groups"].pop()
         manifest["groups"][0]["selectors"] = SELECTORS[2:4]
         manifest["groups"][1]["selectors"] = SELECTORS[:2] + SELECTORS[4:]
 
     edit_groups(component, old_partition)
-    with pytest.raises(ValueError, match="child command, scope"):
+    with pytest.raises(ValueError, match="Three distinct SDK child groups"):
+        validate(artifact_copy)
+
+
+def test_previous_four_file_partition_cannot_be_replayed_as_preregistered_five(artifact_copy):
+    component = artifact_copy[1][0]
+    report_path = component / "receipt/report.json"
+    report_before = json.loads(report_path.read_text())
+    version = json.loads((component / "execution.json").read_text())["component_sdk_version"]
+    manifest_path = component / f"receipt/sdk-{version}-groups/report.json"
+    manifest_before = json.loads(manifest_path.read_text())
+
+    def old_partition(manifest):
+        manifest["groups"].pop()
+        manifest["groups"][0]["selectors"] = SELECTORS[:4]
+        manifest["groups"][1]["selectors"] = SELECTORS[4:]
+
+    edit_groups(component, old_partition)
+    with pytest.raises(ValueError, match="Three distinct SDK child groups"):
+        validate(artifact_copy)
+
+
+    write_json(report_path, report_before)
+    write_json(manifest_path, manifest_before)
+    def previous_five_membership(manifest):
+        manifest["groups"][1]["selectors"] = SELECTORS[:3] + SELECTORS[4:6]
+        manifest["groups"][2]["selectors"] = SELECTORS[6:]
+    edit_groups(component, previous_five_membership)
+    with pytest.raises(ValueError, match="SDK child command, scope, execution or outcome differs"):
+        validate(artifact_copy)
+
+def test_third_child_pid_cannot_replay_either_prior_child(artifact_copy):
+    component = artifact_copy[1][0]
+    def coherently_duplicate_third_pid(manifest):
+        third = manifest["groups"][2]
+        third["pid"] = manifest["groups"][1]["pid"]
+        version = manifest["component_sdk_version"]
+        runtime = component / f"receipt/sdk-{version}-groups" / third["runtime_environment"]
+        record = json.loads(runtime.read_text())
+        record["pid"] = third["pid"]
+        write_json(runtime, record)
+        third["runtime_environment_sha256"] = digest(runtime)
+
+    edit_groups(component, coherently_duplicate_third_pid)
+    with pytest.raises(ValueError, match='process identity is duplicated'):
+        validate(artifact_copy)
+
+
+@pytest.mark.parametrize('attack', ['no_third_overlap', 'third_start_reordered'])
+def test_concurrency_and_start_order_apply_to_all_three_actual_children(artifact_copy, attack):
+    component = artifact_copy[1][0]
+
+    def forged_clock(manifest):
+        starts = [0., .01, 5.] if attack == 'no_third_overlap' else [0., .2, .1]
+        for child, start in zip(manifest['groups'], starts, strict=True):
+            child.update(start_seconds=start, stop_seconds=start + 3., seconds=3.)
+        manifest['seconds'] = 9.
+
+    edit_groups(component, forged_clock)
+    edit_report(component, lambda report: report['steps'][-2].update(seconds=9.))
+    with pytest.raises(ValueError, match='did not execute concurrently'):
+        validate(artifact_copy)
+
+
+def test_hosted_aggregate_refuses_actual_passing_local_group_receipt(artifact_copy, tmp_path):
+    root, components, _ = artifact_copy
+    base = root / "artifacts/local-proof" / tmp_path.name
+    base.mkdir(parents=True)
+    started = time.monotonic()
+    env = os.environ.copy()
+    env.update(OPENECON_SDK_PARENT_STARTED_MONOTONIC=str(started),
+               OPENECON_SDK_PARENT_DEADLINE_MONOTONIC=str(started + 900))
+    result = subprocess.run([str(root / ".venv311/bin/python"), "scripts/run_parallel_sdk_groups.py",
+                             "--python", str(root / ".venv311/bin/python"), "--local",
+                             "--directory", str(base / "groups"), "--junitxml", str(base / "all.xml"),
+                             "--gate-timings", str(base / "all.jsonl")], cwd=root, env=env,
+                            capture_output=True, text=True, timeout=15)
+    assert result.returncode == 0, result.stdout + result.stderr
+    local = json.loads((base / "groups/report.json").read_text())
+    assert local["status"] == "passed" and local["tests"]["tests"] == 26
+    assert local["execution"] is local["execution_sha256"] is local["component_sdk_version"] is None
+
+    def substitute(manifest):
+        manifest.clear()
+        manifest.update(local)
+
+    edit_groups(components[0], substitute)
+    with pytest.raises(ValueError, match="Grouped SDK source, execution or scope differs"):
         validate(artifact_copy)
 
 
@@ -560,9 +701,10 @@ def test_uv_marker_exception_does_not_admit_changed_or_aliased_extras(
         validate(artifact_copy)
 
 
-def test_non_pr_execution_preserves_null_parent_binding(artifact_copy):
+@pytest.mark.parametrize("event", ["push", "merge_group", "workflow_dispatch", "schedule"])
+def test_non_pr_execution_preserves_null_parent_binding(artifact_copy, event):
     root, components, expected = artifact_copy
-    expected.update(event="push", pull_request_head=None, pull_request_base=None)
+    expected.update(event=event, pull_request_head=None, pull_request_base=None)
     for component in components:
         path = component / "execution.json"
         execution = json.loads(path.read_text())
@@ -594,13 +736,15 @@ def test_complete_components_must_have_the_same_test_order(artifact_copy):
     path = component / "receipt/pytest-3.13-timings.jsonl"
     records = path.read_text().splitlines()
     path.write_text("\n".join(records[:6] + records[9:12] + records[6:9] + records[12:]) + "\n")
-    raw = component / "receipt/sdk-3.13-groups/group-0/pytest-timings.jsonl"
-    raw.write_text(path.read_text().rsplit("\n", 4)[0] + "\n")
-    collection = component / "receipt/sdk-3.13-groups/group-0/pytest-collection.jsonl"
+    raw = component / "receipt/sdk-3.13-groups/group-1/pytest-timings.jsonl"
+    rows = path.read_bytes().splitlines(keepends=True)
+    fixed = set(SELECTORS[:3] + SELECTORS[4:6] + SELECTORS[7:])
+    raw.write_bytes(b"".join(row for row in rows if json.loads(row)["nodeid"].split("::", 1)[0] in fixed))
+    collection = component / "receipt/sdk-3.13-groups/group-1/pytest-collection.jsonl"
     rows = collection.read_bytes().splitlines(keepends=True)
     collection.write_bytes(b"".join(rows[:2]) + rows[3] + rows[2] + b"".join(rows[4:]))
     for xml in (component / "receipt/pytest-3.13.xml",
-                component / "receipt/sdk-3.13-groups/group-0/pytest.xml"):
+                component / "receipt/sdk-3.13-groups/group-1/pytest.xml"):
         tree = ET.parse(xml)
         suite = next(tree.getroot().iter("testsuite"))
         cases = suite.findall("testcase")
@@ -623,6 +767,8 @@ def test_complete_components_must_have_the_same_test_order(artifact_copy):
     "stop_after_parent", "negative_start", "wrong_duration", "nonfinite_duration",
     "counts_only", "hidden_error", "child_path_traversal", "wrong_kind", "serial_order_claim",
     "collection_count", "collection_hash", "collection_path",
+    "wrong_plugin_environment", "borrow_local_timeout", "old900_relaxed_timeout",
+    "wrong_environment_zero",
 ])
 def test_grouped_manifest_cannot_omit_relabel_or_relax_actual_children(artifact_copy, attack):
     component = artifact_copy[1][0]
@@ -641,7 +787,7 @@ def test_grouped_manifest_cannot_omit_relabel_or_relax_actual_children(artifact_
         elif attack == "missing_selector":
             group["selectors"].pop()
         elif attack == "reversed_heavy":
-            group["selectors"].reverse()
+            groups[1]["selectors"].reverse()
         elif attack == "duplicate_selector":
             group["selectors"].append(group["selectors"][0])
         elif attack == "wrong_complement":
@@ -656,7 +802,16 @@ def test_grouped_manifest_cannot_omit_relabel_or_relax_actual_children(artifact_
         elif attack == "skipped_child":
             group["tests"]["skipped"] = 1
         elif attack == "wrong_environment":
+            force_one_thread_legacy_fixture(manifest)
+            group["environment"]["OMP_NUM_THREADS"] = "2"
+        elif attack == "wrong_environment_zero":
             group["environment"]["OMP_NUM_THREADS"] = "0"
+        elif attack == "wrong_plugin_environment":
+            group["environment"]["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "0"
+        elif attack == "borrow_local_timeout":
+            manifest["timeout_seconds"] = 900
+        elif attack == "old900_relaxed_timeout":
+            manifest["timeout_seconds"] = 901
         elif attack == "wrong_execution":
             group["execution"]["run_attempt"] = "3"
         elif attack == "wrong_source":
@@ -706,7 +861,7 @@ def test_grouped_manifest_cannot_omit_relabel_or_relax_actual_children(artifact_
 
 
 @pytest.mark.parametrize("variable", ["OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS"])
-@pytest.mark.parametrize("target", ["manifest", "group-0", "group-1"])
+@pytest.mark.parametrize("target", ["manifest", "group-0", "group-1", "group-2"])
 def test_child_receipt_cannot_exceed_recorded_thread_allocation(
     artifact_copy, variable, target
 ):
@@ -739,7 +894,7 @@ def test_raw_child_evidence_is_independently_validated_against_canonical_records
     artifact_copy, tmp_path, attack
 ):
     component = artifact_copy[1][0]
-    child = component / "receipt/sdk-3.11-groups/group-0"
+    child = component / "receipt/sdk-3.11-groups/group-1"
     xml, phases, log = child / "pytest.xml", child / "pytest-timings.jsonl", child / "pytest.log"
     if attack == "missing_junit":
         xml.unlink()
@@ -836,23 +991,24 @@ def test_coherent_testcase_omission_in_both_versions_cannot_pass(artifact_copy):
     for component in artifact_copy[1]:
         version = json.loads((component / "execution.json").read_text())["component_sdk_version"]
         for xml in (component / f"receipt/pytest-{version}.xml",
-                    component / f"receipt/sdk-{version}-groups/group-0/pytest.xml"):
+                    component / f"receipt/sdk-{version}-groups/group-1/pytest.xml"):
             tree = ET.parse(xml)
             suite = next(tree.getroot().iter("testsuite"))
             suite.remove(suite.findall("testcase")[2])
             suite.set("tests", str(int(suite.get("tests")) - 1))
             tree.write(xml)
         for phase in (component / f"receipt/pytest-{version}-timings.jsonl",
-                      component / f"receipt/sdk-{version}-groups/group-0/pytest-timings.jsonl"):
+                      component / f"receipt/sdk-{version}-groups/group-1/pytest-timings.jsonl"):
             records = phase.read_bytes().splitlines(keepends=True)
             phase.write_bytes(b"".join(records[:6] + records[9:]))
-        edit_report(component, lambda report: report["steps"][-2]["tests"].update(tests=5))
+        edit_report(component, lambda report: report["steps"][-2]["tests"].update(
+            tests=report["steps"][-2]["tests"]["tests"] - 1))
 
         def shrink(manifest):
-            manifest["tests"]["tests"] = 5
-            manifest["combined"]["tests"]["tests"] = 5
-            manifest["groups"][0]["tests"]["tests"] = 4
-            manifest["groups"][0]["collected_tests"] = 4
+            manifest["tests"]["tests"] -= 1
+            manifest["combined"]["tests"]["tests"] -= 1
+            manifest["groups"][1]["tests"]["tests"] -= 1
+            manifest["groups"][1]["collected_tests"] -= 1
 
         edit_groups(component, shrink)
         rebind_outputs(component)
@@ -868,7 +1024,7 @@ def test_same_process_collection_receipt_requires_every_collected_node_in_order(
     artifact_copy, tmp_path, attack
 ):
     component = artifact_copy[1][0]
-    path = component / "receipt/sdk-3.11-groups/group-0/pytest-collection.jsonl"
+    path = component / "receipt/sdk-3.11-groups/group-1/pytest-collection.jsonl"
     rows = path.read_bytes().splitlines(keepends=True)
     if attack == "missing":
         path.unlink()
@@ -949,6 +1105,35 @@ def test_two_thread_component_cannot_replay_as_one_thread_gate(artifact_copy, th
 
     edit_report(component, mutate)
     with pytest.raises(ValueError, match="environment"):
+        validate(artifact_copy)
+
+
+def force_one_thread_legacy_fixture(manifest):
+    """Coherently rebind this tiny receipt's CPU metadata before an adversarial child edit."""
+    manifest["cpu_budget"] = {
+        "system": "Darwin", "host_cpus": 3, "affinity_cpus": 3,
+        "effective_cpus": 3.0, "groups": 3, "max_concurrent_children": 3,
+        "threads_per_child": 1, "cgroup": {
+            "status": "not_applicable", "version": None, "views": [],
+            "probes": [], "limits": [], "error": None}}
+    manifest["environment"] = {**validator.GATE_ENVIRONMENT, **{key: "1" for key in (
+        "OMP_NUM_THREADS", "OMP_THREAD_LIMIT", "MKL_NUM_THREADS",
+        "OPENBLAS_NUM_THREADS", "ARROW_IO_THREADS")}}
+    for group in manifest["groups"]:
+        group["environment"] = {**manifest["environment"], **{
+            key: group["temporary_directory"] for key in ("TMPDIR", "TMP", "TEMP")}}
+
+
+@pytest.mark.parametrize("index", [0, 1, 2])
+@pytest.mark.parametrize("thread_variable", ["OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS"])
+def test_two_thread_child_cannot_hide_under_one_thread_parent(artifact_copy, index, thread_variable):
+    component = artifact_copy[1][0]
+    def mutate(manifest):
+        force_one_thread_legacy_fixture(manifest)
+        manifest["groups"][index]["environment"][thread_variable] = "2"
+
+    edit_groups(component, mutate)
+    with pytest.raises(ValueError, match="SDK child"):
         validate(artifact_copy)
 
 
@@ -1280,8 +1465,7 @@ def utc_text(seconds):
     return datetime.fromtimestamp(seconds, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-@pytest.fixture(scope="module")
-def genuine_distributed_artifacts(genuine_artifacts):
+def build_distributed_artifacts(genuine_artifacts, shard_count):
     """Four real small partial coordinators, synthetic authenticated API fixture.
 
     This proves the verifier's counterexamples, not hosted acceptance. Each
@@ -1292,8 +1476,8 @@ def genuine_distributed_artifacts(genuine_artifacts):
     components, jobs = [], []
     for version in validator.VERSIONS:
         template = json.loads((legacy[validator.VERSIONS.index(version)] / "receipt/report.json").read_text())
-        for shard in (0, 1):
-            component = root / "artifacts" / f"distributed-{version}-{shard}"
+        for shard in range(shard_count):
+            component = root / "artifacts" / f"distributed-{shard_count}-{version}-{shard}"
             receipt = component / "receipt"
             receipt.mkdir(parents=True)
             execution = {**expected, "browser_executable": "/usr/bin/google-chrome",
@@ -1302,7 +1486,7 @@ def genuine_distributed_artifacts(genuine_artifacts):
                          "workflow_job_name": f"OpenEconometrics / SDK Python {version} shard {shard}"}
             write_json(component / "execution.json", execution)
             report = copy.deepcopy(template)
-            report.update(schema=2, component_sdk_shard=shard, sdk_shard_count=2,
+            report.update(schema=2, component_sdk_shard=shard, sdk_shard_count=shard_count,
                           timeout_seconds=900,
                           sdk_group_count=4, partial_scope=True,
                           job_name=execution["workflow_job_name"], receipt_directory=str(receipt),
@@ -1356,10 +1540,20 @@ def genuine_distributed_artifacts(genuine_artifacts):
                  "started_at": utc_text(latest - 1), "completed_at": utc_text(latest + 1),
                  "runner_id": 2000, "runner_name": "GitHub Actions 200",
                  "html_url": f"https://github.com/fixture/openecon/actions/runs/{expected['run_id']}/job/200"})
-    api = root / "artifacts/distributed-jobs.json"
+    api = root / f"artifacts/distributed-{shard_count}-jobs.json"
     write_json(api, {"unused": True})
     api.write_text(json.dumps([{"total_count": len(jobs), "jobs": jobs}]) + "\n")
     return root, components, expected, api, clock
+
+
+@pytest.fixture(scope="module")
+def genuine_distributed_artifacts(genuine_artifacts):
+    return build_distributed_artifacts(genuine_artifacts, 2)
+
+
+@pytest.fixture(scope="module")
+def genuine_eight_distributed_artifacts(genuine_artifacts):
+    return build_distributed_artifacts(genuine_artifacts, 4)
 
 
 @pytest.fixture
@@ -1379,7 +1573,8 @@ def validate_distributed(inputs, **overrides):
                "recorded_aggregate_clock": clock}
     options.update(overrides)
     return validator.validate_components(components, expected,
-        {f"{version}:{shard}": "success" for version in validator.VERSIONS for shard in (0, 1)},
+        {f"{version}:{shard}": "success" for version in validator.VERSIONS
+         for shard in range(options["shard_count"])},
         **options)
 
 
@@ -1399,16 +1594,24 @@ def test_four_real_partial_shards_complete_actual_union_once_and_reassemble(dist
     assert [(item["version"], item["shard"]) for item in result["components"]] == [
         ("3.11", 0), ("3.11", 1), ("3.13", 0), ("3.13", 1)]
     assert all(item["step_count"] == 8 and len(item["packages"]) == 4 for item in result["components"])
-    assert all(item["JUnit"]["tests"] < 6 for item in result["components"])
+    assert all(0 < item["JUnit"]["tests"] < 26 for item in result["components"])
     for union in result["complete_sdk_unions"]:
-        assert union["JUnit"] == {"tests": 6, "failures": 0, "errors": 0, "skipped": 0}
-        assert union["phase_records"] == 18
+        assert union["JUnit"] == {"tests": 26, "failures": 0, "errors": 0, "skipped": 0}
+        assert union["phase_records"] == 78
         xml = output / f"pytest-{union['version']}.xml"
         phases = output / f"pytest-{union['version']}-timings.jsonl"
         assert digest(xml) == union["JUnit_sha256"] and digest(phases) == union["phase_sha256"]
-        assert len(validator.phase_cases(phases, validator.junit_cases(xml), SELECTORS, ordered=True)) == 6
+        assert len(validator.phase_cases(phases, validator.junit_cases(xml), SELECTORS, ordered=True)) == 26
     assert all(0 < cohort["seconds"] <= 900 for cohort in result["sdk_cohorts"])
     assert result["aggregate_clock_mode"] == "recorded-completed-job-replay"
+
+
+def test_daily_aggregate_cannot_use_the_quick_merge_check_name(distributed_copy):
+    assert validator.CONTEXT == "OpenEconometrics / daily full gate"
+    assert validate_distributed(distributed_copy)["status_context"] == validator.CONTEXT
+    edit_jobs(distributed_copy, lambda jobs: jobs[-1].update(name="OpenEconometrics / merge gate"))
+    with pytest.raises(ValueError, match="Missing or duplicate current-attempt"):
+        validate_distributed(distributed_copy)
 
 
 @pytest.mark.parametrize("attack", ["missing", "duplicate", "legacy-mode", "no-job-bounds"])
@@ -1567,16 +1770,17 @@ def test_serial_metadata_cannot_hide_overlapping_raw_phases(
     rebind_outputs(component)
 
     def two_workers(value):
+        workers = 2 if distributed else 3
         value["cpu_budget"] = {
-            "system": "Linux", "host_cpus": 2, "affinity_cpus": 2,
-            "effective_cpus": 2.0, "groups": 2, "max_concurrent_children": 2,
+            "system": "Linux", "host_cpus": workers, "affinity_cpus": workers,
+            "effective_cpus": float(workers), "groups": workers, "max_concurrent_children": workers,
             "threads_per_child": 1, "cgroup": {
                 "status": "limited", "version": 2, "error": None,
                 "views": [{"membership": "/", "mount_root": "/",
                            "mountpoint": "/sys/fs/cgroup"}],
                 "probes": [{"view": 0, "path": "/sys/fs/cgroup/cpu.max", "status": "present"}],
-                "limits": [{"view": 0, "path": "/sys/fs/cgroup/cpu.max", "quota_us": 200000,
-                            "period_us": 100000, "cpus": 2.0}]}}
+                "limits": [{"view": 0, "path": "/sys/fs/cgroup/cpu.max", "quota_us": workers * 100000,
+                            "period_us": 100000, "cpus": float(workers)}]}}
         value["environment"] = {**validator.GATE_ENVIRONMENT, **{key: "1" for key in (
             "OMP_NUM_THREADS", "OMP_THREAD_LIMIT", "MKL_NUM_THREADS",
             "OPENBLAS_NUM_THREADS", "ARROW_IO_THREADS")}}
@@ -1982,7 +2186,7 @@ def test_all_actual_child_temp_receipts_are_distinct_same_pid_and_cleaned(
         artifact_copy, distributed_copy, distributed):
     result = (validate_distributed if distributed else validate)(distributed_copy if distributed else artifact_copy)
     children = [group for component in result["components"] for group in component["sdk_groups"]["groups"]]
-    assert len(children) == (8 if distributed else 4)
+    assert len(children) == (8 if distributed else 6)
     assert len({group["temporary_directory"] for group in children}) == len(children)
     for group in children:
         record = group["actual_runtime_environment"]
@@ -1990,3 +2194,261 @@ def test_all_actual_child_temp_receipts_are_distinct_same_pid_and_cleaned(
         assert record["tempfile_directory"] == group["temporary_directory"]
         assert group["temporary_directory_fresh_before_launch"] is True
         assert group["temporary_directory_removed_after_stop"] is True
+
+
+def test_eight_real_shards_keep_all_cases_clocks_and_reject_missing_or_duplicate_evidence(
+        genuine_eight_distributed_artifacts, tmp_path):
+    root, components, expected, jobs, clock = genuine_eight_distributed_artifacts
+    inputs = root, components, expected, jobs, clock
+    result = validate_distributed(inputs, shard_count=4, output_directory=tmp_path / "complete")
+    assert result["status"] == "passed" and result["timeout_seconds"] == 900
+    assert result["shard_count"] == result["group_count"] == 4
+    assert [(row["version"], row["shard"]) for row in result["components"]] == [
+        (version, shard) for version in validator.VERSIONS for shard in range(4)]
+    assert all(len(row["sdk_groups"]["groups"]) == 1 for row in result["components"])
+    for row in result["complete_sdk_unions"]:
+        assert row["JUnit"] == {"tests": 26, "failures": 0, "errors": 0, "skipped": 0}
+        assert row["phase_records"] == 78
+        assert digest(tmp_path / f"complete/pytest-{row['version']}.xml") == row["JUnit_sha256"]
+        assert digest(tmp_path / f"complete/pytest-{row['version']}-timings.jsonl") == row["phase_sha256"]
+    for selected in (components[:-1], components[:4], [*components[:-1], components[0]]):
+        with pytest.raises(ValueError):
+            validate_distributed((root, selected, expected, jobs, clock), shard_count=4)
+    with pytest.raises(ValueError):
+        validate_distributed(inputs, shard_count=2)
+    copied = tmp_path / "dishonest-child-count"
+    shutil.copytree(components[0], copied)
+    def duplicate_child(manifest):
+        manifest["groups"].append(copy.deepcopy(manifest["groups"][0]))
+    edit_groups(copied, duplicate_child)
+    with pytest.raises(ValueError):
+        validate_distributed((root, [copied, *components[1:]], expected, jobs, clock), shard_count=4)
+
+
+@pytest.mark.parametrize("index", [0, 1])
+@pytest.mark.parametrize("location", ["parent", "manifest", "child", "all"])
+def test_other_component_native_recipe_cannot_be_rebound_as_current(artifact_copy, index, location):
+    component = artifact_copy[1][index]
+    wrong_threads = "3"
+    wrong = {name: wrong_threads for name in
+             ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS")}
+    if location in ("parent", "all"):
+        edit_report(component, lambda report: report["gate_environment"].update(wrong))
+    if location != "parent":
+        def mutate(manifest):
+            if location in ("manifest", "all"):
+                manifest["environment"].update(wrong)
+            if location in ("child", "all"):
+                for group in manifest["groups"]:
+                    group["environment"].update(wrong)
+        edit_groups(component, mutate)
+    with pytest.raises(ValueError):
+        validate(artifact_copy)
+
+
+@pytest.mark.parametrize("variable", ["TMPDIR", "TMP", "TEMP"])
+@pytest.mark.parametrize("attack", ["missing", "shared", "other-child"])
+def test_actual_child_temporary_namespace_cannot_be_rebound(artifact_copy, variable, attack):
+    component = artifact_copy[1][0]
+
+    def mutate(manifest):
+        environment = manifest["groups"][0]["environment"]
+        if attack == "missing":
+            environment.pop(variable)
+        elif attack == "shared":
+            environment[variable] = "/tmp"
+        else:
+            environment[variable] = manifest["groups"][1]["environment"][variable]
+
+    edit_groups(component, mutate)
+    with pytest.raises(ValueError, match="SDK child temporary environment"):
+        validate(artifact_copy)
+
+
+@pytest.mark.parametrize("version", [None, "3.10", "3.12", True])
+def test_independent_validator_rejects_unknown_component_native_recipe(artifact_copy, version):
+    component = artifact_copy[1][0]
+    edit_report(component, lambda report: report.update(component_sdk_version=version))
+    with pytest.raises(ValueError):
+        validate(artifact_copy)
+
+
+@pytest.mark.parametrize("variable", ["OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS"])
+@pytest.mark.parametrize("target", ["manifest", "group-0", "group-1"])
+def test_two_thread_child_receipt_cannot_replace_single_thread_contract(
+    artifact_copy, variable, target
+):
+    def mutate(manifest):
+        record = manifest if target == "manifest" else manifest["groups"][int(target[-1])]
+        record["environment"][variable] = "2" if record["environment"][variable] == "1" else "1"
+
+    edit_groups(artifact_copy[1][0], mutate)
+    with pytest.raises(ValueError, match="numerical thread environment|SDK child temporary environment"):
+        validate(artifact_copy)
+
+
+@pytest.mark.parametrize("key", ["OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS"])
+@pytest.mark.parametrize("target", ["manifest", "group0", "group1"])
+def test_distributed_rehashed_child_environment_cannot_claim_two_threads(distributed_copy, key, target):
+    def mutate(manifest):
+        record = manifest if target == "manifest" else manifest["groups"][int(target[-1])]
+        record["environment"][key] = "2"
+
+    edit_groups(distributed_copy[1][0], mutate)
+    with pytest.raises(ValueError):
+        validate_distributed(distributed_copy)
+
+
+@pytest.mark.parametrize("variable", ["TMPDIR", "TMP", "TEMP"])
+@pytest.mark.parametrize("attack", ["missing", "shared", "other-child"])
+def test_distributed_child_temporary_namespace_cannot_be_rebound(distributed_copy, variable, attack):
+    component = distributed_copy[1][0]
+
+    def mutate(manifest):
+        environment = manifest["groups"][0]["environment"]
+        if attack == "missing":
+            environment.pop(variable)
+        elif attack == "shared":
+            environment[variable] = "/tmp"
+        else:
+            environment[variable] = manifest["groups"][1]["environment"][variable]
+
+    edit_groups(component, mutate)
+    with pytest.raises(ValueError, match="SDK child temporary environment"):
+        validate_distributed(distributed_copy)
+
+
+def _complete_protocol2_fixture_module():
+    fixture_spec = importlib.util.spec_from_file_location(
+        "synthetic_complete_report_fixture", ROOT / "tests/gate_report_protocol_fixture.py")
+    fixture = importlib.util.module_from_spec(fixture_spec)
+    fixture_spec.loader.exec_module(fixture)
+    return fixture
+
+
+def test_protocol2_independent_aggregate_counts_native_zero_times_without_clock_reset(tmp_path):
+    fixture = _complete_protocol2_fixture_module()
+    xml, raw, expected = fixture.make(tmp_path / "independent")
+    cases = validator.junit_cases(xml, report_protocol=2)
+    bounds = [float("inf"), 0.0]
+    nodes = validator.phase_cases(raw, cases, fixture.SELECTORS, ordered=True,
+                                  offsets=True, bounds=bounds, report_protocol=2, root=ROOT)
+    assert [node for node, _ in nodes] == expected
+    assert len(nodes) == 122 and sum(length for _, (_, length) in nodes) == raw.stat().st_size
+    assert 1000 <= bounds[0] <= bounds[1] and bounds[0] != 0
+    with pytest.raises(ValueError):
+        validator.junit_cases(xml)
+
+
+@pytest.mark.parametrize("damage", ["wrong_context", "wrong_ordinal", "extra_nested", "wrong_framework",
+                                     "wrong_source", "missing_ledger_line", "truncated_outer"])
+def test_protocol2_independent_aggregate_refuses_resealed_incomplete_contract(tmp_path, damage):
+    fixture = _complete_protocol2_fixture_module()
+    xml, raw, _ = fixture.make(tmp_path / damage)
+    records, events = fixture.rows(raw)
+    i = next(i for i, event in enumerate(events) if event["report_kind"] == "unittest_subreport")
+    if damage == "wrong_context":
+        events[i]["native_context"]["kwargs_in_native_order"][0][1] = "'not-the-source-value'"
+    elif damage == "wrong_ordinal":
+        events[i]["parent_nested_ordinal"] = 999
+    elif damage == "extra_nested":
+        records.insert(i, dict(records[i]))
+        events.insert(i, dict(events[i]))
+    elif damage == "truncated_outer":
+        records.pop()
+        events.pop()
+    fixture.reseal(raw, records, events)
+    ledger, final, _ = fixture.reports.paths(raw)
+    if damage in ("wrong_framework", "wrong_source"):
+        value = fixture.reports.strict_json(final.read_bytes())
+        if damage == "wrong_framework":
+            value["framework"]["pytest_version"] = "9.1.0"
+        else:
+            value["source_identity"]["parent_sources"] = {}
+        final.write_bytes(fixture.reports.encode(value))
+    if damage == "missing_ledger_line":
+        ledger.write_bytes(b"".join(ledger.read_bytes().splitlines(True)[:-1]))
+    with pytest.raises((ValueError, OSError)):
+        validator.phase_cases(raw, validator.junit_cases(xml, report_protocol=2), fixture.SELECTORS,
+                               ordered=True, report_protocol=2, root=ROOT)
+
+
+def test_protocol2_whole_derived_origin_union_preserves_every_native_report_byte(tmp_path):
+    fixture = _complete_protocol2_fixture_module()
+    xml, raw, nodes = fixture.make(tmp_path / "child")
+    merged = tmp_path / "complete-union.jsonl"
+    merged.write_bytes(raw.read_bytes())
+    fixture.reports.derived_evidence(merged, nodes, [raw], ROOT)
+    actual = validator.verify_derived_report_origins(merged, nodes, [raw], ROOT)
+    assert actual["collected_cases"] == 122 and actual["all_phase_records"] == 391
+    assert actual["native_JUnit_reported_tests"] == 147 and actual["nested_reports"] == 25
+    ledger, final, _ = fixture.reports.paths(merged)
+    records, rows = fixture.rows(merged)
+    rows[1]["origin"]["source_raw_report_ordinal"] += 1
+    ledger.write_bytes(b"".join(fixture.reports.encode_event(row, record)
+                                for row, record in zip(rows, records, strict=True)))
+    value = fixture.reports.strict_json(final.read_bytes())
+    value["ledger"] = fixture.reports.pin(ledger, fixture.reports.MAX_LEDGER)
+    final.write_bytes(fixture.reports.encode(value))
+    with pytest.raises(ValueError, match="origin"):
+        validator.verify_derived_report_origins(merged, nodes, [raw], ROOT)
+
+
+def test_protocol2_complete_four_shard_union_preserves_all391_events_and122_elements(tmp_path):
+    fixture = _complete_protocol2_fixture_module()
+    full = fixture.complete_nodes()
+    rows = []
+    for index in range(4):
+        xml, raw, _ = fixture.make(tmp_path / f"group-{index}", full[index::4])
+        cases = validator.junit_cases(xml, report_protocol=2)
+        actual = validator.phase_cases(raw, cases, fixture.SELECTORS, ordered=True,
+                                       offsets=True, require_all_selectors=False,
+                                       report_protocol=2, root=ROOT)
+        rows.append([(node, element, raw, byte_range) for (node, byte_range), element in
+                     zip(actual, ET.parse(xml).getroot().iter("testcase"), strict=True)])
+    results = {f"{version}:{shard}": {
+        "phase_report_protocol": 2, "sdk_groups": {"partition_plan_digest": "synthetic-plan",
+        "full_collection_sha256": "synthetic-collection"},
+        "_raw": {"full": full, "rows": rows[shard], "duration": 1.0}}
+        for version in validator.VERSIONS for shard in range(4)}
+    output = tmp_path / "aggregate"
+    unions = validator.merge_distributed_rows(results, fixture.SELECTORS, output, 4, root=ROOT)
+    assert len(unions) == 2
+    for union in unions:
+        assert union["JUnit"]["tests"] == 122
+        assert union["phase_records"] == 391
+        assert union["report_counts"]["native_JUnit_reported_tests"] == 147
+        xml = output / ("pytest-" + union["version"] + ".xml")
+        raw = output / ("pytest-" + union["version"] + "-timings.jsonl")
+        cases = validator.junit_cases(xml, report_protocol=2)
+        assert len(cases) == 122
+        assert validator.phase_cases(raw, cases, fixture.SELECTORS, ordered=True,
+                                     report_protocol=2, root=ROOT, derived=True) == full
+        assert len(raw.read_bytes().splitlines()) == 391
+
+
+@pytest.mark.parametrize("source,expected", [
+    ("TESTS = ['tests/test_bayesian_var_sbc_protocol.py']\n", 1),
+    ("PHASE_REPORT_PROTOCOL = 2\nTESTS = []\n", 2),
+])
+def test_report_protocol_is_bound_to_actual_producer_source_without_filename_bypass(tmp_path, source, expected):
+    scripts = tmp_path / "scripts"
+    scripts.mkdir()
+    (scripts / "verify_merge_candidate.py").write_text(source)
+    assert validator.required_report_protocol(tmp_path) == expected
+
+
+@pytest.mark.parametrize("declaration", [
+    "PHASE_REPORT_PROTOCOL = 1", "PHASE_REPORT_PROTOCOL = 3", "PHASE_REPORT_PROTOCOL = True",
+    "PHASE_REPORT_PROTOCOL = '2'", "PHASE_REPORT_PROTOCOL = int(2)",
+    "PHASE_REPORT_PROTOCOL = 2\nPHASE_REPORT_PROTOCOL = 2",
+    "PHASE_REPORT_PROTOCOL: int = 2", "PHASE_REPORT_PROTOCOL = 2\nPHASE_REPORT_PROTOCOL += 0",
+    "PHASE_REPORT_PROTOCOL = 2\ndef mutate():\n    global PHASE_REPORT_PROTOCOL\n    PHASE_REPORT_PROTOCOL = 1",
+    "other = PHASE_REPORT_PROTOCOL = 2", "print(PHASE_REPORT_PROTOCOL)",
+])
+def test_unknown_duplicate_or_nonliteral_report_protocol_source_refuses(tmp_path, declaration):
+    scripts = tmp_path / "scripts"
+    scripts.mkdir()
+    (scripts / "verify_merge_candidate.py").write_text(declaration + "\nTESTS = []\n")
+    with pytest.raises(ValueError, match="explicit source report protocol"):
+        validator.required_report_protocol(tmp_path)

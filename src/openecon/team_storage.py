@@ -1,27 +1,12 @@
-"""Private immutable blobs and narrowly scoped execution capabilities."""
-from __future__ import annotations
+"""Private immutable project blobs for the team sync backend.
 
-from datetime import timedelta
-import json
-import re
+No execution capabilities are issued: analyses run in the desktop app.
+"""
+from __future__ import annotations
 
 from openecon.team_store import TeamError
 
 MAX_TRANSFER_BYTES = 24 * 1024**2
-# Covers the bounded queue + task lease (at most 19 minutes) without extending
-# the worker's existing 30-minute maximum for signed transfer capabilities.
-_TRANSFER_EXPIRATION = timedelta(minutes=30)
-
-
-def _cancel_key(project_id, run_id):
-    if any(not isinstance(value, str) or not re.fullmatch(r'[0-9a-f]{32}', value)
-           for value in (project_id, run_id)):
-        raise ValueError('Canonical project and execution IDs are required.')
-    return f'staging/{project_id}/{run_id}/cancel.json'
-
-
-def _cancel_payload(run_id):
-    return json.dumps({'execution_id': run_id, 'cancel_requested': True}).encode()
 
 
 class TeamStorage:
@@ -34,6 +19,7 @@ class TeamStorage:
         credentials, _ = google.auth.default(scopes=['https://www.googleapis.com/auth/cloud-platform'])
         self.client = storage.Client(project=project, credentials=credentials)
         self.bucket = self.client.bucket(bucket)
+        # signBlob identity for short-lived desktop sign-in custom tokens only.
         self.signer = service_account.Credentials(
             iam.Signer(Request(), credentials, signer_email), signer_email,
             'https://oauth2.googleapis.com/token')
@@ -78,53 +64,6 @@ class TeamStorage:
         except NotFound:
             pass
 
-    def download_url(self, reference):
-        return self.bucket.blob(reference['key']).generate_signed_url(
-            version='v4', expiration=_TRANSFER_EXPIRATION, method='GET',
-            credentials=self.signer, query_parameters={'generation': str(reference['generation'])})
-
-    def output_policy(self, key, maximum=MAX_TRANSFER_BYTES):
-        if type(maximum) is not int or not 1 <= maximum <= MAX_TRANSFER_BYTES:
-            raise ValueError('The upload limit must be an integer within the transfer limit.')
-        return self.client.generate_signed_post_policy_v4(
-            self.bucket.name, key, expiration=_TRANSFER_EXPIRATION,
-            # The SDK adds an exact-match condition for each field. Supplying
-            # Content-Type again here creates a duplicate policy condition.
-            conditions=[['content-length-range', 1, maximum]],
-            fields={'Content-Type': 'application/json'}, credentials=self.signer)
-
-    def signed_cancel_url(self, project_id, run_id):
-        # The marker may not exist yet. Pinning a generation would prevent a
-        # running sandbox from observing a cancellation created after launch.
-        key = _cancel_key(project_id, run_id)
-        return self.bucket.blob(key).generate_signed_url(
-            version='v4', expiration=_TRANSFER_EXPIRATION, method='GET',
-            credentials=self.signer)
-
-    def request_cancel(self, project_id, run_id):
-        from google.api_core.exceptions import PreconditionFailed
-        key = _cancel_key(project_id, run_id)
-        try:
-            self.bucket.blob(key).upload_from_string(
-                _cancel_payload(run_id), content_type='application/json',
-                if_generation_match=0, timeout=45, retry=None)
-        except PreconditionFailed:
-            # An immutable cancellation marker is already present. Repeated
-            # requests must not overwrite it or create a new generation.
-            pass
-        return {'key': key}
-
-    def manifest(self, project_id, run):
-        output_key = f'staging/{project_id}/{run["id"]}/output.json'
-        payload = {'execution_id': run['id'], 'code': run['code'],
-                   'timeout_seconds': run['timeout_seconds'],
-                   'files': [{'name': f['name'], 'download_url': self.download_url(f['blob'])}
-                             for f in run['files']],
-                   'output_upload': self.output_policy(output_key)}
-        reference = self.put(f'staging/{project_id}/{run["id"]}/input.json',
-                             json.dumps(payload).encode(), 'application/json')
-        return self.download_url(reference), {'key': output_key}, reference
-
 
 class MemoryStorage:
     """Isolated test double; production always requires Google Cloud Storage."""
@@ -155,11 +94,3 @@ class MemoryStorage:
 
     def delete(self, reference):
         self.objects.pop(reference['key'], None)
-
-    def request_cancel(self, project_id, run_id):
-        key = _cancel_key(project_id, run_id)
-        self.objects.setdefault(key, _cancel_payload(run_id))
-        return {'key': key}
-
-    def manifest(self, project_id, run):
-        return 'https://storage.googleapis.com/test/input.json', {'key': f'staging/{run["id"]}'}, {'key': 'input'}

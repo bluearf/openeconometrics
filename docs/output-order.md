@@ -52,9 +52,10 @@ idempotent retry. Neither check invoked cloud computation. Production now serves
 `openecon-00011-w27` with 100% traffic and control image
 `sha256:e1a4b1d91494af62b968001c100bde6673663d052ca0fd6bf86cf82a90f00315`.
 The homepage and desktop-login configuration returned HTTP 200.
-Private compute remains `openecon-sandbox-00003-qf7`; minimum instances remain
-zero for both services. This release verifies desktop execution and cloud
-archiving; the unchanged private compute image still produces legacy records.
+Private compute then remained `openecon-sandbox-00003-qf7`; minimum instances
+remained zero for both services. This release verified desktop execution and
+cloud archiving. Cloud execution was retired on 10 October 2026; records it
+produced remain readable.
 
 Local verification records are in
 `desktop/artifacts/release-0.3.1/verification.json` and

@@ -23,9 +23,11 @@ million rows with ten regressors fits in about a second (timings at the end).
 | `betareg y x, scale(z) link(probit)` | `oe.betareg(..., scale=["z"], link="probit")` |
 | `ppmlhdfe y x, absorb(i t) cluster(i)` | `oe.ppmlhdfe(..., absorb=["i","t"], cluster="i")` |
 
-The legacy `oe.logit` and `oe.probit` (strict, separation-certified) stay in the
-core; richer binary models (weights, offsets, grouped data, other links) are
-`oe.glm(family="binomial", ...)`.
+Unweighted `oe.logit` and `oe.probit` retain their separation-certified core and
+Dataset routes. Their [direct weighted API](weighted-binary-eight-2026-10-10.md)
+accepts `weights=` and `weight_type=` for resident f/a/i/pweights, with explicit
+ML covariance conventions and resource admission. Offsets, grouped data and
+other links use `oe.glm(family="binomial", ...)`.
 
 All examples on this page use one synthetic data set and were run as shown
 (`tests/test_econ_glm_verify.py` executes every `python` block of this page):

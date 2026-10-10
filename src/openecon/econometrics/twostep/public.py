@@ -18,6 +18,7 @@ from openecon.econometrics.resident_cpu import resident_cpu
 from openecon.econometrics.summary_state import saved_summary, summary_state, restore_summary
 from openecon.resources import plan_workspace, workspace_budget_bytes
 from . import kernel
+from .selection import select_two_stage as _select_two_stage
 
 DTYPE = torch.float64
 DEFAULT_WORK = 300_000_000
@@ -77,9 +78,7 @@ def _domain(device, weights, max_work, max_bytes):
             _integer(max_bytes, "max_bytes", 1, 2**63-1))
 
 
-def _frame(data, names, missing, max_bytes, categorical=()):
-    if missing not in ("raise", "drop"):
-        _error("missing must be 'raise' or 'drop'.", "invalid_option")
+def _input_size(data, names):
     if isinstance(data, pd.DataFrame):
         size = len(data)
         if data.columns.has_duplicates or any(name not in data for name in names):
@@ -100,6 +99,13 @@ def _frame(data, names, missing, max_bytes, categorical=()):
         _error("Supply a resident DataFrame, column mapping or record list; Dataset cannot be collected.", "unsupported_data")
     if not 1 <= size <= 2000:
         _error("TwoStep accepts 1–2000 physical input rows before coercion.", "resource_limit")
+    return size
+
+
+def _frame(data, names, missing, max_bytes, categorical=()):
+    if missing not in ("raise", "drop"):
+        _error("missing must be 'raise' or 'drop'.", "invalid_option")
+    size = _input_size(data, names)
     plan = plan_workspace("TwoStep resident selected input", {
         "selected_scalar_copies": 64*size*len(names),
         "positions_missing_and_indices": 64*size,
@@ -221,6 +227,8 @@ def _labels(state):
 
 def _output(state):
     from .helpers import profile_tables
+    adaptive = state["version"] == 2
+    selection = state["controls"].get("selection", "global_min")
     result = TableSet({
         "assignments": table(_labels(state), columns=["position", "cluster", "status"]),
         "criteria": table(state["criteria"], columns=["clusters", "score", "parameters", "bic", "aic"]),
@@ -229,12 +237,19 @@ def _output(state):
        state_sha256=_seal(state), n_input=state["input_n"], n_complete=len(state["positions"]),
        n_clustered=len(state["positions"])-len(state["noise_positions"]), n_noise=len(state["noise_positions"]),
        n_missing=len(state["missing_positions"]), n_clusters=state["selected_k"],
-       selection="global-min information criterion" if state["controls"]["n_clusters"] is None else "fixed count",
+       selection=("two-stage change/jump" if selection == "two_stage" else "global-min information criterion") if state["controls"]["n_clusters"] is None else "fixed count",
        inference="descriptive; covariance/SE/df/p/CI are not defined", device="cpu", dtype="float64",
        notes=["Independent normal continuous and multinomial categorical CF score; additive global variance regularizes continuous terms.",
               "Global-min BIC/AIC selection differs from IBM's two-stage change/jump heuristic.",
               "Input order can affect the CF tree; no order invariance or licensed vendor parity is claimed.",
               "Small-leaf noise exclusion uses min_precluster_size; no adaptive rebuild or noise reinsertion."])
+    if adaptive:
+        result.attrs["notes"] = [
+            "Independent normal/multinomial CF score; training population scaling and typed maps are fixed.",
+            "Two-stage mode follows Statistics14 change/jump equations, with recorded deterministic boundary extensions.",
+            "Adaptive rebuild/reinsertion is bounded, preserves every physical row, and records excluded noise.",
+            "Order dependence and descriptive inference remain explicit; licensed vendor parity is not claimed.",
+        ]
     result.update(profile_tables(state))
     return _saved(result)
 
@@ -268,6 +283,19 @@ def _validation_cost(result):
                     pending.append(entry["child"])
         work = 8*(n*(cuts+nodes+1)+cuts*cuts)*(len(state["continuous"])+levels+8)
         buffers = 128*(n*(cuts+nodes+1)+cuts*cuts*(len(state["continuous"])+levels+8))
+        if state.get("version") == 2 and state["controls"]["rebuild"]:
+            replay = state["resources"]["tree_work_bound"]
+            if type(replay) is not int or not 1 <= replay <= 2**63-1:
+                raise ValueError("Invalid adaptive replay bound")
+            traces = state["tree"]["rebuild_trace"]
+            if not isinstance(traces, list) or len(traces) > 17:
+                raise ValueError("Oversized adaptive history")
+            for entry in traces:
+                for key in ("before", "after"):
+                    if not isinstance(entry[key], list) or len(entry[key]) > 129 or any(len(cf["rows"]) > 2000 for cf in entry[key]):
+                        raise ValueError("Oversized adaptive CF history")
+            work += replay
+            buffers += 128*n*(len(traces)+1)*(len(state["continuous"])+levels+8)
         return work, buffers
     except (KeyError, TypeError, ValueError) as exc:
         raise AnalysisError("invalid_state", "TwoStep state dimensions are invalid or exceed the saved domain.") from exc
@@ -282,7 +310,7 @@ def _state(result, *, max_work=DEFAULT_WORK, max_bytes=DEFAULT_BYTES):
         _error("Complete saved TwoStep validation exceeds max_work.", "resource_limit")
     plan_workspace("Complete TwoStep saved state validation", {"state_moments_and_table_replay": buffers}, budget_bytes=min(max_bytes, workspace_budget_bytes()))
     try:
-        if not isinstance(state, dict) or state["version"] != 1 or state["kind"] != "twostep":
+        if not isinstance(state, dict) or type(state["version"]) is not int or state["version"] not in (1, 2) or state["kind"] != "twostep":
             raise ValueError("Unknown schema")
         continuous, categorical = _names(state["continuous"]), state["categorical"]
         names = _names([x["name"] for x in categorical])
@@ -378,11 +406,31 @@ def _state(result, *, max_work=DEFAULT_WORK, max_bytes=DEFAULT_BYTES):
         for cf in preclusters:
             validate_cf(cf)
             all_rows.extend(cf["rows"])
-        if sorted(all_rows) != positions or state["selected_k"] not in range(1, len(cuts)+1):
+        extended = state["version"] == 2
+        noise_cf = state.get("noise_cf") if extended else None
+        excluded_rows = []
+        if noise_cf is not None:
+            validate_cf(noise_cf)
+            excluded_rows = noise_cf["rows"]
+        if sorted(all_rows+excluded_rows) != positions or len(set(all_rows+excluded_rows)) != len(positions) or state["selected_k"] not in range(1, len(cuts)+1):
             raise ValueError("Invalid preclusters or selection")
         if type(state["selected_k"]) is not int:
             raise ValueError("Invalid selected count")
         controls = state["controls"]
+        selection = controls.get("selection", "global_min")
+        rebuild = controls.get("rebuild", False)
+        noise_mode = controls.get("noise", "none")
+        if extended:
+            if selection not in ("global_min", "two_stage") or type(rebuild) is not bool or noise_mode not in ("none", "adaptive"):
+                raise ValueError("Invalid adaptive controls")
+            _integer(controls["max_rebuilds"], "max_rebuilds", 0, 16)
+            _real(controls["noise_fraction"], "noise_fraction", 0, 1)
+            if noise_mode == "adaptive" and (not rebuild or controls["noise_fraction"] <= 0 or controls["min_precluster_size"] != 1):
+                raise ValueError("Conflicting adaptive noise policy")
+            if noise_mode != "adaptive" and excluded_rows:
+                raise ValueError("Noise CF without adaptive noise")
+        elif selection != "global_min" or rebuild is not False or noise_mode != "none" or "noise_cf" in state:
+            raise ValueError("Adaptive fields in legacy schema")
         branch = _integer(controls["branch_factor"], "branch_factor", 2, 16)
         leaf_limit = _integer(controls["max_preclusters"], "max_preclusters", 1, 128)
         node_limit = _integer(controls["max_nodes"], "max_nodes", 1, 512)
@@ -426,7 +474,7 @@ def _state(result, *, max_work=DEFAULT_WORK, max_bytes=DEFAULT_BYTES):
             if len(rows) != len(set(rows)):
                 raise ValueError("Tree entries overlap")
             return sorted(rows)
-        if validate_node(state["tree"], 1) != positions or len(depths) != 1 or _seal(sorted(leaves, key=lambda cf: cf["rows"][0])) != _seal(preclusters):
+        if validate_node(state["tree"], 1) != sorted(all_rows) or len(depths) != 1 or _seal(sorted(leaves, key=lambda cf: cf["rows"][0])) != _seal(preclusters):
             raise ValueError("Tree leaves differ from preclusters")
         diagnostics = state["tree_diagnostics"]
         if diagnostics["nodes"] != len(node_ids) or diagnostics["depth"] != next(iter(depths)) or diagnostics["splits"] != len(node_ids)-next(iter(depths)):
@@ -436,8 +484,29 @@ def _state(result, *, max_work=DEFAULT_WORK, max_bytes=DEFAULT_BYTES):
                 raise ValueError("Invalid distance diagnostics")
         if diagnostics["roundoff_rule"] != kernel.ROUNDING_RULE or diagnostics["roundoff_clamps"] > diagnostics["distance_evaluations"]:
             raise ValueError("Invalid rounding diagnostics")
+        if rebuild:
+            expected_bound = _adaptive_work_bound(state["input_n"], len(continuous), len(names), branch, leaf_limit, node_limit, controls["max_rebuilds"])
+            if state["resources"]["tree_work_bound"] != expected_bound:
+                raise ValueError("Invalid cumulative rebuild admission bound")
+            # Replay the declared transition witness only to authenticate saved
+            # topology/noise/history. Returned estimates still use saved cuts;
+            # validation never replaces them with a newly fitted result.
+            X = torch.tensor(state["training_numeric"], dtype=DTYPE).reshape(len(positions), len(continuous))
+            codes = torch.tensor(state["training_codes"], dtype=torch.int64).reshape(len(positions), len(names))
+            order = torch.tensor([physical[row] for row in state["order"]], dtype=torch.int64)
+            replayed = kernel.build_tree(X, codes, levels, torch.tensor(state["global_variance"], dtype=DTYPE), order,
+                                         threshold=controls["threshold"], branch_factor=branch,
+                                         max_preclusters=leaf_limit, max_nodes=node_limit, rebuild=True,
+                                         max_rebuilds=controls["max_rebuilds"],
+                                         noise_fraction=controls["noise_fraction"] if noise_mode == "adaptive" else 0.0,
+                                         max_work=expected_bound)
+            expected_noise_cf = _record(replayed.noise_cf, positions) if replayed.noise_cf is not None else None
+            if _seal(replayed.tree) != _seal(state["tree"]) or _seal(expected_noise_cf) != _seal(noise_cf) or replayed.distance_evaluations != diagnostics["distance_evaluations"] or replayed.roundoff_clamps != diagnostics["roundoff_clamps"]:
+                raise ValueError("Adaptive witness differs from retained corpus/control decisions")
+        elif state["tree"].get("automatic_rebuild") is not False or state["tree"].get("threshold") != controls["threshold"]:
+            raise ValueError("Invalid legacy tree policy")
         minimum = _integer(controls["min_precluster_size"], "min_precluster_size", 1, 2000)
-        expected_noise = sorted(row for cf in preclusters if cf["count"] < minimum for row in cf["rows"])
+        expected_noise = sorted(excluded_rows+[row for cf in preclusters if cf["count"] < minimum for row in cf["rows"]])
         if noise != expected_noise:
             raise ValueError("Noise sample does not match small-leaf policy")
         if len(cuts) != sum(cf["count"] >= minimum for cf in preclusters):
@@ -483,14 +552,26 @@ def _state(result, *, max_work=DEFAULT_WORK, max_bytes=DEFAULT_BYTES):
         if hierarchy_diagnostics["distance_evaluations"] != (len(retained)-1)**2 or type(hierarchy_diagnostics["roundoff_clamps"]) is not int or not 0 <= hierarchy_diagnostics["roundoff_clamps"] <= (len(retained)-1)**2:
             raise ValueError("Invalid hierarchy diagnostics")
         per_cluster = 2*len(continuous)+sum(level-1 for level in levels)
-        for k in range(1, min(search, len(cuts))+1):
+        for k in range(1, min(search+(selection == "two_stage"), len(cuts))+1):
             score = sum(kernel.xi(_cf(cf), globalvar) for cf in cuts[str(k)])
             parameters = k*per_cluster
             expected_criteria.append([k, score, parameters, -2*score+parameters*math.log(len(positions)-len(noise)), -2*score+2*parameters])
         if len(state["criteria"]) != len(expected_criteria) or any(len(a) != 5 or any(not math.isfinite(x) or not math.isclose(x, y, rel_tol=1e-10, abs_tol=1e-10) for x, y in zip(a, b)) for a, b in zip(state["criteria"], expected_criteria)):
             raise ValueError("Criterion trace does not match saved hierarchy")
         fixed = controls["n_clusters"]
-        expected_k = min(expected_criteria, key=lambda row: (row[3 if controls["criterion"] == "bic" else 4], row[0]))[0] if fixed is None else _integer(fixed, "n_clusters", 1, len(cuts))
+        expected_trace = None
+        if fixed is not None:
+            expected_k = _integer(fixed, "n_clusters", 1, len(cuts))
+        elif selection == "two_stage":
+            # Scores above have already been independently checked against the
+            # retained CFs. Authenticate the stored decision against those
+            # validated saved scores: a different platform's last-bit log
+            # rounding must not replace the original decision witness.
+            expected_k, expected_trace = _select_two_stage(state["criteria"], state["merges"], controls["criterion"], search)
+        else:
+            expected_k = min(expected_criteria, key=lambda row: (row[3 if controls["criterion"] == "bic" else 4], row[0]))[0]
+        if extended and _seal(state["selection_trace"]) != _seal(expected_trace):
+            raise ValueError("Two-stage decision trace differs from saved criteria/hierarchy")
         if state["selected_k"] != expected_k:
             raise ValueError("Selection differs from declared criterion/fixed count")
         if result.attrs["state_sha256"] != _seal(state):
@@ -505,20 +586,30 @@ def _state(result, *, max_work=DEFAULT_WORK, max_bytes=DEFAULT_BYTES):
         raise AnalysisError("invalid_state", "Saved TwoStep state has invalid structure, alignment or integrity.") from exc
 
 
+def _adaptive_work_bound(n, p, q, branch, leaves, nodes, retries):
+    leaves, nodes = min(n, leaves), min(nodes, 2*n+1)
+    dimensions = p + min(32, n)*q + 8
+    return 16*dimensions*((retries+2)*(n*(leaves+2*branch)+nodes*(branch**2+2*branch)+leaves**2+4*n)+2*n*leaves)
+
+
 @resident_cpu
 def twostep(*, data, continuous=(), categorical=(), n_clusters=None, criterion="bic", max_clusters=15,
             threshold=0.0, branch_factor=8, max_preclusters=128, max_nodes=512,
             order="input", seed=None, missing="raise", min_precluster_size=1,
+            selection="global_min", rebuild=False, max_rebuilds=16, noise="none", noise_fraction=0.25,
             max_work=DEFAULT_WORK, max_bytes=DEFAULT_BYTES, device="cpu", weights=None):
     """Cluster resident mixed data using a likelihood CF tree then agglomeration.
 
     Continuous columns are standardized using training population moments.
     ``threshold`` is an absolute CF merge loss, not a geometric radius.
-    ``criterion`` selects the global minimum over 1..max_clusters; this is
-    different from IBM's two-stage automatic selection heuristic. Small leaves
-    below ``min_precluster_size`` become recorded noise before agglomeration.
-    ``order='random'`` needs a private-generator seed. No weights, Dataset or
-    GPU backend, adaptive rebuild, noise reinsertion or vendor parity.
+    ``selection='two_stage'`` uses the Statistics14 change/jump equations;
+    legacy ``global_min`` remains the default. ``rebuild=True`` permits bounded
+    aggregate-CF threshold rebuilds. ``noise='adaptive'`` adds sparse-leaf
+    removal/reinsertion and training log-volume query noise classification;
+    it requires rebuild and min_precluster_size=1. Legacy small-leaf exclusion
+    remains available. Recorded boundary/rebuild policies are explicit local
+    extensions. Private seeded order, unweighted resident CPU float64 only;
+    descriptive inference, no licensed executable parity or GPU/Dataset route.
     """
     max_work, max_bytes = _domain(device, weights, max_work, max_bytes)
     continuous, categorical = _names(continuous), _names(categorical)
@@ -538,10 +629,28 @@ def twostep(*, data, continuous=(), categorical=(), n_clusters=None, criterion="
     max_preclusters = _integer(max_preclusters, "max_preclusters", 1, 128)
     max_nodes = _integer(max_nodes, "max_nodes", 1, 512)
     min_precluster_size = _integer(min_precluster_size, "min_precluster_size", 1, 2000)
+    if selection not in ("global_min", "two_stage") or type(rebuild) is not bool or noise not in ("none", "adaptive"):
+        _error("selection is 'global_min' or 'two_stage', rebuild is bool, noise is 'none' or 'adaptive'.", "invalid_option")
+    max_rebuilds = _integer(max_rebuilds, "max_rebuilds", 0, 16)
+    noise_fraction = _real(noise_fraction, "noise_fraction", 0, 1)
+    if noise == "adaptive" and (not rebuild or noise_fraction <= 0 or min_precluster_size != 1):
+        _error("Adaptive noise requires rebuild=True, positive noise_fraction and min_precluster_size=1.", "invalid_option")
+    if noise == "none" and noise_fraction != 0.25:
+        _error("noise_fraction is meaningful only for noise='adaptive'.", "invalid_option")
+    if not rebuild and max_rebuilds != 16:
+        _error("max_rebuilds is meaningful only with rebuild=True.", "invalid_option")
+    extended = selection == "two_stage" or rebuild
     # Conservative admission before selected input coercion. Covers all tree
     # distance evaluations, naive complete hierarchy and saved cuts/row lists.
     columns = continuous+categorical
     worst_work = 16 * (2000*max_preclusters + max_nodes*(branch_factor**2+2*branch_factor) + max_preclusters**2) * (len(continuous)+32*len(categorical)+1)
+    tree_work = None
+    trace_bytes = 0
+    if rebuild:
+        n_hint = _input_size(data, columns)
+        tree_work = _adaptive_work_bound(n_hint, len(continuous), len(categorical), branch_factor, max_preclusters, max_nodes, max_rebuilds)
+        worst_work = tree_work + 16*(len(continuous)+min(32, n_hint)*len(categorical)+8)*(min(n_hint, max_preclusters)**2+n_hint*min(n_hint, max_preclusters))
+        trace_bytes = 128*n_hint*(max_rebuilds+1)*(len(continuous)+min(32, n_hint)*len(categorical)+8)
     if worst_work > max_work:
         _error(f"Declared TwoStep work {worst_work} exceeds max_work; lower max_preclusters.", "resource_limit")
     workspace = plan_workspace("TwoStep CF tree, hierarchy and complete state", {
@@ -549,6 +658,7 @@ def twostep(*, data, continuous=(), categorical=(), n_clusters=None, criterion="
         "tree_cf_and_all_cuts": 128*max_preclusters**2*(len(continuous)+32*len(categorical)+1),
         "complete_cut_row_lists_and_json": 128*2000*max_preclusters,
         "nodes_and_distance_buffers": 128*(max_nodes*branch_factor+max_preclusters**2),
+        "adaptive_history_and_validation": trace_bytes,
     }, budget_bytes=min(max_bytes, workspace_budget_bytes()))
     frame, positions, input_n, input_plan = _frame(data, columns, missing, max_bytes, categorical)
     if len(frame) < 2:
@@ -558,31 +668,46 @@ def twostep(*, data, continuous=(), categorical=(), n_clusters=None, criterion="
     levels = [len(d["levels"]) for d in descriptors]
     insertion = torch.arange(len(frame)) if order == "input" else torch.randperm(len(frame), generator=torch.Generator(device="cpu").manual_seed(seed))
     tree = kernel.build_tree(X, codes, levels, globalvar, insertion, threshold=threshold,
-                             branch_factor=branch_factor, max_preclusters=max_preclusters, max_nodes=max_nodes)
+                             branch_factor=branch_factor, max_preclusters=max_preclusters, max_nodes=max_nodes,
+                             rebuild=rebuild, max_rebuilds=max_rebuilds,
+                             noise_fraction=noise_fraction if noise == "adaptive" else 0.0,
+                             max_work=tree_work or max_work)
     kept = [cf for cf in tree.preclusters if cf.count >= min_precluster_size]
     if not kept:
         _error("Every precluster is excluded by min_precluster_size.", "insufficient_sample")
     noise = sorted(positions[i] for cf in tree.preclusters if cf.count < min_precluster_size for i in cf.rows)
+    if tree.noise_cf is not None:
+        noise = sorted(noise+[positions[i] for i in tree.noise_cf.rows])
     hierarchy = kernel.agglomerate(kept, globalvar)
     cuts = {str(k): [_record(cf, positions) for cf in cut] for k, cut in hierarchy.cuts.items()}
     N = len(positions)-len(noise)
     per_cluster = 2*len(continuous)+sum(level-1 for level in levels)
     criteria = []
-    for k in range(1, min(max_clusters, len(cuts))+1):
+    for k in range(1, min(max_clusters+(selection == "two_stage"), len(cuts))+1):
         score = sum(kernel.xi(cf, globalvar) for cf in hierarchy.cuts[k])
         parameters = k*per_cluster
         criteria.append([k, score, parameters, -2*score+parameters*math.log(N), -2*score+2*parameters])
     if n_clusters is not None and str(n_clusters) not in cuts:
         _error("Fixed n_clusters exceeds the non-noise precluster count.", "invalid_option")
-    selected = n_clusters if n_clusters is not None else min(criteria, key=lambda row: (row[3 if criterion == "bic" else 4], row[0]))[0]
+    selection_trace = None
+    if n_clusters is not None:
+        selected = n_clusters
+    elif selection == "two_stage":
+        selected, selection_trace = _select_two_stage(criteria, list(hierarchy.merges), criterion, max_clusters)
+    else:
+        selected = min(criteria, key=lambda row: (row[3 if criterion == "bic" else 4], row[0]))[0]
     controls = dict(n_clusters=n_clusters, criterion=criterion, max_clusters=max_clusters, threshold=threshold,
                     branch_factor=branch_factor, max_preclusters=max_preclusters, max_nodes=max_nodes,
                     order=order, seed=seed, missing=missing, min_precluster_size=min_precluster_size)
+    if extended:
+        controls.update(selection=selection, rebuild=rebuild, max_rebuilds=max_rebuilds,
+                        noise="adaptive" if noise_fraction and tree.tree.get("noise_fraction") else "none",
+                        noise_fraction=noise_fraction)
     # Fingerprint same physical corpus before tree insertion; category identity
     # includes scalar types. This binds stability comparisons to the same rows.
     raw = [[_label(float(frame[name].iloc[i])) for name in continuous]
            + [_label(frame[name].iloc[i]) for name in categorical] for i in range(len(frame))]
-    state = dict(version=1, kind="twostep", continuous=continuous, categorical=descriptors,
+    state = dict(version=2 if extended else 1, kind="twostep", continuous=continuous, categorical=descriptors,
                  scaling=scaling, global_variance=globalvar.tolist(), input_n=input_n,
                  positions=positions, missing_positions=[i for i in range(input_n) if i not in positions],
                  noise_positions=noise, order=[positions[i] for i in insertion.tolist()],
@@ -598,6 +723,11 @@ def twostep(*, data, continuous=(), categorical=(), n_clusters=None, criterion="
                                             roundoff_clamps=hierarchy.roundoff_clamps),
                  cuts=cuts, merges=list(hierarchy.merges), criteria=criteria, selected_k=selected,
                  controls=controls, resources=dict(work_bound=worst_work, workspace=workspace.record(), input=input_plan))
+    if extended:
+        state.update(noise_cf=_record(tree.noise_cf, positions) if tree.noise_cf is not None else None,
+                     selection_trace=selection_trace)
+        if rebuild:
+            state["resources"]["tree_work_bound"] = tree_work
     return _output(state)
 
 
@@ -605,6 +735,11 @@ def twostep(*, data, continuous=(), categorical=(), n_clusters=None, criterion="
 def twostep_cut(result, n_clusters, *, max_work=DEFAULT_WORK, max_bytes=DEFAULT_BYTES, device="cpu", weights=None):
     """Replay any saved non-noise hierarchy cut without collecting or refitting."""
     max_work, max_bytes = _domain(device, weights, max_work, max_bytes)
+    validation_work, _ = _validation_cost(result)
+    hint = result.attrs["twostep_state"]
+    replay_work = 16*len(hint["positions"])*len(hint["cuts"])
+    if validation_work+replay_work > max_work:
+        _error("Combined saved validation and cut replay exceed max_work.", "resource_limit")
     state = _state(result, max_work=max_work, max_bytes=max_bytes)
     n_clusters = _integer(n_clusters, "n_clusters", 1, len(state["cuts"]))
     if 16*len(state["positions"])*len(state["cuts"]) > max_work:
@@ -613,6 +748,8 @@ def twostep_cut(result, n_clusters, *, max_work=DEFAULT_WORK, max_bytes=DEFAULT_
     copied = copy.deepcopy(state)
     copied["selected_k"] = n_clusters
     copied["controls"]["n_clusters"] = n_clusters
+    if copied["version"] == 2:
+        copied["selection_trace"] = None
     return _output(copied)
 
 
@@ -620,10 +757,17 @@ def twostep_cut(result, n_clusters, *, max_work=DEFAULT_WORK, max_bytes=DEFAULT_
 def twostep_assign(result, *, data, missing="raise", max_work=DEFAULT_WORK, max_bytes=DEFAULT_BYTES, device="cpu", weights=None):
     """Assign new rows by nearest saved CF merge loss and training category maps.
 
-    New rows do not update the training CF, scaling or maps. Noise is a training
-    small-leaf policy; query assignment always chooses a retained cluster.
+    New rows do not update training CF, scaling or maps. Adaptive noise uses
+    the saved training log-volume cutoff: nearest non-noise cluster distance
+    must be strictly below it. Legacy results always assign complete queries.
     """
     max_work, max_bytes = _domain(device, weights, max_work, max_bytes)
+    validation_work, _ = _validation_cost(result)
+    hint = result.attrs["twostep_state"]
+    selected = _integer(hint["selected_k"], "selected_k", 1, len(hint["cuts"]))
+    work = 16*2000*selected*(len(hint["continuous"])+sum(len(d["levels"]) for d in hint["categorical"])+1)
+    if validation_work+work > max_work:
+        _error("Combined saved validation and assignment exceed max_work.", "resource_limit")
     state = _state(result, max_work=max_work, max_bytes=max_bytes)
     continuous = state["continuous"]
     categorical = [d["name"] for d in state["categorical"]]
@@ -643,11 +787,12 @@ def twostep_assign(result, *, data, missing="raise", max_work=DEFAULT_WORK, max_
                               tuple(torch.nn.functional.one_hot(codes[j, c], levels[c]).to(torch.int64) for c in range(len(levels))), (state["input_n"]+j,))
         distances = [kernel.merge_loss(singleton, cf, globalvar) for cf in clusters]
         label = min(range(len(distances)), key=lambda i: (distances[i], i))
-        rows[position] = [position, label+1, distances[label], "cluster"]
+        query_noise = state["controls"].get("noise") == "adaptive" and distances[label] >= state["tree"]["noise_cutoff"]
+        rows[position] = [position, 0 if query_noise else label+1, distances[label], "noise" if query_noise else "cluster"]
     return _saved(TableSet({"assignments": table(list(rows.values()), columns=["position", "cluster", "merge_loss", "status"])},
                            title="Saved TwoStep assignment", method="twostep_assignment", training_state_sha256=result.attrs["state_sha256"],
                            n_input=size, n_complete=len(positions), n_missing=size-len(positions),
-                           policy="nearest saved merge loss; no query noise classification", device="cpu", dtype="float64",
+                           policy="nearest saved merge loss; strict training log-volume noise cutoff" if state["controls"].get("noise") == "adaptive" else "nearest saved merge loss; no query noise classification", device="cpu", dtype="float64",
                            resources=dict(work_bound=work, workspace=plan.record(), input=input_plan)))
 
 

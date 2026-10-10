@@ -32,6 +32,138 @@ class NetworkExportError(RuntimeError):
     """A controlled browser, layout or export failure; no output was published."""
 
 
+def _launch_browser(command, **options):
+    """Retain an owned session leader until every profile writer has stopped."""
+    if os.name == "posix" and not hasattr(os, "waitid") and sys.platform != "darwin":
+        raise NetworkExportError("Owned browser shutdown requires non-reaping exit observation.")
+    process = subprocess.Popen(command, start_new_session=os.name == "posix", **options)
+    # Popen's successful exec handshake also confirms setsid() succeeded.
+    process._openecon_owned_session = os.name == "posix"
+    process._openecon_session_closed = False
+    return process
+
+
+def _owned_exit_status(pid):
+    """Use non-reaping waitid, including pre-3.13 Python on macOS."""
+    flags = os.WEXITED | os.WNOHANG | os.WNOWAIT
+    if hasattr(os, "waitid"):
+        result = os.waitid(os.P_PID, pid, flags)
+        return None if result is None else (result.si_pid, result.si_code, result.si_status)
+    if sys.platform != "darwin":
+        raise NetworkExportError("Owned browser shutdown requires non-reaping exit observation.")
+    import ctypes
+
+    # Darwin's public <sys/signal.h> siginfo_t ABI; no Linux layout assumption.
+    class Siginfo(ctypes.Structure):
+        _fields_ = [("si_signo", ctypes.c_int), ("si_errno", ctypes.c_int),
+                    ("si_code", ctypes.c_int), ("si_pid", ctypes.c_int),
+                    ("si_uid", ctypes.c_uint), ("si_status", ctypes.c_int),
+                    ("si_addr", ctypes.c_void_p), ("si_value", ctypes.c_void_p),
+                    ("si_band", ctypes.c_long), ("reserved", ctypes.c_ulong * 7)]
+
+    waitid = ctypes.CDLL("/usr/lib/libSystem.B.dylib", use_errno=True).waitid
+    waitid.argtypes = [ctypes.c_int, ctypes.c_uint, ctypes.POINTER(Siginfo), ctypes.c_int]
+    waitid.restype = ctypes.c_int
+    result = Siginfo()
+    if waitid(os.P_PID, pid, ctypes.byref(result), flags) != 0:
+        error = ctypes.get_errno()
+        raise OSError(error, os.strerror(error))
+    return None if result.si_pid == 0 else (result.si_pid, result.si_code, result.si_status)
+
+
+def _browser_exit(process):
+    """Observe exit without releasing the PID that anchors our process group."""
+    if os.name != "posix" or not (getattr(process, "_openecon_owned_session", False)
+                                  or getattr(process, "_openecon_group_anchor", False)):
+        return process.poll()
+    if getattr(process, "_openecon_session_closed", False):
+        return process.returncode
+    # Multiprocessing may reap an exited supervisor when another Process
+    # starts. Reading its cached status does not itself poll or release the PID.
+    worker = getattr(process, "_process", None)
+    child = getattr(worker, "_popen", None)
+    cached = getattr(child, "returncode", None)
+    if cached is not None:
+        process.returncode = cached
+    if process.returncode is not None:
+        raise NetworkExportError("Browser session leader was reaped before owned group shutdown.")
+    try:
+        result = _owned_exit_status(process.pid)
+    except ChildProcessError as exc:
+        raise NetworkExportError("Browser process-group ownership was lost before shutdown.") from exc
+    if result is None:
+        return None
+    if result[0] != process.pid:
+        raise NetworkExportError("Browser exit observation does not identify the owned leader.")
+    if result[1] not in (os.CLD_EXITED, os.CLD_KILLED, os.CLD_DUMPED):
+        raise NetworkExportError("Browser exit observation does not describe an exited leader.")
+    return result[2] if result[1] == os.CLD_EXITED else -result[2]
+
+
+def _live_browser_group(process, deadline):
+    """Inspect live recipients after a confirmed exit under the unreaped anchor."""
+    while True:
+        exited_before_snapshot = _browser_exit(process)
+        remaining = deadline - time.monotonic()
+        if remaining <= 0:
+            raise subprocess.TimeoutExpired("owned browser group inspection", 5)
+        output = subprocess.check_output(
+            ["/bin/ps", "-A", "-o", "pid=,pgid=,stat="], text=True, timeout=remaining
+        )
+        live = []
+        for line in output.splitlines():
+            fields = line.split()
+            if len(fields) != 3 or not fields[0].isdecimal() or not fields[1].isdecimal():
+                raise NetworkExportError("Invalid browser process-group inspection.")
+            pid, group = int(fields[0]), int(fields[1])
+            if pid == process.pid and group != process.pid:
+                raise NetworkExportError("Browser leader no longer owns its dedicated process group.")
+            if group == process.pid and not fields[2].startswith("Z"):
+                live.append(pid)
+        exited_after_snapshot = _browser_exit(process)
+        if time.monotonic() >= deadline:
+            raise subprocess.TimeoutExpired("owned browser group inspection", 5)
+        if live:
+            return live
+        if exited_before_snapshot is not None and exited_after_snapshot is not None:
+            return []
+        # A ps zombie can precede Linux's waitable exit notification. An exit
+        # that arrived during this scan also needs a new post-exit snapshot:
+        # a child may have been spawned after ps enumerated its process IDs.
+        # Keep the leader unreaped and stay inside the same shutdown deadline.
+        if exited_after_snapshot is None:
+            time.sleep(min(.01, max(0., deadline - time.monotonic())))
+
+
+def _signal_browser_group(process, signum, deadline):
+    if not _live_browser_group(process, deadline):
+        return
+    _browser_exit(process)
+    if time.monotonic() >= deadline:
+        raise subprocess.TimeoutExpired("owned browser group signaling", 5)
+    try:
+        os.killpg(process.pid, signum)
+    except (ProcessLookupError, PermissionError):
+        # Darwin can report EPERM when the last recipient became a zombie.
+        # Confirm that race under the retained ownership anchor; a denied
+        # signal with any live recipient remains an error.
+        if _live_browser_group(process, deadline):
+            raise
+
+
+def _wait_browser_group(process, deadline):
+    while time.monotonic() < deadline:
+        try:
+            if not _live_browser_group(process, deadline):
+                return True
+        except subprocess.TimeoutExpired:
+            # A spent TERM inspection budget proceeds to a fresh, separately
+            # bounded KILL inspection; no stale snapshot authorizes a signal.
+            return False
+        time.sleep(min(.05, max(0., deadline - time.monotonic())))
+    return False
+
+
 def _browser_environment():
     """Keep Chromium's Linux singleton socket within the AF_UNIX path limit.
 
@@ -145,13 +277,16 @@ def _start_browser(command, log, state):
     else:
         # Ordinary library users need no multiprocessing __main__ guard. The
         # explicit package path is this installed module's root, never cwd.
-        process = subprocess.Popen(
+        process = _launch_browser(
             [sys.executable, "-I", "-c", _PYTHON_BROWSER_BOOTSTRAP,
              str(Path(__file__).resolve().parents[1]), json.dumps(command),
              str(state), str(os.getpid()), str(log.name)],
-            stdin=subprocess.DEVNULL, stdout=log, stderr=log, start_new_session=True,
+            stdin=subprocess.DEVNULL, stdout=log, stderr=log,
         )
     process._openecon_group_anchor = True
+    process._openecon_session_closed = False
+    if not hasattr(process, "_openecon_owned_session"):
+        process._openecon_owned_session = False
     process._openecon_browser_state = state
     return process
 
@@ -164,13 +299,24 @@ def _browser_state(process):
         record = json.loads(state.read_text())
     except FileNotFoundError:
         return None
-    if record["anchor_pid"] != process.pid or record["pgid"] != process.pid:
+    except (ValueError, UnicodeError) as exc:
+        raise NetworkExportError("Invalid disposable browser status record.") from exc
+    fields = {"anchor_pid", "pgid", "browser_pid", "phase", "returncode"}
+    if not isinstance(record, dict) or set(record) != fields:
+        raise NetworkExportError("Invalid disposable browser status schema.")
+    if any(type(record[key]) is not int or record[key] != process.pid
+           for key in ("anchor_pid", "pgid")):
         raise NetworkExportError("Disposable browser group identity changed.")
-    if record["phase"] not in {"group-started", "browser-started", "native-exited"}:
+    if (type(record["phase"]) is not str
+            or record["phase"] not in {"group-started", "browser-started", "native-exited"}):
         raise NetworkExportError("Invalid disposable browser phase.")
-    code = record["returncode"]
-    if code is not None and (isinstance(code, bool) or not isinstance(code, int)):
-        raise NetworkExportError("Invalid disposable browser exit status.")
+    code, pid = record["returncode"], record["browser_pid"]
+    if (code is not None and type(code) is not int) or (pid is not None and (type(pid) is not int or pid <= 0)):
+        raise NetworkExportError("Invalid disposable browser exit status or native identity.")
+    if ((record["phase"] == "group-started" and (pid is not None or code is not None))
+            or (record["phase"] == "browser-started" and (pid is None or code is not None))
+            or (record["phase"] == "native-exited" and (pid is None or code is None))):
+        raise NetworkExportError("Inconsistent disposable browser status phase.")
     return record
 
 
@@ -181,45 +327,89 @@ def _browser_exit_code(process):
 
 
 def _stop_browser(process):
-    """Stop every owned POSIX browser child, including after its launcher exits."""
+    """Stop all owned profile writers before the one final anchor reap.
+
+    A supervisor intentionally survives TERM and native exit. TERM completion
+    therefore uses native status, followed by a fresh bounded KILL and a group
+    emptiness proof. Direct launchers use the same guarded signal/PS ownership
+    layer, with their original TERM-empty criterion.
+    """
     if os.name == "posix":
-        if not getattr(process, "_openecon_group_anchor", False):
-            raise NetworkExportError("Disposable browser group leader is not owned.")
-        # multiprocessing's global cleanup may already have reaped this child
-        # while another worker started. Admit ownership only after one poll;
-        # never poll/reap again between group admission and the final signal.
-        if process.poll() is not None:
-            # A startup poll already reaped this failed supervisor. Its finally
-            # block stops its group; never mask the original startup failure or
-            # signal a numeric PGID that could now identify another browser.
+        supervised = getattr(process, "_openecon_group_anchor", False)
+        dedicated = getattr(process, "_openecon_owned_session", False)
+        if not (supervised or dedicated):
+            raise NetworkExportError("Browser shutdown requires an owned dedicated session; group is not owned.")
+        if getattr(process, "_openecon_session_closed", False):
             return
-        try:
-            group = os.getpgid(process.pid)
-        except ProcessLookupError:
-            process.wait(timeout=5)
-            return
-        if group != process.pid:
-            # Frozen spawn has not entered its own session yet. Kill only this
-            # unreaped owned child; signalling its inherited group is forbidden.
-            process.kill()
-            process.wait(timeout=5)
-            return
-        try:
-            record = _browser_state(process)
-            if record and record["phase"] != "group-started":
-                os.killpg(process.pid, signal.SIGTERM)
-                deadline = time.monotonic() + 5
-                while _browser_exit_code(process) is None and time.monotonic() < deadline:
-                    time.sleep(.01)
-        finally:
-            # No poll/reap occurs between group ownership and escalation. The
-            # live/unreaped leader reserves its PID until this final wait.
-            # Permission failures propagate, rather than declaring cleanup.
+        _browser_exit(process)
+        if supervised:
             try:
-                os.killpg(process.pid, signal.SIGKILL)
+                group = os.getpgid(process.pid)
             except ProcessLookupError:
-                pass
-            process.wait(timeout=5)
+                # A retained positive exit can justify a fresh group inspection
+                # only when this handle already established its own session.
+                if not dedicated or _browser_exit(process) is None:
+                    raise NetworkExportError("Disposable browser group ownership was lost.")
+                group = process.pid
+            if group != process.pid:
+                if dedicated:
+                    raise NetworkExportError("Browser leader no longer owns its dedicated process group.")
+                # Frozen bootstrap has not completed setsid. The native spawn
+                # occurs strictly after setsid; its inherited group is never a
+                # signal target. Keep the child PID unreaped through this check.
+                deadline = time.monotonic() + 5
+                exited = _browser_exit(process)
+                if time.monotonic() >= deadline:
+                    raise subprocess.TimeoutExpired("owned browser bootstrap shutdown", 5)
+                if exited is None:
+                    os.kill(process.pid, signal.SIGKILL)
+                process.wait(timeout=max(0., deadline-time.monotonic()))
+                process._openecon_session_closed = True
+                return
+            process._openecon_owned_session = True
+            deadline = time.monotonic() + 5
+            failure = None
+            try:
+                record = _browser_state(process)
+                if record and record["phase"] != "group-started":
+                    _signal_browser_group(process, signal.SIGTERM, deadline)
+                    while _browser_exit_code(process) is None:
+                        # Leader death does not prove writer death; it moves to
+                        # a fresh guarded KILL without reaping or PGID reuse.
+                        if _browser_exit(process) is not None:
+                            break
+                        remaining = deadline-time.monotonic()
+                        if remaining <= 0:
+                            break
+                        time.sleep(min(.01, remaining))
+            except BaseException as exc:
+                failure = exc
+            try:
+                # Status/TERM failure still requires bounded writer shutdown.
+                # Recheck ownership instead of trusting prior group admission.
+                deadline = time.monotonic() + 5
+                _signal_browser_group(process, signal.SIGKILL, deadline)
+                if not _wait_browser_group(process, deadline):
+                    raise NetworkExportError("Owned browser writers did not stop within shutdown bounds.")
+                process.wait(timeout=max(0., deadline-time.monotonic()))
+                process._openecon_session_closed = True
+            except BaseException as cleanup_error:
+                if failure is not None:
+                    raise failure from cleanup_error
+                raise
+            if failure is not None:
+                raise failure
+            return
+        else:
+            deadline = time.monotonic() + 5
+            _signal_browser_group(process, signal.SIGTERM, deadline)
+            if not _wait_browser_group(process, deadline):
+                deadline = time.monotonic() + 5
+                _signal_browser_group(process, signal.SIGKILL, deadline)
+                if not _wait_browser_group(process, deadline):
+                    raise NetworkExportError("Owned browser writers did not stop within shutdown bounds.")
+        process.wait(timeout=max(0., deadline-time.monotonic()))
+        process._openecon_session_closed = True
     elif process.poll() is None:
         process.terminate()
         try:
@@ -275,7 +465,7 @@ def _wait_for_debugging_port(descriptor, process, deadline):
     """Read a completed Chromium descriptor within the existing startup budget."""
     browser_path = "/devtools/browser/"
     while True:
-        if process.poll() is not None or _browser_exit_code(process) is not None:
+        if _browser_exit(process) is not None or _browser_exit_code(process) is not None:
             raise NetworkExportError("Disposable browser could not start.")
         remaining = deadline - time.monotonic()
         if remaining <= 0:

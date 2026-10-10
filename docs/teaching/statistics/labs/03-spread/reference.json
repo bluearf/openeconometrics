@@ -1,0 +1,112 @@
+{
+  "metadata": {
+    "lab": "03-spread",
+    "title": "How Variable Are Delivery Times?",
+    "synthetic": true,
+    "data_file": "delivery_variation.xlsx",
+    "raw_rows": 160
+  },
+  "summary": {
+    "deliveries": 160,
+    "mean_minutes": 35.68800097344324,
+    "sample_variance_minutes_squared": 62.50795342727415,
+    "sample_sd_minutes": 7.906197153326886,
+    "iqr_minutes": 11.289163485250718,
+    "coefficient_of_variation": 0.221536565166824,
+    "sample_sd_hours": 0.1317699525554481
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "index": [
+        "minutes"
+      ],
+      "columns": [
+        "n",
+        "mean",
+        "std_dev",
+        "p25",
+        "p50",
+        "p75"
+      ],
+      "values": [
+        [
+          160.0,
+          35.68800097344324,
+          7.906197153326885,
+          29.83214166751862,
+          35.62568839788358,
+          41.12130515276934
+        ]
+      ],
+      "attrs": {
+        "percentile_method": "stata",
+        "moments": "spss",
+        "alpha": 0.05,
+        "missing": "variable-wise",
+        "n": 160
+      }
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "hist",
+        "title": "How Variable Are Delivery Times?",
+        "xlabel": "Delivery time (minutes)",
+        "ylabel": "Deliveries",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              15.97569752597052,
+              18.678073183465827,
+              21.38044884096113,
+              24.082824498456432,
+              26.78520015595174,
+              29.48757581344704,
+              32.18995147094235,
+              34.89232712843764,
+              37.59470278593295,
+              40.29707844342825,
+              42.99945410092356,
+              45.70182975841887,
+              48.40420541591416,
+              51.10658107340947,
+              53.80895673090477,
+              56.51133238840008,
+              59.21370804589539,
+              61.91608370339068
+            ],
+            "y": [
+              1.0,
+              1.0,
+              6.0,
+              6.0,
+              15.0,
+              17.0,
+              21.0,
+              14.0,
+              21.0,
+              23.0,
+              17.0,
+              8.0,
+              5.0,
+              2.0,
+              1.0,
+              1.0,
+              0.0,
+              1.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "native_sd_matches_centered_sum": true,
+    "rescaling_sd": true,
+    "rescaling_variance": true,
+    "ordered_quartiles": true
+  }
+}

@@ -9,6 +9,8 @@ import pytest
 import torch
 from scipy.special import erfcx, log_ndtr, ndtri
 
+from scripts.torch_test_state import preserve_torch_default_device
+
 from openecon.analysis_contracts import AnalysisError
 from openecon.econometrics.discrete import mprobit as core
 from openecon.resources import use_workspace_budget
@@ -336,19 +338,19 @@ def test_budget_guards_before_derivative_construction(models, monkeypatch):
 
 
 def test_native_explicit_cpu_float64_under_hostile_defaults(models):
-    dtype, device = torch.get_default_dtype(), torch.get_default_device()
-    try:
-        torch.set_default_dtype(torch.float32)
-        torch.set_default_device("meta")
-        result = fit(sample(), "hc0")
-        restored = core.mprobit_restore(portable(result))
-        np.testing.assert_allclose(state(result)["fit"]["params"], state(models["hc0"])["fit"]["params"], rtol=2e-11, atol=2e-11)
-        assert restored.attrs == result.attrs
-        _, p = core._validated(result)
-        assert p.X.dtype == torch.float64 and p.X.device.type == "cpu"
-    finally:
-        torch.set_default_device(device)
-        torch.set_default_dtype(dtype)
+    dtype = torch.get_default_dtype()
+    with preserve_torch_default_device():
+        try:
+            torch.set_default_dtype(torch.float32)
+            torch.set_default_device("meta")
+            result = fit(sample(), "hc0")
+            restored = core.mprobit_restore(portable(result))
+            np.testing.assert_allclose(state(result)["fit"]["params"], state(models["hc0"])["fit"]["params"], rtol=2e-11, atol=2e-11)
+            assert restored.attrs == result.attrs
+            _, p = core._validated(result)
+            assert p.X.dtype == torch.float64 and p.X.device.type == "cpu"
+        finally:
+            torch.set_default_dtype(dtype)
 
 
 def test_public_fit_and_complete_replay_under_inference_mode(models):

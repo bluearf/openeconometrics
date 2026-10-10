@@ -160,8 +160,7 @@ def verify_api(db, blobs, pid):
                 'firebase': {'sign_in_provider': 'password'}}
     auth = TeamAuth(project_name, verifier=claims)
     store = TeamStore(db, owner_email='owner@example.com', public_origin=ORIGIN)
-    runner = SimpleNamespace(start=lambda *a, **k: (_ for _ in ()).throw(AssertionError('No execution in recovery')))
-    app = create_team_app(store=store, storage=blobs, auth=auth, runner=runner, public_origin=ORIGIN,
+    app = create_team_app(store=store, storage=blobs, auth=auth, public_origin=ORIGIN,
                           firebase_config={'projectId': project_name, 'authDomain': f'{project_name}.firebaseapp.com'})
     checks = {}
     before = deepcopy(db.data)

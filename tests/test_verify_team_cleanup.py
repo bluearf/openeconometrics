@@ -1,4 +1,4 @@
-"""Disposable QA cleanup fails before any deletion when a run is unresolved."""
+"""Automatic QA cleanup is refused; ownership inspection is always read-only."""
 from copy import deepcopy
 import importlib.util
 import json
@@ -6,6 +6,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import Mock
 
+from google.cloud import storage
 import pytest
 
 _SPEC = importlib.util.spec_from_file_location(
@@ -63,7 +64,7 @@ def test_active_or_unresolved_disposable_run_refuses_cleanup_without_private_val
     assert database.read_paths == ['oe_projects/qa-private-project-sentinel']
 
 
-def test_finished_cancelled_failed_and_missing_empty_projects_can_be_cleaned():
+def test_finished_cancelled_failed_and_missing_empty_projects_can_be_inspected():
     database = Database({
         'oe_projects/own-first': ({'active_run': None}, [{'state': state}
             for state in ['finished', 'cancelled', 'failed']]),
@@ -84,27 +85,36 @@ def test_all_disposable_projects_are_checked_before_cleanup_returns():
     assert database.read_paths == ['oe_projects/first', 'oe_projects/second']
 
 
-def test_cleanup_main_never_partly_deletes_when_later_project_is_active(tmp_path, monkeypatch):
+@pytest.mark.parametrize('arguments', [[], ['--url', 'https://owned.example.com'],
+                                     ['--resume-run', 'claimed-quiet-run'], ['--quiet'],
+                                     ['--cleanup-receipt', 'claimed-quiet-receipt.json']])
+def test_cleanup_main_refuses_before_credentials_private_state_or_any_sdk_call(tmp_path, monkeypatch, arguments):
     state = tmp_path / 'qa-state.json'
     manifest, database = cleanup_fixture()
     manifest['projects'].append(LATER_PROJECT)
     database.documents['oe_projects/' + LATER_PROJECT] = {
         'owner_uid': OWNER, 'members': {OWNER: {}}, 'active_run': 'active'}
-    state.write_text(json.dumps(manifest))
-    database.recursive_delete = Mock()
-    delete_identity = Mock()
-    monkeypatch.setattr(verify, 'STATE', state)
-    monkeypatch.setattr('sys.argv', ['verify_team_live.py', 'cleanup'])
-    monkeypatch.setattr(verify.subprocess, 'check_output', lambda *args, **kwargs: 'dummy-test-token')
-    monkeypatch.setattr(verify.firebase_admin, 'initialize_app', lambda *args, **kwargs: object())
-    monkeypatch.setattr(verify.firestore, 'Client', lambda *args, **kwargs: database)
-    monkeypatch.setattr(verify.storage, 'Client', lambda *args, **kwargs: SimpleNamespace(bucket=lambda _: object()))
-    monkeypatch.setattr(verify.auth, 'delete_user', delete_identity)
+    manifest['quiescence_enforced'] = True
+    manifest['cleanup_receipt'] = {'safe_to_delete': True}
+    original = json.dumps(manifest, indent=3).encode()
+    state.write_bytes(original)
+    private_state = Mock(wraps=state)
+    private_state.read_text.side_effect = AssertionError('Private manifest must not be read')
+    monkeypatch.setattr(verify, 'STATE', private_state)
+    monkeypatch.setattr('sys.argv', ['verify_team_live.py', 'cleanup', *arguments])
+    calls = []
+    for module, name in [(verify.subprocess, 'check_output'), (verify, 'Credentials'),
+                         (verify.firebase_admin, 'initialize_app'), (verify.firestore, 'Client'),
+                         (storage, 'Client'), (verify.auth, 'delete_user')]:
+        call = Mock(side_effect=AssertionError('Cleanup must refuse before SDK access'))
+        monkeypatch.setattr(module, name, call)
+        calls.append(call)
     with pytest.raises(SystemExit):
         verify.main()
-    database.recursive_delete.assert_not_called()
-    delete_identity.assert_not_called()
-    assert state.exists()
+    assert all(not call.called for call in calls)
+    assert private_state.mock_calls == []
+    assert state.read_bytes() == original
+    assert not (tmp_path / 'artifacts/verification/team-live-qa.json').exists()
 
 
 OWN_PROJECT = '1' * 32
@@ -129,7 +139,10 @@ class CleanupReference:
     def get(self):
         if self.path in self.database.read_errors:
             raise RuntimeError('private-provider-error-sentinel')
-        return CleanupSnapshot(self.path, self.database.documents.get(self.path))
+        snapshot = CleanupSnapshot(self.path, self.database.documents.get(self.path))
+        if self.database.after_get:
+            self.database.after_get(self.path)
+        return snapshot
 
     def collection(self, name):
         return CleanupCollection(self.database, self.path + '/' + name)
@@ -139,15 +152,8 @@ class CleanupReference:
         self.database.documents.pop(self.path, None)
 
     def update(self, changes):
-        assert set(changes) == {'project_ids'}
-        assert isinstance(changes['project_ids'], verify.firestore.ArrayRemove)
-        document = self.database.documents[self.path]
-        # Simulate a membership appended after the cleanup's final profile read.
-        if self.database.concurrent_index:
-            document['project_ids'].append(self.database.concurrent_index)
-        remove = changes['project_ids'].values
-        document['project_ids'] = [value for value in document['project_ids'] if value not in remove]
         self.database.updated.append(self.path)
+        self.database.documents[self.path].update(changes)
 
 
 class CleanupCollection:
@@ -168,7 +174,7 @@ class CleanupDatabase:
         self.documents = deepcopy(documents)
         self.deleted, self.updated = [], []
         self.read_errors, self.stream_errors = set(), set()
-        self.concurrent_index = None
+        self.after_get = None
 
     def document(self, path):
         return CleanupReference(self, path)
@@ -200,11 +206,18 @@ def cleanup_fixture():
     return state, CleanupDatabase(documents)
 
 
-def execute_cleanup(database, state, monkeypatch):
+def execute_inspection(database, state, monkeypatch):
     delete_identity = Mock()
     blobs = SimpleNamespace(list_blobs=Mock(return_value=[]))
     monkeypatch.setattr(verify.auth, 'delete_user', delete_identity)
-    report = verify.cleanup_qa(database, blobs, object(), state)
+    report = verify.inspect_cleanup_qa(database, state)
+    assert report['inspection_only'] is True
+    assert report['safe_to_delete'] is False and report['quiescence_enforced'] is False
+    assert report['state_retained'] is True
+    assert not any('removed' in key for key in report)
+    assert database.deleted == [] and database.updated == []
+    delete_identity.assert_not_called()
+    blobs.list_blobs.assert_not_called()
     return report, delete_identity, blobs
 
 
@@ -220,25 +233,24 @@ def test_non_manifest_association_preserves_auth_profile_and_project(association
             'members': {OWNER: {'role': 'editor'}}, 'active_run': 'human-analysis'}
     if association == 'missing_profile':
         del database.documents['oe_users/' + OWNER]
-    else:
-        database.concurrent_index = LATER_PROJECT
-    report, delete_identity, blobs = execute_cleanup(database, state, monkeypatch)
-    assert report['identities_preserved'] == 1 and report['identities_removed'] == 1
+    original_documents = deepcopy(database.documents)
+    report, delete_identity, blobs = execute_inspection(database, state, monkeypatch)
+    assert report['identities_with_other_project_associations'] == 1
+    assert report['identities_inspected'] == 2
     assert report['state_retained'] is True
-    assert [call.args[0] for call in delete_identity.call_args_list] == [EDITOR]
+    delete_identity.assert_not_called()
     assert 'oe_users/' + OWNER not in database.deleted
     assert 'oe_projects/' + OTHER_PROJECT not in database.deleted
     if association != 'profile_only':
         assert database.documents['oe_projects/' + OTHER_PROJECT]['active_run'] == 'human-analysis'
     if association != 'missing_profile':
         profile = database.documents['oe_users/' + OWNER]
-        assert OWN_PROJECT not in profile['project_ids']
-        assert LATER_PROJECT in profile['project_ids']
+        assert OWN_PROJECT in profile['project_ids']
         assert profile['name'] == 'Unchanged' and profile['enabled'] is True
         if association == 'profile_only':
             assert OTHER_PROJECT in profile['project_ids']
-    assert {call.kwargs['prefix'] for call in blobs.list_blobs.call_args_list} == {
-        f'projects/{OWN_PROJECT}/', f'staging/{OWN_PROJECT}/'}
+    assert database.documents == original_documents
+    blobs.list_blobs.assert_not_called()
     assert state == original_state
     assert not any(secret in json.dumps(report) for secret in [OWNER, EDITOR, 'private-password-sentinel'])
 
@@ -259,7 +271,7 @@ def test_cleanup_read_failure_prevents_all_mutations_and_hides_provider_error(fa
     delete_identity = Mock()
     monkeypatch.setattr(verify.auth, 'delete_user', delete_identity)
     with pytest.raises(SystemExit) as error:
-        verify.cleanup_qa(database, object(), object(), state)
+        verify.inspect_cleanup_qa(database, state)
     assert 'private-provider-error-sentinel' not in str(error.value)
     assert OWNER not in str(error.value)
     assert database.deleted == [] and database.updated == []
@@ -282,38 +294,68 @@ def test_cleanup_refuses_adopted_or_malformed_manifest_resources_before_any_dele
     delete_identity = Mock()
     monkeypatch.setattr(verify.auth, 'delete_user', delete_identity)
     with pytest.raises(SystemExit):
-        verify.cleanup_qa(database, object(), object(), state)
+        verify.inspect_cleanup_qa(database, state)
     assert database.deleted == [] and database.updated == []
     delete_identity.assert_not_called()
 
 
-def test_owned_only_cleanup_removes_disposable_accounts_and_resources(monkeypatch):
+def test_owned_only_inspection_preserves_every_disposable_account_and_resource(monkeypatch):
     state, database = cleanup_fixture()
-    report, delete_identity, _ = execute_cleanup(database, state, monkeypatch)
-    assert report['state_retained'] is False and report['identities_preserved'] == 0
-    assert report['identities_removed'] == 2 and report['projects_removed'] == 1
-    assert {call.args[0] for call in delete_identity.call_args_list} == {OWNER, EDITOR}
-    assert database.documents == {}
+    original = deepcopy(database.documents)
+    report, delete_identity, _ = execute_inspection(database, state, monkeypatch)
+    assert report['identities_with_other_project_associations'] == 0
+    assert report['identities_inspected'] == 2 and report['projects_inspected'] == 1
+    assert report['invitations_inspected'] == 1 and report['desktop_grants_inspected'] == 1
+    delete_identity.assert_not_called()
+    assert database.documents == original
 
 
-def test_new_non_manifest_association_during_project_cleanup_still_preserves_identity(monkeypatch):
+def test_inspection_cannot_promote_manifest_quiet_or_deletion_claims(monkeypatch):
     state, database = cleanup_fixture()
-    delete_project = database.recursive_delete
-
-    def add_membership_after_project_delete(reference):
-        delete_project(reference)
-        database.documents['oe_projects/' + OTHER_PROJECT] = {
-            'owner_uid': 'human-user', 'members': {EDITOR: {'role': 'editor'}}}
-        database.documents['oe_users/' + EDITOR]['project_ids'].append(OTHER_PROJECT)
-
-    database.recursive_delete = add_membership_after_project_delete
-    report, delete_identity, _ = execute_cleanup(database, state, monkeypatch)
-    assert report['identities_preserved'] == 1
-    assert [call.args[0] for call in delete_identity.call_args_list] == [OWNER]
-    assert database.documents['oe_users/' + EDITOR]['project_ids'] == [OTHER_PROJECT]
+    state.update({'quiet': True, 'inspection_only': False, 'safe_to_delete': True,
+                  'quiescence_enforced': True,
+                  'cleanup_receipt': {'safe_to_delete': True, 'quiescence_enforced': True}})
+    original_state, original_documents = deepcopy(state), deepcopy(database.documents)
+    report, _, _ = execute_inspection(database, state, monkeypatch)
+    assert report['inspection_only'] is True
+    assert report['safe_to_delete'] is False and report['quiescence_enforced'] is False
+    assert state == original_state and database.documents == original_documents
 
 
-def test_cleanup_main_preserves_exact_private_state_bytes_when_identity_adopted(tmp_path, monkeypatch, capsys):
+@pytest.mark.parametrize('delayed_change', ['running_run', 'adopted_membership'])
+def test_delayed_change_after_idle_inspection_never_authorizes_cleanup(tmp_path, monkeypatch, delayed_change):
+    state, database = cleanup_fixture()
+    private_path = tmp_path / 'qa-state.json'
+    original = json.dumps(state, indent=3).encode()
+    private_path.write_bytes(original)
+    triggered = []
+
+    def change_after_final_preflight_read(path):
+        if path != 'oe_desktop_logins/' + GRANT:
+            return
+        triggered.append(path)
+        if delayed_change == 'running_run':
+            database.documents['oe_projects/' + OWN_PROJECT]['active_run'] = 'new-active-run'
+            database.documents['oe_projects/' + OWN_PROJECT + '/runs/late'] = {'state': 'running'}
+        else:
+            database.documents['oe_projects/' + OTHER_PROJECT] = {
+                'owner_uid': 'human-user', 'members': {EDITOR: {'role': 'editor'}}}
+            database.documents['oe_users/' + EDITOR]['project_ids'].append(OTHER_PROJECT)
+
+    database.after_get = change_after_final_preflight_read
+    report, delete_identity, blobs = execute_inspection(database, state, monkeypatch)
+    assert triggered == ['oe_desktop_logins/' + GRANT]
+    assert report['safe_to_delete'] is False and report['quiescence_enforced'] is False
+    after_external_change = deepcopy(database.documents)
+    with pytest.raises(SystemExit, match='Automatic deletion is disabled'):
+        verify.cleanup_qa(database, blobs, object(), state, quiet=True, receipt=report)
+    assert database.documents == after_external_change
+    assert database.deleted == [] and database.updated == []
+    delete_identity.assert_not_called()
+    assert private_path.read_bytes() == original
+
+
+def test_inspection_main_preserves_exact_private_state_and_creates_no_report_file(tmp_path, monkeypatch, capsys):
     state, database = cleanup_fixture()
     database.documents['oe_projects/' + OTHER_PROJECT] = {'owner_uid': OWNER, 'members': {OWNER: {}}}
     private_path = tmp_path / 'qa-state.json'
@@ -321,19 +363,124 @@ def test_cleanup_main_preserves_exact_private_state_bytes_when_identity_adopted(
     private_path.write_bytes(original_bytes)
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(verify, 'STATE', private_path)
-    monkeypatch.setattr('sys.argv', ['verify_team_live.py', 'cleanup'])
+    monkeypatch.setattr('sys.argv', ['verify_team_live.py', 'inspect-cleanup'])
     get_token = Mock(return_value='dummy-test-token')
     monkeypatch.setattr(verify.subprocess, 'check_output', get_token)
-    monkeypatch.setattr(verify.firebase_admin, 'initialize_app', lambda *args, **kwargs: object())
+    initialize_app = Mock(side_effect=AssertionError('Inspection does not initialize Firebase Auth'))
+    monkeypatch.setattr(verify.firebase_admin, 'initialize_app', initialize_app)
     monkeypatch.setattr(verify.firestore, 'Client', lambda *args, **kwargs: database)
-    monkeypatch.setattr(verify.storage, 'Client', lambda *args, **kwargs: SimpleNamespace(
-        bucket=lambda _: SimpleNamespace(list_blobs=lambda **kwargs: [])))
+    storage_client = Mock(side_effect=AssertionError('Inspection does not initialize Cloud Storage'))
+    monkeypatch.setattr(storage, 'Client', storage_client)
     delete_identity = Mock()
     monkeypatch.setattr(verify.auth, 'delete_user', delete_identity)
     verify.main()
     assert private_path.read_bytes() == original_bytes
     assert '--project=' + verify.PROJECT in get_token.call_args.args[0]
     stdout = capsys.readouterr().out
-    public_output = stdout + (tmp_path / 'artifacts/verification/team-live-qa.json').read_text()
+    assert not (tmp_path / 'artifacts/verification/team-live-qa.json').exists()
+    public_output = stdout
     assert not any(secret in public_output for secret in [OWNER, EDITOR, OTHER_PROJECT, 'private-password-sentinel'])
-    assert json.loads(stdout)['state_retained'] is True
+    report = json.loads(stdout)
+    assert report['inspection_only'] is True and report['state_retained'] is True
+    assert report['safe_to_delete'] is False and report['quiescence_enforced'] is False
+    assert report['identities_with_other_project_associations'] == 1
+    initialize_app.assert_not_called()
+    storage_client.assert_not_called()
+    delete_identity.assert_not_called()
+    assert database.deleted == [] and database.updated == []
+
+
+def test_inspection_reads_only_recorded_qa_account_link_quota_keys(monkeypatch):
+    state, database = cleanup_fixture()
+    key = f'account-link-{OWNER}-20261009'
+    state['account_link_limit_ids'] = [key, key]
+    unrelated = {
+        f'oe_limits/account-link-{OWNER}-20261008': {'count': 2},
+        'oe_limits/account-link-human-user-20261009': {'count': 6},
+        'oe_limits/desktop-login-20261009': {'count': 9},
+        'oe_limits/compute': {'day': '20261009', 'runs': 1, 'active': {}},
+    }
+    database.documents.update(deepcopy(unrelated))
+    database.documents['oe_limits/' + key] = {'count': 32}
+    original = deepcopy(database.documents)
+    report, _, _ = execute_inspection(database, state, monkeypatch)
+    assert database.documents == original
+    assert report['recorded_account_link_quotas_inspected'] == 1
+    assert report['recorded_account_link_quotas_present'] == 1
+    assert key not in json.dumps(report) and OWNER not in json.dumps(report)
+
+
+@pytest.mark.parametrize('key,quota', [
+    ('account-link-human-user-20261009', {'count': 1}),
+    (f'account-link-{OWNER}-20260230', {'count': 1}),
+    (f'account-link-{OWNER}-20261009/foreign', {'count': 1}),
+    (f'account-link-{OWNER}-20261009', {'count': True}),
+    (f'account-link-{OWNER}-20261009', {'count': 33}),
+    (f'account-link-{OWNER}-20261009', {'count': 1, 'private': 'sentinel'}),
+])
+def test_foreign_or_malformed_quota_refuses_cleanup_before_any_mutation(key, quota, monkeypatch):
+    state, database = cleanup_fixture()
+    state['account_link_limit_ids'] = [key]
+    database.documents['oe_limits/' + key] = quota
+    delete_identity = Mock()
+    monkeypatch.setattr(verify.auth, 'delete_user', delete_identity)
+    with pytest.raises(SystemExit) as error:
+        verify.inspect_cleanup_qa(database, state)
+    assert key not in str(error.value) and OWNER not in str(error.value)
+    assert database.deleted == [] and database.updated == []
+    delete_identity.assert_not_called()
+
+
+def test_quota_read_failure_preserves_every_resource_and_redacts_provider_error(monkeypatch):
+    state, database = cleanup_fixture()
+    key = f'account-link-{EDITOR}-20261009'
+    state['account_link_limit_ids'] = [key]
+    database.read_errors.add('oe_limits/' + key)
+    delete_identity = Mock()
+    monkeypatch.setattr(verify.auth, 'delete_user', delete_identity)
+    with pytest.raises(SystemExit) as error:
+        verify.inspect_cleanup_qa(database, state)
+    assert 'private-provider-error-sentinel' not in str(error.value)
+    assert database.deleted == [] and database.updated == []
+    delete_identity.assert_not_called()
+
+
+def test_inspection_preserves_adopted_identity_and_its_account_link_quota(monkeypatch):
+    state, database = cleanup_fixture()
+    key = f'account-link-{EDITOR}-20261009'
+    state['account_link_limit_ids'] = [key]
+    quota = {'count': 7}
+    database.documents['oe_limits/' + key] = deepcopy(quota)
+    database.documents['oe_projects/' + OTHER_PROJECT] = {
+        'owner_uid': 'human-user', 'members': {EDITOR: {'role': 'viewer'}}}
+    original = deepcopy(database.documents)
+    report, delete_identity, _ = execute_inspection(database, state, monkeypatch)
+    assert report['identities_with_other_project_associations'] == 1
+    assert report['recorded_account_link_quotas_present'] == 1
+    assert report['state_retained'] is True
+    assert database.documents['oe_limits/' + key] == quota
+    assert database.documents == original
+    delete_identity.assert_not_called()
+
+
+def test_missing_recorded_quota_still_cannot_authorize_cleanup(monkeypatch):
+    state, database = cleanup_fixture()
+    key = f'account-link-{OWNER}-20261009'
+    state['account_link_limit_ids'] = [key]
+    original = deepcopy(database.documents)
+    report, _, _ = execute_inspection(database, state, monkeypatch)
+    assert report['recorded_account_link_quotas_present'] == 0
+    assert report['recorded_account_link_quotas_inspected'] == 1
+    assert database.documents == original
+
+
+@pytest.mark.parametrize('claims', [{}, {'quiet': True}, {'quiescence_enforced': True},
+                                  {'receipt': {'safe_to_delete': True, 'quiescence_enforced': True}}])
+def test_legacy_cleanup_cannot_be_admitted_by_claimed_quiet_flags_or_receipts(monkeypatch, claims):
+    database, blobs, app, private_state = [Mock() for _ in range(4)]
+    delete_identity = Mock()
+    monkeypatch.setattr(verify.auth, 'delete_user', delete_identity)
+    with pytest.raises(SystemExit, match='Automatic deletion is disabled'):
+        verify.cleanup_qa(database, blobs, app, private_state, **claims)
+    assert all(obj.mock_calls == [] for obj in [database, blobs, app, private_state])
+    delete_identity.assert_not_called()

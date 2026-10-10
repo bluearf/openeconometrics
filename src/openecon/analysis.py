@@ -236,6 +236,9 @@ def fit(spec: ModelSpec, *, data: Any) -> ResultBundle:
     from openecon.econometrics import registry
     estimator = registry.get(spec.estimator)
     from openecon.dataset import Dataset
+    if spec.estimator in {"logit", "probit"} and spec.weights is not None:
+        from openecon.econometrics.weighted_binary import fit_weighted_binary
+        return fit_weighted_binary(spec, data)
     if not estimator.legacy:
         from openecon.econometrics import streaming_registry
         if isinstance(data, Dataset):
@@ -446,16 +449,42 @@ def ols(*, data: Any, y: str | None = None, x: Sequence[str] | None = None,
 
 def logit(*, data: Any, y: str, x: Sequence[str], covariance: str | None = None,
           categorical: Sequence[str] | None = None, intercept: bool = True,
-          cluster: str | None = None, missing: str = "raise", alpha: float = 0.05) -> ResultBundle:
-    """Binary logistic regression; default covariance is observed information."""
+          cluster: str | None = None, missing: str = "raise", alpha: float = 0.05,
+          weights: str | None = None, weight_type: str | None = None) -> ResultBundle:
+    """Binary logit; explicit weights use the documented resident ML conventions.
+
+    fweights replicate rows; aweights normalize to the retained row count;
+    iweights/pweights use supplied positive weights. Weighted covariance accepts
+    nonrobust/opg/robust/one-column cluster; pweights require robust/cluster and
+    default to robust. See docs/econometrics/weighted-binary-eight-2026-10-10.md.
+    """
+    if weights is not None or weight_type is not None:
+        return _weighted_binary("logit", data, y, x, covariance, categorical, intercept,
+                                cluster, missing, alpha, weights, weight_type)
     return _convenience("logit", data, y, x, covariance, categorical, intercept, cluster, missing, alpha)
 
 
 def probit(*, data: Any, y: str, x: Sequence[str], covariance: str | None = None,
            categorical: Sequence[str] | None = None, intercept: bool = True,
-           cluster: str | None = None, missing: str = "raise", alpha: float = 0.05) -> ResultBundle:
-    """Binary probit regression; default covariance is observed information."""
+           cluster: str | None = None, missing: str = "raise", alpha: float = 0.05,
+           weights: str | None = None, weight_type: str | None = None) -> ResultBundle:
+    """Binary probit with the same explicit weight/covariance contract as logit."""
+    if weights is not None or weight_type is not None:
+        return _weighted_binary("probit", data, y, x, covariance, categorical, intercept,
+                                cluster, missing, alpha, weights, weight_type)
     return _convenience("probit", data, y, x, covariance, categorical, intercept, cluster, missing, alpha)
+
+
+def _weighted_binary(estimator, data, y, x, covariance, categorical, intercept, cluster,
+                     missing, alpha, weights, weight_type):
+    from openecon.econometrics.core import column_list
+    from openecon.econometrics.glm.common import build_spec
+
+    spec = build_spec(estimator, outcome=y, predictors=column_list(x, "x"),
+                      categorical=column_list(categorical, "categorical"), intercept=intercept,
+                      covariance=covariance, cluster=cluster, missing=missing, alpha=alpha,
+                      weights=weights, weight_type=weight_type)
+    return fit(spec, data=data)
 
 
 def _coefficient_inference(result, method, *args, **kwargs):

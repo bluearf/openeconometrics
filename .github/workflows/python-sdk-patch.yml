@@ -14,8 +14,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  SDK_VERSION: '0.3.19a1'
-  CHARTS_VERSION: '0.3.1a1'
+  SDK_VERSION: '0.3.20a1'
+  CHARTS_VERSION: '0.3.2a1'
 
 jobs:
   build:

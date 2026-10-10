@@ -32,9 +32,33 @@ from openecon.econometrics.postest.common import (
     SUEST_FLAG, coefficients, is_suest, json_safe, matched_frame, require_result,
     result_covariance,
 )
-from openecon.econometrics.postest.scores import SUPPORTED, model_scores
+from openecon.econometrics.postest.scores import BINOMIAL_COMMANDS, SUPPORTED, model_scores
+from openecon.econometrics.resident_cpu import resident_cpu
 from openecon.engines import covariance as cov
 from openecon.models import ResultBundle
+from openecon.resources import plan_workspace, tensor_bytes
+
+MAX_BINOMIAL_JOINT_WORK = 500_000_000
+
+
+def _binomial_joint_plan(bundles, matched):
+    """Plan the complete dense joint system before reconstructing any scores."""
+    if not any(bundle.spec.estimator in BINOMIAL_COMMANDS for bundle in bundles):
+        return None
+    counts = [len(rows) for _, rows in matched]
+    widths = [len(bundle.coefficients) + (bundle.spec.estimator == "ols") for bundle in bundles]
+    n, p = sum(counts), sum(widths)  # Conservative union upper bound; no row tensor yet.
+    work = n * p * p + p ** 3
+    if work > MAX_BINOMIAL_JOINT_WORK:
+        raise AnalysisError("suest_work_limit", "Joint binomial suest reconstruction exceeds "
+                            f"the {MAX_BINOMIAL_JOINT_WORK:,}-operation admission bound "
+                            "(sum(N_m)*P^2 + P^3). Reduce model dimensions or model count.")
+    return plan_workspace("joint binomial suest", {
+        "retained_model_scores": sum(tensor_bytes((count, width)) for count, width in zip(counts, widths)) * 4,
+        "joint_score_copies": tensor_bytes((n, p)) * 4,
+        "joint_covariance_copies": tensor_bytes((p, p)) * 10,
+        "likelihood_and_row_vectors": tensor_bytes((n,)) * 32,
+    })
 
 
 def _names(results: Sequence[ResultBundle], names: Sequence[str] | None) -> list[str]:
@@ -51,6 +75,7 @@ def _names(results: Sequence[ResultBundle], names: Sequence[str] | None) -> list
     return names
 
 
+@resident_cpu
 def suest(*results: ResultBundle, data: Any, names: Sequence[str] | None = None,
           cluster: str | None = None) -> ResultBundle:
     """Seemingly unrelated estimation of several fitted models (Stata's ``suest``).
@@ -80,7 +105,10 @@ def suest(*results: ResultBundle, data: Any, names: Sequence[str] | None = None,
     ``<name>_lnvar`` with ``ln(SSR/N)``; the slope block equals HC0 times
     N/(N-1)), ``logit``, ``probit``, ``poisson`` (with offset/exposure),
     ``ologit``, ``oprobit``, ``mlogit``, ``glm``, ``nbreg``, ``tobit``,
-    ``intreg`` and ``truncreg``. All models must have the same weight type and
+    ``intreg``, ``truncreg``, ``cloglog`` and ``fracreg`` (logit/probit).
+    The binomial commands require complete saved design/convergence metadata,
+    and admit bounded resident CPU float64 score and joint buffers/work.
+    All models must have the same weight type and
     values. fweights count virtual observations in the meat and N; pweights
     multiply scores; aweights normalize each model's likelihood weights.
     Anything else raises
@@ -136,6 +164,7 @@ def suest(*results: ResultBundle, data: Any, names: Sequence[str] | None = None,
     labels = _names(bundles, names)
     matched = [matched_frame(bundle, data, f"model {label_name!r}")
                for label_name, bundle in zip(labels, bundles, strict=True)]
+    joint_plan = _binomial_joint_plan(bundles, matched)
     frame = matched[0][0]
     pieces = [model_scores(bundle, frame, rows)
               for bundle, (_, rows) in zip(bundles, matched, strict=True)]
@@ -231,6 +260,8 @@ def suest(*results: ResultBundle, data: Any, names: Sequence[str] | None = None,
                            "score_construction": "design rebuilt from each spec; analytic "
                                                  "scores and Hessians at the reported estimates"},
     }
+    if joint_plan is not None:
+        provenance["resource_plan"] = joint_plan.record()
     notes = [f"Combined estimation of {len(bundles)} models on {n} observations (union of the "
              "estimation samples); the specification shown is the first model's."]
     if len({len(piece.rows) for piece in pieces}) > 1 or n != len(pieces[0].rows):

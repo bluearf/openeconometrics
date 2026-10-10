@@ -1,0 +1,80 @@
+{
+  "metadata": {
+    "lab": "01-economic-question",
+    "title": "The Economic Question Comes First",
+    "seed": 1012026,
+    "synthetic": true,
+    "unit": "worker",
+    "wage_unit": "hypothetical currency/hour"
+  },
+  "summary": {
+    "workers": 600,
+    "trained_workers": 306,
+    "untrained_workers": 294,
+    "trained_mean_wage": 19.878187690899594,
+    "untrained_mean_wage": 26.281028482482146,
+    "raw_wage_gap": -6.402840791582552,
+    "low_skill_gap": 3.916420888097784,
+    "high_skill_gap": 4.392240363377166,
+    "balanced_skill_gap": 4.154330625737475,
+    "trained_high_skill_share": 0.21568627450980393,
+    "untrained_high_skill_share": 0.7959183673469388,
+    "structural_training_effect": 4.0
+  },
+  "models": {},
+  "checks": {
+    "all_workers_accounted_for": true,
+    "four_nonempty_comparison_cells": true,
+    "composition_identity": true,
+    "standardization_identity": true,
+    "simpson_reversal_in_this_example": true,
+    "no_missing_required_values": true
+  },
+  "chart_data": {
+    "cells": [
+      {
+        "prior_skill": 0,
+        "trained": 0,
+        "workers": 60,
+        "mean_wage": 11.985071216427638
+      },
+      {
+        "prior_skill": 0,
+        "trained": 1,
+        "workers": 240,
+        "mean_wage": 15.901492104525422
+      },
+      {
+        "prior_skill": 1,
+        "trained": 0,
+        "workers": 234,
+        "mean_wage": 29.946658550701247
+      },
+      {
+        "prior_skill": 1,
+        "trained": 1,
+        "workers": 66,
+        "mean_wage": 34.33889891407841
+      }
+    ],
+    "figure": {
+      "kind": "bar",
+      "title": "Changing the comparison changes the question",
+      "xlabel": "Comparison",
+      "ylabel": "Trained minus untrained wage (currency/hour)",
+      "series": [
+        {
+          "label": "Wage gap",
+          "x": [
+            "Raw groups",
+            "Equal skill composition"
+          ],
+          "y": [
+            -6.402840791582552,
+            4.154330625737475
+          ]
+        }
+      ]
+    }
+  }
+}

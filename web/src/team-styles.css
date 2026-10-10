@@ -686,23 +686,6 @@
 .team-pending-invites button {
   font-size: 11px;
 }
-.team-run-notice {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-  font-size: 10px;
-}
-.isolated-command-note {
-  padding: 12px 16px;
-  border-top: 1px solid rgba(20, 38, 61, 0.14);
-  color: rgba(20, 38, 61, 0.64);
-  background: #fff;
-  font-size: 10px;
-}
-.isolated-command-note code {
-  color: #14263d;
-  font-size: 10px;
-}
 .draft-conflict {
   display: flex;
   align-items: center;

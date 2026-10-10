@@ -1,4 +1,7 @@
-"""Local workspace API, with a separate single-owner IAP deployment mode."""
+"""Local loopback workspace API for the desktop app and `openecon serve`.
+
+Analyses always run on the user's machine; there is no cloud execution mode.
+"""
 
 from __future__ import annotations
 
@@ -7,7 +10,6 @@ from pathlib import Path
 from contextlib import asynccontextmanager
 import secrets
 import tempfile
-from typing import TYPE_CHECKING
 from urllib.parse import urlparse
 
 from openecon.optional_dependencies import require_extra
@@ -26,13 +28,10 @@ from starlette.background import BackgroundTask
 from openecon import __version__
 from openecon.console import ConsoleError, ConsoleSession
 from openecon.analysis_contracts import AnalysisError, capabilities
-from openecon.data import DataError, MAX_FILE_BYTES, SUPPORTED
+from openecon.data import DataError, SUPPORTED
 from openecon.models import ModelSpec
 from openecon.workspace import Workspace
 from openecon import file_layout, script_contracts
-
-if TYPE_CHECKING:
-    from openecon.cloud_access import CloudAccess
 
 
 class AnalysisRequest(BaseModel):
@@ -94,14 +93,12 @@ class PackageRestoreRequest(BaseModel):
     manifest: dict
 
 
-def create_app(workspace: str | Path = ".openecon", *, cloud_access: CloudAccess | None = None,
-               project_packages: bool = False) -> FastAPI:
+def create_app(workspace: str | Path = ".openecon", *, project_packages: bool = False) -> FastAPI:
     require_extra("server", "fastapi", "uvicorn", "multipart")
     store = Workspace(workspace)
-    console = (ConsoleSession(store) if cloud_access else
-               ConsoleSession(store, default_timeout_seconds=None, max_timeout_seconds=None))
+    console = ConsoleSession(store, default_timeout_seconds=None, max_timeout_seconds=None)
     packages = None
-    if project_packages and not cloud_access:
+    if project_packages:
         from openecon.project_packages import PackageError, ProjectPackages
         packages = ProjectPackages(store.path)
         console.packages = packages
@@ -121,33 +118,16 @@ def create_app(workspace: str | Path = ".openecon", *, cloud_access: CloudAccess
     app.state.console = console
     app.state.packages = packages
     app.state.token = token
-    allowed_hosts = ([urlparse(cloud_access.public_origin).hostname] if cloud_access else
-                     ["127.0.0.1", "localhost", "[::1]", "testserver"])
-    app.add_middleware(TrustedHostMiddleware, allowed_hosts=allowed_hosts)
-    upload_limit = min(MAX_FILE_BYTES, 24 * 1024 * 1024) if cloud_access else None
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=["127.0.0.1", "localhost", "[::1]", "testserver"])
 
     @app.middleware("http")
     async def local_access(request: Request, call_next):
-        if cloud_access:
-            if request.url.path == "/healthz" and request.method in {"GET", "HEAD"}:
-                return JSONResponse({"status": "ok"})
-            from openecon.cloud_access import CloudAuthError
-            from starlette.concurrency import run_in_threadpool
-            try:
-                await run_in_threadpool(
-                    cloud_access.verify, request.headers.get("x-goog-iap-jwt-assertion", "")
-                )
-            except CloudAuthError:
-                return JSONResponse(
-                    {"detail": {"code": "OWNER_REQUIRED", "message": "Sign in with the workspace owner's Google account."}},
-                    status_code=403,
-                )
         origin = request.headers.get("origin")
         if origin:
             origin_url = urlparse(origin)
             valid_hosts = {"127.0.0.1", "localhost", "::1"}
             valid_ports = {request.url.port or 80, 5173}
-            valid_origin = origin == cloud_access.public_origin if cloud_access else not (
+            valid_origin = not (
                 origin_url.scheme != "http"
                 or origin_url.hostname not in valid_hosts
                 or origin_url.port not in valid_ports
@@ -162,11 +142,7 @@ def create_app(workspace: str | Path = ".openecon", *, cloud_access: CloudAccess
                     },
                     status_code=403,
                 )
-        navigation = (cloud_access and request.method in {"GET", "HEAD"}
-                      and request.headers.get("sec-fetch-mode") == "navigate"
-                      and request.headers.get("sec-fetch-dest") == "document"
-                      and not request.url.path.startswith("/api/"))
-        if request.headers.get("sec-fetch-site") == "cross-site" and not navigation:
+        if request.headers.get("sec-fetch-site") == "cross-site":
             return JSONResponse(
                 {
                     "detail": {
@@ -315,20 +291,15 @@ def create_app(workspace: str | Path = ".openecon", *, cloud_access: CloudAccess
     @app.get("/api/session")
     def session():
         return {"token": token, "version": __version__,
-                "environment": "cloud" if cloud_access else "local",
-                "persistent": not bool(cloud_access), "upload_limit_bytes": upload_limit}
+                "environment": "local", "persistent": True, "upload_limit_bytes": None}
 
     @app.get('/api/auth/config')
     def auth_config():
-        # The project shell is cloud-only; retain the existing local workbench.
+        # Team sign-in is served by the cloud sync backend; this server is local.
         return {'mode': 'local'}
 
     @app.get("/api/config")
     def config():
-        if cloud_access:
-            return {"version": __version__, "mcp_available": False,
-                    "mcp_command": "", "codex_command": "", "claude_command": "",
-                    "notice": "Remote agent connections are not yet available in this cloud version. MCP connections are available in a local OpenEconometrics installation."}
         from openecon.mcp_launcher import connection_config
         return {"version": __version__, **connection_config(store.path)}
 
@@ -351,18 +322,13 @@ def create_app(workspace: str | Path = ".openecon", *, cloud_access: CloudAccess
         if suffix not in SUPPORTED:
             raise DataError("Supported formats: CSV, Parquet, XLSX and DTA.", "UNSUPPORTED_FORMAT")
         fd, temp = tempfile.mkstemp(suffix=suffix)
-        size = 0
-        file_limit = upload_limit
         try:
             with os.fdopen(fd, "wb") as stream:
                 while chunk := await file.read(1024 * 1024):
-                    size += len(chunk)
-                    if file_limit is not None and size > file_limit:
-                        raise DataError(f"This transfer accepts files up to {file_limit // (1024 * 1024)} MiB; use local CSV/Parquet for large data.", "DATA_LIMIT")
                     stream.write(chunk)
             from starlette.concurrency import run_in_threadpool
 
-            return await run_in_threadpool(store.import_file, temp, name=name, local_only=not bool(cloud_access))
+            return await run_in_threadpool(store.import_file, temp, name=name, local_only=True)
         finally:
             Path(temp).unlink(missing_ok=True)
             await file.close()

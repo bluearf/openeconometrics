@@ -50,10 +50,11 @@ export type TokenGetter = (forceRefresh?: boolean) => Promise<string>;
 export interface WorkspaceSession {
   token: string;
   version: string;
-  environment: "local" | "cloud" | "team";
+  environment: "local" | "team";
   persistent?: boolean;
   read_only?: boolean;
-  execution_mode?: "persistent" | "isolated";
+  /** "desktop": a browser team view; analyses run only in the desktop app. */
+  execution_mode?: "persistent" | "desktop";
 }
 export interface ScriptDraft {
   code: string | null;
@@ -189,45 +190,29 @@ export interface WorkspaceBootstrap {
   initialConsole?: ConsoleState;
 }
 
-export interface ExecutionAccepted {
-  accepted: true;
-  id: string;
+export const CLOUD_EXECUTION_RETIRED =
+  "Analyses run only in the OpenEconometrics desktop app. Open this project in the desktop app to run code; results shared from the desktop appear in History.";
+
+/** Code runs on this computer: the desktop app or a local workbench. A browser
+ * team workspace syncs files and shared results; the cloud never executes code. */
+export function canExecuteLocally(client: WorkspaceClient): boolean {
+  return !client.teams || Boolean(client.desktop);
 }
 
-export function isExecutionAccepted(
-  value: ExecutionRecord | ExecutionAccepted,
-): value is ExecutionAccepted {
-  return "accepted" in value && value.accepted === true;
-}
-
-/** Cloud tasks outlive an HTTP request; local sessions keep synchronous results. */
 export async function submitWorkspaceExecution(
   client: WorkspaceClient,
   code: string,
   scriptId?: string,
-): Promise<ExecutionRecord | ExecutionAccepted> {
-  const value = await client.request<ExecutionRecord | ExecutionAccepted>(
-    "/console/execute",
-    {
-      method: "POST",
-      body: JSON.stringify({
-        code,
-        ...(scriptId === undefined ? {} : { script_id: scriptId }),
-        ...(client.teams ? { wait_for_result: false } : {}),
-      }),
-    },
-  );
-  if (
-    "accepted" in value &&
-    (!client.teams ||
-      value.accepted !== true ||
-      typeof value.id !== "string" ||
-      !value.id)
-  )
-    throw new Error(
-      "Could not verify that the run was accepted. Refresh the project status.",
-    );
-  return value;
+): Promise<ExecutionRecord> {
+  if (!canExecuteLocally(client))
+    throw new ApiError(CLOUD_EXECUTION_RETIRED, 410, "CLOUD_EXECUTION_RETIRED");
+  return client.request<ExecutionRecord>("/console/execute", {
+    method: "POST",
+    body: JSON.stringify({
+      code,
+      ...(scriptId === undefined ? {} : { script_id: scriptId }),
+    }),
+  });
 }
 
 /** Teams open the draft without waiting for historical result blobs. */

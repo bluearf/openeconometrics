@@ -1,5 +1,11 @@
 # Alpha verification record
 
+> Cloud execution was retired on 10 October 2026: the cloud service is now a
+> team sync layer and every analysis runs in the desktop app. Entries below
+> that describe sandbox, Job or browser cloud runs are historical records of
+> the removed backends, not current behavior. See
+> [team sync backend deployment](sync-backend-deployment.md).
+
 ## Advanced publication matrix - 7 October 2026
 
 MARKET-110 evidence (internal evidence excluded from this public snapshot) validates 22
@@ -286,8 +292,8 @@ preview services were deleted, with subsequent API readback confirming both
 absent. `artifacts/verification/sandbox-cleanup-final.json` records complete
 cleanup, including temporary IAM bindings/owned signer role and zero pending
 runtime or broker scopes. The production control and private compute services
-remain. See
-[architecture, deployment contract and rollback](sandbox-compute.md).
+remain. The sandbox deployment contract was removed with the execution
+backend on 10 October 2026; it remains in the history of `docs/sandbox-compute.md`.
 
 ## Opening performance and queued analyses
 
@@ -544,7 +550,7 @@ Verified on 1 October 2026. The full local suite passed **379 tests** with **3 h
 
 The new authentication cases exercise real P-256 signatures with controlled test keys, wrong owners, issuer/audience mismatches, expired/malformed tokens and bounded key-fetch failures. Server cases verify that session bootstrap and chart assets require verified identity, unsigned email headers cannot grant access, same-origin/CSRF protections remain active, and cloud configuration does not advertise container-local MCP commands.
 
-Cloud Build `c08495e5-9b04-4203-b8fc-9c0bc9d88dcf` successfully built the production Linux image and ran its nonroot/CPU Torch/package checks plus a native 480-observation OLS fit. Image digest: `sha256:f142b3fc57a842f53e5a975177356702894f667884aaf8bd4f3150a6855f64cc`. This initial build ran in `sustainarf-fsk4hp` before the user selected a dedicated OpenEcon project; the verified image can be copied without rebuilding or creating a runtime dependency on that project. See [cloud deployment](cloud-deployment.md) for the selected target and operating limits.
+Cloud Build `c08495e5-9b04-4203-b8fc-9c0bc9d88dcf` successfully built the production Linux image and ran its nonroot/CPU Torch/package checks plus a native 480-observation OLS fit. Image digest: `sha256:f142b3fc57a842f53e5a975177356702894f667884aaf8bd4f3150a6855f64cc`. This initial build ran in `sustainarf-fsk4hp` before the user selected a dedicated OpenEcon project; the verified image can be copied without rebuilding or creating a runtime dependency on that project. The single-owner IAP deployment it describes was removed on 10 October 2026; its runbook remains in the history of `docs/cloud-deployment.md`.
 
 The identical image was copied into `openecon-workbench` and deployed successfully as revision `openecon-00001-5dw`, serving 100% of traffic at <https://openecon-291739190496.us-central1.run.app>. The ready state, IAP-enabled setting, dedicated runtime identity and exact service/IAP policies were read back. Anonymous requests to `/` and `/api/session` both returned HTTP 302 to Google sign-in. Owner access is limited to `anilsen@bluearf.com`. The old task-created OpenEcon service, runtime account and image repository in `sustainarf-fsk4hp` were deleted after migration; historical build records remain there.
 

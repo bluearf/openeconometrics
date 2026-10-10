@@ -87,10 +87,17 @@ replays all four stage contributions. Exhaustive finite-population HT checks
 cover all16 census-stage combinations; nonlinear inference retains the explicit
 reference first-stage df convention.
 
-Remaining subgates are five or more stages, lower-stage stratification in the
-four-stage family, additional singleton policies, calibration/poststratification,
-general DEFF and broader regression/GLM domains. MARKET-211 remains open for these
-broader gates.
+Eight [fully stratified four-stage methods](../../SURVEY_FULLY_STRATIFIED_FOUR_STAGE.md)
+add separate SSU/TSU/FSU strata with complete positive lower-cell frames
+(MARKET-744–751). Each real selection retains its own stratum-specific FPC and
+actual ancestor sampling fractions. Typed saved state preserves all four
+covariance components, complete physical sample geometry and optimizer-free
+primitive replay. The earlier four-stage API remains unchanged.
+
+Remaining subgates are five or more stages, PPS, arbitrary supplied weights,
+additional singleton policies, calibration/poststratification, general DEFF and
+broader regression/GLM, Dataset, streaming and GPU domains. MARKET-211 remains
+open for these broader gates.
 Any future ModelSpec design route must reference
 the design record without treating a sampling weight as an aweight/fweight. A final product
 of weights does not preserve the stage-specific variance structure. Label any

@@ -74,7 +74,8 @@ Production deployment is confirmed at revision `openecon-00010-46z`, serving
 100% of traffic with the reviewed image. Post-deployment authenticated API
 verification passed all four checks above.
 
-The private compute service remained at revision `openecon-sandbox-00003-qf7`,
+At that time (before cloud execution was retired on 10 October 2026) the
+private compute service remained at revision `openecon-sandbox-00003-qf7`,
 with image digest
 `sha256:4304cc205d36dc8a71d575a86c618a4ab86378523d72432ddfbcc57a98a98a70`.
 

@@ -1,0 +1,38 @@
+\begin{table}[htbp]
+\centering
+\caption{Synthetic policy illustration: clustered difference-in-differences}
+\label{tab:lab15-did}
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Dependent variable: & employment\_rate & employment\_rate \\
+ & (1) & (2) \\
+ & Policy design & Concurrent shock \\
+\midrule
+{[ATET]} &  &  \\
+Treated x post (pp) & $2.549$ & $4.549$ \\
+ & $(0.438)$ & $(0.438)$ \\[0.35em]
+\midrule
+Observations & 360 & 360 \\
+$R^{2}$ & 0.954 & 0.956 \\
+$\text{Within }R^{2}$ & 0.197 & 0.438 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\footnotesize
+\raggedright
+\textit{Notes:} Standard errors are in parentheses.\par
+(1) DIDREGRESS: cluster-robust standard errors; clustered by region (60 clusters); Student t inference (df = 59); 95\% confidence level (alpha = 0.05); estimation sample 360 of 360 observations; covariance correction: CR1: G/(G-1) * (N-1)/(N-K); finite-sample covariance factor: 1.03423; residual df: 353; absorbed df: 6.\par
+(2) DIDREGRESS: cluster-robust standard errors; clustered by region (60 clusters); Student t inference (df = 59); 95\% confidence level (alpha = 0.05); estimation sample 360 of 360 observations; covariance correction: CR1: G/(G-1) * (N-1)/(N-K); finite-sample covariance factor: 1.03423; residual df: 353; absorbed df: 6.\par
+Original synthetic data; not evidence about an actual policy.\par
+Region and year effects absorbed; 60 region clusters; t(59) inference.\par
+The second outcome adds an unrelated two-point treated-only post-policy shock.\par
+\end{minipage}
+\endgroup
+\end{table}

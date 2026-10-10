@@ -1,0 +1,114 @@
+{
+  "metadata": {
+    "lab": "02-center",
+    "title": "Which Average Answers the Question?",
+    "synthetic": true,
+    "data_file": "shop_spending.xlsx",
+    "raw_rows": 240
+  },
+  "summary": {
+    "baskets": 240,
+    "mean": 32.43900486102906,
+    "median": 24.69069457011217,
+    "geometric_mean": 24.585977744921752,
+    "mean_without_largest": 31.235820780949688,
+    "largest_value": 320.0,
+    "mean_change_remove_largest": 1.2031840800793745
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "index": [
+        "spending"
+      ],
+      "columns": [
+        "n",
+        "mean",
+        "std_dev",
+        "p25",
+        "p50",
+        "p75",
+        "max"
+      ],
+      "values": [
+        [
+          240.0,
+          32.43900486102906,
+          30.580813152394754,
+          15.282690170676933,
+          24.69069457011217,
+          39.961429712396985,
+          320.0
+        ]
+      ],
+      "attrs": {
+        "percentile_method": "stata",
+        "moments": "spss",
+        "alpha": 0.05,
+        "missing": "variable-wise",
+        "n": 240
+      }
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "hist",
+        "title": "Which Average Answers the Question?",
+        "xlabel": "Spending per basket (currency)",
+        "ylabel": "Baskets",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              11.607168111409372,
+              29.229615647900268,
+              46.85206318439116,
+              64.47451072088205,
+              82.09695825737296,
+              99.71940579386384,
+              117.34185333035475,
+              134.96430086684563,
+              152.58674840333651,
+              170.2091959398274,
+              187.83164347631828,
+              205.45409101280916,
+              223.0765385493001,
+              240.69898608579098,
+              258.32143362228186,
+              275.9438811587728,
+              293.5663286952637,
+              311.18877623175456
+            ],
+            "y": [
+              89.0,
+              84.0,
+              41.0,
+              10.0,
+              9.0,
+              2.0,
+              1.0,
+              1.0,
+              1.0,
+              1.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "median_matches_order_statistics": true,
+    "payroll_identity": true,
+    "geometric_below_arithmetic": true,
+    "tail_removal_changes_mean_upward_gap": true
+  }
+}

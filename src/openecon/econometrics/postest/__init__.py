@@ -48,4 +48,12 @@ EXPORTS: dict[str, str] = {
     "multinomial_region": "openecon.econometrics.postest.distribution_free_joint:multinomial_region",
     "hoeffding_mean_ci": "openecon.econometrics.postest.bounded_joint:hoeffding_mean_ci",
     "empirical_bernstein_mean_ci": "openecon.econometrics.postest.bounded_joint:empirical_bernstein_mean_ci",
+    "bernoulli_confidence_sequence": "openecon.econometrics.postest.confidence_sequences:bernoulli_confidence_sequence",
+    "poisson_confidence_sequence": "openecon.econometrics.postest.confidence_sequences:poisson_confidence_sequence",
+    "normal_mean_confidence_sequence": "openecon.econometrics.postest.confidence_sequences:normal_mean_confidence_sequence",
+    "student_mean_confidence_sequence": "openecon.econometrics.postest.confidence_sequences:student_mean_confidence_sequence",
+    "normal_variance_confidence_sequence": "openecon.econometrics.postest.confidence_sequences:normal_variance_confidence_sequence",
+    "exponential_mean_confidence_sequence": "openecon.econometrics.postest.confidence_sequences:exponential_mean_confidence_sequence",
+    "uniform_endpoint_confidence_sequence": "openecon.econometrics.postest.confidence_sequences:uniform_endpoint_confidence_sequence",
+    "hoeffding_confidence_sequence": "openecon.econometrics.postest.confidence_sequences:hoeffding_confidence_sequence",
 }

@@ -320,7 +320,7 @@ def test_unsupported_domains_do_not_fall_back(study, options):
 
 
 def test_manifest_is_lightweight_and_all_eight_are_public():
-    subprocess.run([sys.executable,"-c", "import sys; from openecon.econometrics.conjoint import EXPORTS, ESTIMATORS; assert ESTIMATORS == (); assert len(EXPORTS)==10; assert 'torch' not in sys.modules"], check=True)
+    subprocess.run([sys.executable,"-c", "import sys; from openecon.econometrics.conjoint import EXPORTS, ESTIMATORS; assert ESTIMATORS == (); assert len(EXPORTS)==15; assert 'torch' not in sys.modules"], check=True)
     assert all(callable(getattr(oe, name)) for name in (
         "conjoint_plan", "conjoint_orthogonal", "conjoint_diagnostics", "conjoint_fit", "conjoint_predict",
         "conjoint_holdout", "conjoint_importance", "conjoint_simulate", "conjoint_save", "conjoint_load"))

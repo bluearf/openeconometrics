@@ -1,0 +1,15 @@
+# OpenEconometrics Codex plugin 0.1.2 LaTeX verification
+
+Verified locally on macOS on 2026-10-09 with Codex CLI 0.151.0. This extends the [0.1.1 integration record](codex-plugin-0.1.1.md) with saved-result publication output. The source base is `3ad8b093eb8a7e45624bd79fd2b9623725a92898`; the reviewed plugin branch adds the optional formatter and its tests.
+
+- `get_result(..., include_latex=True)` adds `latex`, `latex_math`, `latex_notes` and `latex_packages`. Default result fields are unchanged. The formatter uses the saved aggregate coefficients and inference, escapes ordinary labels, excludes observation/query/prediction state and does not refit or modify records. Unavailable inference, prediction-only results and oversized output return explicit errors instead of assumed inference or truncation.
+- 159 launcher, MCP, job, desktop connection, publication and LaTeX tests pass, including 14 new formatter cases. Independent source review, Ruff and whitespace checks pass.
+- Portable Agent Plugins 1.0 manifests validate. All ten plugin files agree across source, the personal marketplace copy, enabled Codex cache and archive. The 23 other installed plugins retain their state.
+- All 754 SDK and 23 charts package files agree across source, built wheels and the isolated noneditable runtime. Metadata, RECORD hashes and licenses pass. All 62 distributions in the recursive application dependency closure satisfy requirements; SciPy/statsmodels are absent.
+- Two fresh Codex engines expose the actual read-only `get_result` schema with `include_latex` defaulting to false. Through the connected MCP tool, each retrieves the user's existing 480-observation synthetic `wage ~ education + experience` OLS result with HC3 covariance. Default fields remain identical; coefficients and standard errors match both complete LaTeX views at their displayed precision. Sample, inference and synthetic-data notes are preserved. Both engines return identical output.
+- Every file in the existing persistent workspace has the same SHA-256 before and after both connections. Only the configured runtime executable changes; the workspace selection remains identical. No model is rerun and no new dataset is created.
+- The exported standalone `user-ols.tex`, using the returned package requirements and full table source, compiles successfully with the Codex desktop editor's compiler. Opening its editor is queued; visual preview and an exported PDF file were not verified.
+
+Receipts, JUnit output, the saved aggregate responses, full table and standalone source are under `artifacts/codex-plugin/0.1.2/` in the development checkout. Delivery copies are under the local `codex-plugin-releases/0.1.2` directory. The plugin archive SHA-256 is `977d9936b204e1128d9df2f21fedbec702815dafe4cbc4d66064e8f9bc0f286a`.
+
+Use a fresh Codex chat to load the updated tool schema and skill. Installing plugin 0.1.2 alone does not upgrade a separately configured older OpenEconometrics runtime. This verification does not establish Windows execution, public listing, visual verification of an already loaded chat or independent econometric parity.

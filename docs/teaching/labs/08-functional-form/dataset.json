@@ -1,0 +1,38 @@
+{
+  "filename": "wage_profiles.xlsx",
+  "description": "Fixed schooling, experience and wages for comparing linear and quadratic log-wage profiles.",
+  "observation_unit": "One synthetic worker observed once.",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "education",
+      "description": "Completed years of schooling between 10 and 18.",
+      "unit": "Years",
+      "missing": "No missing values."
+    },
+    {
+      "name": "experience",
+      "description": "Work experience between 0 and 40 years.",
+      "unit": "Years",
+      "missing": "No missing values."
+    },
+    {
+      "name": "experience_squared",
+      "description": "experience multiplied by itself; must change together with experience in profile calculations.",
+      "unit": "Years squared",
+      "missing": "No missing values."
+    },
+    {
+      "name": "log_wage",
+      "description": "Natural logarithm of hourly wage measured in the stated currency unit.",
+      "unit": "Natural log of hypothetical currency units per hour",
+      "missing": "No missing values."
+    },
+    {
+      "name": "hourly_wage",
+      "description": "Hourly pay; equals exp(log_wage) and is strictly positive.",
+      "unit": "Hypothetical currency units per hour",
+      "missing": "No missing values."
+    }
+  ]
+}

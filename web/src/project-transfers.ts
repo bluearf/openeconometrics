@@ -340,6 +340,8 @@ export function createProjectTransferActions(
           imported.name !== file.name
         )
           throw invalid();
+        // A list read begun during this operation can still contain its journal.
+        ++refreshSequence;
         publish({
           transfers: snapshot.transfers.filter(
             (item) => item.request_id !== id,
@@ -379,6 +381,7 @@ export function createProjectTransferActions(
           body.request_id !== id
         )
           throw invalid();
+        ++refreshSequence;
         publish({
           transfers: snapshot.transfers.filter(
             (item) => item.request_id !== id,
@@ -391,6 +394,7 @@ export function createProjectTransferActions(
           error.status === 409 &&
           error.code === "TRANSFER_COMPLETE"
         ) {
+          ++refreshSequence;
           publish({
             transfers: snapshot.transfers.map((item) =>
               item.request_id === id ? { ...item, state: "ready" } : item,

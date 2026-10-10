@@ -1,0 +1,27 @@
+{
+  "filename": "subsidy_welfare.xlsx",
+  "description": "A Producer Subsidy and Overproduction; original synthetic teaching data.",
+  "observation_unit": "One potential trade on linear schedules.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720016,
+  "columns": [
+    {
+      "name": "quantity",
+      "description": "Potential traded quantity",
+      "unit": "units/day",
+      "missing": 0
+    },
+    {
+      "name": "demand_price",
+      "description": "Inverse demand 60\u2212.5q",
+      "unit": "currency/unit",
+      "missing": 0
+    },
+    {
+      "name": "supply_price",
+      "description": "Inverse supply 10+.5q",
+      "unit": "currency/unit",
+      "missing": 0
+    }
+  ]
+}

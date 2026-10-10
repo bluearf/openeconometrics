@@ -57,6 +57,25 @@ def test_public_build_refuses_private_fixture_remapping_to_published_source():
         public_build_configuration("pyproject.toml", data)
 
 
+def test_public_capability_transformation_updates_only_the_derived_build_fingerprint():
+    transform = runpy.run_path(str(ROOT / "scripts/prepare_public_source.py"))["public_capability_fingerprint"]
+    original, published = b"private build", b"reviewed public build"
+    value = {"source_fingerprints": {"pyproject.toml": hashlib.sha256(original).hexdigest(),
+                                     "src/engine.py": "retained"},
+             "versions": {"sdk": "unchanged"}, "scientific_scope": ["retained"]}
+    raw = json.dumps(value).encode()
+    assert transform(raw, original, original) == (raw, [])
+    result, receipt = transform(raw, original, published)
+    expected = json.loads(raw)
+    expected["source_fingerprints"]["pyproject.toml"] = hashlib.sha256(published).hexdigest()
+    assert json.loads(result) == expected
+    assert len(receipt) == 1
+    assert receipt[0]["original"] == value["source_fingerprints"]["pyproject.toml"]
+    assert receipt[0]["published"] == expected["source_fingerprints"]["pyproject.toml"]
+    with pytest.raises(ValueError, match="reviewed source configuration"):
+        transform(raw, b"unreviewed source", published)
+
+
 def test_public_evidence_links_preserve_historical_scope_without_missing_targets():
     text = (
         "0.3.27 contained 230 modules and 80 estimators: "
@@ -132,6 +151,7 @@ def test_public_snapshot_keeps_source_and_excludes_private_history_artifacts():
         "packages/openecon-charts/src/openecon_charts/assets/BARLOW-OFL.txt",
         "LICENSE",
         "NOTICE",
+        "AGENTS.md",
         "uv.lock",
     ):
         assert included(name), name
@@ -149,6 +169,53 @@ def test_public_snapshot_keeps_source_and_excludes_private_history_artifacts():
         "credentials.json",
     ):
         assert not included(name), name
+
+
+def test_public_snapshot_includes_declared_original_teaching_workbooks_and_plugin():
+    workbooks = []
+    for course in ("", "statistics", "microeconomics", "advanced-econometrics"):
+        directory = ROOT / "docs/teaching" / course
+        for lab in json.loads((directory / "catalog.json").read_text())["labs"]:
+            if lab["data_mode"] == "prepared_excel":
+                name = (directory / "labs" / lab["slug"] / lab["data_file"]).relative_to(ROOT).as_posix()
+                assert included(name), name
+                workbooks.append(name)
+    assert len(workbooks) == 79
+    plugin_files = runpy.run_path(str(ROOT / "scripts/prepare_public_source.py"))["PLUGIN_FILES"]
+    assert len(plugin_files) == 11
+    assert all(included(name) and (ROOT / name).is_file() for name in plugin_files)
+    for name in (
+        "docs/teaching/statistics/labs/01-measurement/customer.xlsx",
+        "docs/teaching/statistics/labs/01-measurement/../household_measurements.xlsx",
+        "docs/teaching/unknown/labs/01-measurement/household_measurements.xlsx",
+        "docs/teaching/statistics/labs/01-measurement/customer.csv",
+        "docs/customer.xlsx", "plugins/openeconometrics/credentials.json",
+        "plugins/other/plugin.json", ".agents/plugins/private-key.json",
+        "../src/openecon/examples/wages.csv", "",
+    ):
+        assert not included(name), name
+
+
+def test_public_snapshot_does_not_publish_nonoriginal_or_undeclared_workbooks(tmp_path):
+    module = runpy.run_path(str(ROOT / "scripts/prepare_public_source.py"))
+    workbook = module["teaching_workbook"]
+    workbook.__globals__["ROOT"] = tmp_path
+    directory = tmp_path / "docs/teaching/statistics"
+    lab = directory / "labs/01-measurement"
+    lab.mkdir(parents=True)
+    path = "docs/teaching/statistics/labs/01-measurement/household_measurements.xlsx"
+    (directory / "catalog.json").write_text(json.dumps({"labs": [{
+        "slug": "01-measurement", "data_mode": "prepared_excel",
+        "data_file": "household_measurements.xlsx",
+    }]}))
+    assert not workbook(path)
+    metadata = lab / "dataset.json"
+    metadata.write_text(json.dumps({"filename": "household_measurements.xlsx", "source": "Customer data"}))
+    assert not workbook(path)
+    metadata.write_text(json.dumps({"filename": "household_measurements.xlsx",
+                                    "source": "Original OpenEconometrics teaching simulation. Not empirical observations."}))
+    assert workbook(path)
+    assert not workbook(path.replace("household_measurements", "undeclared"))
 
 
 def test_full_notices_match_locked_dependencies_and_upstream_font_bytes():

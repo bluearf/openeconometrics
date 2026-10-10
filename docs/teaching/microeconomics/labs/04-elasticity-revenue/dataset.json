@@ -1,0 +1,21 @@
+{
+  "filename": "elasticity_revenue.xlsx",
+  "description": "Point Elasticity and Total Revenue; original synthetic teaching data.",
+  "observation_unit": "One price on a linear demand schedule.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720004,
+  "columns": [
+    {
+      "name": "price",
+      "description": "Own price",
+      "unit": "currency/unit",
+      "missing": 0
+    },
+    {
+      "name": "quantity",
+      "description": "Demand 120\u22122P",
+      "unit": "units/day",
+      "missing": 0
+    }
+  ]
+}

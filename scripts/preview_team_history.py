@@ -7,7 +7,6 @@ import json
 from pathlib import Path
 import subprocess
 import tempfile
-from types import SimpleNamespace
 from urllib.parse import urlsplit
 
 from fastapi.testclient import TestClient
@@ -52,7 +51,7 @@ def main():
         return dict(uid=viewer.uid, sub=viewer.uid, email=viewer.email, name='Viewer', aud=PROJECT,
                     iss=f'https://securetoken.google.com/{PROJECT}', firebase={'sign_in_provider': 'password'}, email_verified=True)
     app = create_team_app(store=store, storage=storage, auth=TeamAuth(PROJECT, verifier=verify),
-                          runner=SimpleNamespace(), public_origin=ORIGIN,
+                          public_origin=ORIGIN,
                           firebase_config={'projectId': PROJECT, 'authDomain': f'{PROJECT}.firebaseapp.com'})
     with tempfile.TemporaryDirectory(prefix='openecon-history-preview-') as temporary, TestClient(app, base_url=ORIGIN) as client:
         directory = Path(temporary)
@@ -60,7 +59,7 @@ def main():
         entry.write_text('import {createRoot} from "react-dom/client";\nimport App from ' + json.dumps(str(ROOT / 'web/src/App.tsx'))
             + ';\nimport {createWorkspaceClient} from ' + json.dumps(str(ROOT / 'web/src/api.ts'))
             + ';\ncreateRoot(document.getElementById("app")).render(<App client={createWorkspaceClient('
-            + json.dumps(pid) + ',async()=>"fixture-viewer")} isolatedRuns readOnly projectName="History verification"/>);')
+            + json.dumps(pid) + ',async()=>"fixture-viewer")} syncOnly readOnly projectName="History verification"/>);')
         builder = '''import {pathToFileURL} from "node:url";
 const [root,entry,outfile]=process.argv.slice(2);
 const {build}=await import(pathToFileURL(root+"/web/node_modules/esbuild/lib/main.js").href);

@@ -1,0 +1,44 @@
+{
+  "filename": "wage_interactions.xlsx",
+  "description": "Fixed group-specific wage profiles with centered and uncentered interaction terms.",
+  "observation_unit": "One synthetic worker observed once.",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "experience",
+      "description": "Work experience between 5 and 30 years.",
+      "unit": "Years",
+      "missing": "No missing values."
+    },
+    {
+      "name": "sector",
+      "description": "Fictional group indicator: 0 = group A, 1 = group B.",
+      "unit": "Binary indicator (0 or 1)",
+      "missing": "No missing values."
+    },
+    {
+      "name": "experience_centered",
+      "description": "Work experience minus the 15-year reference value.",
+      "unit": "Years relative to 15",
+      "missing": "No missing values."
+    },
+    {
+      "name": "sector_experience",
+      "description": "sector multiplied by experience_centered; includes the same centering as the main term.",
+      "unit": "Indicator multiplied by years relative to 15",
+      "missing": "No missing values."
+    },
+    {
+      "name": "sector_experience_raw",
+      "description": "sector multiplied by uncentered experience, for the equivalent uncentered specification.",
+      "unit": "Indicator multiplied by years",
+      "missing": "No missing values."
+    },
+    {
+      "name": "hourly_wage",
+      "description": "Recorded hourly pay.",
+      "unit": "Hypothetical currency units per hour",
+      "missing": "No missing values."
+    }
+  ]
+}

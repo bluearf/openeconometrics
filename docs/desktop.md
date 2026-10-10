@@ -34,7 +34,7 @@ See [the native architecture](https://v2.tauri.app/concept/architecture/) and
    filenames, so `oe.read("wages.csv")` works on each team member's computer.
 4. Run starts one local Python worker. Variables survive subsequent commands in
    that project until reset, interruption, project switching or application exit.
-   No desktop Run request is forwarded to Cloud Run compute.
+   Run never leaves this computer: the cloud service has no compute.
 5. Code is saved locally before a version-checked cloud write. Structured results
    enter a bounded durable outbox, then the cloud validates and archives them for
    teammates. The server does not rerun or certify client-produced calculations.

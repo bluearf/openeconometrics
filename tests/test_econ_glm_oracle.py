@@ -136,7 +136,17 @@ def check_inference(result, theta, covariance, *, alpha=0.05, rtol=2e-6):
 def check_test(entry, statistic, df, *, rtol=1e-6):
     assert entry["distribution"] == "chi2" and entry["df"] == df
     assert entry["statistic"] == pytest.approx(statistic, rel=rtol, abs=1e-8)
-    assert entry["p_value"] == pytest.approx(stats.chi2.sf(statistic, df), rel=1e-5, abs=1e-300)
+    # The independent finite-difference Hessian bounds the Wald statistic above.
+    # A relative statistic error is amplified in extreme probability tails:
+    # comparing two ~1e-30 probabilities at an unrelated fixed tolerance can
+    # reject a statistic well inside its existing 1e-6 accuracy bound. Verify
+    # the reported probability more tightly against SciPy at its actual
+    # statistic, and against the independent statistic's transformed interval.
+    assert entry["p_value"] == pytest.approx(
+        stats.chi2.sf(entry["statistic"], df), rel=1e-9, abs=1e-300)
+    radius = max(abs(statistic) * rtol, 1e-8)
+    assert stats.chi2.sf(statistic + radius, df) - 1e-300 <= entry["p_value"]
+    assert entry["p_value"] <= stats.chi2.sf(max(0.0, statistic - radius), df) + 1e-300
 
 
 def wald(theta, covariance, index):

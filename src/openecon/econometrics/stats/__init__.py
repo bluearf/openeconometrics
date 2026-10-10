@@ -11,6 +11,10 @@ ESTIMATORS: tuple[EstimatorInfo, ...] = ()
 
 # Extra public functions exported as oe.<name>: {"name": "package.module:function"}.
 EXPORTS: dict[str, str] = {
+    "sequential_design": "openecon.econometrics.stats.sequential:sequential_design",
+    "restore_sequential_design": "openecon.econometrics.stats.sequential:restore_sequential_design",
+    "sequential_power": "openecon.econometrics.stats.sequential:sequential_power",
+    "sequential_information": "openecon.econometrics.stats.sequential:sequential_information",
     "rm_contrast": "openecon.econometrics.stats.rm_contrast:rm_contrast",
     "ttest": "openecon.econometrics.stats.ttest:ttest",
     "sdtest": "openecon.econometrics.stats.ttest:sdtest",

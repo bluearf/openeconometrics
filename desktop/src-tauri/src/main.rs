@@ -4,6 +4,8 @@ mod data_transfer;
 mod export;
 mod runtime;
 mod suggestions;
+#[cfg(target_os = "macos")]
+mod macos_layout;
 
 use cap_std::fs::Dir;
 use serde::Serialize;
@@ -96,6 +98,8 @@ fn desktop_info(
     state: State<'_, DesktopState>,
 ) -> Result<DesktopInfo, String> {
     trusted_window(&window, &state)?;
+    #[cfg(target_os = "macos")]
+    let _ = macos_layout::reconcile(&window, "workspace-ready");
     Ok(DesktopInfo {
         local_origin: state
             .local_origin
@@ -364,11 +368,15 @@ fn main() {
                     }
                 })
                 .on_page_load(move |window, payload| {
-                    if diagnostic_window && payload.event() == tauri::webview::PageLoadEvent::Finished {
+                    if payload.event() == tauri::webview::PageLoadEvent::Finished {
                         let state = window.state::<DesktopState>();
                         let origin = state.local_origin.lock().ok().and_then(|value| value.clone());
                         if origin.as_deref() == Some(payload.url().origin().ascii_serialization().as_str()) && trusted_window(&window, &state).is_ok() {
-                            let _ = window.eval("document.title='OpenEconometrics diagnostics: IPC pending'; if(typeof window.__TAURI__?.core?.invoke==='function'){window.__TAURI__.core.invoke('desktop_info').then(()=>document.title='OpenEconometrics diagnostics: IPC verified').catch(()=>document.title='OpenEconometrics diagnostics: IPC failed')}else{document.title='OpenEconometrics diagnostics: IPC unavailable'}");
+                            #[cfg(target_os = "macos")]
+                            let _ = macos_layout::reconcile(&window, "document-finished");
+                            if diagnostic_window {
+                                let _ = window.eval("document.title='OpenEconometrics diagnostics: IPC pending'; if(typeof window.__TAURI__?.core?.invoke==='function'){window.__TAURI__.core.invoke('desktop_info').then(()=>document.title='OpenEconometrics diagnostics: IPC verified').catch(()=>document.title='OpenEconometrics diagnostics: IPC failed')}else{document.title='OpenEconometrics diagnostics: IPC unavailable'}");
+                            }
                         }
                     }
                 })
@@ -401,6 +409,15 @@ fn main() {
             Ok(())
         })
         .on_window_event(|window, event| {
+            #[cfg(target_os = "macos")]
+            if matches!(event, tauri::WindowEvent::Resized(_) | tauri::WindowEvent::Focused(true)) {
+                if let Some(webview) = window.app_handle().get_webview_window(window.label()) {
+                    let state = webview.state::<DesktopState>();
+                    if trusted_window(&webview, &state).is_ok() {
+                        let _ = macos_layout::reconcile(&webview, "native-visible-or-resized");
+                    }
+                }
+            }
             if matches!(event, tauri::WindowEvent::Destroyed) { window.app_handle().exit(0); }
         })
         .build(tauri::generate_context!()).expect("OpenEconometrics desktop application could not start");

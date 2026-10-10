@@ -1,0 +1,3278 @@
+{
+  "openecon.BayesianVARContrast": {
+    "description": "Complete rank-one contrast vectors, exact Student-t location/scale/df/interval/probability and moment availability.",
+    "kind": "class",
+    "name": "openecon.BayesianVARContrast",
+    "parameters": [
+      {
+        "default": "'openecon.bayesian_var_rank_one_contrast.v1'",
+        "description": "Complete original schema_version field of BayesianVARContrast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "schema_version",
+        "type": "str"
+      },
+      {
+        "description": "Complete original parent field of BayesianVARContrast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "parent",
+        "type": "BayesianVARPosterior"
+      },
+      {
+        "description": "Complete original left field of BayesianVARContrast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "left",
+        "type": "Vector"
+      },
+      {
+        "description": "Complete original right field of BayesianVARContrast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "right",
+        "type": "Vector"
+      },
+      {
+        "description": "Complete original threshold field of BayesianVARContrast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "threshold",
+        "type": "float"
+      },
+      {
+        "description": "Complete original alpha field of BayesianVARContrast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "alpha",
+        "type": "float"
+      },
+      {
+        "description": "Complete original location field of BayesianVARContrast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "location",
+        "type": "StrictFloat"
+      },
+      {
+        "description": "Complete original scale field of BayesianVARContrast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "scale",
+        "type": "StrictFloat"
+      },
+      {
+        "description": "Original inverse-Wishart, matrix-t or Student-t df for this explicitly typed law.",
+        "kind": "keyword-only",
+        "name": "degrees_of_freedom",
+        "type": "StrictFloat"
+      },
+      {
+        "description": "Complete original interval field of BayesianVARContrast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "interval",
+        "type": "tuple[StrictFloat, StrictFloat]"
+      },
+      {
+        "description": "Complete original probability_le_threshold field of BayesianVARContrast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "probability_le_threshold",
+        "type": "StrictFloat"
+      },
+      {
+        "description": "Full matrix-normal prior location or declared available exact/MC mean; meaning is specific to the owning typed class.",
+        "kind": "keyword-only",
+        "name": "mean",
+        "type": "StrictFloat | None"
+      },
+      {
+        "description": "Complete original variance field of BayesianVARContrast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "variance",
+        "type": "StrictFloat | None"
+      },
+      {
+        "description": "Digest of every other original complete-state field; algebraic replay also rejects resealed contradictory scientific arrays.",
+        "kind": "keyword-only",
+        "name": "integrity_sha256",
+        "type": "str"
+      }
+    ],
+    "returns": "BayesianVARContrast",
+    "signature": "openecon.BayesianVARContrast(*, schema_version='openecon.bayesian_var_rank_one_contrast.v1', parent, left, right, threshold, alpha, location, scale, degrees_of_freedom, interval, probability_le_threshold, mean, variance, integrity_sha256)",
+    "source": "src/openecon/econometrics/bayesian_var/api.py",
+    "source_definition_ast_sha256": "4e8807734b09001e1229078de2915193342adb060dfd6320b5426d0fd897d928",
+    "source_line": 249,
+    "source_sha256": "f19f027e3fa1161244c98805d6e27e3b51d4dd4285dfccfa1ff4a99ea2835c28"
+  },
+  "openecon.BayesianVARContrast.checked": {
+    "description": "Original immutable checked checked method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARContrast.checked",
+    "owner": "openecon.BayesianVARContrast",
+    "parameters": [],
+    "returns": "BayesianVARContrast",
+    "signature": "openecon.BayesianVARContrast.checked()",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b836a5f3971a36b30b8815ad8d242132692920ba8d9a3e358f0e005c32528f7c",
+    "source_line": 73,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARContrast.model_copy": {
+    "description": "Original immutable checked model_copy method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARContrast.model_copy",
+    "owner": "openecon.BayesianVARContrast",
+    "parameters": [
+      {
+        "default": "None",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "update"
+      },
+      {
+        "choices": [
+          true,
+          false
+        ],
+        "default": "False",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "deep"
+      }
+    ],
+    "returns": "BayesianVARContrast",
+    "signature": "openecon.BayesianVARContrast.model_copy(*, update=None, deep=False)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "269efce22f877893503e50d2d5fd932382b8a3c0e99a4b362c3c230dd466da9e",
+    "source_line": 84,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARContrast.model_dump": {
+    "description": "Original immutable checked model_dump method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARContrast.model_dump",
+    "owner": "openecon.BayesianVARContrast",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "dict (complete original fields)",
+    "signature": "openecon.BayesianVARContrast.model_dump(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "6be0b90d0ee843cbb7652c7c6529afe901bc6ef7be146e1c64ef28399456e9f9",
+    "source_line": 76,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARContrast.model_dump_json": {
+    "description": "Original immutable checked model_dump_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARContrast.model_dump_json",
+    "owner": "openecon.BayesianVARContrast",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "str",
+    "signature": "openecon.BayesianVARContrast.model_dump_json(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b305320be8f4eb7127a1be66b5fbe856120a7ae618f7ba103ef850234bceec4d",
+    "source_line": 80,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARContrast.model_validate": {
+    "description": "Original immutable checked model_validate method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARContrast.model_validate",
+    "owner": "openecon.BayesianVARContrast",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "obj"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "BayesianVARContrast",
+    "signature": "openecon.BayesianVARContrast.model_validate(obj, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "8024bb5acb7a07bbb4fb0b1a949806f6874035f00fec08a86d132ca2429eadcf",
+    "source_line": 57,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARContrast.model_validate_json": {
+    "description": "Original immutable checked model_validate_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARContrast.model_validate_json",
+    "owner": "openecon.BayesianVARContrast",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "json_data"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "BayesianVARContrast",
+    "signature": "openecon.BayesianVARContrast.model_validate_json(json_data, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "7a9313f538fd3f9508ff0c54faa3d8d271086171c5b324454f680cba6685fcb1",
+    "source_line": 70,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARDraws": {
+    "description": "Every cached Bartlett/standard-normal primitive and joint B/Sigma draw, including unstable draws and full stability diagnostics; cold replay performs algebra, no RNG regeneration.",
+    "kind": "class",
+    "name": "openecon.BayesianVARDraws",
+    "parameters": [
+      {
+        "default": "'openecon.bayesian_var_joint_draws.v1'",
+        "description": "Complete original schema_version field of BayesianVARDraws; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "schema_version",
+        "type": "str"
+      },
+      {
+        "description": "Complete original parent field of BayesianVARDraws; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "parent",
+        "type": "BayesianVARPosterior"
+      },
+      {
+        "description": "Complete original seed field of BayesianVARDraws; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "seed",
+        "type": "int"
+      },
+      {
+        "description": "Complete original draws field of BayesianVARDraws; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "draws",
+        "type": "int"
+      },
+      {
+        "default": "'native_cpu_float64_gamma_bartlett_mniw_v1'",
+        "description": "Complete original algorithm field of BayesianVARDraws; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "algorithm",
+        "type": "str"
+      },
+      {
+        "description": "Complete original torch_version field of BayesianVARDraws; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "torch_version",
+        "type": "str"
+      },
+      {
+        "description": "All original native Bartlett primitive factors, one complete factor per draw.",
+        "kind": "keyword-only",
+        "name": "bartlett",
+        "type": "tuple[Matrix, ...]"
+      },
+      {
+        "description": "All original standard normal coefficient primitives, one complete matrix per draw.",
+        "kind": "keyword-only",
+        "name": "standard_normals",
+        "type": "tuple[Matrix, ...]"
+      },
+      {
+        "description": "Complete original coefficients field of BayesianVARDraws; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "coefficients",
+        "type": "tuple[Matrix, ...]"
+      },
+      {
+        "description": "Complete original innovations field of BayesianVARDraws; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "innovations",
+        "type": "tuple[Matrix, ...]"
+      },
+      {
+        "description": "Complete original spectral_radii field of BayesianVARDraws; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "spectral_radii",
+        "type": "Vector"
+      },
+      {
+        "description": "Complete per-draw stability flags; unstable draws are retained without truncation.",
+        "kind": "keyword-only",
+        "name": "stable",
+        "type": "tuple[bool, ...]"
+      },
+      {
+        "description": "Digest of every other original complete-state field; algebraic replay also rejects resealed contradictory scientific arrays.",
+        "kind": "keyword-only",
+        "name": "integrity_sha256",
+        "type": "str"
+      }
+    ],
+    "returns": "BayesianVARDraws",
+    "signature": "openecon.BayesianVARDraws(*, schema_version='openecon.bayesian_var_joint_draws.v1', parent, seed, draws, algorithm='native_cpu_float64_gamma_bartlett_mniw_v1', torch_version, bartlett, standard_normals, coefficients, innovations, spectral_radii, stable, integrity_sha256)",
+    "source": "src/openecon/econometrics/bayesian_var/draws.py",
+    "source_definition_ast_sha256": "4defeb08d2862b588303aa53cc9a93faa00d9f06289bb3e9af9707a1d1582ca2",
+    "source_line": 103,
+    "source_sha256": "822fdeb16ef56db78143a503b901938f3f1cd41604f4dcb9df5f8c64b6abc1ee"
+  },
+  "openecon.BayesianVARDraws.checked": {
+    "description": "Original immutable checked checked method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARDraws.checked",
+    "owner": "openecon.BayesianVARDraws",
+    "parameters": [],
+    "returns": "BayesianVARDraws",
+    "signature": "openecon.BayesianVARDraws.checked()",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b836a5f3971a36b30b8815ad8d242132692920ba8d9a3e358f0e005c32528f7c",
+    "source_line": 73,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARDraws.model_copy": {
+    "description": "Original immutable checked model_copy method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARDraws.model_copy",
+    "owner": "openecon.BayesianVARDraws",
+    "parameters": [
+      {
+        "default": "None",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "update"
+      },
+      {
+        "choices": [
+          true,
+          false
+        ],
+        "default": "False",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "deep"
+      }
+    ],
+    "returns": "BayesianVARDraws",
+    "signature": "openecon.BayesianVARDraws.model_copy(*, update=None, deep=False)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "269efce22f877893503e50d2d5fd932382b8a3c0e99a4b362c3c230dd466da9e",
+    "source_line": 84,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARDraws.model_dump": {
+    "description": "Original immutable checked model_dump method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARDraws.model_dump",
+    "owner": "openecon.BayesianVARDraws",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "dict (complete original fields)",
+    "signature": "openecon.BayesianVARDraws.model_dump(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "6be0b90d0ee843cbb7652c7c6529afe901bc6ef7be146e1c64ef28399456e9f9",
+    "source_line": 76,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARDraws.model_dump_json": {
+    "description": "Original immutable checked model_dump_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARDraws.model_dump_json",
+    "owner": "openecon.BayesianVARDraws",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "str",
+    "signature": "openecon.BayesianVARDraws.model_dump_json(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b305320be8f4eb7127a1be66b5fbe856120a7ae618f7ba103ef850234bceec4d",
+    "source_line": 80,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARDraws.model_validate": {
+    "description": "Original immutable checked model_validate method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARDraws.model_validate",
+    "owner": "openecon.BayesianVARDraws",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "obj"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "BayesianVARDraws",
+    "signature": "openecon.BayesianVARDraws.model_validate(obj, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "8024bb5acb7a07bbb4fb0b1a949806f6874035f00fec08a86d132ca2429eadcf",
+    "source_line": 57,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARDraws.model_validate_json": {
+    "description": "Original immutable checked model_validate_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARDraws.model_validate_json",
+    "owner": "openecon.BayesianVARDraws",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "json_data"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "BayesianVARDraws",
+    "signature": "openecon.BayesianVARDraws.model_validate_json(json_data, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "7a9313f538fd3f9508ff0c54faa3d8d271086171c5b324454f680cba6685fcb1",
+    "source_line": 70,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARForecast": {
+    "description": "Full conditional-mean and outcome paths, cached innovations, future periods and complete cross-horizon/cross-series Monte Carlo summaries.",
+    "kind": "class",
+    "name": "openecon.BayesianVARForecast",
+    "parameters": [
+      {
+        "default": "'openecon.bayesian_var_forecast.v1'",
+        "description": "Complete original schema_version field of BayesianVARForecast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "schema_version",
+        "type": "str"
+      },
+      {
+        "description": "Complete original joint_draws field of BayesianVARForecast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "joint_draws",
+        "type": "BayesianVARDraws"
+      },
+      {
+        "description": "Complete original horizon field of BayesianVARForecast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "horizon",
+        "type": "int"
+      },
+      {
+        "description": "Complete original alpha field of BayesianVARForecast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "alpha",
+        "type": "float"
+      },
+      {
+        "description": "Complete original innovation_seed field of BayesianVARForecast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "innovation_seed",
+        "type": "int"
+      },
+      {
+        "description": "Complete original innovation_torch_version field of BayesianVARForecast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "innovation_torch_version",
+        "type": "str"
+      },
+      {
+        "default": "'native_cpu_float64_standard_normal_v1'",
+        "description": "Complete original innovation_algorithm field of BayesianVARForecast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "innovation_algorithm",
+        "type": "str"
+      },
+      {
+        "description": "Complete original future_periods field of BayesianVARForecast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "future_periods",
+        "type": "tuple[int, ...]"
+      },
+      {
+        "description": "All cached future standard-normal innovations for algebraic cold forecast replay.",
+        "kind": "keyword-only",
+        "name": "standard_innovations",
+        "type": "tuple[Matrix, ...]"
+      },
+      {
+        "description": "Complete original conditional_mean_paths field of BayesianVARForecast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "conditional_mean_paths",
+        "type": "tuple[Matrix, ...]"
+      },
+      {
+        "description": "Complete original outcome_paths field of BayesianVARForecast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "outcome_paths",
+        "type": "tuple[Matrix, ...]"
+      },
+      {
+        "description": "Complete original conditional_mean_summary field of BayesianVARForecast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "conditional_mean_summary",
+        "type": "MonteCarloSummary"
+      },
+      {
+        "description": "Complete original outcome_summary field of BayesianVARForecast; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "outcome_summary",
+        "type": "MonteCarloSummary"
+      },
+      {
+        "description": "Digest of every other original complete-state field; algebraic replay also rejects resealed contradictory scientific arrays.",
+        "kind": "keyword-only",
+        "name": "integrity_sha256",
+        "type": "str"
+      }
+    ],
+    "returns": "BayesianVARForecast",
+    "signature": "openecon.BayesianVARForecast(*, schema_version='openecon.bayesian_var_forecast.v1', joint_draws, horizon, alpha, innovation_seed, innovation_torch_version, innovation_algorithm='native_cpu_float64_standard_normal_v1', future_periods, standard_innovations, conditional_mean_paths, outcome_paths, conditional_mean_summary, outcome_summary, integrity_sha256)",
+    "source": "src/openecon/econometrics/bayesian_var/forecast.py",
+    "source_definition_ast_sha256": "5bf41b6c843c8cd49a837a975aa00cb07d221c9b1de404bfb34a3644bf31cc78",
+    "source_line": 79,
+    "source_sha256": "eababfc1ec78039084fe7f4c02acc53ad337d79c93220fca392a9d4a6e15df11"
+  },
+  "openecon.BayesianVARForecast.checked": {
+    "description": "Original immutable checked checked method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARForecast.checked",
+    "owner": "openecon.BayesianVARForecast",
+    "parameters": [],
+    "returns": "BayesianVARForecast",
+    "signature": "openecon.BayesianVARForecast.checked()",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b836a5f3971a36b30b8815ad8d242132692920ba8d9a3e358f0e005c32528f7c",
+    "source_line": 73,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARForecast.model_copy": {
+    "description": "Original immutable checked model_copy method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARForecast.model_copy",
+    "owner": "openecon.BayesianVARForecast",
+    "parameters": [
+      {
+        "default": "None",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "update"
+      },
+      {
+        "choices": [
+          true,
+          false
+        ],
+        "default": "False",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "deep"
+      }
+    ],
+    "returns": "BayesianVARForecast",
+    "signature": "openecon.BayesianVARForecast.model_copy(*, update=None, deep=False)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "269efce22f877893503e50d2d5fd932382b8a3c0e99a4b362c3c230dd466da9e",
+    "source_line": 84,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARForecast.model_dump": {
+    "description": "Original immutable checked model_dump method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARForecast.model_dump",
+    "owner": "openecon.BayesianVARForecast",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "dict (complete original fields)",
+    "signature": "openecon.BayesianVARForecast.model_dump(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "6be0b90d0ee843cbb7652c7c6529afe901bc6ef7be146e1c64ef28399456e9f9",
+    "source_line": 76,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARForecast.model_dump_json": {
+    "description": "Original immutable checked model_dump_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARForecast.model_dump_json",
+    "owner": "openecon.BayesianVARForecast",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "str",
+    "signature": "openecon.BayesianVARForecast.model_dump_json(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b305320be8f4eb7127a1be66b5fbe856120a7ae618f7ba103ef850234bceec4d",
+    "source_line": 80,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARForecast.model_validate": {
+    "description": "Original immutable checked model_validate method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARForecast.model_validate",
+    "owner": "openecon.BayesianVARForecast",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "obj"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "BayesianVARForecast",
+    "signature": "openecon.BayesianVARForecast.model_validate(obj, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "8024bb5acb7a07bbb4fb0b1a949806f6874035f00fec08a86d132ca2429eadcf",
+    "source_line": 57,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARForecast.model_validate_json": {
+    "description": "Original immutable checked model_validate_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARForecast.model_validate_json",
+    "owner": "openecon.BayesianVARForecast",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "json_data"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "BayesianVARForecast",
+    "signature": "openecon.BayesianVARForecast.model_validate_json(json_data, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "7a9313f538fd3f9508ff0c54faa3d8d271086171c5b324454f680cba6685fcb1",
+    "source_line": 70,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARImpulse": {
+    "description": "Every declared-order simple/orthogonalized response from lag zero to horizon, joint draw parent, and complete moment/MC error labels.",
+    "kind": "class",
+    "name": "openecon.BayesianVARImpulse",
+    "parameters": [
+      {
+        "default": "'openecon.bayesian_var_impulse.v1'",
+        "description": "Complete original schema_version field of BayesianVARImpulse; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "schema_version",
+        "type": "str"
+      },
+      {
+        "description": "Complete original joint_draws field of BayesianVARImpulse; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "joint_draws",
+        "type": "BayesianVARDraws"
+      },
+      {
+        "description": "Complete original horizon field of BayesianVARImpulse; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "horizon",
+        "type": "int"
+      },
+      {
+        "description": "Complete original orthogonalized field of BayesianVARImpulse; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "orthogonalized",
+        "type": "bool"
+      },
+      {
+        "description": "Complete original alpha field of BayesianVARImpulse; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "alpha",
+        "type": "float"
+      },
+      {
+        "description": "Complete original series_order field of BayesianVARImpulse; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "series_order",
+        "type": "tuple[str, ...]"
+      },
+      {
+        "description": "Complete original responses field of BayesianVARImpulse; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "responses",
+        "type": "tuple[tuple[Matrix, ...], ...]"
+      },
+      {
+        "description": "Complete original summary field of BayesianVARImpulse; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "summary",
+        "type": "MonteCarloSummary"
+      },
+      {
+        "description": "Digest of every other original complete-state field; algebraic replay also rejects resealed contradictory scientific arrays.",
+        "kind": "keyword-only",
+        "name": "integrity_sha256",
+        "type": "str"
+      }
+    ],
+    "returns": "BayesianVARImpulse",
+    "signature": "openecon.BayesianVARImpulse(*, schema_version='openecon.bayesian_var_impulse.v1', joint_draws, horizon, orthogonalized, alpha, series_order, responses, summary, integrity_sha256)",
+    "source": "src/openecon/econometrics/bayesian_var/impulse.py",
+    "source_definition_ast_sha256": "fb6cda54aa53ab7f792af09d6cd33dfbf3397521cd15b21f5a882e38c755a03e",
+    "source_line": 44,
+    "source_sha256": "7d2fd3d95aec0fab2e5d867191718b178e521ece3b64471bd2de7910408a21be"
+  },
+  "openecon.BayesianVARImpulse.checked": {
+    "description": "Original immutable checked checked method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARImpulse.checked",
+    "owner": "openecon.BayesianVARImpulse",
+    "parameters": [],
+    "returns": "BayesianVARImpulse",
+    "signature": "openecon.BayesianVARImpulse.checked()",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b836a5f3971a36b30b8815ad8d242132692920ba8d9a3e358f0e005c32528f7c",
+    "source_line": 73,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARImpulse.model_copy": {
+    "description": "Original immutable checked model_copy method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARImpulse.model_copy",
+    "owner": "openecon.BayesianVARImpulse",
+    "parameters": [
+      {
+        "default": "None",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "update"
+      },
+      {
+        "choices": [
+          true,
+          false
+        ],
+        "default": "False",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "deep"
+      }
+    ],
+    "returns": "BayesianVARImpulse",
+    "signature": "openecon.BayesianVARImpulse.model_copy(*, update=None, deep=False)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "269efce22f877893503e50d2d5fd932382b8a3c0e99a4b362c3c230dd466da9e",
+    "source_line": 84,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARImpulse.model_dump": {
+    "description": "Original immutable checked model_dump method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARImpulse.model_dump",
+    "owner": "openecon.BayesianVARImpulse",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "dict (complete original fields)",
+    "signature": "openecon.BayesianVARImpulse.model_dump(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "6be0b90d0ee843cbb7652c7c6529afe901bc6ef7be146e1c64ef28399456e9f9",
+    "source_line": 76,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARImpulse.model_dump_json": {
+    "description": "Original immutable checked model_dump_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARImpulse.model_dump_json",
+    "owner": "openecon.BayesianVARImpulse",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "str",
+    "signature": "openecon.BayesianVARImpulse.model_dump_json(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b305320be8f4eb7127a1be66b5fbe856120a7ae618f7ba103ef850234bceec4d",
+    "source_line": 80,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARImpulse.model_validate": {
+    "description": "Original immutable checked model_validate method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARImpulse.model_validate",
+    "owner": "openecon.BayesianVARImpulse",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "obj"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "BayesianVARImpulse",
+    "signature": "openecon.BayesianVARImpulse.model_validate(obj, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "8024bb5acb7a07bbb4fb0b1a949806f6874035f00fec08a86d132ca2429eadcf",
+    "source_line": 57,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARImpulse.model_validate_json": {
+    "description": "Original immutable checked model_validate_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARImpulse.model_validate_json",
+    "owner": "openecon.BayesianVARImpulse",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "json_data"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "BayesianVARImpulse",
+    "signature": "openecon.BayesianVARImpulse.model_validate_json(json_data, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "7a9313f538fd3f9508ff0c54faa3d8d271086171c5b324454f680cba6685fcb1",
+    "source_line": 70,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARPosterior": {
+    "description": "Complete immutable conditional proper MNIW posterior, strict full-source/prior/algebra/digest replay, full coefficient/Sigma cross-covariance.",
+    "kind": "class",
+    "name": "openecon.BayesianVARPosterior",
+    "parameters": [
+      {
+        "choices": [
+          "openecon.bayesian_var_posterior.v1"
+        ],
+        "default": "'openecon.bayesian_var_posterior.v1'",
+        "description": "Complete original schema_version field of BayesianVARPosterior; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "schema_version",
+        "type": "Literal['openecon.bayesian_var_posterior.v1']"
+      },
+      {
+        "choices": [
+          "proper_mniw_conditional"
+        ],
+        "default": "'proper_mniw_conditional'",
+        "description": "Complete original method field of BayesianVARPosterior; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "method",
+        "type": "Literal['proper_mniw_conditional']"
+      },
+      {
+        "description": "Complete original source field of BayesianVARPosterior; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "source",
+        "type": "BayesianVARSource"
+      },
+      {
+        "description": "Complete original prior field of BayesianVARPosterior; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "prior",
+        "type": "MatrixNormalInverseWishartPrior"
+      },
+      {
+        "description": "Complete original lags field of BayesianVARPosterior; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "lags",
+        "type": "int"
+      },
+      {
+        "description": "Complete original intercept field of BayesianVARPosterior; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "intercept",
+        "type": "bool"
+      },
+      {
+        "description": "Complete original terms field of BayesianVARPosterior; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "terms",
+        "type": "tuple[str, ...]"
+      },
+      {
+        "description": "Complete original alpha field of BayesianVARPosterior; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "alpha",
+        "type": "float"
+      },
+      {
+        "description": "Complete original nobs_original field of BayesianVARPosterior; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "nobs_original",
+        "type": "int"
+      },
+      {
+        "description": "Complete original nobs field of BayesianVARPosterior; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "nobs",
+        "type": "int"
+      },
+      {
+        "description": "Complete original algebra field of BayesianVARPosterior; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "algebra",
+        "type": "PosteriorAlgebra"
+      },
+      {
+        "default": "DEFAULT_MAX_WORK",
+        "description": "Complete original max_work field of BayesianVARPosterior; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "max_work",
+        "type": "int"
+      },
+      {
+        "default": "DEFAULT_MAX_BYTES",
+        "description": "Complete original max_bytes field of BayesianVARPosterior; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "max_bytes",
+        "type": "int"
+      },
+      {
+        "description": "Digest of every other original complete-state field; algebraic replay also rejects resealed contradictory scientific arrays.",
+        "kind": "keyword-only",
+        "name": "integrity_sha256",
+        "type": "str"
+      }
+    ],
+    "returns": "BayesianVARPosterior",
+    "signature": "openecon.BayesianVARPosterior(*, schema_version='openecon.bayesian_var_posterior.v1', method='proper_mniw_conditional', source, prior, lags, intercept, terms, alpha, nobs_original, nobs, algebra, max_work=DEFAULT_MAX_WORK, max_bytes=DEFAULT_MAX_BYTES, integrity_sha256)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "f7b1198e3c361176f8a991be327b428a62aeabbe455c93e3e690c72d5e37f495",
+    "source_line": 194,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARPosterior.checked": {
+    "description": "Original immutable checked checked method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARPosterior.checked",
+    "owner": "openecon.BayesianVARPosterior",
+    "parameters": [],
+    "returns": "BayesianVARPosterior",
+    "signature": "openecon.BayesianVARPosterior.checked()",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b836a5f3971a36b30b8815ad8d242132692920ba8d9a3e358f0e005c32528f7c",
+    "source_line": 73,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARPosterior.model_copy": {
+    "description": "Original immutable checked model_copy method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARPosterior.model_copy",
+    "owner": "openecon.BayesianVARPosterior",
+    "parameters": [
+      {
+        "default": "None",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "update"
+      },
+      {
+        "choices": [
+          true,
+          false
+        ],
+        "default": "False",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "deep"
+      }
+    ],
+    "returns": "BayesianVARPosterior",
+    "signature": "openecon.BayesianVARPosterior.model_copy(*, update=None, deep=False)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "269efce22f877893503e50d2d5fd932382b8a3c0e99a4b362c3c230dd466da9e",
+    "source_line": 84,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARPosterior.model_dump": {
+    "description": "Original immutable checked model_dump method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARPosterior.model_dump",
+    "owner": "openecon.BayesianVARPosterior",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "dict (complete original fields)",
+    "signature": "openecon.BayesianVARPosterior.model_dump(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "6be0b90d0ee843cbb7652c7c6529afe901bc6ef7be146e1c64ef28399456e9f9",
+    "source_line": 76,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARPosterior.model_dump_json": {
+    "description": "Original immutable checked model_dump_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARPosterior.model_dump_json",
+    "owner": "openecon.BayesianVARPosterior",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "str",
+    "signature": "openecon.BayesianVARPosterior.model_dump_json(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b305320be8f4eb7127a1be66b5fbe856120a7ae618f7ba103ef850234bceec4d",
+    "source_line": 80,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARPosterior.model_validate": {
+    "description": "Original immutable checked model_validate method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARPosterior.model_validate",
+    "owner": "openecon.BayesianVARPosterior",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "obj"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "BayesianVARPosterior",
+    "signature": "openecon.BayesianVARPosterior.model_validate(obj, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "8024bb5acb7a07bbb4fb0b1a949806f6874035f00fec08a86d132ca2429eadcf",
+    "source_line": 57,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARPosterior.model_validate_json": {
+    "description": "Original immutable checked model_validate_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARPosterior.model_validate_json",
+    "owner": "openecon.BayesianVARPosterior",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "json_data"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "BayesianVARPosterior",
+    "signature": "openecon.BayesianVARPosterior.model_validate_json(json_data, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "7a9313f538fd3f9508ff0c54faa3d8d271086171c5b324454f680cba6685fcb1",
+    "source_line": 70,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARPosterior.summary": {
+    "description": "Original immutable checked summary method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARPosterior.summary",
+    "owner": "openecon.BayesianVARPosterior",
+    "parameters": [],
+    "returns": "dict (complete original fields)",
+    "signature": "openecon.BayesianVARPosterior.summary()",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "017fef03ddc1dce2b1c49a501ee7c6e068241c3f35e9cffc0cd751c05f04b552",
+    "source_line": 274,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARPrediction": {
+    "description": "Complete fixed-design matrix-t prediction, full cross-query/cross-series covariance and exact one-step vector-t scales distinct from covariance.",
+    "kind": "class",
+    "name": "openecon.BayesianVARPrediction",
+    "parameters": [
+      {
+        "default": "'openecon.bayesian_var_fixed_prediction.v1'",
+        "description": "Complete original schema_version field of BayesianVARPrediction; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "schema_version",
+        "type": "str"
+      },
+      {
+        "description": "Complete original parent field of BayesianVARPrediction; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "parent",
+        "type": "BayesianVARPosterior"
+      },
+      {
+        "description": "Complete original design field of BayesianVARPrediction; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "design",
+        "type": "Matrix"
+      },
+      {
+        "description": "Complete original terms field of BayesianVARPrediction; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "terms",
+        "type": "tuple[str, ...]"
+      },
+      {
+        "description": "Complete original location field of BayesianVARPrediction; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "location",
+        "type": "Matrix"
+      },
+      {
+        "description": "Complete row covariance scale, with original exact symmetry/SPD and replay requirements.",
+        "kind": "keyword-only",
+        "name": "row_scale",
+        "type": "Matrix"
+      },
+      {
+        "description": "Complete inverse-Wishart innovation scale; exact predictive scale is distinguished from covariance.",
+        "kind": "keyword-only",
+        "name": "innovation_scale",
+        "type": "Matrix"
+      },
+      {
+        "description": "Original inverse-Wishart, matrix-t or Student-t df for this explicitly typed law.",
+        "kind": "keyword-only",
+        "name": "degrees_of_freedom",
+        "type": "StrictFloat"
+      },
+      {
+        "description": "Complete original scalar_degrees_of_freedom field of BayesianVARPrediction; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "scalar_degrees_of_freedom",
+        "type": "StrictFloat"
+      },
+      {
+        "description": "Complete original row_predictive_scale field of BayesianVARPrediction; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "row_predictive_scale",
+        "type": "tuple[Matrix, ...]"
+      },
+      {
+        "description": "Full matrix-normal prior location or declared available exact/MC mean; meaning is specific to the owning typed class.",
+        "kind": "keyword-only",
+        "name": "mean",
+        "type": "Matrix | None"
+      },
+      {
+        "description": "Whole cross-query/cross-series covariance in original flattening order; None when unavailable.",
+        "kind": "keyword-only",
+        "name": "full_covariance",
+        "type": "Matrix | None"
+      },
+      {
+        "description": "Digest of every other original complete-state field; algebraic replay also rejects resealed contradictory scientific arrays.",
+        "kind": "keyword-only",
+        "name": "integrity_sha256",
+        "type": "str"
+      }
+    ],
+    "returns": "BayesianVARPrediction",
+    "signature": "openecon.BayesianVARPrediction(*, schema_version='openecon.bayesian_var_fixed_prediction.v1', parent, design, terms, location, row_scale, innovation_scale, degrees_of_freedom, scalar_degrees_of_freedom, row_predictive_scale, mean, full_covariance, integrity_sha256)",
+    "source": "src/openecon/econometrics/bayesian_var/api.py",
+    "source_definition_ast_sha256": "2bcc4616de409c7089f5d63a31c90ddb03edf0a720208735cc72566de013a1af",
+    "source_line": 117,
+    "source_sha256": "f19f027e3fa1161244c98805d6e27e3b51d4dd4285dfccfa1ff4a99ea2835c28"
+  },
+  "openecon.BayesianVARPrediction.checked": {
+    "description": "Original immutable checked checked method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARPrediction.checked",
+    "owner": "openecon.BayesianVARPrediction",
+    "parameters": [],
+    "returns": "BayesianVARPrediction",
+    "signature": "openecon.BayesianVARPrediction.checked()",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b836a5f3971a36b30b8815ad8d242132692920ba8d9a3e358f0e005c32528f7c",
+    "source_line": 73,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARPrediction.model_copy": {
+    "description": "Original immutable checked model_copy method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARPrediction.model_copy",
+    "owner": "openecon.BayesianVARPrediction",
+    "parameters": [
+      {
+        "default": "None",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "update"
+      },
+      {
+        "choices": [
+          true,
+          false
+        ],
+        "default": "False",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "deep"
+      }
+    ],
+    "returns": "BayesianVARPrediction",
+    "signature": "openecon.BayesianVARPrediction.model_copy(*, update=None, deep=False)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "269efce22f877893503e50d2d5fd932382b8a3c0e99a4b362c3c230dd466da9e",
+    "source_line": 84,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARPrediction.model_dump": {
+    "description": "Original immutable checked model_dump method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARPrediction.model_dump",
+    "owner": "openecon.BayesianVARPrediction",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "dict (complete original fields)",
+    "signature": "openecon.BayesianVARPrediction.model_dump(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "6be0b90d0ee843cbb7652c7c6529afe901bc6ef7be146e1c64ef28399456e9f9",
+    "source_line": 76,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARPrediction.model_dump_json": {
+    "description": "Original immutable checked model_dump_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARPrediction.model_dump_json",
+    "owner": "openecon.BayesianVARPrediction",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "str",
+    "signature": "openecon.BayesianVARPrediction.model_dump_json(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b305320be8f4eb7127a1be66b5fbe856120a7ae618f7ba103ef850234bceec4d",
+    "source_line": 80,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARPrediction.model_validate": {
+    "description": "Original immutable checked model_validate method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARPrediction.model_validate",
+    "owner": "openecon.BayesianVARPrediction",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "obj"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "BayesianVARPrediction",
+    "signature": "openecon.BayesianVARPrediction.model_validate(obj, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "8024bb5acb7a07bbb4fb0b1a949806f6874035f00fec08a86d132ca2429eadcf",
+    "source_line": 57,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARPrediction.model_validate_json": {
+    "description": "Original immutable checked model_validate_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARPrediction.model_validate_json",
+    "owner": "openecon.BayesianVARPrediction",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "json_data"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "BayesianVARPrediction",
+    "signature": "openecon.BayesianVARPrediction.model_validate_json(json_data, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "7a9313f538fd3f9508ff0c54faa3d8d271086171c5b324454f680cba6685fcb1",
+    "source_line": 70,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARSource": {
+    "description": "Complete original source columns/dtypes/values/index, declared series/time/calendar, row permutation and canonical source digest.",
+    "kind": "class",
+    "name": "openecon.BayesianVARSource",
+    "parameters": [
+      {
+        "description": "Complete original series field of BayesianVARSource; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "series",
+        "type": "tuple[str, ...]"
+      },
+      {
+        "description": "Complete original time field of BayesianVARSource; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "time",
+        "type": "str"
+      },
+      {
+        "choices": [
+          "unit",
+          "daily",
+          "monthly",
+          "quarterly",
+          "annual"
+        ],
+        "description": "Complete original period_unit field of BayesianVARSource; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "period_unit",
+        "type": "Literal['unit', 'daily', 'monthly', 'quarterly', 'annual']"
+      },
+      {
+        "description": "Complete original source_columns field of BayesianVARSource; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "source_columns",
+        "type": "tuple[str, ...]"
+      },
+      {
+        "description": "Complete original source_dtypes field of BayesianVARSource; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "source_dtypes",
+        "type": "tuple[str, ...]"
+      },
+      {
+        "description": "Complete original source_values field of BayesianVARSource; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "source_values",
+        "type": "tuple[tuple[int | float, ...], ...]"
+      },
+      {
+        "description": "Complete original source_index field of BayesianVARSource; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "source_index",
+        "type": "RangeIndexState | PlainIndexState | DatetimeIndexState"
+      },
+      {
+        "description": "Complete original permutation field of BayesianVARSource; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "permutation",
+        "type": "tuple[int, ...]"
+      },
+      {
+        "description": "Complete original source_sha256 field of BayesianVARSource; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "source_sha256",
+        "type": "str"
+      }
+    ],
+    "returns": "BayesianVARSource",
+    "signature": "openecon.BayesianVARSource(*, series, time, period_unit, source_columns, source_dtypes, source_values, source_index, permutation, source_sha256)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "06a4ab29de56caee07bd3f3a8e435a646335faa35cd817f66b89daa8fd0fcb24",
+    "source_line": 143,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARSource.checked": {
+    "description": "Original immutable checked checked method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARSource.checked",
+    "owner": "openecon.BayesianVARSource",
+    "parameters": [],
+    "returns": "BayesianVARSource",
+    "signature": "openecon.BayesianVARSource.checked()",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b836a5f3971a36b30b8815ad8d242132692920ba8d9a3e358f0e005c32528f7c",
+    "source_line": 73,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARSource.model_copy": {
+    "description": "Original immutable checked model_copy method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARSource.model_copy",
+    "owner": "openecon.BayesianVARSource",
+    "parameters": [
+      {
+        "default": "None",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "update"
+      },
+      {
+        "choices": [
+          true,
+          false
+        ],
+        "default": "False",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "deep"
+      }
+    ],
+    "returns": "BayesianVARSource",
+    "signature": "openecon.BayesianVARSource.model_copy(*, update=None, deep=False)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "269efce22f877893503e50d2d5fd932382b8a3c0e99a4b362c3c230dd466da9e",
+    "source_line": 84,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARSource.model_dump": {
+    "description": "Original immutable checked model_dump method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARSource.model_dump",
+    "owner": "openecon.BayesianVARSource",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "dict (complete original fields)",
+    "signature": "openecon.BayesianVARSource.model_dump(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "6be0b90d0ee843cbb7652c7c6529afe901bc6ef7be146e1c64ef28399456e9f9",
+    "source_line": 76,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARSource.model_dump_json": {
+    "description": "Original immutable checked model_dump_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARSource.model_dump_json",
+    "owner": "openecon.BayesianVARSource",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "str",
+    "signature": "openecon.BayesianVARSource.model_dump_json(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b305320be8f4eb7127a1be66b5fbe856120a7ae618f7ba103ef850234bceec4d",
+    "source_line": 80,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARSource.model_validate": {
+    "description": "Original immutable checked model_validate method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARSource.model_validate",
+    "owner": "openecon.BayesianVARSource",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "obj"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "BayesianVARSource",
+    "signature": "openecon.BayesianVARSource.model_validate(obj, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "8024bb5acb7a07bbb4fb0b1a949806f6874035f00fec08a86d132ca2429eadcf",
+    "source_line": 57,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.BayesianVARSource.model_validate_json": {
+    "description": "Original immutable checked model_validate_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.BayesianVARSource.model_validate_json",
+    "owner": "openecon.BayesianVARSource",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "json_data"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "BayesianVARSource",
+    "signature": "openecon.BayesianVARSource.model_validate_json(json_data, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "7a9313f538fd3f9508ff0c54faa3d8d271086171c5b324454f680cba6685fcb1",
+    "source_line": 70,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.DatetimeIndexState": {
+    "description": "Lossless naive datetime integer values/unit/frequency/name; timezone-aware indexes remain unsupported.",
+    "kind": "class",
+    "name": "openecon.DatetimeIndexState",
+    "parameters": [
+      {
+        "choices": [
+          "datetime"
+        ],
+        "description": "Complete original kind field of DatetimeIndexState; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "kind",
+        "type": "Literal['datetime']"
+      },
+      {
+        "description": "Complete original name field of DatetimeIndexState; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "name",
+        "type": "str | None"
+      },
+      {
+        "choices": [
+          "s",
+          "ms",
+          "us",
+          "ns"
+        ],
+        "description": "Complete original unit field of DatetimeIndexState; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "unit",
+        "type": "Literal['s', 'ms', 'us', 'ns']"
+      },
+      {
+        "description": "Complete original freq field of DatetimeIndexState; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "freq",
+        "type": "str | None"
+      },
+      {
+        "description": "Complete original values field of DatetimeIndexState; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "values",
+        "type": "tuple[int, ...]"
+      }
+    ],
+    "returns": "DatetimeIndexState",
+    "signature": "openecon.DatetimeIndexState(*, kind, name, unit, freq, values)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "5f7fb5eb1cef81b8f49b98bfdc02a39dc4305b10b2fcc96c47067bca156f5203",
+    "source_line": 135,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.DatetimeIndexState.checked": {
+    "description": "Original immutable checked checked method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.DatetimeIndexState.checked",
+    "owner": "openecon.DatetimeIndexState",
+    "parameters": [],
+    "returns": "DatetimeIndexState",
+    "signature": "openecon.DatetimeIndexState.checked()",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b836a5f3971a36b30b8815ad8d242132692920ba8d9a3e358f0e005c32528f7c",
+    "source_line": 73,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.DatetimeIndexState.model_copy": {
+    "description": "Original immutable checked model_copy method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.DatetimeIndexState.model_copy",
+    "owner": "openecon.DatetimeIndexState",
+    "parameters": [
+      {
+        "default": "None",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "update"
+      },
+      {
+        "choices": [
+          true,
+          false
+        ],
+        "default": "False",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "deep"
+      }
+    ],
+    "returns": "DatetimeIndexState",
+    "signature": "openecon.DatetimeIndexState.model_copy(*, update=None, deep=False)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "269efce22f877893503e50d2d5fd932382b8a3c0e99a4b362c3c230dd466da9e",
+    "source_line": 84,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.DatetimeIndexState.model_dump": {
+    "description": "Original immutable checked model_dump method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.DatetimeIndexState.model_dump",
+    "owner": "openecon.DatetimeIndexState",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "dict (complete original fields)",
+    "signature": "openecon.DatetimeIndexState.model_dump(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "6be0b90d0ee843cbb7652c7c6529afe901bc6ef7be146e1c64ef28399456e9f9",
+    "source_line": 76,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.DatetimeIndexState.model_dump_json": {
+    "description": "Original immutable checked model_dump_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.DatetimeIndexState.model_dump_json",
+    "owner": "openecon.DatetimeIndexState",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "str",
+    "signature": "openecon.DatetimeIndexState.model_dump_json(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b305320be8f4eb7127a1be66b5fbe856120a7ae618f7ba103ef850234bceec4d",
+    "source_line": 80,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.DatetimeIndexState.model_validate": {
+    "description": "Original immutable checked model_validate method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.DatetimeIndexState.model_validate",
+    "owner": "openecon.DatetimeIndexState",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "obj"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "DatetimeIndexState",
+    "signature": "openecon.DatetimeIndexState.model_validate(obj, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "8024bb5acb7a07bbb4fb0b1a949806f6874035f00fec08a86d132ca2429eadcf",
+    "source_line": 57,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.DatetimeIndexState.model_validate_json": {
+    "description": "Original immutable checked model_validate_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.DatetimeIndexState.model_validate_json",
+    "owner": "openecon.DatetimeIndexState",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "json_data"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "DatetimeIndexState",
+    "signature": "openecon.DatetimeIndexState.model_validate_json(json_data, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "7a9313f538fd3f9508ff0c54faa3d8d271086171c5b324454f680cba6685fcb1",
+    "source_line": 70,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MatrixNormalInverseWishartPrior": {
+    "description": "Explicit proper Sigma~IW_m(S,nu), B|Sigma~MN_k,m(M,V,Sigma) declaration; constructor validates dimensions/propriety, bayes_var_prior_restore additionally applies original strict native SPD checks.",
+    "kind": "class",
+    "name": "openecon.MatrixNormalInverseWishartPrior",
+    "parameters": [
+      {
+        "description": "Full matrix-normal prior location or declared available exact/MC mean; meaning is specific to the owning typed class.",
+        "kind": "keyword-only",
+        "name": "mean",
+        "type": "Matrix"
+      },
+      {
+        "description": "Complete row covariance scale, with original exact symmetry/SPD and replay requirements.",
+        "kind": "keyword-only",
+        "name": "row_scale",
+        "type": "Matrix"
+      },
+      {
+        "description": "Complete inverse-Wishart innovation scale; exact predictive scale is distinguished from covariance.",
+        "kind": "keyword-only",
+        "name": "innovation_scale",
+        "type": "Matrix"
+      },
+      {
+        "description": "Original inverse-Wishart, matrix-t or Student-t df for this explicitly typed law.",
+        "kind": "keyword-only",
+        "name": "degrees_of_freedom",
+        "type": "StrictFloat"
+      }
+    ],
+    "returns": "MatrixNormalInverseWishartPrior",
+    "signature": "openecon.MatrixNormalInverseWishartPrior(*, mean, row_scale, innovation_scale, degrees_of_freedom)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "3c80bfc8eb51ded8eb6ea510ef05e92c6561dd61b4c66bd3fb5412e5de50eada",
+    "source_line": 93,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MatrixNormalInverseWishartPrior.checked": {
+    "description": "Original immutable checked checked method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MatrixNormalInverseWishartPrior.checked",
+    "owner": "openecon.MatrixNormalInverseWishartPrior",
+    "parameters": [],
+    "returns": "MatrixNormalInverseWishartPrior",
+    "signature": "openecon.MatrixNormalInverseWishartPrior.checked()",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b836a5f3971a36b30b8815ad8d242132692920ba8d9a3e358f0e005c32528f7c",
+    "source_line": 73,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MatrixNormalInverseWishartPrior.model_copy": {
+    "description": "Original immutable checked model_copy method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MatrixNormalInverseWishartPrior.model_copy",
+    "owner": "openecon.MatrixNormalInverseWishartPrior",
+    "parameters": [
+      {
+        "default": "None",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "update"
+      },
+      {
+        "choices": [
+          true,
+          false
+        ],
+        "default": "False",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "deep"
+      }
+    ],
+    "returns": "MatrixNormalInverseWishartPrior",
+    "signature": "openecon.MatrixNormalInverseWishartPrior.model_copy(*, update=None, deep=False)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "269efce22f877893503e50d2d5fd932382b8a3c0e99a4b362c3c230dd466da9e",
+    "source_line": 84,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MatrixNormalInverseWishartPrior.model_dump": {
+    "description": "Original immutable checked model_dump method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MatrixNormalInverseWishartPrior.model_dump",
+    "owner": "openecon.MatrixNormalInverseWishartPrior",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "dict (complete original fields)",
+    "signature": "openecon.MatrixNormalInverseWishartPrior.model_dump(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "6be0b90d0ee843cbb7652c7c6529afe901bc6ef7be146e1c64ef28399456e9f9",
+    "source_line": 76,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MatrixNormalInverseWishartPrior.model_dump_json": {
+    "description": "Original immutable checked model_dump_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MatrixNormalInverseWishartPrior.model_dump_json",
+    "owner": "openecon.MatrixNormalInverseWishartPrior",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "str",
+    "signature": "openecon.MatrixNormalInverseWishartPrior.model_dump_json(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b305320be8f4eb7127a1be66b5fbe856120a7ae618f7ba103ef850234bceec4d",
+    "source_line": 80,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MatrixNormalInverseWishartPrior.model_validate": {
+    "description": "Original immutable checked model_validate method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MatrixNormalInverseWishartPrior.model_validate",
+    "owner": "openecon.MatrixNormalInverseWishartPrior",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "obj"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "MatrixNormalInverseWishartPrior",
+    "signature": "openecon.MatrixNormalInverseWishartPrior.model_validate(obj, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "8024bb5acb7a07bbb4fb0b1a949806f6874035f00fec08a86d132ca2429eadcf",
+    "source_line": 57,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MatrixNormalInverseWishartPrior.model_validate_json": {
+    "description": "Original immutable checked model_validate_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MatrixNormalInverseWishartPrior.model_validate_json",
+    "owner": "openecon.MatrixNormalInverseWishartPrior",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "json_data"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "MatrixNormalInverseWishartPrior",
+    "signature": "openecon.MatrixNormalInverseWishartPrior.model_validate_json(json_data, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "7a9313f538fd3f9508ff0c54faa3d8d271086171c5b324454f680cba6685fcb1",
+    "source_line": 70,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MomentAvailability": {
+    "description": "Original declared mean/second/fourth-moment laws and thresholds; unavailable theoretical quantities are never replaced by empirical moments.",
+    "kind": "class",
+    "name": "openecon.MomentAvailability",
+    "parameters": [
+      {
+        "description": "Full matrix-normal prior location or declared available exact/MC mean; meaning is specific to the owning typed class.",
+        "kind": "keyword-only",
+        "name": "mean",
+        "type": "StrictBool"
+      },
+      {
+        "description": "Complete original second field of MomentAvailability; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "second",
+        "type": "StrictBool"
+      },
+      {
+        "description": "Complete original fourth field of MomentAvailability; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "fourth",
+        "type": "StrictBool"
+      },
+      {
+        "description": "Complete original mean_threshold field of MomentAvailability; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "mean_threshold",
+        "type": "StrictInt | None"
+      },
+      {
+        "description": "Complete original second_threshold field of MomentAvailability; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "second_threshold",
+        "type": "StrictInt | None"
+      },
+      {
+        "description": "Complete original fourth_threshold field of MomentAvailability; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "fourth_threshold",
+        "type": "StrictInt | None"
+      }
+    ],
+    "returns": "MomentAvailability",
+    "signature": "openecon.MomentAvailability(*, mean, second, fourth, mean_threshold, second_threshold, fourth_threshold)",
+    "source": "src/openecon/econometrics/bayesian_var/forecast.py",
+    "source_definition_ast_sha256": "14a859df4dd2b356bcf1d89a79bb217e203a4ee22ebfd0653716723e3c9693bd",
+    "source_line": 15,
+    "source_sha256": "eababfc1ec78039084fe7f4c02acc53ad337d79c93220fca392a9d4a6e15df11"
+  },
+  "openecon.MomentAvailability.checked": {
+    "description": "Original immutable checked checked method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MomentAvailability.checked",
+    "owner": "openecon.MomentAvailability",
+    "parameters": [],
+    "returns": "MomentAvailability",
+    "signature": "openecon.MomentAvailability.checked()",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b836a5f3971a36b30b8815ad8d242132692920ba8d9a3e358f0e005c32528f7c",
+    "source_line": 73,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MomentAvailability.model_copy": {
+    "description": "Original immutable checked model_copy method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MomentAvailability.model_copy",
+    "owner": "openecon.MomentAvailability",
+    "parameters": [
+      {
+        "default": "None",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "update"
+      },
+      {
+        "choices": [
+          true,
+          false
+        ],
+        "default": "False",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "deep"
+      }
+    ],
+    "returns": "MomentAvailability",
+    "signature": "openecon.MomentAvailability.model_copy(*, update=None, deep=False)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "269efce22f877893503e50d2d5fd932382b8a3c0e99a4b362c3c230dd466da9e",
+    "source_line": 84,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MomentAvailability.model_dump": {
+    "description": "Original immutable checked model_dump method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MomentAvailability.model_dump",
+    "owner": "openecon.MomentAvailability",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "dict (complete original fields)",
+    "signature": "openecon.MomentAvailability.model_dump(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "6be0b90d0ee843cbb7652c7c6529afe901bc6ef7be146e1c64ef28399456e9f9",
+    "source_line": 76,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MomentAvailability.model_dump_json": {
+    "description": "Original immutable checked model_dump_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MomentAvailability.model_dump_json",
+    "owner": "openecon.MomentAvailability",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "str",
+    "signature": "openecon.MomentAvailability.model_dump_json(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b305320be8f4eb7127a1be66b5fbe856120a7ae618f7ba103ef850234bceec4d",
+    "source_line": 80,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MomentAvailability.model_validate": {
+    "description": "Original immutable checked model_validate method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MomentAvailability.model_validate",
+    "owner": "openecon.MomentAvailability",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "obj"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "MomentAvailability",
+    "signature": "openecon.MomentAvailability.model_validate(obj, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "8024bb5acb7a07bbb4fb0b1a949806f6874035f00fec08a86d132ca2429eadcf",
+    "source_line": 57,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MomentAvailability.model_validate_json": {
+    "description": "Original immutable checked model_validate_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MomentAvailability.model_validate_json",
+    "owner": "openecon.MomentAvailability",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "json_data"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "MomentAvailability",
+    "signature": "openecon.MomentAvailability.model_validate_json(json_data, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "7a9313f538fd3f9508ff0c54faa3d8d271086171c5b324454f680cba6685fcb1",
+    "source_line": 70,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MonteCarloSummary": {
+    "description": "Full pointwise quantiles, declared available sample means/covariance estimates and MC error arrays with explicit original labels.",
+    "kind": "class",
+    "name": "openecon.MonteCarloSummary",
+    "parameters": [
+      {
+        "description": "Complete original moment_availability field of MonteCarloSummary; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "moment_availability",
+        "type": "MomentAvailability"
+      },
+      {
+        "description": "Complete original sample_mean field of MonteCarloSummary; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "sample_mean",
+        "type": "Vector | None"
+      },
+      {
+        "description": "Original finite-draw pointwise credible quantiles; no simultaneous/exact multivariate coverage claim.",
+        "kind": "keyword-only",
+        "name": "pointwise_quantiles",
+        "type": "Matrix"
+      },
+      {
+        "description": "Complete labelled empirical Monte Carlo covariance, only when its theoretical second-moment law permits it.",
+        "kind": "keyword-only",
+        "name": "covariance_mc_estimate",
+        "type": "Matrix | None"
+      },
+      {
+        "description": "Complete labelled mean Monte Carlo error, only when required second moments exist.",
+        "kind": "keyword-only",
+        "name": "mean_mc_standard_error",
+        "type": "Vector | None"
+      },
+      {
+        "description": "Complete labelled covariance Monte Carlo error, only when required fourth moments exist.",
+        "kind": "keyword-only",
+        "name": "covariance_mc_standard_error",
+        "type": "Matrix | None"
+      },
+      {
+        "description": "Complete original covariance_label field of MonteCarloSummary; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "covariance_label",
+        "type": "str"
+      },
+      {
+        "description": "Complete original mc_error_label field of MonteCarloSummary; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "mc_error_label",
+        "type": "str"
+      },
+      {
+        "description": "Complete original interval_label field of MonteCarloSummary; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "interval_label",
+        "type": "str"
+      }
+    ],
+    "returns": "MonteCarloSummary",
+    "signature": "openecon.MonteCarloSummary(*, moment_availability, sample_mean, pointwise_quantiles, covariance_mc_estimate, mean_mc_standard_error, covariance_mc_standard_error, covariance_label, mc_error_label, interval_label)",
+    "source": "src/openecon/econometrics/bayesian_var/forecast.py",
+    "source_definition_ast_sha256": "459ab30d6f532c5feb9be2415e5a6e85a3fdb12133343ed6ebbf0c4b6b84d47f",
+    "source_line": 24,
+    "source_sha256": "eababfc1ec78039084fe7f4c02acc53ad337d79c93220fca392a9d4a6e15df11"
+  },
+  "openecon.MonteCarloSummary.checked": {
+    "description": "Original immutable checked checked method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MonteCarloSummary.checked",
+    "owner": "openecon.MonteCarloSummary",
+    "parameters": [],
+    "returns": "MonteCarloSummary",
+    "signature": "openecon.MonteCarloSummary.checked()",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b836a5f3971a36b30b8815ad8d242132692920ba8d9a3e358f0e005c32528f7c",
+    "source_line": 73,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MonteCarloSummary.model_copy": {
+    "description": "Original immutable checked model_copy method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MonteCarloSummary.model_copy",
+    "owner": "openecon.MonteCarloSummary",
+    "parameters": [
+      {
+        "default": "None",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "update"
+      },
+      {
+        "choices": [
+          true,
+          false
+        ],
+        "default": "False",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "deep"
+      }
+    ],
+    "returns": "MonteCarloSummary",
+    "signature": "openecon.MonteCarloSummary.model_copy(*, update=None, deep=False)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "269efce22f877893503e50d2d5fd932382b8a3c0e99a4b362c3c230dd466da9e",
+    "source_line": 84,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MonteCarloSummary.model_dump": {
+    "description": "Original immutable checked model_dump method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MonteCarloSummary.model_dump",
+    "owner": "openecon.MonteCarloSummary",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "dict (complete original fields)",
+    "signature": "openecon.MonteCarloSummary.model_dump(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "6be0b90d0ee843cbb7652c7c6529afe901bc6ef7be146e1c64ef28399456e9f9",
+    "source_line": 76,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MonteCarloSummary.model_dump_json": {
+    "description": "Original immutable checked model_dump_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MonteCarloSummary.model_dump_json",
+    "owner": "openecon.MonteCarloSummary",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "str",
+    "signature": "openecon.MonteCarloSummary.model_dump_json(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b305320be8f4eb7127a1be66b5fbe856120a7ae618f7ba103ef850234bceec4d",
+    "source_line": 80,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MonteCarloSummary.model_validate": {
+    "description": "Original immutable checked model_validate method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MonteCarloSummary.model_validate",
+    "owner": "openecon.MonteCarloSummary",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "obj"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "MonteCarloSummary",
+    "signature": "openecon.MonteCarloSummary.model_validate(obj, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "8024bb5acb7a07bbb4fb0b1a949806f6874035f00fec08a86d132ca2429eadcf",
+    "source_line": 57,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.MonteCarloSummary.model_validate_json": {
+    "description": "Original immutable checked model_validate_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.MonteCarloSummary.model_validate_json",
+    "owner": "openecon.MonteCarloSummary",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "json_data"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "MonteCarloSummary",
+    "signature": "openecon.MonteCarloSummary.model_validate_json(json_data, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "7a9313f538fd3f9508ff0c54faa3d8d271086171c5b324454f680cba6685fcb1",
+    "source_line": 70,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.PlainIndexState": {
+    "description": "Lossless bounded plain integer/string index with exact dtype/order/name.",
+    "kind": "class",
+    "name": "openecon.PlainIndexState",
+    "parameters": [
+      {
+        "choices": [
+          "index"
+        ],
+        "description": "Complete original kind field of PlainIndexState; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "kind",
+        "type": "Literal['index']"
+      },
+      {
+        "description": "Complete original name field of PlainIndexState; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "name",
+        "type": "str | None"
+      },
+      {
+        "description": "Complete original dtype field of PlainIndexState; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "dtype",
+        "type": "str"
+      },
+      {
+        "description": "Complete original values field of PlainIndexState; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "values",
+        "type": "tuple[str | int, ...]"
+      }
+    ],
+    "returns": "PlainIndexState",
+    "signature": "openecon.PlainIndexState(*, kind, name, dtype, values)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "ec4ffbd63e3796ac81ae853f931f5bdfac3b4accefb81c772e5be16a9327422d",
+    "source_line": 128,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.PlainIndexState.checked": {
+    "description": "Original immutable checked checked method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.PlainIndexState.checked",
+    "owner": "openecon.PlainIndexState",
+    "parameters": [],
+    "returns": "PlainIndexState",
+    "signature": "openecon.PlainIndexState.checked()",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b836a5f3971a36b30b8815ad8d242132692920ba8d9a3e358f0e005c32528f7c",
+    "source_line": 73,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.PlainIndexState.model_copy": {
+    "description": "Original immutable checked model_copy method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.PlainIndexState.model_copy",
+    "owner": "openecon.PlainIndexState",
+    "parameters": [
+      {
+        "default": "None",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "update"
+      },
+      {
+        "choices": [
+          true,
+          false
+        ],
+        "default": "False",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "deep"
+      }
+    ],
+    "returns": "PlainIndexState",
+    "signature": "openecon.PlainIndexState.model_copy(*, update=None, deep=False)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "269efce22f877893503e50d2d5fd932382b8a3c0e99a4b362c3c230dd466da9e",
+    "source_line": 84,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.PlainIndexState.model_dump": {
+    "description": "Original immutable checked model_dump method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.PlainIndexState.model_dump",
+    "owner": "openecon.PlainIndexState",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "dict (complete original fields)",
+    "signature": "openecon.PlainIndexState.model_dump(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "6be0b90d0ee843cbb7652c7c6529afe901bc6ef7be146e1c64ef28399456e9f9",
+    "source_line": 76,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.PlainIndexState.model_dump_json": {
+    "description": "Original immutable checked model_dump_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.PlainIndexState.model_dump_json",
+    "owner": "openecon.PlainIndexState",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "str",
+    "signature": "openecon.PlainIndexState.model_dump_json(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b305320be8f4eb7127a1be66b5fbe856120a7ae618f7ba103ef850234bceec4d",
+    "source_line": 80,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.PlainIndexState.model_validate": {
+    "description": "Original immutable checked model_validate method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.PlainIndexState.model_validate",
+    "owner": "openecon.PlainIndexState",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "obj"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "PlainIndexState",
+    "signature": "openecon.PlainIndexState.model_validate(obj, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "8024bb5acb7a07bbb4fb0b1a949806f6874035f00fec08a86d132ca2429eadcf",
+    "source_line": 57,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.PlainIndexState.model_validate_json": {
+    "description": "Original immutable checked model_validate_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.PlainIndexState.model_validate_json",
+    "owner": "openecon.PlainIndexState",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "json_data"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "PlainIndexState",
+    "signature": "openecon.PlainIndexState.model_validate_json(json_data, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "7a9313f538fd3f9508ff0c54faa3d8d271086171c5b324454f680cba6685fcb1",
+    "source_line": 70,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.PosteriorAlgebra": {
+    "description": "Full original proper MNIW posterior matrices, matrix-t coefficient law, complete coefficient/Sigma joint moments and exact scalar intervals; unavailable moments remain None.",
+    "kind": "class",
+    "name": "openecon.PosteriorAlgebra",
+    "parameters": [
+      {
+        "description": "Complete original location field of PosteriorAlgebra; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "location",
+        "type": "Matrix"
+      },
+      {
+        "description": "Complete row covariance scale, with original exact symmetry/SPD and replay requirements.",
+        "kind": "keyword-only",
+        "name": "row_scale",
+        "type": "Matrix"
+      },
+      {
+        "description": "Complete original precision field of PosteriorAlgebra; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "precision",
+        "type": "Matrix"
+      },
+      {
+        "description": "Complete inverse-Wishart innovation scale; exact predictive scale is distinguished from covariance.",
+        "kind": "keyword-only",
+        "name": "innovation_scale",
+        "type": "Matrix"
+      },
+      {
+        "description": "Original inverse-Wishart, matrix-t or Student-t df for this explicitly typed law.",
+        "kind": "keyword-only",
+        "name": "degrees_of_freedom",
+        "type": "StrictFloat"
+      },
+      {
+        "description": "Complete original scalar_degrees_of_freedom field of PosteriorAlgebra; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "scalar_degrees_of_freedom",
+        "type": "StrictFloat"
+      },
+      {
+        "description": "Complete original coefficient_mean field of PosteriorAlgebra; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "coefficient_mean",
+        "type": "Matrix | None"
+      },
+      {
+        "description": "Whole joint coefficient covariance, including cross-regressor/cross-series terms; None when the theoretical second moment is unavailable.",
+        "kind": "keyword-only",
+        "name": "coefficient_covariance",
+        "type": "Matrix | None"
+      },
+      {
+        "description": "Complete original innovation_mean field of PosteriorAlgebra; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "innovation_mean",
+        "type": "Matrix | None"
+      },
+      {
+        "description": "Whole vectorized symmetric Sigma covariance including cross terms; None when required inverse-Wishart moments do not exist.",
+        "kind": "keyword-only",
+        "name": "innovation_covariance",
+        "type": "Matrix | None"
+      },
+      {
+        "description": "Complete original joint_mean field of PosteriorAlgebra; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "joint_mean",
+        "type": "Vector | None"
+      },
+      {
+        "description": "Whole joint coefficient/Sigma covariance in original saved coordinate order; no diagonal-only substitute.",
+        "kind": "keyword-only",
+        "name": "joint_covariance",
+        "type": "Matrix | None"
+      },
+      {
+        "description": "Complete original coefficient_intervals field of PosteriorAlgebra; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "coefficient_intervals",
+        "type": "tuple[tuple[tuple[StrictFloat, StrictFloat], ...], ...]"
+      },
+      {
+        "description": "Complete original log_marginal_likelihood field of PosteriorAlgebra; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "log_marginal_likelihood",
+        "type": "StrictFloat"
+      }
+    ],
+    "returns": "PosteriorAlgebra",
+    "signature": "openecon.PosteriorAlgebra(*, location, row_scale, precision, innovation_scale, degrees_of_freedom, scalar_degrees_of_freedom, coefficient_mean, coefficient_covariance, innovation_mean, innovation_covariance, joint_mean, joint_covariance, coefficient_intervals, log_marginal_likelihood)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b08d291e008bd07d6a87497fff661fc86385d593ffc04c75ae3a8e16abf21f30",
+    "source_line": 177,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.PosteriorAlgebra.checked": {
+    "description": "Original immutable checked checked method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.PosteriorAlgebra.checked",
+    "owner": "openecon.PosteriorAlgebra",
+    "parameters": [],
+    "returns": "PosteriorAlgebra",
+    "signature": "openecon.PosteriorAlgebra.checked()",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b836a5f3971a36b30b8815ad8d242132692920ba8d9a3e358f0e005c32528f7c",
+    "source_line": 73,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.PosteriorAlgebra.model_copy": {
+    "description": "Original immutable checked model_copy method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.PosteriorAlgebra.model_copy",
+    "owner": "openecon.PosteriorAlgebra",
+    "parameters": [
+      {
+        "default": "None",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "update"
+      },
+      {
+        "choices": [
+          true,
+          false
+        ],
+        "default": "False",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "deep"
+      }
+    ],
+    "returns": "PosteriorAlgebra",
+    "signature": "openecon.PosteriorAlgebra.model_copy(*, update=None, deep=False)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "269efce22f877893503e50d2d5fd932382b8a3c0e99a4b362c3c230dd466da9e",
+    "source_line": 84,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.PosteriorAlgebra.model_dump": {
+    "description": "Original immutable checked model_dump method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.PosteriorAlgebra.model_dump",
+    "owner": "openecon.PosteriorAlgebra",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "dict (complete original fields)",
+    "signature": "openecon.PosteriorAlgebra.model_dump(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "6be0b90d0ee843cbb7652c7c6529afe901bc6ef7be146e1c64ef28399456e9f9",
+    "source_line": 76,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.PosteriorAlgebra.model_dump_json": {
+    "description": "Original immutable checked model_dump_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.PosteriorAlgebra.model_dump_json",
+    "owner": "openecon.PosteriorAlgebra",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "str",
+    "signature": "openecon.PosteriorAlgebra.model_dump_json(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b305320be8f4eb7127a1be66b5fbe856120a7ae618f7ba103ef850234bceec4d",
+    "source_line": 80,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.PosteriorAlgebra.model_validate": {
+    "description": "Original immutable checked model_validate method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.PosteriorAlgebra.model_validate",
+    "owner": "openecon.PosteriorAlgebra",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "obj"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "PosteriorAlgebra",
+    "signature": "openecon.PosteriorAlgebra.model_validate(obj, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "8024bb5acb7a07bbb4fb0b1a949806f6874035f00fec08a86d132ca2429eadcf",
+    "source_line": 57,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.PosteriorAlgebra.model_validate_json": {
+    "description": "Original immutable checked model_validate_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.PosteriorAlgebra.model_validate_json",
+    "owner": "openecon.PosteriorAlgebra",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "json_data"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "PosteriorAlgebra",
+    "signature": "openecon.PosteriorAlgebra.model_validate_json(json_data, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "7a9313f538fd3f9508ff0c54faa3d8d271086171c5b324454f680cba6685fcb1",
+    "source_line": 70,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.RangeIndexState": {
+    "description": "Lossless original RangeIndex start/stop/step/name declaration.",
+    "kind": "class",
+    "name": "openecon.RangeIndexState",
+    "parameters": [
+      {
+        "choices": [
+          "range"
+        ],
+        "description": "Complete original kind field of RangeIndexState; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "kind",
+        "type": "Literal['range']"
+      },
+      {
+        "description": "Complete original name field of RangeIndexState; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "name",
+        "type": "str | None"
+      },
+      {
+        "description": "Complete original start field of RangeIndexState; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "start",
+        "type": "int"
+      },
+      {
+        "description": "Complete original stop field of RangeIndexState; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "stop",
+        "type": "int"
+      },
+      {
+        "description": "Complete original step field of RangeIndexState; exact type/shape/order and all owning replay requirements apply.",
+        "kind": "keyword-only",
+        "name": "step",
+        "type": "int"
+      }
+    ],
+    "returns": "RangeIndexState",
+    "signature": "openecon.RangeIndexState(*, kind, name, start, stop, step)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "a3cb7382c9f48680a5f064d5fa894f3e58047f91ea9378b43c1c2308eda9f21f",
+    "source_line": 120,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.RangeIndexState.checked": {
+    "description": "Original immutable checked checked method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.RangeIndexState.checked",
+    "owner": "openecon.RangeIndexState",
+    "parameters": [],
+    "returns": "RangeIndexState",
+    "signature": "openecon.RangeIndexState.checked()",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b836a5f3971a36b30b8815ad8d242132692920ba8d9a3e358f0e005c32528f7c",
+    "source_line": 73,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.RangeIndexState.model_copy": {
+    "description": "Original immutable checked model_copy method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.RangeIndexState.model_copy",
+    "owner": "openecon.RangeIndexState",
+    "parameters": [
+      {
+        "default": "None",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "update"
+      },
+      {
+        "choices": [
+          true,
+          false
+        ],
+        "default": "False",
+        "description": "Original validated copy option; no unchecked update bypass.",
+        "kind": "keyword-only",
+        "name": "deep"
+      }
+    ],
+    "returns": "RangeIndexState",
+    "signature": "openecon.RangeIndexState.model_copy(*, update=None, deep=False)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "269efce22f877893503e50d2d5fd932382b8a3c0e99a4b362c3c230dd466da9e",
+    "source_line": 84,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.RangeIndexState.model_dump": {
+    "description": "Original immutable checked model_dump method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.RangeIndexState.model_dump",
+    "owner": "openecon.RangeIndexState",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "dict (complete original fields)",
+    "signature": "openecon.RangeIndexState.model_dump(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "6be0b90d0ee843cbb7652c7c6529afe901bc6ef7be146e1c64ef28399456e9f9",
+    "source_line": 76,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.RangeIndexState.model_dump_json": {
+    "description": "Original immutable checked model_dump_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.RangeIndexState.model_dump_json",
+    "owner": "openecon.RangeIndexState",
+    "parameters": [
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "str",
+    "signature": "openecon.RangeIndexState.model_dump_json(**kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "b305320be8f4eb7127a1be66b5fbe856120a7ae618f7ba103ef850234bceec4d",
+    "source_line": 80,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.RangeIndexState.model_validate": {
+    "description": "Original immutable checked model_validate method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.RangeIndexState.model_validate",
+    "owner": "openecon.RangeIndexState",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "obj"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "RangeIndexState",
+    "signature": "openecon.RangeIndexState.model_validate(obj, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "8024bb5acb7a07bbb4fb0b1a949806f6874035f00fec08a86d132ca2429eadcf",
+    "source_line": 57,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.RangeIndexState.model_validate_json": {
+    "description": "Original immutable checked model_validate_json method. Full typed source/algebra/cached primitive replay applies; fit and RNG are not required. Original serialization kwargs retain their original contract; bounded whole UTF8 output uses bayes_var_state_json.",
+    "kind": "method",
+    "name": "openecon.RangeIndexState.model_validate_json",
+    "owner": "openecon.RangeIndexState",
+    "parameters": [
+      {
+        "description": "Complete original argument; supplied unchanged to the checked typed method.",
+        "kind": "positional-or-keyword",
+        "name": "json_data"
+      },
+      {
+        "description": "Original Pydantic options, passed unchanged; use bayes_var_state_json for the separately bounded complete UTF8 export route.",
+        "kind": "variadic-keyword",
+        "name": "kwargs"
+      }
+    ],
+    "returns": "RangeIndexState",
+    "signature": "openecon.RangeIndexState.model_validate_json(json_data, **kwargs)",
+    "source": "src/openecon/econometrics/bayesian_var/posterior.py",
+    "source_definition_ast_sha256": "7a9313f538fd3f9508ff0c54faa3d8d271086171c5b324454f680cba6685fcb1",
+    "source_line": 70,
+    "source_sha256": "5b67700d65955ca4ed586cb324095cc61e4fe6fdd4bdff1a6f1167a6b21598d2"
+  },
+  "openecon.bayes_var": {
+    "description": "Fit explicit MNIW VAR conditional on its first p observations; no prior defaults.",
+    "kind": "function",
+    "name": "openecon.bayes_var",
+    "parameters": [
+      {
+        "description": "Complete resident finite numeric CPU DataFrame/mapping; original typed row index, source cells and row permutation are saved. No Dataset, streaming or missing values.",
+        "kind": "positional-or-keyword",
+        "name": "data"
+      },
+      {
+        "description": "Declared order of 2..4 distinct series; ordering fixes covariance coordinates and orthogonalized IRFs.",
+        "kind": "positional-or-keyword",
+        "name": "series"
+      },
+      {
+        "description": "Required explicit consecutive integer period column, reconstructed exactly with its original dtype/index.",
+        "kind": "keyword-only",
+        "name": "time"
+      },
+      {
+        "description": "Required proper full matrix-normal/inverse-Wishart declaration: mean, strictly SPD row/innovation scales, and nu>m-1. No empirical/default prior.",
+        "kind": "keyword-only",
+        "name": "prior"
+      },
+      {
+        "default": "1",
+        "description": "Integer 1..4 complete consecutive lags; likelihood conditions on the original first p rows.",
+        "kind": "keyword-only",
+        "name": "lags"
+      },
+      {
+        "choices": [
+          true,
+          false
+        ],
+        "default": "True",
+        "description": "Boolean; changes the exact saved regressor order and prior dimension.",
+        "kind": "keyword-only",
+        "name": "intercept"
+      },
+      {
+        "choices": [
+          "unit",
+          "daily",
+          "monthly",
+          "quarterly",
+          "annual"
+        ],
+        "default": "'unit'",
+        "description": "Declared unit/daily/monthly/quarterly/annual label for consecutive integer periods.",
+        "kind": "keyword-only",
+        "name": "period_unit"
+      },
+      {
+        "default": "0.05",
+        "description": "Finite tail probability strictly between zero and one; exact coefficient/contrast intervals versus labelled finite-draw pointwise quantiles.",
+        "kind": "keyword-only",
+        "name": "alpha"
+      },
+      {
+        "default": "DEFAULT_MAX_WORK",
+        "description": "Inherited positive work budget, original default 100000000. Numerical methods retain original formula; added restore/table/export work is separately admitted within this budget.",
+        "kind": "keyword-only",
+        "name": "max_work"
+      },
+      {
+        "default": "DEFAULT_MAX_BYTES",
+        "description": "Inherited positive buffer budget, original default 134217728, also constrained by task workspace budget; not a process-RSS bound.",
+        "kind": "keyword-only",
+        "name": "max_bytes"
+      },
+      {
+        "choices": [
+          "cpu"
+        ],
+        "default": "'cpu'",
+        "description": "Exactly cpu; original native float64 law and RNG implementation are unchanged.",
+        "kind": "keyword-only",
+        "name": "device"
+      }
+    ],
+    "returns": "BayesianVARPosterior",
+    "signature": "openecon.bayes_var(data, series, *, time, prior, lags=1, intercept=True, period_unit='unit', alpha=0.05, max_work=DEFAULT_MAX_WORK, max_bytes=DEFAULT_MAX_BYTES, device='cpu')",
+    "source": "src/openecon/econometrics/bayesian_var/api.py",
+    "source_definition_ast_sha256": "cef8116ca7c6dc135b054796ab4e461bcd5749e5bccf03f3b55b164638136b64",
+    "source_line": 24,
+    "source_sha256": "f19f027e3fa1161244c98805d6e27e3b51d4dd4285dfccfa1ff4a99ea2835c28"
+  },
+  "openecon.bayes_var_contrast": {
+    "description": "Original complete dedicated BVAR API.",
+    "kind": "function",
+    "name": "openecon.bayes_var_contrast",
+    "parameters": [
+      {
+        "description": "Complete checked BayesianVARPosterior with every original source/prior/algebra field, full joint covariance and digest.",
+        "kind": "positional-or-keyword",
+        "name": "result"
+      },
+      {
+        "description": "Full nonzero k-vector selecting the rank-one coefficient contrast.",
+        "kind": "positional-or-keyword",
+        "name": "left"
+      },
+      {
+        "description": "Full nonzero m-vector selecting the rank-one coefficient contrast.",
+        "kind": "positional-or-keyword",
+        "name": "right"
+      },
+      {
+        "default": "0.0",
+        "description": "Finite threshold for the exact scalar Student-t posterior probability; no p-value is invented.",
+        "kind": "keyword-only",
+        "name": "threshold"
+      },
+      {
+        "default": "0.05",
+        "description": "Finite tail probability strictly between zero and one; exact coefficient/contrast intervals versus labelled finite-draw pointwise quantiles.",
+        "kind": "keyword-only",
+        "name": "alpha"
+      }
+    ],
+    "returns": "BayesianVARContrast",
+    "signature": "openecon.bayes_var_contrast(result, left, right, *, threshold=0.0, alpha=0.05)",
+    "source": "src/openecon/econometrics/bayesian_var/api.py",
+    "source_definition_ast_sha256": "07655185bccabaeb34b86c56aabdd82a34d6ef0b39625eed53a0f7103040bee1",
+    "source_line": 297,
+    "source_sha256": "f19f027e3fa1161244c98805d6e27e3b51d4dd4285dfccfa1ff4a99ea2835c28"
+  },
+  "openecon.bayes_var_contrast_restore": {
+    "description": "Restore full original rank-one contrast vectors and exact Student-t law.",
+    "kind": "function",
+    "name": "openecon.bayes_var_contrast_restore",
+    "parameters": [
+      {
+        "description": "Complete original typed BVAR state or bounded primitive mapping/UTF8 JSON; exact schema selects one of six dedicated classes. No generic ResultBundle conversion.",
+        "kind": "positional-or-keyword",
+        "name": "value"
+      }
+    ],
+    "returns": "BayesianVARContrast",
+    "signature": "openecon.bayes_var_contrast_restore(value)",
+    "source": "src/openecon/econometrics/bayesian_var_public/transport.py",
+    "source_definition_ast_sha256": "2a7cea32675fd4273f5e663fae3116501bf51d5bf5f8c1798f29b4e48fa369dd",
+    "source_line": 88,
+    "source_sha256": "d7c96b4b592d9ea8a53ee46a7a06e3a9e8b94bb148b9d754b03237fb01b07b80"
+  },
+  "openecon.bayes_var_draws": {
+    "description": "Original complete dedicated BVAR API.",
+    "kind": "function",
+    "name": "openecon.bayes_var_draws",
+    "parameters": [
+      {
+        "description": "Complete checked BayesianVARPosterior with every original source/prior/algebra field, full joint covariance and digest.",
+        "kind": "positional-or-keyword",
+        "name": "result"
+      },
+      {
+        "description": "Integer 1..10000 joint posterior draws within full primitive/output/work/workspace budgets; unstable draws remain retained.",
+        "kind": "keyword-only",
+        "name": "draws"
+      },
+      {
+        "description": "Explicit bounded integer for the original local native MNIW generator. Saved replay authenticates cached Bartlett/normal algebra, not a regenerated seed stream.",
+        "kind": "keyword-only",
+        "name": "seed"
+      }
+    ],
+    "returns": "BayesianVARDraws",
+    "signature": "openecon.bayes_var_draws(result, *, draws, seed)",
+    "source": "src/openecon/econometrics/bayesian_var/draws.py",
+    "source_definition_ast_sha256": "e7824dbcc4042ffcab2a42a77ddae5398e00e706e0a81963535705be357090c5",
+    "source_line": 186,
+    "source_sha256": "822fdeb16ef56db78143a503b901938f3f1cd41604f4dcb9df5f8c64b6abc1ee"
+  },
+  "openecon.bayes_var_draws_restore": {
+    "description": "Restore every original joint draw and cached primitive without RNG.",
+    "kind": "function",
+    "name": "openecon.bayes_var_draws_restore",
+    "parameters": [
+      {
+        "description": "Complete original typed BVAR state or bounded primitive mapping/UTF8 JSON; exact schema selects one of six dedicated classes. No generic ResultBundle conversion.",
+        "kind": "positional-or-keyword",
+        "name": "value"
+      }
+    ],
+    "returns": "BayesianVARDraws",
+    "signature": "openecon.bayes_var_draws_restore(value)",
+    "source": "src/openecon/econometrics/bayesian_var_public/transport.py",
+    "source_definition_ast_sha256": "ec0c2705a7b5d27e4f1a3b3d3b73947e8b0fe02e268eb1e399bc0298bfc785e8",
+    "source_line": 93,
+    "source_sha256": "d7c96b4b592d9ea8a53ee46a7a06e3a9e8b94bb148b9d754b03237fb01b07b80"
+  },
+  "openecon.bayes_var_forecast": {
+    "description": "Original complete dedicated BVAR API.",
+    "kind": "function",
+    "name": "openecon.bayes_var_forecast",
+    "parameters": [
+      {
+        "description": "Complete original BayesianVARDraws including every primitive, B/Sigma draw, spectral radius and stability classification.",
+        "kind": "positional-or-keyword",
+        "name": "joint_draws"
+      },
+      {
+        "description": "Integer <=24 within original full output budget; forecast requires >=1, IRF allows lag zero. No asymptotic/stability truncation.",
+        "kind": "keyword-only",
+        "name": "horizon"
+      },
+      {
+        "description": "Explicit bounded integer for original local standard-normal innovation generation; complete cached innovations persist for algebraic cold replay.",
+        "kind": "keyword-only",
+        "name": "innovation_seed"
+      },
+      {
+        "default": "0.05",
+        "description": "Finite tail probability strictly between zero and one; exact coefficient/contrast intervals versus labelled finite-draw pointwise quantiles.",
+        "kind": "keyword-only",
+        "name": "alpha"
+      }
+    ],
+    "returns": "BayesianVARForecast",
+    "signature": "openecon.bayes_var_forecast(joint_draws, *, horizon, innovation_seed, alpha=0.05)",
+    "source": "src/openecon/econometrics/bayesian_var/forecast.py",
+    "source_definition_ast_sha256": "4f7f93a95d83e42904c08f618e5d746c6b342f421bbc5fc6e1481fbe97cffbdb",
+    "source_line": 168,
+    "source_sha256": "eababfc1ec78039084fe7f4c02acc53ad337d79c93220fca392a9d4a6e15df11"
+  },
+  "openecon.bayes_var_forecast_restore": {
+    "description": "Restore both full recursive paths and moment/MC-error availability laws.",
+    "kind": "function",
+    "name": "openecon.bayes_var_forecast_restore",
+    "parameters": [
+      {
+        "description": "Complete original typed BVAR state or bounded primitive mapping/UTF8 JSON; exact schema selects one of six dedicated classes. No generic ResultBundle conversion.",
+        "kind": "positional-or-keyword",
+        "name": "value"
+      }
+    ],
+    "returns": "BayesianVARForecast",
+    "signature": "openecon.bayes_var_forecast_restore(value)",
+    "source": "src/openecon/econometrics/bayesian_var_public/transport.py",
+    "source_definition_ast_sha256": "0c723f4d2f665e2f7aefd45729273f6d9047e531c4c7cd7988841d55f9e5353c",
+    "source_line": 98,
+    "source_sha256": "d7c96b4b592d9ea8a53ee46a7a06e3a9e8b94bb148b9d754b03237fb01b07b80"
+  },
+  "openecon.bayes_var_irf": {
+    "description": "Original complete dedicated BVAR API.",
+    "kind": "function",
+    "name": "openecon.bayes_var_irf",
+    "parameters": [
+      {
+        "description": "Complete original BayesianVARDraws including every primitive, B/Sigma draw, spectral radius and stability classification.",
+        "kind": "positional-or-keyword",
+        "name": "joint_draws"
+      },
+      {
+        "description": "Integer <=24 within original full output budget; forecast requires >=1, IRF allows lag zero. No asymptotic/stability truncation.",
+        "kind": "keyword-only",
+        "name": "horizon"
+      },
+      {
+        "choices": [
+          true,
+          false
+        ],
+        "default": "False",
+        "description": "Boolean; True uses declared series order and original strict Cholesky innovation scale. Simple/orthogonalized moment rules remain distinct.",
+        "kind": "keyword-only",
+        "name": "orthogonalized"
+      },
+      {
+        "default": "0.05",
+        "description": "Finite tail probability strictly between zero and one; exact coefficient/contrast intervals versus labelled finite-draw pointwise quantiles.",
+        "kind": "keyword-only",
+        "name": "alpha"
+      }
+    ],
+    "returns": "BayesianVARImpulse",
+    "signature": "openecon.bayes_var_irf(joint_draws, *, horizon, orthogonalized=False, alpha=0.05)",
+    "source": "src/openecon/econometrics/bayesian_var/impulse.py",
+    "source_definition_ast_sha256": "c521b41ff28c4c436d77c2f6c5f8403301e671151ae4b87f5ab623597c2bdec9",
+    "source_line": 127,
+    "source_sha256": "7d2fd3d95aec0fab2e5d867191718b178e521ece3b64471bd2de7910408a21be"
+  },
+  "openecon.bayes_var_irf_restore": {
+    "description": "Restore full ordered simple/orthogonalized responses and MC labels.",
+    "kind": "function",
+    "name": "openecon.bayes_var_irf_restore",
+    "parameters": [
+      {
+        "description": "Complete original typed BVAR state or bounded primitive mapping/UTF8 JSON; exact schema selects one of six dedicated classes. No generic ResultBundle conversion.",
+        "kind": "positional-or-keyword",
+        "name": "value"
+      }
+    ],
+    "returns": "BayesianVARImpulse",
+    "signature": "openecon.bayes_var_irf_restore(value)",
+    "source": "src/openecon/econometrics/bayesian_var_public/transport.py",
+    "source_definition_ast_sha256": "d116ee2ab59b224c86bfdd4d2a62c1458b478821bec8494ab7303213197caa1e",
+    "source_line": 103,
+    "source_sha256": "d7c96b4b592d9ea8a53ee46a7a06e3a9e8b94bb148b9d754b03237fb01b07b80"
+  },
+  "openecon.bayes_var_predict": {
+    "description": "Declared fixed rows in saved lag-design order; rows share posterior parameters.",
+    "kind": "function",
+    "name": "openecon.bayes_var_predict",
+    "parameters": [
+      {
+        "description": "Complete checked BayesianVARPosterior with every original source/prior/algebra field, full joint covariance and digest.",
+        "kind": "positional-or-keyword",
+        "name": "result"
+      },
+      {
+        "description": "Fixed finite query rows in the exact saved term order; all cross-row/cross-series predictive covariance is retained.",
+        "kind": "positional-or-keyword",
+        "name": "design"
+      },
+      {
+        "description": "Exact ordered saved posterior terms; permuted or incomplete names are rejected.",
+        "kind": "keyword-only",
+        "name": "terms"
+      }
+    ],
+    "returns": "BayesianVARPrediction",
+    "signature": "openecon.bayes_var_predict(result, design, *, terms)",
+    "source": "src/openecon/econometrics/bayesian_var/api.py",
+    "source_definition_ast_sha256": "4196b23c33df0e70aac5de37b303b1741edba0a15eb8ca15e0230c87a6c76b24",
+    "source_line": 177,
+    "source_sha256": "f19f027e3fa1161244c98805d6e27e3b51d4dd4285dfccfa1ff4a99ea2835c28"
+  },
+  "openecon.bayes_var_predict_restore": {
+    "description": "Restore full fixed-design matrix-t state including cross-row covariance.",
+    "kind": "function",
+    "name": "openecon.bayes_var_predict_restore",
+    "parameters": [
+      {
+        "description": "Complete original typed BVAR state or bounded primitive mapping/UTF8 JSON; exact schema selects one of six dedicated classes. No generic ResultBundle conversion.",
+        "kind": "positional-or-keyword",
+        "name": "value"
+      }
+    ],
+    "returns": "BayesianVARPrediction",
+    "signature": "openecon.bayes_var_predict_restore(value)",
+    "source": "src/openecon/econometrics/bayesian_var_public/transport.py",
+    "source_definition_ast_sha256": "824c5c0abca2d824c5a605351ea98f41e92490c9ce02d3bfc3f603a1f632edc0",
+    "source_line": 83,
+    "source_sha256": "d7c96b4b592d9ea8a53ee46a7a06e3a9e8b94bb148b9d754b03237fb01b07b80"
+  },
+  "openecon.bayes_var_prior_restore": {
+    "description": "Validate a complete proper MNIW declaration using original strict SPD law.",
+    "kind": "function",
+    "name": "openecon.bayes_var_prior_restore",
+    "parameters": [
+      {
+        "description": "Complete original typed BVAR state or bounded primitive mapping/UTF8 JSON; exact schema selects one of six dedicated classes. No generic ResultBundle conversion.",
+        "kind": "positional-or-keyword",
+        "name": "value"
+      },
+      {
+        "default": "DEFAULT_MAX_WORK",
+        "description": "Inherited positive work budget, original default 100000000. Numerical methods retain original formula; added restore/table/export work is separately admitted within this budget.",
+        "kind": "keyword-only",
+        "name": "max_work"
+      },
+      {
+        "default": "DEFAULT_MAX_BYTES",
+        "description": "Inherited positive buffer budget, original default 134217728, also constrained by task workspace budget; not a process-RSS bound.",
+        "kind": "keyword-only",
+        "name": "max_bytes"
+      }
+    ],
+    "returns": "MatrixNormalInverseWishartPrior",
+    "signature": "openecon.bayes_var_prior_restore(value, *, max_work=DEFAULT_MAX_WORK, max_bytes=DEFAULT_MAX_BYTES)",
+    "source": "src/openecon/econometrics/bayesian_var_public/transport.py",
+    "source_definition_ast_sha256": "b9b908ad311ab5bef1f5ef2c472a118779198d7de931737fc39526da0f007316",
+    "source_line": 108,
+    "source_sha256": "d7c96b4b592d9ea8a53ee46a7a06e3a9e8b94bb148b9d754b03237fb01b07b80"
+  },
+  "openecon.bayes_var_restore": {
+    "description": "Restore any of the six declared complete typed BVAR states by exact schema.",
+    "kind": "function",
+    "name": "openecon.bayes_var_restore",
+    "parameters": [
+      {
+        "description": "Complete original typed BVAR state or bounded primitive mapping/UTF8 JSON; exact schema selects one of six dedicated classes. No generic ResultBundle conversion.",
+        "kind": "positional-or-keyword",
+        "name": "value"
+      }
+    ],
+    "returns": "BayesianVARPosterior | BayesianVARPrediction | BayesianVARContrast | BayesianVARDraws | BayesianVARForecast | BayesianVARImpulse",
+    "signature": "openecon.bayes_var_restore(value)",
+    "source": "src/openecon/econometrics/bayesian_var_public/transport.py",
+    "source_definition_ast_sha256": "982a0959941f08ab58e554dc702e7fd3c6e2513e6bc38f94fd60b68a4ef5b370",
+    "source_line": 78,
+    "source_sha256": "d7c96b4b592d9ea8a53ee46a7a06e3a9e8b94bb148b9d754b03237fb01b07b80"
+  },
+  "openecon.bayes_var_state_json": {
+    "description": "Export one complete checked BVAR state with bounded indent and UTF8 buffers.",
+    "kind": "function",
+    "name": "openecon.bayes_var_state_json",
+    "parameters": [
+      {
+        "description": "Complete original typed BVAR state or bounded primitive mapping/UTF8 JSON; exact schema selects one of six dedicated classes. No generic ResultBundle conversion.",
+        "kind": "positional-or-keyword",
+        "name": "value"
+      },
+      {
+        "default": "None",
+        "description": "None or integer 0..4; bounded escaped complete JSON/UTF8/encoder copies are admitted before numerical replay or output creation.",
+        "kind": "keyword-only",
+        "name": "indent"
+      }
+    ],
+    "returns": "str (complete bounded exact-schema UTF8 JSON)",
+    "signature": "openecon.bayes_var_state_json(value, *, indent=None)",
+    "source": "src/openecon/econometrics/bayesian_var_public/tables.py",
+    "source_definition_ast_sha256": "6986455f774689ecd344361b35028eb0d0b34d82a136bc5006cebee09ac4f443",
+    "source_line": 168,
+    "source_sha256": "d7562abe4497d5000df9ce7b395f2f0a109f112a38ca14141bf6cadb1995901e"
+  },
+  "openecon.bayes_var_tables": {
+    "description": "Return every numeric field/whole covariance and explicit unavailable scalar.\n\nFull nested source, prior, posterior and cached draw primitives are retained\nboth in tables and complete_state attrs; no preview slice is an export.\nExact matrix-t/Student-t fields and finite-draw MC fields retain their names\nand original availability/interval/MC-error labels. No SE/t/p is invented.",
+    "kind": "function",
+    "name": "openecon.bayes_var_tables",
+    "parameters": [
+      {
+        "description": "Complete original typed BVAR state or bounded primitive mapping/UTF8 JSON; exact schema selects one of six dedicated classes. No generic ResultBundle conversion.",
+        "kind": "positional-or-keyword",
+        "name": "value"
+      }
+    ],
+    "returns": "TableSet (whole dedicated tables, complete typed state attrs)",
+    "signature": "openecon.bayes_var_tables(value)",
+    "source": "src/openecon/econometrics/bayesian_var_public/tables.py",
+    "source_definition_ast_sha256": "6fdeab0c92167159c59f7ff2e79a20c9a5eafa843ffb9a07cba499fa5d9025f3",
+    "source_line": 132,
+    "source_sha256": "d7562abe4497d5000df9ce7b395f2f0a109f112a38ca14141bf6cadb1995901e"
+  }
+}

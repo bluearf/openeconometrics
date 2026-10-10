@@ -75,4 +75,3 @@ print(run_count)
     assert shared[0]["outputs"][0]["data"]["coefficients"] == output["data"]["coefficients"]
     assert api.client.post(cloud + "/desktop/results", headers=headers("viewer"), json=item).status_code == 403
     assert api.client.get(cloud + "/console", headers=headers("outsider")).status_code == 404
-    api.runner.start.assert_not_called()

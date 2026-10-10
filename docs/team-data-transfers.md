@@ -30,8 +30,8 @@ file is installed atomically. Interrupted downloads retain verified chunks for
 explicit retry; existing user files are preserved. A successful upload can
 seed the same verified local cache rather than downloading its source again.
 The Python runtime then imports the owned local file using its existing bounded
-CSV/Parquet Dataset route. Run requests stay local: the cloud execution route
-explicitly rejects projects containing chunked datasets.
+CSV/Parquet Dataset route. Run requests stay local: the cloud service has no
+execution route, so shared datasets are always analyzed on the member's computer.
 
 ## Authorization and cancellation
 

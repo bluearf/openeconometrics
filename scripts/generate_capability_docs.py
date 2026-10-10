@@ -81,6 +81,13 @@ def snapshot(source_ref: str) -> dict:
     source_files = sorted(
         {
             "src/openecon/analysis_contracts.py",
+            "src/openecon/econometrics/stats/sequential.py",
+            "src/openecon/econometrics/stats/sequential_kernels.py",
+            "src/openecon/econometrics/bayesian/bma.py",
+            "src/openecon/econometrics/bayesian/bma_common.py",
+            "src/openecon/econometrics/bayesian/bma_draws.py",
+            "src/openecon/econometrics/bayesian/bma_kernels.py",
+            "src/openecon/econometrics/bayesian/bma_query.py",
             "src/openecon/dataset.py",
             "src/openecon/dataset_prepare.py",
             "src/openecon/source_readers.py",
@@ -89,6 +96,9 @@ def snapshot(source_ref: str) -> dict:
             "src/openecon/econometrics/streaming_registry.py",
             "src/openecon/linear_ols/spec.py",
             "src/openecon/resources.py",
+            "src/openecon/econometrics/survival_ext/weibull_regression.py",
+            "src/openecon/econometrics/survival_ext/weibull_regression_common.py",
+            "src/openecon/econometrics/survival_ext/weibull_regression_kernels.py",
             "src/openecon/engines/separation.py",
             "src/openecon/survey.py",
             "pyproject.toml",
@@ -97,6 +107,12 @@ def snapshot(source_ref: str) -> dict:
             *[
                 str(path.relative_to(ROOT))
                 for path in (ROOT / "src/openecon/econometrics").glob("*/__init__.py")
+            ],
+            "src/openecon/__init__.py",
+            *[
+                str(path.relative_to(ROOT))
+                for family in ("bayesian_var", "bayesian_var_public")
+                for path in (ROOT / "src/openecon/econometrics" / family).glob("*.py")
             ],
             *[
                 str(path.relative_to(ROOT))
@@ -125,11 +141,13 @@ def snapshot(source_ref: str) -> dict:
         "estimators": cap["estimators"],
         "families": cap["families"],
         "auxiliary_exports": cap["auxiliary_exports"],
+        "bayesian_var_conjugate": cap["bayesian_var_conjugate"],
         "streaming": cap["streaming"],
         "postestimation": cap["postestimation"],
         "multiple_testing": cap["multiple_testing"],
         "measurement_reliability": cap["measurement_reliability"],
         "missing_data": cap["missing_data"],
+        "bayesian_bma": cap["bayesian_bma"],
         "control_function": cap["control_function"],
         "timeseries_workflows": cap["timeseries_workflows"],
         "state_space_paths": cap["state_space_paths"],
@@ -143,6 +161,7 @@ def snapshot(source_ref: str) -> dict:
         "inference_extensions": cap["inference_extensions"],
         "native_analysis_extensions": cap["native_analysis_extensions"],
         "prospective_planning": cap["prospective_planning"],
+        "group_sequential_designs": cap["group_sequential_designs"],
         "irt": cap["irt"],
         "categorical_scaling_loglinear": cap["categorical_scaling_loglinear"],
         "twostep_clustering": cap["twostep_clustering"],
@@ -156,6 +175,7 @@ def snapshot(source_ref: str) -> dict:
         "prospective_power_designs": cap["prospective_power_designs"],
         "temporal_disaggregation": cap["temporal_disaggregation"],
         "survival_extensions": cap["survival_extensions"],
+        "interval_weibull_covariate": cap["interval_weibull_covariate"],
         "binary_mediation": cap["binary_mediation"],
         "nested_choice": cap["nested_choice"],
         "multinomial_probit_choice": cap["multinomial_probit_choice"],
@@ -245,6 +265,25 @@ def markdown(value: dict) -> str:
         "and common predict/margins adapters. The JSON `auxiliary_exports` records each source family/entry. "
         "Presence establishes registration only; read the helper's method/option guide and dated evidence "
         "before making scientific, installed-package or public-release claims.",
+        "",
+        "## Proper conjugate Bayesian VAR",
+        "",
+        "The six dedicated APIs implement an explicit proper matrix-normal/inverse-Wishart VAR posterior, fixed-design prediction, "
+        "rank-one Student-t contrasts, full joint coefficient/innovation draws, recursive forecasts and declared-order impulses. "
+        "Fourteen typed classes, seven complete-state restore routes and whole-table/JSON exports retain full source, prior, covariance, "
+        "cached primitive and moment-availability information. This family adds no generic ModelSpec/ResultBundle fitting, common "
+        "predict/margins or forecast dispatcher route.",
+        "",
+        "Supported source is resident CPU float64 finite data with 2–4 ordered series, 1–4 lags and consecutive integer periods. "
+        "The proper full prior is explicit; strict SPD checks retain their original no-jitter rule. Unstable posterior draws stay retained. "
+        "Cold replay validates the saved Bartlett/normal and recursive-innovation algebra without fitting or RNG regeneration; "
+        "saved seed/runtime labels do not authenticate a regenerated random stream. Unavailable theoretical moments remain None, "
+        "and pointwise Monte Carlo intervals do not establish simultaneous coverage.",
+        "",
+        "Added restoration/table/UTF8 copies and replay work have separate conservative admission within original work/buffer budgets; "
+        "near-budget numerical states may therefore refuse these compound public operations. The full JSON contract records bounded "
+        "depth/node/escaped-output/indent rules. Native display remains limited50×30 per view and20 outputs per Run; complete batches "
+        "and separate saved-output/cold-reopen evidence are required. Registration alone establishes no installed, public-release or vendor acceptance.",
         "",
         "## Runtime, devices and dependencies",
         "",
@@ -357,6 +396,18 @@ def markdown(value: dict) -> str:
         "target covariance, marginal t intervals and explicit exact/approximate/Roy-upper-bound test labels. "
         "See [selection and general contrasts](econometrics/multivariate-selection-contrasts.md).",
         "",
+        "## Gaussian group-sequential efficacy designs",
+        "",
+        "`sequential_design` calibrates four spending laws with upper one-sided or symmetric two-sided "
+        "first efficacy rejection under a known-information canonical Gaussian model. Alpha is total "
+        "over looks and directions. Full correlated crossing/continuation probabilities, expected information "
+        "and saved fixed-boundary queries use native CPU float64 quadrature with numerical admission. "
+        "`sequential_information` inverts continuous reciprocal-variance information with a verified bracket; "
+        "it does not calculate integer minimum N. `restore_sequential_design` validates complete state and "
+        "tables without boundary or information search. [Method guide](econometrics/group-sequential.md) "
+        "states the prespecified grid, total-alpha convention, independent reference limits and unsupported "
+        "unknown variance, futility, adaptive looks and endpoint-specific planning.",
+        "",
         "## Repeated residual Gaussian GLS",
         "",
         "`repeated_gls` fits negative-capable compound symmetry, signed integer-gap AR1, occasion-specific diagonal "
@@ -383,10 +434,10 @@ def markdown(value: dict) -> str:
         "## Mixed-data TwoStep clustering",
         "",
         "[TwoStep clustering](econometrics/twostep.md) adds a bounded native CPU float64 CF tree, complete "
-        "likelihood merge hierarchy, global-minimum BIC/AIC or fixed counts, descriptive profiles/silhouette, "
-        "saved typed-map assignment and physical-row ARI stability. Small-leaf noise and order dependence "
-        "are explicit. IBM automatic change/jump selection, adaptive rebuild/noise reinsertion, licensed "
-        "vendor parity, weights and GPU/Dataset execution are outside this scope.",
+        "likelihood merge hierarchy, legacy global-minimum or opt-in two-stage BIC/AIC change/jump selection, "
+        "bounded adaptive CF rebuild and sparse-record reinsertion, descriptive profiles/silhouette, "
+        "saved typed-map/noise assignment and physical-row ARI stability. Terminal policies and order "
+        "dependence are explicit; licensed vendor parity, weights and GPU/Dataset execution are outside this scope.",
         "",
         "## Categorical scaling and loglinear workflows",
         "",
@@ -440,6 +491,10 @@ def markdown(value: dict) -> str:
         "Instrument exclusion and nonlinear control sufficiency remain caller assumptions. No weak-IV, finite-cluster, "
         "structural treatment-effect, estimated-dispersion ML or blanket vendor parity claim. "
         "See [the method scope](econometrics/control-functions.md).",
+        "",
+        "## Finite Bayesian model averaging",
+        "",
+        "`bayes_bma` enumerates every optional Gaussian regression subset on one common sample with explicit proper per-model priors and positive odds. Full within/between-model covariance, inclusion probabilities, Student-t/zero-atom mixture quantiles and joint model/parameter/outcome draws retain complete source and semantic replay. No model pruning, BIC/AIC substitution or blanket vendor parity is implied. See [the BMA guide](econometrics/bayesian-bma.md).",
         "",
         "## Missing data and multiple imputation",
         "",
@@ -549,7 +604,18 @@ def markdown(value: dict) -> str:
         "Nelson-Aalen cumulative hazard, and independent two-group prespecified fixed-time CIF contrasts. "
         "Complete input, parameter and curve covariance state is saved; Turnbull reports identification bounds without invented sampling uncertainty. "
         "[Method contracts](econometrics/survival-extensions.md) specify endpoint, risk-set and inference assumptions. "
-        "Covariate interval regression, Fine-Gray, Gray tests, recurrent events, frailty and licensed vendor parity remain open.",
+        "Other covariate interval families, Fine-Gray, Gray tests, recurrent events, frailty and licensed vendor parity remain open.",
+        "",
+        "## Covariate interval-censored Weibull regression",
+        "",
+        "A separate bounded iid CPU float64 Weibull family supports exact, left-, interval- and right-censored "
+        "failure times with up to eight fixed numeric covariates. The AFT and PH charts retain full observed-information "
+        "covariance, including coefficient-shape coupling, and predictions retain every cross-profile/time survival "
+        "and cumulative-hazard covariance block. Complete typed source, fit and query state is saved and replayed "
+        "without refitting. [Method contracts](econometrics/interval-weibull-covariate.md) specify noninformative "
+        "censoring assumptions, pointwise asymptotic inference, original-author references and resource bounds. "
+        "Frailty, delayed entry, robust/cluster inference, weights, recurrent events, interval Cox, Dataset/GPU "
+        "execution and licensed vendor parity remain outside this family.",
         "",
         "## Declared hypothesis families",
         "",
@@ -565,6 +631,12 @@ def markdown(value: dict) -> str:
         "binomial, multinomial-simplex and bounded-mean confidence families. Their public postest manifest and "
         "offline editor signatures preserve distinct iid/invariance/support contracts; they do not infer them from data. "
         "Full summary state, including orbit statistics and unbounded endpoint flags, is saved independently of previews.",
+        "",
+        "Eight [time-uniform confidence sequences](econometrics/confidence-sequences.md) add conservative "
+        "optional-stopping inference for fixed iid Bernoulli, Poisson, Gaussian mean/variance, exponential-mean, "
+        "Uniform(0, theta) endpoint and known-bounded-mean families. Summable error spending preserves all "
+        "ordered prefix intervals and typed sample identities. Resident resource limits and sampling assumptions "
+        "are explicit; these are not tighter mixture/LIL methods or adaptive-family guarantees.",
         "",
         "## Survey declaration",
         "",

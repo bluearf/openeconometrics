@@ -1,15 +1,14 @@
-"""HTTP authorization, tenant boundaries, revocation, and untrusted output."""
+"""HTTP authorization, tenant boundaries, revocation, untrusted output and retired cloud runs."""
 from copy import deepcopy
 import json
 from pathlib import Path
 from types import SimpleNamespace
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 from fastapi.testclient import TestClient
 import pytest
 
 from openecon.team_auth import TeamAuth, TeamIdentity
-from openecon.team_runner import JobRunnerError
 from openecon.team_server import create_team_app, validate_worker_result
 from openecon.team_storage import MemoryStorage
 from openecon.team_store import MemoryDocuments, TeamError, TeamStore, now
@@ -41,7 +40,7 @@ def test_project_creation_field_contract_and_readback(api, case):
         assert fields == set(case['fields'])
         assert all(set(error) == {'loc', 'msg', 'type'} for error in response.json()['detail'])
         assert api.store.db.data == before
-    assert api.runner.starts == [] and api.storage.objects == {}
+    assert api.storage.objects == {}
 
 
 @pytest.mark.parametrize('field,value', [('name', None), ('name', 123), ('name', True),
@@ -88,7 +87,6 @@ def test_environment_metadata_round_trip_and_bootstrap_share_no_binaries(api):
     assert api.client.get(f'/api/projects/{api.other}/workspace/environment',
                           headers=header('owner')).json() == {'manifest': None, 'version': 0}
     assert api.storage.objects == {}
-    assert api.runner.starts == []
 
 
 @pytest.mark.parametrize('uid,status', [('owner', 200), ('editor', 200), ('viewer', 403),
@@ -185,7 +183,7 @@ def test_environment_api_rejects_unsafe_manifests_before_storage(api, change):
     assert response.status_code == 422
     assert response.json()['detail']['code'] == 'INVALID_ENVIRONMENT'
     assert api.store.environment(api.pid, api.users['owner']) == {'manifest': None, 'version': 0}
-    assert api.storage.objects == {} and api.runner.starts == []
+    assert api.storage.objects == {}
 
 
 @pytest.mark.parametrize('body', [
@@ -209,72 +207,13 @@ def claims(uid, verified=True):
 class StubStorage(MemoryStorage):
     def __init__(self):
         super().__init__()
-        self.current_run = None
         self.on_get = None
-
-    def manifest(self, project_id, run):
-        self.current_run = deepcopy(run)
-        return super().manifest(project_id, run)
 
     def get(self, reference, maximum=24 * 1024**2):
         value = super().get(reference, maximum)
         if self.on_get:
             self.on_get(reference)
         return value
-
-
-class StubRunner:
-    def __init__(self, storage):
-        self.storage = storage
-        self.starts = []
-        self.cancellations = []
-        self.status_value = 'succeeded'
-        self.output = None
-
-    def start(self, url, timeout_seconds=120):
-        self.starts.append((url, timeout_seconds))
-        run = self.storage.current_run
-        payload = {'execution_id': run['id'], 'record': {
-            'id': 'forged-id', 'code': 'forged-code', 'created_at': 'forged-time',
-            'actor_email': 'forged@example.com', 'status': 'ok', 'stdout': '',
-            'outputs': [{'type': 'text', 'data': '3'}], 'variables': ['forged'],
-            'session_generation': 999, 'duration_ms': 12, 'error': None},
-            'generated_files': [{'name': 'answer.txt', 'size': 2, 'content_base64': 'NDI='}]}
-        if self.output:
-            self.output(payload)
-        self.storage.put(f'staging/{run["id"]}', json.dumps(payload).encode())
-        return {'operation': 'operation-1', 'execution': 'execution-1', 'status': 'queued'}
-
-    def status(self, operation):
-        return {'operation': operation, 'execution': 'execution-1', 'status': self.status_value}
-
-    def cancel(self, execution):
-        self.cancellations.append(execution)
-        self.status_value = 'cancelled'
-        return {'status': 'cancelling', 'execution': execution}
-
-
-def test_remote_dispatch_return_preserves_result_published_by_concurrent_poll(api):
-    original_start = api.runner.start
-    finished = []
-    def completing_start(url, timeout_seconds=120):
-        launched = original_start(url, timeout_seconds)
-        run = api.storage.current_run
-        api.store.claim_run_dispatch(api.pid, run['id'], operation=launched['operation'],
-                                     execution=launched['execution'])
-        polled = api.client.get(api.prefix + '/console', headers=header('editor'))
-        assert polled.status_code == 200
-        assert polled.json()['status']['running'] is False
-        finished.append(api.store.run(api.pid, run['id']))
-        return launched
-    api.runner.start = completing_start
-    response = api.client.post(api.prefix + '/console/execute', headers=header('editor'),
-                               json={'code': 'print(1)', 'wait_for_result': False})
-    assert response.status_code == 202
-    result = api.store.run(api.pid, response.json()['id'])
-    assert result == finished[0] and result['state'] == 'finished'
-    assert api.store.project(api.pid, api.users['editor'])['active_run'] is None
-    assert api.store.db.get('oe_limits/compute')['active'] == {}
 
 
 @pytest.fixture
@@ -297,11 +236,10 @@ def api():
         if token not in users or token in revoked:
             raise ValueError('invalid')
         return claims(token, token != 'unverified')
-    runner = StubRunner(storage)
     app = create_team_app(store=store, storage=storage, auth=TeamAuth(FIREBASE_PROJECT, verifier=verify),
-                          runner=runner, public_origin=ORIGIN, firebase_config=FIREBASE_CONFIG)
+                          public_origin=ORIGIN, firebase_config=FIREBASE_CONFIG)
     with TestClient(app, base_url=ORIGIN) as client:
-        yield SimpleNamespace(client=client, store=store, storage=storage, runner=runner,
+        yield SimpleNamespace(client=client, store=store, storage=storage,
                               users=users, pid=pid, other=other, revoked=revoked, token_claims=token_claims,
                               prefix=f'/api/projects/{pid}/workspace')
 
@@ -310,27 +248,111 @@ def header(uid):
     return {'Authorization': f'Bearer {uid}'}
 
 
-@pytest.mark.parametrize('extension', ['md', 'tex'])
-def test_identified_source_run_uses_effective_alias_after_conversion(api, extension):
-    created = api.store.create_script(api.pid, api.users['editor'], f'report.{extension}', '1 + 2')
-    layout = api.store.get_file_layout(api.pid, api.users['editor'])
-    layout['entries'][1]['name'] = 'model.py'
-    api.store.put_file_layout(api.pid, api.users['editor'], layout)
-    result = api.client.post(api.prefix + '/console/execute', headers=header('editor'),
-                            json={'code': '1 + 2', 'script_id': created['id']})
-    assert result.status_code == 200, result.text
-    assert result.json()['status'] == 'ok'
-    assert len(api.runner.starts) == 1
-    assert api.store.named_script(api.pid, api.users['editor'], created['id']) == created
+def update_run(api, run_id, **changes):
+    """Edit a persisted synthetic run document; the service never writes runs."""
+    path = f'oe_projects/{api.pid}/runs/{run_id}'
+    run = api.store.db.get(path)
+    run.update(changes)
+    api.store.db.put(path, run)
+    return run
 
 
-@pytest.mark.parametrize('uid,status', [('viewer', 403), ('outsider', 404), ('unverified', 403)])
-def test_identified_document_execute_keeps_authorization_checks_before_metadata(api, uid, status):
-    created = api.store.create_script(api.pid, api.users['editor'], 'private.md', 'private notes')
-    response = api.client.post(api.prefix + '/console/execute', headers=header(uid),
-                               json={'code': '1 + 2', 'script_id': created['id']})
+def legacy_cloud_run(api, *, state='running', active=True):
+    """A run accepted by the retired cloud backend that never reached a terminal state."""
+    run_id = 'c' * 32
+    run = {'id': run_id, 'project_id': api.pid, 'uid': 'editor', 'email': 'editor@example.com',
+           'code': 'print("legacy")', 'timeout_seconds': 60, 'state': state, 'generation': 1,
+           'created_at': '2026-10-02T10:00:00+00:00', 'deadline': '2026-10-02T10:18:00+00:00',
+           'files': [], 'operation': 'sandbox:' + api.pid + ':' + run_id,
+           'execution': 'sandbox:' + api.pid + ':' + run_id, 'result': None, 'cancel_requested': False}
+    api.store.db.put(f'oe_projects/{api.pid}/runs/{run_id}', run)
+    project = api.store.db.get(f'oe_projects/{api.pid}')
+    project.update(run_count=1, active_run=run_id if active else None)
+    api.store.db.put(f'oe_projects/{api.pid}', project)
+    return run
+
+
+@pytest.mark.parametrize('suffix', ['/console/execute', '/console/interrupt', '/console/reset'])
+@pytest.mark.parametrize('uid', ['owner', 'editor', 'viewer'])
+@pytest.mark.parametrize('body', [
+    None, {'code': '1 + 2'}, {'code': '1', 'wait_for_result': False},
+    {'code': '1', 'script_id': 'analysis', 'timeout_seconds': 30}, {'unexpected': True},
+])
+def test_retired_cloud_execution_routes_refuse_old_clients_clearly(api, suffix, uid, body):
+    before = deepcopy(api.store.db.data)
+    response = api.client.post(api.prefix + suffix, headers=header(uid), json=body)
+    assert response.status_code == 410, response.text
+    detail = response.json()['detail']
+    assert detail['code'] == 'CLOUD_EXECUTION_RETIRED'
+    assert 'desktop app' in detail['message']
+    assert response.headers['cache-control'] == 'no-store'
+    # Nothing is reserved, recorded, staged or launched for the request.
+    assert api.store.db.data == before and api.storage.objects == {}
+
+
+@pytest.mark.parametrize(('uid', 'status'), [('outsider', 404), ('unverified', 403)])
+def test_retired_cloud_execution_keeps_membership_checks_before_refusal(api, uid, status):
+    response = api.client.post(api.prefix + '/console/execute', headers=header(uid), json={'code': '1'})
     assert response.status_code == status
-    assert api.runner.starts == [] and api.storage.objects == {}
+    assert api.client.post(api.prefix + '/console/execute', json={'code': '1'}).status_code == 401
+    api.revoked.add('editor')
+    assert api.client.post(api.prefix + '/console/execute', headers=header('editor'),
+                           json={'code': '1'}).status_code == 401
+
+
+def test_no_route_can_start_cloud_execution(api):
+    from fastapi.routing import APIRoute
+    import inspect
+    from openecon import team_server
+    assert 'runner' not in inspect.signature(create_team_app).parameters
+    routes = {(method, route.path): route for route in api.client.app.routes
+              if isinstance(route, APIRoute) for method in route.methods}
+    for suffix in ('execute', 'interrupt', 'reset'):
+        route = routes[('POST', '/api/projects/{project_id}/workspace/console/' + suffix)]
+        assert route.endpoint.__name__ == 'cloud_execution_retired'
+    assert not hasattr(team_server, 'ExecuteBody')
+    assert not any(name in api.store.__class__.__dict__ for name in
+                   ('begin_run', 'finish_run', 'request_cancel', 'claim_run_dispatch', 'attach_run_execution'))
+
+
+def test_legacy_unfinished_cloud_run_is_read_as_stopped_without_changing_saved_data(api):
+    run = legacy_cloud_run(api)
+    before = deepcopy(api.store.db.data)
+    boot = api.client.get(api.prefix + '/bootstrap', headers=header('editor')).json()
+    assert boot['status'] == {'running': False, 'session_generation': 1, 'pid': None}
+    state = api.client.get(api.prefix + '/console', headers=header('viewer')).json()
+    assert state['status']['running'] is False
+    record = state['history'][-1]
+    assert record['id'] == run['id'] and record['code'] == run['code']
+    assert record['status'] == 'interrupted' and 'desktop app' in record['error']['message']
+    saved = api.client.get(api.prefix + f'/runs/{run["id"]}/record', headers=header('viewer'))
+    assert saved.status_code == 200 and saved.json() == record
+    page = api.client.get(api.prefix + '/console/history', headers=header('viewer')).json()
+    assert page['runs'][0]['id'] == run['id'] and page['runs'][0]['state'] == 'running'
+    # Reads tolerate the record; the stored lock and run document are preserved.
+    assert api.store.db.data == before
+    assert api.store.db.get(f'oe_projects/{api.pid}')['active_run'] == run['id']
+
+
+def test_legacy_cloud_result_and_generated_file_remain_readable(api):
+    from openecon.team_server import json_bytes
+    run = legacy_cloud_run(api, state='finished', active=False)
+    record = {'id': run['id'], 'code': run['code'], 'created_at': run['created_at'], 'status': 'ok',
+              'stdout': '3\n', 'outputs': [{'type': 'text', 'data': '3'}], 'variables': [], 'error': None,
+              'duration_ms': 12, 'session_generation': 1, 'active_session_generation': 1,
+              'state_reset': True, 'actor_email': 'editor@example.com',
+              'artifacts': [{'name': 'answer.txt', 'size_bytes': 2,
+                             'url': api.prefix + f'/runs/{run["id"]}/files/0'}]}
+    reference = api.storage.put(f'projects/{api.pid}/results/{run["id"]}/p/record.json', json_bytes(record))
+    artifact = api.storage.put(f'projects/{api.pid}/results/{run["id"]}/p/answer.txt', b'42')
+    update_run(api, run['id'], result=reference, record_summary={'status': 'ok'},
+               artifacts=[{'name': 'answer.txt', 'size_bytes': 2, 'blob': artifact}])
+    history = api.client.get(api.prefix + '/console', headers=header('viewer')).json()['history']
+    assert history[-1]['id'] == run['id'] and history[-1]['outputs'][0]['data'] == '3'
+    assert '3' in history[-1]['outputs'][0]['latex']
+    download = api.client.get(record['artifacts'][0]['url'], headers=header('viewer'))
+    assert download.status_code == 200 and download.content == b'42'
+    assert api.client.get(record['artifacts'][0]['url'], headers=header('outsider')).status_code == 404
 
 
 @pytest.mark.parametrize('suffix', ['/api/me', '/api/projects', '/api/projects/id/members',
@@ -346,6 +368,7 @@ def test_auth_configuration_only_is_public_and_tokens_are_not_in_cache(api):
     response = api.client.get('/api/auth/config')
     assert response.status_code == 200
     assert response.json()['mode'] == 'teams'
+    assert response.json()['cloud_execution_available'] is False
     assert response.headers['cache-control'] == 'no-store'
     assert api.client.get('/api/me', headers=header('unverified')).status_code == 200
     assert api.client.get('/api/projects', headers=header('unverified')).status_code == 403
@@ -381,19 +404,19 @@ def test_google_popup_headers_only_allow_required_trusted_sources(api, path):
     'openecon-test.web.app', 'openecon-test.firebaseapp.com.', ['openecon-test.firebaseapp.com']])
 def test_invalid_auth_domain_fails_closed_at_startup(domain):
     with pytest.raises(ValueError, match='authDomain'):
-        create_team_app(store=None, storage=None, runner=None, auth=TeamAuth(FIREBASE_PROJECT),
+        create_team_app(store=None, storage=None, auth=TeamAuth(FIREBASE_PROJECT),
                         public_origin=ORIGIN, firebase_config={**FIREBASE_CONFIG, 'authDomain': domain})
 
 
 def test_foreign_firebase_project_cannot_set_csp_even_with_valid_domain():
     with pytest.raises(ValueError, match='authDomain'):
-        create_team_app(store=None, storage=None, runner=None, auth=TeamAuth(FIREBASE_PROJECT),
+        create_team_app(store=None, storage=None, auth=TeamAuth(FIREBASE_PROJECT),
                         public_origin=ORIGIN, firebase_config={**FIREBASE_CONFIG, 'projectId': 'foreign-project'})
 
 
 def test_auth_configuration_is_snapshotted_with_validated_domain():
     config = dict(FIREBASE_CONFIG)
-    app = create_team_app(store=None, storage=None, runner=None, auth=TeamAuth(FIREBASE_PROJECT),
+    app = create_team_app(store=None, storage=None, auth=TeamAuth(FIREBASE_PROJECT),
                           public_origin=ORIGIN, firebase_config=config)
     config['authDomain'] = 'foreign.firebaseapp.com'
     with TestClient(app, base_url=ORIGIN) as client:
@@ -431,14 +454,11 @@ def test_google_unverified_email_is_not_assumed_verified(api):
 @pytest.mark.parametrize('method,suffix,body', [
     ('put', '/console/script', {'code': '1', 'version': 0}),
     ('put', '/environment', {'manifest': package_manifest(), 'version': 0}),
-    ('post', '/console/execute', {'code': '1'}),
-    ('post', '/console/interrupt', None), ('post', '/console/reset', None),
     ('post', '/datasets/example', None),
 ])
 def test_viewer_cannot_mutate_workspace(api, method, suffix, body):
     response = api.client.request(method, api.prefix + suffix, json=body, headers=header('viewer'))
     assert response.status_code == 403
-    assert api.runner.starts == []
 
 
 def test_viewer_cannot_upload_invite_promote_or_remove(api):
@@ -470,7 +490,6 @@ def test_removed_member_loses_access_with_the_same_token(api):
     for suffix in ('/session', '/bootstrap', '/console', '/console/script', '/environment', '/datasets'):
         assert api.client.get(api.prefix + suffix, headers=header('editor')).status_code == 404
     assert api.client.post(api.prefix + '/console/execute', headers=header('editor'), json={'code': '1'}).status_code == 404
-    assert api.runner.starts == []
 
 
 @pytest.mark.parametrize(('uid', 'status'), [('unverified', 403), ('outsider', 404)])
@@ -509,14 +528,6 @@ def test_workspace_bootstrap_matches_scoped_content_without_reading_history(api,
     assert 'history' not in data and 'private other project' not in response.text
 
 
-def test_workspace_bootstrap_reports_active_run_without_waiting_for_compute(api):
-    api.store.begin_run(api.pid, api.users['editor'], 'print(1)', 30)
-    api.runner.status = Mock(side_effect=AssertionError('Bootstrap must not wait for compute.'))
-    data = api.client.get(api.prefix + '/bootstrap', headers=header('editor')).json()
-    assert data['status']['running'] is True
-    assert data['status']['session_generation'] == 1
-
-
 @pytest.mark.parametrize('role', [None, 'viewer'])
 def test_workspace_bootstrap_rechecks_removal_or_downgrade_during_draft_read(api, role):
     original = api.store.script
@@ -533,180 +544,6 @@ def test_workspace_bootstrap_rechecks_removal_or_downgrade_during_draft_read(api
         assert response.json()['session']['read_only'] is True
 
 
-def test_execute_publishes_only_validated_artifacts_and_trusted_metadata(api):
-    response = api.client.post(api.prefix + '/console/execute', headers=header('editor'), json={'code': '1 + 2'})
-    assert response.status_code == 200, response.text
-    record = response.json()
-    assert record['code'] == '1 + 2' and record['id'] != 'forged-id'
-    assert record['actor_email'] == 'editor@example.com'
-    assert record['session_generation'] == 1 and record['variables'] == []
-    assert record['state_reset'] is True
-    artifact = api.client.get(record['artifacts'][0]['url'], headers=header('viewer'))
-    assert artifact.status_code == 200 and artifact.content == b'42'
-    assert api.client.get(record['artifacts'][0]['url'], headers=header('outsider')).status_code == 404
-    history = api.client.get(api.prefix + '/console', headers=header('viewer')).json()['history']
-    assert history[-1]['id'] == record['id']
-    assert 'events' not in record and 'events' not in history[-1]
-
-
-def test_cloud_output_order_survives_validation_storage_and_member_readback(api):
-    events = [{'type': 'stdout', 'text': 'Önce\n'}, {'type': 'output', 'index': 0},
-              {'type': 'stdout', 'text': 'Arada\n'}, {'type': 'output', 'index': 1},
-              {'type': 'stdout', 'text': 'Sonra\n'}]
-    stdout = 'Önce\nArada\nSonra\n'
-    def ordered_result(payload):
-        payload['record'].update(stdout=stdout, events=deepcopy(events), outputs=[
-            {'type': 'text', 'data': 'first display'},
-            {'type': 'latex', 'data': r'\text{Second display}'},
-        ])
-    api.runner.output = ordered_result
-    response = api.client.post(api.prefix + '/console/execute', headers=header('editor'),
-                               json={'code': 'interleaved stdout and displays'})
-    assert response.status_code == 200
-    result = response.json()
-    assert result['stdout'] == stdout and result['events'] == events
-    assert [item['type'] for item in result['outputs']] == ['text', 'latex']
-    run = api.store.run(api.pid, result['id'])
-    stored = json.loads(api.storage.get(run['result']))
-    assert stored['events'] == events and stored['stdout'] == stdout
-    history = api.client.get(api.prefix + '/console', headers=header('viewer')).json()['history']
-    assert history[-1]['events'] == events and history[-1]['stdout'] == stdout
-    assert history[-1]['actor_email'] == 'editor@example.com'
-
-
-@pytest.mark.parametrize('events', [
-    None,
-    [{'type': 'output', 'index': 1}, {'type': 'output', 'index': 0}],
-    [{'type': 'output', 'index': True}, {'type': 'output', 'index': 1}],
-    [{'type': 'output', 'index': 0}],
-    [{'type': 'stdout', 'text': 'forged'}, {'type': 'output', 'index': 0},
-     {'type': 'output', 'index': 1}],
-    [{'type': 'output', 'index': 0}, {'type': 'output', 'index': 1},
-     *[{'type': 'stdout', 'text': ''}] * 4],
-])
-def test_cloud_malformed_output_order_cannot_publish_artifacts_or_result(api, events):
-    def malformed_result(payload):
-        payload['record'].update(stdout='', events=events, outputs=[
-            {'type': 'text', 'data': 'first'}, {'type': 'text', 'data': 'second'},
-        ])
-    api.runner.output = malformed_result
-    response = api.client.post(api.prefix + '/console/execute', headers=header('editor'),
-                               json={'code': 'malformed ordering from an untrusted worker'})
-    assert response.status_code == 200
-    result = response.json()
-    assert result['status'] == 'error' and result['outputs'] == []
-    assert result['error']['message'] == 'The computation output could not be verified.'
-    run = api.store.run(api.pid, result['id'])
-    assert run['state'] == 'failed' and not run.get('result') and not run.get('artifacts')
-    assert not any(name.startswith(f'projects/{api.pid}/results/') for name in api.storage.objects)
-
-
-def test_execute_can_acknowledge_launch_without_waiting_or_reading_output(api):
-    api.runner.status_value = 'running'
-    with patch.object(api.runner, 'status', side_effect=AssertionError('Acceptance must not poll.')), \
-            patch.object(api.storage, 'get', side_effect=AssertionError('Acceptance must not read output.')):
-        response = api.client.post(api.prefix + '/console/execute', headers=header('editor'),
-                                   json={'code': '1 + 2', 'wait_for_result': False})
-    assert response.status_code == 202, response.text
-    run_id = response.json()['id']
-    assert response.json() == {'accepted': True, 'id': run_id}
-    assert response.headers['cache-control'] == 'no-store'
-    assert api.store.project(api.pid, api.users['editor'])['active_run'] == run_id
-    assert api.store.run(api.pid, run_id)['state'] == 'running'
-    pending = api.client.get(api.prefix + '/console', headers=header('editor')).json()
-    assert pending['status']['running'] is True and pending['history'] == []
-    retry = api.client.post(api.prefix + '/console/execute', headers=header('editor'),
-                            json={'code': 'another run', 'wait_for_result': False})
-    assert retry.status_code == 409 and len(api.runner.starts) == 1
-    api.runner.status_value = 'succeeded'
-    completed = api.client.get(api.prefix + '/console', headers=header('viewer')).json()
-    assert completed['status']['running'] is False
-    record = completed['history'][-1]
-    assert record['id'] == run_id and record['code'] == '1 + 2'
-    assert record['actor_email'] == 'editor@example.com'
-    assert record['session_generation'] == 1 and record['variables'] == []
-    assert len(record['outputs']) == 1
-    assert record['outputs'][0]['type'] == 'text'
-    assert record['outputs'][0]['data'] == '3'
-    assert '3' in record['outputs'][0]['latex']
-    assert api.client.get(record['artifacts'][0]['url'], headers=header('viewer')).content == b'42'
-
-
-@pytest.mark.parametrize(('uid', 'status'), [('viewer', 403), ('unverified', 403), ('outsider', 404)])
-def test_async_execute_has_the_same_role_and_identity_checks(api, uid, status):
-    response = api.client.post(api.prefix + '/console/execute', headers=header(uid),
-                               json={'code': '1', 'wait_for_result': False})
-    assert response.status_code == status
-    assert api.runner.starts == []
-
-
-def test_async_execute_requires_unrevoked_authentication(api):
-    body = {'code': '1', 'wait_for_result': False}
-    assert api.client.post(api.prefix + '/console/execute', json=body).status_code == 401
-    api.revoked.add('editor')
-    assert api.client.post(api.prefix + '/console/execute', headers=header('editor'), json=body).status_code == 401
-    assert api.runner.starts == []
-
-
-@pytest.mark.parametrize(('role', 'status'), [(None, 404), ('viewer', 403)])
-def test_async_execute_cancels_if_launch_finishes_after_member_access_changes(api, role, status):
-    original = api.runner.start
-    def racing_start(*args, **kwargs):
-        launched = original(*args, **kwargs)
-        api.store.change_member(api.pid, 'editor', api.users['owner'], role)
-        return launched
-    api.runner.start = racing_start
-    response = api.client.post(api.prefix + '/console/execute', headers=header('editor'),
-                               json={'code': '1', 'wait_for_result': False})
-    assert response.status_code == status
-    assert 'accepted' not in response.json()
-    assert api.runner.cancellations == ['execution-1']
-    assert api.store.project(api.pid, api.users['owner'])['active_run'] is None
-    assert api.store.runs(api.pid, api.users['owner'])[-1]['state'] == 'cancelled'
-
-
-@pytest.mark.parametrize('value', [0, 1, 'false', 'true', None, [], {}])
-def test_execute_wait_option_requires_a_json_boolean(api, value):
-    response = api.client.post(api.prefix + '/console/execute', headers=header('editor'),
-                               json={'code': '1', 'wait_for_result': value})
-    assert response.status_code == 422 and api.runner.starts == []
-
-
-def test_explicit_wait_option_preserves_synchronous_record_response(api):
-    response = api.client.post(api.prefix + '/console/execute', headers=header('editor'),
-                               json={'code': '1', 'wait_for_result': True})
-    assert response.status_code == 200 and response.json()['status'] == 'ok'
-    assert 'accepted' not in response.json()
-
-
-@pytest.mark.parametrize('outcome', ['failed', 'malformed', 'cancelled'])
-def test_async_execute_later_console_reports_real_failure_or_cancellation(api, outcome):
-    api.runner.status_value = 'running'
-    if outcome == 'malformed':
-        api.runner.output = lambda value: value['generated_files'][0].update(name='../secret')
-    response = api.client.post(api.prefix + '/console/execute', headers=header('editor'),
-                               json={'code': '1', 'wait_for_result': False})
-    assert response.status_code == 202
-    if outcome == 'cancelled':
-        assert api.client.post(api.prefix + '/console/interrupt', headers=header('editor')).status_code == 200
-    else:
-        api.runner.status_value = 'failed' if outcome == 'failed' else 'succeeded'
-    completed = api.client.get(api.prefix + '/console', headers=header('viewer')).json()
-    assert completed['status']['running'] is False
-    record = completed['history'][-1]
-    assert record['id'] == response.json()['id']
-    assert record['status'] == ('interrupted' if outcome == 'cancelled' else 'error')
-    assert record['outputs'] == []
-
-
-def test_malicious_generated_filename_is_not_published(api):
-    api.runner.output = lambda value: value['generated_files'][0].update(name='../secret')
-    response = api.client.post(api.prefix + '/console/execute', headers=header('editor'), json={'code': '1'})
-    assert response.status_code == 200
-    assert response.json()['status'] == 'error'
-    assert not any('/results/' in key for key in api.storage.objects)
-
-
 def test_download_rechecks_membership_after_storage_read(api):
     item = api.client.post(api.prefix + '/datasets/upload', headers=header('editor'),
                            files={'file': ('x.csv', b'x\n1\n', 'text/csv')}).json()
@@ -717,21 +554,32 @@ def test_download_rechecks_membership_after_storage_read(api):
     assert api.client.get(api.prefix + f'/files/{item["id"]}/download', headers=header('editor')).status_code == 404
 
 
-def test_execute_rechecks_membership_after_result_read(api):
+def shared_result(api):
+    from openecon.team_server import json_bytes
+    run = legacy_cloud_run(api, state='finished', active=False)
+    record = {'id': run['id'], 'code': run['code'], 'created_at': run['created_at'], 'status': 'ok',
+              'stdout': '', 'outputs': [], 'variables': [], 'error': None, 'duration_ms': 1,
+              'session_generation': 1}
+    reference = api.storage.put(f'projects/{api.pid}/results/{run["id"]}/p/record.json', json_bytes(record))
+    update_run(api, run['id'], result=reference, record_summary={'status': 'ok'})
+    return run
+
+
+def test_console_rechecks_membership_after_result_read(api):
+    shared_result(api)
     def remove(reference):
         if reference['key'].endswith('/record.json'):
             api.storage.on_get = None
             api.store.change_member(api.pid, 'editor', api.users['owner'])
     api.storage.on_get = remove
-    response = api.client.post(api.prefix + '/console/execute', headers=header('editor'), json={'code': '1'})
-    assert response.status_code == 404
+    assert api.client.get(api.prefix + '/console', headers=header('editor')).status_code == 404
 
 
 def test_cross_site_bearer_requests_and_unknown_fields_are_denied(api):
     for headers in ({'Origin': 'https://evil.example'}, {'Sec-Fetch-Site': 'cross-site'}):
         assert api.client.get('/api/projects', headers={**header('owner'), **headers}).status_code == 403
-    assert api.client.post(api.prefix + '/console/execute', headers=header('editor'),
-                           json={'code': '1', 'project_id': api.other}).status_code == 422
+    assert api.client.put(api.prefix + '/console/script', headers=header('editor'),
+                          json={'code': '1', 'version': 0, 'project_id': api.other}).status_code == 422
 
 
 def valid_payload():
@@ -774,81 +622,14 @@ def test_untrusted_generated_payloads_fail_closed(generated):
         validate_worker_result(payload, run)
 
 
-def test_unknown_launch_outcome_keeps_lease_and_never_blindly_retries(api):
-    api.runner.start = Mock(side_effect=JobRunnerError('Cloud acceptance unknown'))
-    response = api.client.post(api.prefix + '/console/execute', headers=header('editor'), json={'code': '1'})
-    assert response.status_code == 503
-    run_id = api.store.project(api.pid, api.users['editor'])['active_run']
-    assert run_id and api.store.run(api.pid, run_id)['state'] == 'starting'
-    assert run_id in api.store.db.get('oe_limits/compute')['active']
-    retry = api.client.post(api.prefix + '/console/execute', headers=header('editor'), json={'code': '1'})
-    assert retry.status_code == 409
-    assert api.runner.start.call_count == 1
-    api.store.update_run(api.pid, run_id, deadline='2020-01-01T00:00:00+00:00')
-    reconciled = api.client.get(api.prefix + '/console', headers=header('editor'))
-    assert reconciled.status_code == 200
-    assert reconciled.json()['history'][-1]['status'] == 'timeout'
-    assert api.store.project(api.pid, api.users['editor'])['active_run'] is None
-    assert run_id not in api.store.db.get('oe_limits/compute')['active']
-
-
-def test_failure_before_launch_releases_project_and_global_capacity(api):
-    api.storage.manifest = Mock(side_effect=RuntimeError('storage unavailable'))
-    response = api.client.post(api.prefix + '/console/execute', headers=header('editor'), json={'code': '1'})
-    assert response.status_code == 503
-    assert api.store.project(api.pid, api.users['editor'])['active_run'] is None
-    assert api.store.db.get('oe_limits/compute')['active'] == {}
-    assert api.runner.starts == []
-
-
-def test_cancel_already_completed_job_reconciles_without_leaking_sdk_error(api):
-    run = api.store.begin_run(api.pid, api.users['editor'], '1', 60)
-    api.store.update_run(api.pid, run['id'], operation='operation-1', execution='execution-1', state='running')
-    api.runner.cancel = Mock(side_effect=RuntimeError('already complete; private-capability'))
-    response = api.client.post(api.prefix + '/console/interrupt', headers=header('editor'))
-    assert response.status_code == 200 and response.json()['status'] == 'interrupted'
-    assert 'private-capability' not in response.text
-    assert api.store.run(api.pid, run['id'])['state'] == 'cancelled'
-    assert api.store.project(api.pid, api.users['editor'])['active_run'] is None
-    assert api.client.post(api.prefix + '/console/interrupt', headers=header('editor')).json()['status'] == 'idle'
-
-
-def test_console_read_reconciles_completed_job_once_and_persists_readback(api):
-    run = api.store.begin_run(api.pid, api.users['editor'], '1 + 2', 60)
-    url, output, _ = api.storage.manifest(api.pid, run)
-    launched = api.runner.start(url)
-    api.store.update_run(api.pid, run['id'], output_blob=output, **launched, state='running')
-    first = api.client.get(api.prefix + '/console', headers=header('viewer'))
-    second = api.client.get(api.prefix + '/console', headers=header('editor'))
-    assert first.status_code == second.status_code == 200
-    assert first.json()['history'] == second.json()['history']
-    assert first.json()['history'][-1]['id'] == run['id']
-    assert first.json()['history'][-1]['actor_email'] == 'editor@example.com'
-    assert len(api.runner.starts) == 1
-    assert len([key for key in api.storage.objects if key.endswith('/record.json')]) == 1
-
-
-def test_python_error_is_durable_result_and_releases_compute_capacity(api):
-    def fail(payload):
-        payload['record'].update(status='error', error={'type': 'ValueError', 'message': 'example', 'traceback': ''})
-    api.runner.output = fail
-    record = api.client.post(api.prefix + '/console/execute', headers=header('editor'),
-                             json={'code': 'raise ValueError("example")'}).json()
-    assert record['status'] == 'error' and record['error']['type'] == 'ValueError'
-    history = api.client.get(api.prefix + '/console', headers=header('viewer')).json()['history']
-    assert history[-1] == record
-    assert api.store.db.get('oe_limits/compute')['active'] == {}
-
-
-def test_readback_storage_error_is_safe_and_does_not_repeat_execution(api, caplog):
-    response = api.client.post(api.prefix + '/console/execute', headers=header('editor'), json={'code': '1'})
-    assert response.status_code == 200
+def test_readback_storage_error_is_safe_and_preserves_saved_records(api, caplog):
+    shared_result(api)
+    before = deepcopy(api.store.db.data)
     api.storage.get = Mock(side_effect=RuntimeError('https://storage.googleapis.com/private?X-Goog-Signature=secret'))
     failed = api.client.get(api.prefix + '/console', headers=header('viewer'))
     assert failed.status_code == 503
     assert 'X-Goog-Signature' not in failed.text + caplog.text
-    assert len(api.runner.starts) == 1
-    assert api.store.project(api.pid, api.users['editor'])['active_run'] is None
+    assert api.store.db.data == before
 
 
 def test_chunked_json_body_is_bounded_before_parsing(api):
@@ -857,11 +638,12 @@ def test_chunked_json_body_is_bounded_before_parsing(api):
         for _ in range(17):
             yield b'x' * 32768
         yield b'"}'
-    request = api.client.build_request('POST', api.prefix + '/console/execute',
+    before = deepcopy(api.store.db.data)
+    request = api.client.build_request('PUT', api.prefix + '/console/script',
         headers={**header('editor'), 'Content-Type': 'application/json'}, content=chunks())
     assert 'content-length' not in request.headers
     assert api.client.send(request).status_code == 413
-    assert api.runner.starts == []
+    assert api.store.db.data == before
 
 
 def test_chunked_multipart_body_is_bounded_before_storing(api, monkeypatch):
@@ -906,7 +688,7 @@ def test_owner_can_rename_project_and_all_member_summaries_read_the_same_version
         if path.startswith(f'oe_projects/{api.pid}/workspace/') or path.startswith('oe_users/'):
             assert api.store.db.get(path) == value
     assert api.store.script(api.pid, api.users['viewer'])['code'] == 'unsaved = (\n    42'
-    assert api.storage.objects == {} and api.runner.starts == [] and api.runner.cancellations == []
+    assert api.storage.objects == {}
 
 
 def test_project_rename_http_legacy_summary_defaults_to_zero_without_a_migration(api):
@@ -929,7 +711,7 @@ def test_project_rename_http_requires_verified_owner(api, uid, status):
                                 json={'name': 'Forbidden', 'name_version': 0})
     assert response.status_code == status, response.text
     assert api.store.db.data == before
-    assert api.storage.objects == {} and api.runner.starts == []
+    assert api.storage.objects == {}
 
 
 @pytest.mark.parametrize('uid', ['owner', 'editor'])
@@ -1000,7 +782,7 @@ def test_project_rename_http_rejects_invalid_or_mass_assignment_bodies(api, body
     response = api.client.patch(f'/api/projects/{api.pid}', headers=header('owner'), json=body)
     assert response.status_code == 422, response.text
     assert api.store.db.data == before
-    assert api.storage.objects == {} and api.runner.starts == []
+    assert api.storage.objects == {}
 
 
 def test_project_rename_http_unicode_limits_apply_after_trim(api):
@@ -1070,7 +852,7 @@ def test_history_pages_find_old_runs_preserve_budgets_and_survive_new_insertions
     assert found == expected and len(set(found)) == 137
     assert history_request(api).json()['runs'][0]['id'] == new_id
     assert all(request['limit'] == 101 for request in requests)
-    assert api.storage.objects == {} and api.runner.starts == []
+    assert api.storage.objects == {}
     assert 'not returned' not in response.text and 'result' not in page['runs'][-1]
 
 
@@ -1145,7 +927,7 @@ def test_history_opens_full_saved_record_without_reevaluating_or_truncating(api)
               'stdout': 'original', 'outputs': [], 'variables': [], 'error': None,
               'duration_ms': 123, 'session_generation': 1}
     reference = api.storage.put('synthetic/old-record.json', json_bytes(record))
-    api.store.update_run(api.pid, run_id, result=reference)
+    update_run(api, run_id, result=reference)
     reads = []
     api.storage.on_get = lambda reference: reads.append(reference)
     page = history_request(api).json()
@@ -1153,7 +935,7 @@ def test_history_opens_full_saved_record_without_reevaluating_or_truncating(api)
     assert len(page['runs'][0]['code_preview']) == 240 and page['runs'][0]['code_preview_truncated']
     response = api.client.get(api.prefix + f'/runs/{run_id}/record', headers=header('viewer'))
     assert response.status_code == 200 and response.json() == record
-    assert len(reads) == 1 and api.runner.starts == []
+    assert len(reads) == 1
     api.storage.on_get = lambda _: api.store.change_member(api.pid, 'viewer', api.users['owner'], None)
     assert api.client.get(api.prefix + f'/runs/{run_id}/record', headers=header('viewer')).status_code == 404
 
@@ -1164,14 +946,16 @@ def test_history_requires_verified_membership(api, uid, status):
     assert api.client.get(api.prefix + '/runs/unknown/record', headers=header(uid)).status_code == status
 
 
-def test_history_record_missing_pending_and_failed_states_are_explicit(api):
+def test_history_record_missing_unfinished_and_failed_states_are_explicit(api):
     seed_history(api, 1)
     run_id = f'{0:032x}'
     path = api.prefix + f'/runs/{run_id}/record'
     assert api.client.get(api.prefix + '/runs/unknown/record', headers=header('viewer')).status_code == 404
-    api.store.update_run(api.pid, run_id, state='running')
-    assert api.client.get(path, headers=header('viewer')).status_code == 409
-    api.store.update_run(api.pid, run_id, state='failed', record_summary={'status': 'timeout', 'message': 'original timeout'})
+    update_run(api, run_id, state='running')
+    unfinished = api.client.get(path, headers=header('viewer'))
+    assert unfinished.status_code == 200 and unfinished.json()['status'] == 'interrupted'
+    assert api.store.run(api.pid, run_id)['state'] == 'running'
+    update_run(api, run_id, state='failed', record_summary={'status': 'timeout', 'message': 'original timeout'})
     result = api.client.get(path, headers=header('viewer'))
     assert result.status_code == 200 and result.json()['status'] == 'timeout'
     assert result.json()['error']['message'] == 'original timeout'
@@ -1193,7 +977,7 @@ def test_history_snapshot_cursor_replays_first_page_after_new_runs(api):
 def test_unicode_search_and_maximum_metadata_fit_smallest_history_page(api):
     seed_history(api, 2, code='🌍' * 64000)
     for index in range(2):
-        api.store.update_run(api.pid, f'{index:032x}', email='🧪' * 256)
+        update_run(api, f'{index:032x}', email='🧪' * 256)
     first = history_request(api, query='🌍' * 256, max_bytes=4096).json()
     assert first['runs'] and first['next_cursor']
     next_page = history_request(api, query='🌍' * 256, max_bytes=4096, cursor=first['next_cursor']).json()

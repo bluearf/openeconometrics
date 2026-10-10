@@ -1,0 +1,39 @@
+\begin{table}[htbp]
+\centering
+\caption{Original synthetic group wage profiles; experience centered at 15 years}
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Dependent variable: & hourly\_wage & hourly\_wage \\
+ & (1) & (2) \\
+ & Additive & Group-specific slopes \\
+\midrule
+experience\_centered & $1.0050$ & $0.7885$ \\
+ & $(0.0303)$ & $(0.0372)$ \\[0.35em]
+sector & $11.5604$ & $10.2556$ \\
+ & $(0.4286)$ & $(0.3941)$ \\[0.35em]
+sector\_experience &  & $0.4594$ \\
+ &  & $(0.0531)$ \\[0.35em]
+Constant & $24.9907$ & $25.6500$ \\
+ & $(0.3125)$ & $(0.2935)$ \\[0.35em]
+\midrule
+Observations & 480 & 480 \\
+$R^{2}$ & 0.7971 & 0.8234 \\
+$\text{Adjusted }R^{2}$ & 0.7962 & 0.8223 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\footnotesize
+\raggedright
+\textit{Notes:} Standard errors are in parentheses.\par
+(1) OLS: HC3 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1; Student t inference (df = 477); 95\% confidence level (alpha = 0.05); estimation sample 480 of 480 observations; model F(2, 477) = 854.546, p = 2.06878e-158.\par
+(2) OLS: HC3 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1; Student t inference (df = 476); 95\% confidence level (alpha = 0.05); estimation sample 480 of 480 observations; model F(3, 476) = 715.233, p = 7.01317e-176.\par
+\end{minipage}
+\endgroup
+\end{table}

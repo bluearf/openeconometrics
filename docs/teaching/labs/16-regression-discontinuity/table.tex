@@ -1,0 +1,36 @@
+\begin{table}[htbp]
+\centering
+\caption{Synthetic sharp RD: conventional and robust bias-corrected inference}
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lc@{}}
+\toprule
+Dependent variable: & credits \\
+ & (1) \\
+ & h=12, b=18 \\
+\midrule
+Conventional & $4.198$ \\
+ & $(0.734)$ \\[0.35em]
+Bias-corrected & $4.579$ \\
+ & $(0.734)$ \\[0.35em]
+Robust & $4.579$ \\
+ & $(0.894)$ \\[0.35em]
+\midrule
+Observations & 600 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\footnotesize
+\raggedright
+\textit{Notes:} Standard errors are in parentheses.\par
+(1) RDROBUST: Huber-White robust standard errors; normal z inference; 95\% confidence level (alpha = 0.05); estimation sample 600 of 600 observations; covariance correction: hc0 residual sandwich of the local polynomials; conventional (rows 1-2) and robust bias-corrected (row 3) variances.\par
+Fixed bandwidths; independent students; triangular kernel; HC0 variance.\par
+The three rows are alternative estimates/inference for one discontinuity.\par
+\end{minipage}
+\endgroup
+\end{table}

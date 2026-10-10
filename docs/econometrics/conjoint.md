@@ -1,6 +1,6 @@
 # Bounded scored full-profile conjoint
 
-This family implements MARKET-288..295 under MARKET-173. It provides scored
+This family implements MARKET-288..295 and MARKET-785..792 under MARKET-173. It provides scored
 full-profile studies, declared plans, individual utilities and conditional
 preference calculations. It does not close the broader ranked/sequence,
 choice-based conjoint or general orthogonal-array-search backlog.
@@ -77,15 +77,79 @@ free coefficients. Individual coefficient and level-utility tables carry
 estimate, SE, df, two-sided t/p and the requested t interval. This is conventional
 conditional iid OLS covariance; Gaussian within-respondent errors justify finite
 sample t inference. Zero variance yields SE=0/point intervals with undefined
-t/p. Weighted, robust, clustered and group-level sampling covariance are
-unsupported. Equal-subject mean utilities/coefficients are explicitly descriptive.
+t/p. The default equal-subject mean utilities/coefficients remain descriptive;
+`conjoint_group_mean` explicitly requests the separate sampling target below.
+Observation/respondent weights remain unsupported.
+
+`covariance="hc0"`, `"hc1"`, `"hc2"` or `"hc3"` supplies a full within-respondent
+heteroskedastic covariance. With scaled design X, residual e and B=(X'X)^-1,
+HC0 is B X' diag(e²) X B. HC1 multiplies HC0 by n/(n-p). HC2 and HC3 replace
+e² with e²/(1-h) and e²/(1-h)², respectively. Unit leverage (1-h <= 1e-12)
+is refused for HC2/HC3; no profile is discarded or leverage clipped.
+
+`covariance="cr0"` or `"cr1"`, with `cluster="session"`, groups profile scores
+within **each respondent** using that response column. Cluster labels are joined
+by original subject/profile keys, retaining typed scalar IDs and all original
+row identities. CR0 sums cluster-score outer products without a correction;
+CR1 multiplies it by G/(G-1)*(n-1)/(n-p). At least two clusters must remain for
+every complete respondent. Missing/invalid labels fail; an explicitly dropped
+incomplete respondent is excluded as a whole. Cross-respondent and multiway
+profile clustering are outside this contract.
+
+HC reporting uses t(n-p), and CR uses respondent-specific t(G-1), for marginal
+p-values and intervals. These are **approximate reporting conventions**, not
+exact finite-sample robust coverage or a remedy for few clusters. Residual
+variance diagnostics retain n-p; saved records retain inference df, correction
+multiplier and complete ordered cluster IDs. Every covariance is transformed
+in full to raw coefficient and level-utility scales.
 
 `conjoint_predict` reuses saved training anchors, coding, individual coefficients
 and full covariance, with no refit. It returns all subject/profile predictions,
-conditional fitted-mean SE and t CI. Unknown levels are rejected even for numeric
+conditional fitted-mean SE and method-specific t CI. Unknown levels are rejected even for numeric
 factors. These are fitted-mean intervals, without new response noise or
-cross-subject uncertainty. Training predictions are permitted; validation uses
+cross-subject uncertainty; robust fits retain their approximate HC/CR df convention. Training predictions are permitted; validation uses
 the separate leakage guard below.
+
+## Saved contrasts and respondent means
+
+```python
+robust = oe.conjoint_fit(training, responses, attributes,
+                        factors={"price": "ideal"}, covariance="hc3")
+contrasts = oe.conjoint_contrast(
+    robust, {"price 10 to 20": {"price:linear": 10, "price:quadratic": 300}},
+    null={"price 10 to 20": 0},
+)
+group = oe.conjoint_group_mean(robust)
+oe.conjoint_save(contrasts, "price-contrast.json")
+oe.conjoint_save(group, "respondent-mean.json")
+```
+
+`conjoint_contrast` accepts named linear maps of **saved raw coefficient terms**,
+plus an optional complete map of null values. It returns every respondent's
+estimates, full joint target covariance, method-specific pointwise t inference
+and a joint test. The nonrobust Gaussian model uses exact conditional F(q,n-p).
+HC/CR uses asymptotic Wald chi-square(q), explicitly without a finite-cluster
+exactness claim. Empty/zero/redundant maps, unknown/nonfinite weights or nulls,
+and singular joint covariance fail without pseudoinverse repair. Targets are
+computed in the saved scaled fit basis to avoid unnecessary raw-polynomial
+cancellation. Neither fitting nor the original score data are needed again.
+
+`conjoint_group_mean` targets the population mean of fitted respondent
+coefficients **assuming independent iid sampled respondents**. It uses the mean
+raw coefficient vector and its complete empirical covariance
+sum((b_i-bbar)(b_i-bbar)')/[m(m-1)], with m>=2. The same linear map supplies the
+complete joint level-utility covariance. Within-person fitting noise is already
+part of the between-respondent dispersion; adding individual covariances would
+double count that component. Marginal t(m-1) is approximate unless the fitted
+respondent vectors are Gaussian. A convenience sample does not acquire a
+population sampling justification by calling this procedure. No importance,
+preference-share, survey-weighted or cross-respondent dependency CI is supplied.
+Zero empirical variance remains explicit, with point intervals/undefined tests.
+
+Both procedures retain complete checked tables and state in the existing JSON
+artifact format and restore without optimization. Existing v1 artifacts remain
+readable. Work/workspace limits admit full target matrices before allocation;
+CPU, resident-table, no-weight and integrity policies continue to apply.
 
 ## Validation, importance and simulation
 
@@ -115,6 +179,83 @@ positive-score respondent filtering. All methods average conditional probabiliti
 equally across saved respondents. Shares are model-based descriptions, without
 population market-share CI, consumer sampling claims or CBC model estimation.
 
+## Explicit bootstrap sampling laws
+
+MARKET-805..812 add eight remaining uncertainty domains through three APIs:
+
+```python
+for law in ("residual", "rademacher", "mammen", "pairs"):
+    uncertainty = oe.conjoint_bootstrap_fit(restored, method=law,
+                                            replications=499, seed=1729)
+    oe.conjoint_save(uncertainty, f"{law}-uncertainty.json")
+
+importance_uncertainty = oe.conjoint_bootstrap_importance(restored)
+for method in ("first_choice", "btl", "logit"):
+    shares_uncertainty = oe.conjoint_bootstrap_shares(restored, held, method=method)
+```
+
+Choose the law that matches the sampling design; these are different assumptions.
+`conjoint_bootstrap_fit` uses saved keyed training scores, original design anchors
+and full OLS refits. It supplies every raw coefficient and finite-level utility,
+their complete **joint** covariance, bootstrap mean/bias and marginal percentile
+intervals. Original subjects, profile IDs, source positions/labels, all random
+draws, scaled design, target map and every replica are retained.
+
+* `residual`: fixed profiles with independent homoskedastic errors. Center the
+  fitted residuals, multiply by sqrt(n/(n-p)), resample them with replacement,
+  add to the original fitted scores and refit against the original X.
+* `rademacher`: fixed profiles with independent, potentially heteroskedastic
+  errors. Multiply each HC2-adjusted residual e/sqrt(1-h) by independent +/-1
+  with equal probabilities, add to fitted scores and refit. Unit leverage fails.
+* `mammen`: the same fixed-design HC2 construction, with multipliers
+  (1-sqrt(5))/2 and (1+sqrt(5))/2, probabilities (sqrt(5)+1)/(2sqrt(5)) and
+  (sqrt(5)-1)/(2sqrt(5)). Their first three moments are 0, 1, 1.
+* `pairs`: iid **random** profile-score rows within a respondent. Resample the
+  complete (X,y) row with replacement, retaining the original coding. This is
+  not conditional fixed-plan sampling. Any rank-deficient/ill-conditioned
+  replica aborts the complete operation; there is no redraw, skipped replica,
+  regularization or pseudoinverse.
+
+These four laws assume independent profile errors and reject CR0/CR1 fits;
+clustered profile resampling needs a separate block law. They estimate sampling
+uncertainty of fitted utilities, without new-response prediction intervals.
+
+The two group APIs instead resample **whole independent iid respondents**. They
+reuse all saved individual targets and never resample profiles or refit people.
+`conjoint_bootstrap_importance` targets the mean of individually normalized
+importance percentages over the declared levels. It differs from normalizing
+the ranges of mean utilities; any undefined individual's importance fails the
+complete operation. `conjoint_bootstrap_shares` targets mean conditional fitted
+shares for the supplied alternative set, preserving exact/declared ties,
+positive-score BTL and logit temperature rules. It retains every individual
+vector, selected respondent positions, full covariance and every replica.
+
+Group inference concerns the population mean of these **fitted individual
+targets** under iid respondent sampling. It does not remove fitting noise or
+nonlinear estimation bias, turn a convenience sample into a random sample,
+fit a CBC model or calibrate true population market shares. Within-person CR
+fits are permitted here because entire respondents remain the sampling units;
+cross-respondent dependence and survey weights remain unsupported.
+
+All procedures use 20..1999 replications (default 499) and a declared integer
+seed, with type-7 linear-interpolated empirical percentiles at (1-level)/2 and
+(1+level)/2. Covariance uses the complete replica matrix with divisor B-1.
+Covariance can be singular because of utility constraints or shares summing
+to one; it is returned intact without an invented inverse. Zero empirical
+variance has an explicit flag. These are approximate **marginal** intervals;
+no joint confidence band, bootstrap-t/BCa refinement, p-value or exact coverage
+is claimed. Small B has coarse Monte Carlo precision. There is no universal
+nominal-coverage claim for small, discrete or nonregular cases.
+
+Every operation admits cumulative numerical work and complete draw/replica/
+covariance/serialization buffers before numerical refits. The entire result
+must fit the existing 32 MiB artifact bound. A saved result restores complete
+tables and LaTeX without refitting or drawing new randomness. Independent tests
+compare every replica against raw-basis NumPy least squares and all moments/
+quantiles against NumPy, including exhaustively enumerated Rademacher and iid
+respondent laws. These are algorithm/law checks, not a finite-sample coverage
+certificate or a whole-current-main desktop release.
+
 ## Budgets and persistence
 
 Domain: 4096 profiles, 16 attributes, 128 coefficients, 128 subjects and 100000
@@ -126,7 +267,7 @@ process-memory promise; resident tabular inputs and integrity serialization are
 separate from the numerical buffer estimate.
 
 Resident CPU float64 only. Dataset, CUDA/MPS, observation/respondent weights,
-rank/sequence input and unsupported covariance fail explicitly. CPU placement
+rank/sequence input and unsupported covariance domains fail explicitly. CPU placement
 does not inherit the caller's default device/dtype. `conjoint_save/load` retains
 all tables, full covariance, coding, declared levels, original sample identities,
 options, diagnostics and state inside a checksummed artifact up to 32 MiB.
@@ -137,6 +278,9 @@ Console previews are not complete artifacts; save the entire JSON explicitly.
 
 * [IBM original CONJOINT algorithms](https://public.dhe.ibm.com/software/analytics/spss/support/Stats/Docs/Statistics/Algorithms/14.0/conjoint.pdf): effects coding, numeric centring, OLS, utility covariance, individual-normalized importance and preference models. Our complete raw covariance/prediction oracles are independent NumPy/SciPy development calculations; they do not run in the implementation.
 * [IBM CONJOINT command](https://www.ibm.com/docs/en/spss-statistics/32.0.0?topic=conjoint-overview-command): full-profile score/rank distinction, utility factor models and holdout roles. Our supported input is scored, explicitly keyed long form.
+* [Stata regress methods and formulas](https://www.stata.com/manuals/rregress.pdf): independently implemented HC0/HC1/HC2/HC3 score sandwiches, one-way cluster correction and df conventions. This is a published-method reference, not licensed executable parity.
+* [Efron and Tibshirani (1986)](https://doi.org/10.1214/ss/1177013815): bootstrap sampling, standard errors and intervals. Our saved finite draw matrix and marginal quantile convention are explicit.
+* [Flachaire, original author manuscript](https://www.math.kth.se/matstat/gru/sf2930/papers/Flachaire_03a.pdf): distinct wild and pairs regression sampling laws and leverage-adjusted residual constructions. Our intervals are unstudentized percentile approximations; the manuscript's refined hypothesis-test performance is not claimed.
 * [NIST published resolution-IV design](https://www.itl.nist.gov/div898/handbook/pri/section3/eqns/2to4m1.txt): the exact eight-run D=ABC fixture and its pair-interaction aliases.
 * [NIST fractional-design tables](https://www.itl.nist.gov/div898/handbook/pri/section3/pri3347.htm): declared generator and resolution conventions.
 

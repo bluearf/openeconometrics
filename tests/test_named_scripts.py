@@ -476,12 +476,10 @@ def api(request, tmp_path):
         }
 
     storage = MemoryStorage()
-    # Any accidental dispatch is a failure: drafts must remain inert metadata.
-    runner = SimpleNamespace(start=lambda *args, **kwargs: pytest.fail("Draft dispatched Python"))
+    # Drafts remain inert metadata; the sync backend has no execution backend.
     app = create_team_app(
         store=team.store,
         storage=storage,
-        runner=runner,
         public_origin=ORIGIN,
         auth=TeamAuth(FIREBASE_PROJECT, verifier=verify),
         firebase_config={
@@ -528,6 +526,12 @@ def test_http_create_read_save_and_conflict_are_inert(api, tmp_path):
         assert api.team.store.project(api.team.pid, api.team.users["owner"])["run_count"] == 0
 
 
+def retired_team_execution(response):
+    """The team sync backend refuses every execution request before reading it."""
+    assert response.status_code == 410, response.text
+    assert response.json()["detail"]["code"] == "CLOUD_EXECUTION_RETIRED"
+
+
 @pytest.mark.parametrize("extension", ["md", "tex"])
 def test_identified_documents_never_start_python_even_when_contents_are_python(api, extension, tmp_path):
     sentinel = tmp_path / "document-must-not-run"
@@ -537,8 +541,11 @@ def test_identified_documents_never_start_python_even_when_contents_are_python(a
     assert created["name"] == f"report.{extension}"
     result = api.client.post(api.prefix + "/console/execute",
                              json={"code": code, "script_id": created["id"]})
-    assert result.status_code == 422, result.text
-    assert result.json()["detail"]["code"] == "DOCUMENT_NOT_EXECUTABLE"
+    if api.kind == "team":
+        retired_team_execution(result)
+    else:
+        assert result.status_code == 422, result.text
+        assert result.json()["detail"]["code"] == "DOCUMENT_NOT_EXECUTABLE"
     assert not sentinel.exists()
     assert api.client.get(api.prefix + "/console").json()["history"] == []
     if api.kind == "local":
@@ -561,8 +568,11 @@ def test_execution_resolves_cross_type_explorer_rename_and_preserves_source(api,
     assert api.client.get(path + "/" + created["id"]).json() == created
     response = api.client.post(api.prefix + "/console/execute",
                                json={"code": "1 + 2", "script_id": created["id"]})
-    assert response.status_code == 422, response.text
-    assert response.json()["detail"]["code"] == "DOCUMENT_NOT_EXECUTABLE"
+    if api.kind == "team":
+        retired_team_execution(response)
+    else:
+        assert response.status_code == 422, response.text
+        assert response.json()["detail"]["code"] == "DOCUMENT_NOT_EXECUTABLE"
     if api.kind == "local":
         assert api.app.state.console._process is None
     else:
@@ -572,7 +582,10 @@ def test_execution_resolves_cross_type_explorer_rename_and_preserves_source(api,
 @pytest.mark.parametrize("identifier", ["c" * 32, "../elsewhere", "analysis.md"])
 def test_identified_execution_cannot_use_unknown_or_unsafe_file_ids(api, identifier):
     response = api.client.post(api.prefix + "/console/execute", json={"code": "1", "script_id": identifier})
-    assert response.status_code == (404 if identifier == "c" * 32 else 422)
+    if api.kind == "team":
+        retired_team_execution(response)
+    else:
+        assert response.status_code == (404 if identifier == "c" * 32 else 422)
     if api.kind == "local":
         assert api.app.state.console._process is None
     else:

@@ -1,0 +1,42 @@
+\begin{table}[htbp]
+\centering
+\caption{Synthetic observational schools: a reproducible association report}
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Dependent variable: & final\_score & final\_score & final\_score \\
+ & (1) & (2) & (3) \\
+ & Unadjusted, common & Adjusted & Without resources \\
+\midrule
+tutoring\_hours & $1.773$ & $2.208$ & $2.500$ \\
+ & $(0.283)$ & $(0.163)$ & $(0.179)$ \\[0.35em]
+prior\_score &  & $0.688$ & $0.725$ \\
+ &  & $(0.030)$ & $(0.033)$ \\[0.35em]
+resource\_index &  & $1.963$ &  \\
+ &  & $(0.261)$ &  \\[0.35em]
+Constant & $56.982$ & $12.780$ & $9.119$ \\
+ & $(1.470)$ & $(2.238)$ & $(2.393)$ \\[0.35em]
+\midrule
+Observations & 277 & 277 & 277 \\
+$R^{2}$ & 0.120 & 0.716 & 0.664 \\
+$\text{Adjusted }R^{2}$ & 0.117 & 0.712 & 0.661 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\footnotesize
+\raggedright
+\textit{Notes:} Standard errors are in parentheses.\par
+(1) OLS: HC3 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1; Student t inference (df = 275); 95\% confidence level (alpha = 0.05); estimation sample 277 of 277 observations; model F(1, 275) = 39.237, p = 1.44097e-09.\par
+(2) OLS: HC3 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1; Student t inference (df = 273); 95\% confidence level (alpha = 0.05); estimation sample 277 of 277 observations; model F(3, 273) = 228.335, p = 4.25172e-74.\par
+(3) OLS: HC3 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1; Student t inference (df = 274); 95\% confidence level (alpha = 0.05); estimation sample 277 of 277 observations; model F(2, 274) = 278.035, p = 1.13023e-66.\par
+Same 277 complete-case schools; HC3 standard errors and Student t inference.\par
+Unobserved motivation remains a confounder; adjusted associations are not policy effects.\par
+\end{minipage}
+\endgroup
+\end{table}

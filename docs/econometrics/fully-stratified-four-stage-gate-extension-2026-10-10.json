@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "kind": "additive_source_selector_extension",
+  "base_commit": "84ed392855b10a0024562f055806104cece121ff",
+  "base_producer_sha256": "a8e926dcae746404f5a0da3846c81fad2712ab106825eb73971177c566c3f6a9",
+  "unchanged_legacy_plan_sha256": "ecebc48bca1f2212c095f2d72362160401ccc229d5f8d7a2b4fcac97cfc61c7b",
+  "base_selector_count": 142,
+  "base_selectors_sha256": "91a2af1da54ccade4656f7317a4e28df3aad109baf94fdc7d43a91feeaf7e88e",
+  "appended_selectors": [
+    "tests/test_survey_fully_stratified_four_stage.py",
+    "tests/test_survey_fully_stratified_four_stage_safety.py"
+  ],
+  "complete_selector_count": 144,
+  "complete_selectors_sha256": "7c5ac4b712c90c9fa7603020d815649fccc90fb44ca9ce2daf591417dea805ca",
+  "timeout_seconds": 900,
+  "sdk_minors": [
+    "3.11",
+    "3.13"
+  ],
+  "distributed_shards_per_minor": 4,
+  "all_current_main_selectors_in_original_order": true,
+  "no_skip_or_reduction": true,
+  "scope_order_qualification": "Current main includes all 138 legacy selectors plus four weighted regression selectors. Those exact 142 retain their order. The two survey selectors follow them; their earlier provisional positions at 138/139 are superseded without dropping any case.",
+  "acceptance": "Requires genuine final-head/current-base hosted aggregate and native integration preservation."
+}

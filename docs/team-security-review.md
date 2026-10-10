@@ -1,5 +1,11 @@
 # Team workspace security review
 
+> Cloud execution was retired on 10 October 2026: the cloud service is now a
+> team sync layer and every analysis runs in the desktop app. Entries below
+> that describe sandbox, Job or browser cloud runs are historical records of
+> the removed backends, not current behavior. See
+> [team sync backend deployment](sync-backend-deployment.md).
+
 Review date: 1 October 2026. This is an implementation and deployment checklist,
 not a penetration-test certificate. Local test results, cloud policy readback
 and authenticated browser behavior are separate evidence.

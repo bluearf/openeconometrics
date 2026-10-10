@@ -1,0 +1,363 @@
+{
+  "schema": 1,
+  "scope": "MARKET-744 through MARKET-751; fully stratified four actual SRSWOR selections",
+  "integrated_main_commit": "84ed392855b10a0024562f055806104cece121ff",
+  "source_ref": "77147f012b9fa014df2b6002384e0d4071829438",
+  "source_module_sha256": {
+    "openecon": "103c58744a1f7c1f2119f13da17df6538dd14f8cbba4fe8e1365a6c785f4e2a8",
+    "openecon.models": "c701c6e4247113608d1d39daa091aad0536248de852719cb146062fcdcac872c",
+    "openecon.console_worker": "72fe4ac8617c5d7dc2876c7b74fe1302ca407d482d213ae48fb8f4af8577c974",
+    "openecon.survey": "1d03d66d8ca4223f9699d0e57d31ac38bbfb3242c8ac8c245427f925628f85ec",
+    "openecon.econometrics.survey": "a468dc3a5e241673b30c4d4396d602a72c144301c1af13e7e27d43605bfd8202",
+    "openecon.econometrics.survey.common": "bf599e6fc4bcf021ddc7dcea41d35755757a3801e138da2f040738971bcfde02",
+    "openecon.econometrics.survey.targets": "916ce28fdb38f07c2b7552e8a705ec4cff07b22b48dd2eda4185e04136c3c989",
+    "openecon.econometrics.survey.replication": "833cfd849eb9ed847bcc89290e1cc6884212c6b2956166baac3f41adb6e7c514",
+    "openecon.econometrics.survey.regression_common": "79ba80cf417fd1831d4508782b862b352f797e756866ae576d0f7eae3f2ce84f",
+    "openecon.econometrics.survey.regression": "a98417505c5ecd88646ac0dba88a4f5487edec5d8e6cf3127eca3efbc0ecb28d",
+    "openecon.econometrics.survey.regression_replication": "24b00d4af6e07e8e91ceab638865160f5e2ff3743620306ee10427e86b15649d",
+    "openecon.econometrics.survey.replicate_margins": "c2cffb310a77bcf32b4ab888473b0bf9fa0b2a71852998ed23b3e4a1f3c298ea",
+    "openecon.econometrics.survey.replicate_margins_state": "0f909ff2f2559670d87f6b4b40460c767dbaf49c35c02519cc8b975075168330",
+    "openecon.econometrics.survey.regression_postest": "2a7b4f04404008ae4cd705bfd2c7079e298c72dc1c400b170bef9994d91e6f49",
+    "openecon.survey_two_stage": "8038d21b95a1a5319a753d746d0919d3d81ffc7356e22766d46e6ace850e44fb",
+    "openecon.econometrics.survey.two_stage_common": "da4b21070bd40bd8709aadc62586bd10befbaed3b07774b2c30ee991ef9df8dd",
+    "openecon.econometrics.survey.two_stage_targets": "300a6922299692c84aa8d857ffbfaa3a0e4fc8154f842fdd954803f964cc5b66",
+    "openecon.econometrics.survey.two_stage_regression": "c1ac1cb89757e4ccbdbd7385e63c55a32d1d12e07363e38f519ed3fc39a8af9f",
+    "openecon.econometrics.survey.two_stage_regression_state": "77863d0c58bed12cb3170b79c7a547b891bbc7c1407388ad480fb61d8a7105f8",
+    "openecon.econometrics.registry": "087670997a97a91aae4d139c6e2ca06942dc5eb5359c7c165762d9315da0c51d",
+    "openecon.analysis_contracts": "79c64d48755df4584ae28d33e8ca0765d1b31296ecbd8a75db96245dd3ad9721",
+    "openecon.econometrics.core": "468d19bb3b54eb6b32acf6a7c21dad9feb5add474b031604d36ede2eb39624ea",
+    "openecon.resources": "bfd3b89ab6aabd80822f10d829bd5e52b48bd142ed84b792ecd75f3ad06517ac",
+    "openecon.engines.inference": "f99c4b530b205e26bf3fd5c59ef087421ff5eba53fb397523cf7381b2c15ee3b",
+    "openecon.engines.distributions": "e7bf08e8f513d86c13f3775746fb44949bfb1f2ba9fab843f942872a117c9363",
+    "openecon.engines.separation": "a2f3aca6e5390dcc6c4443ca90c3f3d2758a637eea0b676553c9a0f5d615c612",
+    "openecon.engines.contracts": "60ba07723ee32f0c0eba09f2af53a65a7de08ae2b8b1f882cf0a9d0cafac7a4f",
+    "openecon.engines": "a8271ed6bbb1f09b3ed8b3da53eab099b37a11ec6dd2539b71c6a1ac716ed68f",
+    "openecon.survey_three_stage": "eed0a00441436e5a42e69e3d52e1b2b707a90a7904bcadec9fb1f0468d01fe81",
+    "openecon.econometrics.survey.three_stage_common": "8dc0017e9811efdea23741a21b0c0e3fa569f94448f56c4c8d0b9b6ca5054172",
+    "openecon.econometrics.survey.three_stage_targets": "21cbe991802d6660c722ae0d6ade4a4b3fb90b52436cafc2c231136fb5e1d384",
+    "openecon.econometrics.survey.three_stage_regression": "a52e3576729c39b92ccced47b86e5760ca3f7d9d8ff871f10e52c9ccb0afb401",
+    "openecon.econometrics.survey.three_stage_regression_state": "3cc59eee571b3417c332086e25215cab34ea8321f509b31b15d4efa077c880b6",
+    "openecon.survey_stratified_three_stage": "b05fccb0da375d354cc7f94a101a927d11f1d28d2492ad3c350d52cecd242a81",
+    "openecon.econometrics.survey.stratified_three_stage_common": "247051ed04b2c2be420873244b91e0937450cf5d2e2b5533d0f89a2a211ab95f",
+    "openecon.econometrics.survey.stratified_three_stage_targets": "f3c1fe190b2300bb4b37b7d1abe6f894a9db3b0c5dba45c88697a03455865091",
+    "openecon.econometrics.survey.stratified_three_stage_regression": "77f490d425263f429bc67bb42d14823c98933d3a70951add11acdb60210b89e3",
+    "openecon.econometrics.survey.stratified_three_stage_regression_state": "dc38dc49609f53ee876c56e348f2647b98a298cc6fb92f193c516f9b6ae989a9",
+    "openecon.survey_fully_stratified_three_stage": "06629da8c6ff32e68160926229d3b8884c26e5113fde42e904f2f9d3ac5fde6d",
+    "openecon.econometrics.survey.fully_stratified_three_stage_common": "849cda89e3875cfd5ef5e53b51cf40c4fe210e7634677bc947e7a957c4604b83",
+    "openecon.econometrics.survey.fully_stratified_three_stage_targets": "00c23ea72d96965b81223026420dd285e63371463bd303af7b5885333e72a8ef",
+    "openecon.econometrics.survey.fully_stratified_three_stage_regression": "9ddc5e72160e573687a29b8e26913629e67a711e9a398df03c2aecd2edef6aee",
+    "openecon.econometrics.survey.fully_stratified_three_stage_regression_state": "5b84766f2cad4a25ff0a1f0aafdd541b24c605d837c39b98e4f78410f678c982",
+    "openecon.survey_four_stage": "d32682914dd01444d4958965f6ff19d12f9bca9ec542f3e6d74d64ac65eef166",
+    "openecon.econometrics.survey.four_stage_common": "65be539283fadd07a5360fd3a7a558f67ed80ee396007cd5bed8e9331c5402e0",
+    "openecon.econometrics.survey.four_stage_targets": "32655150f4c6f4976a66f5556e903b0b27b3c948a3c1fcab0e0c1d1b5892a668",
+    "openecon.econometrics.survey.four_stage_regression": "1fe0a7279c0c74794035ffdde27686d69bd8bccaaeadadf5651bd27f559a2b35",
+    "openecon.econometrics.survey.four_stage_regression_state": "dc1f3f9fe8c692d009ce4138e0c56b2fe9181f92d9296939bc65479165d8ad24",
+    "openecon.latex": "cac5a5229be9f2067537ef374e824bc1edc3eac62f5b1c41ca3894d1cc819752",
+    "openecon.output_latex": "2aa4db2f7376f3c376ab1d0d238edfb84a4dd518201847a6e391c3361eeefe26",
+    "openecon.output_events": "f706f91d35b38cbaf2a33569c6a7e15b74d11819b73292b108211e2415729165",
+    "openecon.survey_fully_stratified_four_stage": "b876b354f271c66a0216028ba707a4aa3af3a450631fe819d0b0c875dbb934af",
+    "openecon.econometrics.survey.fully_stratified_four_stage_common": "6a881512b5b038a7217006b64103b6f6f3d9a0185c34670e51ee82315e21433e",
+    "openecon.econometrics.survey.fully_stratified_four_stage_targets": "fa839567daff27df0c7cfed87657e9361c859cfa22cb9195b787faa9ca014cc8",
+    "openecon.econometrics.survey.fully_stratified_four_stage_regression": "b9b309b4089f51192196f26c8649308bca57dcfd26feb99ba524b8020bc4089f",
+    "openecon.econometrics.survey.fully_stratified_four_stage_regression_state": "b3c7f293f581d735742829a531dc967de9eda0e4ce0d7b97f29278507a353222"
+  },
+  "runtime_sha256": "9a5a6aa5249aed92f03c2e4964dac2171b34351fdd38dca53efc313081d1c4ba",
+  "native_executable_sha256": "56a1b556f8b497f4a8f7cbf928298b38129a0e77800116b828b5b12b6d1deb4c",
+  "runtime_manifest_sha256": "5ff083ba734285d5a9e3c5fbe529a949f4ff240f5351c8c002bbdcb6c0587d9d",
+  "application_identifier": "org.openecon.qa.fully-stratified-four-stage-eight-20261010",
+  "native_actual_run": {
+    "execution_id": "037a0f8d-3947-4a5d-bd0d-db28576c036f",
+    "execution_sha256": "0981c2614075f646430f9fe2f0e360a593a5b0e87537cd324deaf58400d0353a",
+    "tables": 8,
+    "latex_outputs": [
+      {
+        "type": "table",
+        "latex_sha256": "ec512fcc05d49d755370eb9bab479c2656ffd03082431c5a4612228a76afef92"
+      },
+      {
+        "type": "table",
+        "latex_sha256": "1d02c4636228382e611b2a87b8818a503623450298057d1046c4eed435452239"
+      },
+      {
+        "type": "table",
+        "latex_sha256": "a50e4af8b23c5a626cfd7be21017b5a6025833c0216a26e56a9bc0710c5a4228"
+      },
+      {
+        "type": "table",
+        "latex_sha256": "94023f74f631888e9f2608c2152829481e695fc5991a24583adb14acc5b310f2"
+      },
+      {
+        "type": "table",
+        "latex_sha256": "a3755029dd9087c4e79264f7e4ecc4e2ad81dcd75ea760c5e2328ddceacb8911"
+      },
+      {
+        "type": "table",
+        "latex_sha256": "49805a58929ce08fd121f82a22eaf02799ab56e196d0e5049bc79a24f69ffabd"
+      },
+      {
+        "type": "table",
+        "latex_sha256": "8936edefeae6e6de8bb64115268b9c402ce0bcd050adf31ba8804be676b85c96"
+      },
+      {
+        "type": "table",
+        "latex_sha256": "b41c5847c4f2c1e8bad4d0377d40ac35225792a76b9091ab053594b58030f1f6"
+      }
+    ],
+    "observed_ui_seconds": 11.84
+  },
+  "persisted_files": {
+    "oracle_inputs": {
+      "bytes": 37567,
+      "file": "survey-fully-stratified-four-stage-oracle-inputs.json",
+      "sha256": "b617de34ec813b3178dfdc303352818fe57c205970eea801220dc68b767c1daf"
+    },
+    "postestimation": {
+      "bytes": 1121971,
+      "file": "survey-fully-stratified-four-stage-postestimation.json",
+      "sha256": "3590e6a3230bc6d8ed776026d1a171807b8face429fde4a11082071887730134"
+    },
+    "states": {
+      "bytes": 737355,
+      "file": "survey-fully-stratified-four-stage-states.json",
+      "sha256": "cf4dc3bc45c5115f7c242b41983eca6007d0de26e46c588141515478898a1092"
+    }
+  },
+  "postestimation_sha256": {
+    "logit": {
+      "lincom": "f694bdc3135055cd1da701f387d45de61dcb82f2b9cb6a69ea6a5c49156d39f8",
+      "predict": "1ae94f6ff76e53278d3fcb012329681683b638c8cf7716da4a0c90cdb8f517b1",
+      "test": "f8a62a9cb33c07fe5ee798b9cd3db324ef57b6e4be8e7d18c8cbeddb26455f9c"
+    },
+    "mean": {
+      "contrast": "68d2cb598856f7cbbb9479955184504574627214eaf6d3a76b685bda2543f7ca"
+    },
+    "poisson": {
+      "lincom": "79281587b9c88f34664274a308d7aea6d3edc3993a31fd817115c97905a119e8",
+      "predict": "b3165eef2b17f4e6fc7549fc360eef41f4ec5026f7776e04e8341d18ecff2bb2",
+      "test": "5e8c304008bf81f119913b638ffdbd05c12f1337ae302825b40ccfda45e8d1a9"
+    },
+    "probit": {
+      "lincom": "0bf788ca890569c3b0dae06ef81332a155696fbeb46e2380713a021ccc0e32a2",
+      "predict": "da8a349575baa8436ece9ba210f4c9be1a44bd9eeb85db4b97b2037ae8627864",
+      "test": "4a4a7ebb1b80b0359a0b8eaf9dfd18ecf57c0b5ec33347804fc57effe37d3923"
+    },
+    "proportion": {
+      "contrast": "41484b6cdd1faf2d710ea9a3f6d831a6a42d3cae74d47c4ae6484b7c05e29e0b"
+    },
+    "ratio": {
+      "contrast": "ae9d9d77aed926c2ad4358650de6e30f9a6cc82e4fb2600c0fa60400691cf408"
+    },
+    "regress": {
+      "lincom": "9c85fa075824997e82b4b510d190de9fe5272f0c2e2c20d218627935eb32e56c",
+      "predict": "3fa2003216dbe48d23f0339e1f48e5cdf08e5fa8df10d78d928516426d43c3ea",
+      "test": "438188c86ccfa4929483f1e32914ea1915a054b852c85eff4ddd01979870c504"
+    },
+    "total": {
+      "contrast": "86557d3e25ce24fe62b7fef8f4ccdec0f7f50cb373b855ac776f678612d930fc"
+    }
+  },
+  "normal_quit": {
+    "all_recorded_pids_exited": {
+      "5224": true,
+      "5232": true,
+      "5296": true,
+      "5297": true
+    },
+    "old_listener_closed": true,
+    "port": 61399,
+    "quit": "actual native Command-Q"
+  },
+  "cold_restart": {
+    "status": "native-restarted",
+    "unchanged_execution_sha256": "0981c2614075f646430f9fe2f0e360a593a5b0e87537cd324deaf58400d0353a",
+    "unchanged_history_sha256": "e5c5a808be9096624e25d359119309c858a1d8790e97a6e79abe31ae1b828cc4"
+  },
+  "cold_fresh_worker": {
+    "status": "cold-replayed",
+    "proof": {
+      "cases": 8,
+      "files": {
+        "oracle_inputs": {
+          "bytes": 37567,
+          "file": "survey-fully-stratified-four-stage-oracle-inputs.json",
+          "sha256": "b617de34ec813b3178dfdc303352818fe57c205970eea801220dc68b767c1daf"
+        },
+        "postestimation": {
+          "bytes": 1121971,
+          "file": "survey-fully-stratified-four-stage-postestimation.json",
+          "sha256": "3590e6a3230bc6d8ed776026d1a171807b8face429fde4a11082071887730134"
+        },
+        "states": {
+          "bytes": 737355,
+          "file": "survey-fully-stratified-four-stage-states.json",
+          "sha256": "cf4dc3bc45c5115f7c242b41983eca6007d0de26e46c588141515478898a1092"
+        }
+      },
+      "fits_disabled": true,
+      "frozen": true,
+      "ok": true,
+      "original_worker_pid": 5297,
+      "source_ref": "77147f012b9fa014df2b6002384e0d4071829438",
+      "worker_pid": 8941
+    },
+    "execution_sha256": "15cbc361b5ae6cff9cd9db79cb81049416cbcd20ea2c891c86ea0841a25db00c",
+    "observed_ui_seconds": 6.33
+  },
+  "independent_original_native_packet_oracle": {
+    "ok": true,
+    "cases": 8,
+    "rows": 256,
+    "checks": {
+      "mean": {
+        "estimate": 2.220446049250313e-16,
+        "covariance": 2.222614453595284e-18,
+        "stage1_covariance": 2.222614453595284e-18,
+        "stage2_covariance": 9.486769009248164e-20,
+        "stage3_covariance": 2.964615315390051e-21,
+        "stage4_covariance": 2.168404344971009e-19,
+        "primitive_values": 0.0,
+        "primitive_denominators": 0.0,
+        "row_influences": 5.204170427930421e-18
+      },
+      "total": {
+        "estimate": 4.547473508864641e-13,
+        "covariance": 4.656612873077393e-10,
+        "stage1_covariance": 4.656612873077393e-10,
+        "stage2_covariance": 3.637978807091713e-12,
+        "stage3_covariance": 4.547473508864641e-13,
+        "stage4_covariance": 0.0,
+        "primitive_values": 0.0,
+        "primitive_denominators": 0.0,
+        "row_influences": 7.105427357601002e-15
+      },
+      "ratio": {
+        "estimate": 5.551115123125783e-17,
+        "covariance": 1.3552527156068805e-19,
+        "stage1_covariance": 1.5246593050577406e-19,
+        "stage2_covariance": 3.3881317890172014e-21,
+        "stage3_covariance": 2.9116757561866574e-22,
+        "stage4_covariance": 1.3552527156068805e-20,
+        "primitive_values": 0.0,
+        "primitive_denominators": 0.0,
+        "row_influences": 8.673617379884035e-19
+      },
+      "proportion": {
+        "estimate": 0.0,
+        "covariance": 0.0,
+        "stage1_covariance": 1.0164395367051604e-20,
+        "stage2_covariance": 2.710505431213761e-20,
+        "stage3_covariance": 0.0,
+        "stage4_covariance": 0.0,
+        "primitive_values": 0.0,
+        "primitive_denominators": 0.0,
+        "row_influences": 8.673617379884035e-19
+      },
+      "regress": {
+        "estimate": 8.881784197001252e-16,
+        "covariance": 1.3654171109739321e-18,
+        "stage1_covariance": 1.3654171109739321e-18,
+        "stage2_covariance": 7.182839392716467e-19,
+        "stage3_covariance": 1.0164395367051604e-19,
+        "stage4_covariance": 8.131516293641283e-20,
+        "primitive_X": 0.0,
+        "primitive_y": 0.0,
+        "bread": 1.7053025658242404e-13,
+        "row_scores": 3.552713678800501e-15
+      },
+      "logit": {
+        "estimate": 6.721923018204734e-11,
+        "covariance": 2.5584256935218264e-12,
+        "stage1_covariance": 1.550365738567372e-12,
+        "stage2_covariance": 1.0371009606657822e-12,
+        "stage3_covariance": 6.69641425643519e-13,
+        "stage4_covariance": 9.709854448258781e-14,
+        "primitive_X": 0.0,
+        "primitive_y": 0.0,
+        "bread": 1.1439169611549005e-09,
+        "row_scores": 8.561507058857387e-11
+      },
+      "probit": {
+        "estimate": 8.498757253505573e-13,
+        "covariance": 1.745131816832668e-14,
+        "stage1_covariance": 1.1958641542297865e-14,
+        "stage2_covariance": 7.45931094670027e-15,
+        "stage3_covariance": 2.8727020762175925e-15,
+        "stage4_covariance": 3.7556763254897874e-16,
+        "primitive_X": 0.0,
+        "primitive_y": 0.0,
+        "bread": 2.1515234038815834e-11,
+        "row_scores": 2.7844393457598926e-12
+      },
+      "poisson": {
+        "estimate": 7.381928401883897e-12,
+        "covariance": 4.248097912936538e-14,
+        "stage1_covariance": 3.857490363376112e-14,
+        "stage2_covariance": 6.306370356479185e-15,
+        "stage3_covariance": 1.5024656865869623e-14,
+        "stage4_covariance": 1.957765546900525e-14,
+        "primitive_X": 0.0,
+        "primitive_y": 0.0,
+        "bread": 2.7745841180149e-09,
+        "row_scores": 5.043965245477011e-11
+      }
+    },
+    "independent": "NumPy/SciPy nested conditional strata",
+    "vendor_parity": false
+  },
+  "previous_native_receipt": "survey-fully-stratified-four-stage-native-2026-10-10.json",
+  "unchanged_result_state_and_postestimation_hashes_from_prior_native": true,
+  "incoming_editor_entries_preserved": {
+    "base": "84ed392855b10a0024562f055806104cece121ff",
+    "baseline": 1215,
+    "current": 1240,
+    "bytes": 493048,
+    "missing": [],
+    "changed": []
+  },
+  "local_checks": {
+    "integration-focused-retry.xml": {
+      "sha256": "ccfe6d6c964a068f262cf5782211bbb0bfcc2b6f1027cdd715d83bbf0556a0de",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "973",
+      "time": "189.872",
+      "timestamp": "2026-10-10T02:14:56.877415+03:00",
+      "hostname": "Anl-MacBook-Pro.local"
+    },
+    "integration-311.xml": {
+      "sha256": "1bf2de3c41771f44adfd4ac85fa2f4736042df78c0504d70017b9bb2d7f13977",
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "0",
+      "tests": "156",
+      "time": "31.410",
+      "timestamp": "2026-10-10T02:15:22.050558+03:00",
+      "hostname": "Anl-MacBook-Pro.local"
+    }
+  },
+  "visual_proofs": {
+    "integration-native-results": {
+      "png": "8ceedebde934b9b747ce191820c4917beca7236877c5cb0db870b59ca0dd327f",
+      "ax.txt": "33520853d630b1419735b3380ddb0ec71696bc4f41fbd18eeb780c749fffbf4b"
+    },
+    "integration-after-restart": {
+      "png": "da94155757dc8a4769cc04cb5063607d4ff7c9bbac40d7a2266afb1fc89680d1",
+      "ax.txt": "4b5621186187a5b42d4fe4b4adbe5cf89c6d355bdd58e468fa428f3ac04635bf"
+    },
+    "integration-cold-replay": {
+      "png": "c10c3ea83f9147b810d7ab09f0c9c1a4a56b7e71c00581c6c73d72e9e747776d",
+      "ax.txt": "10c1c672d06ddf5ef97088b8fd4c48e78f695e9ae636afed396c52bba770cdb0"
+    }
+  },
+  "claims": {
+    "local_adhoc_qa": true,
+    "developer_id": false,
+    "notarized": false,
+    "public_release": false,
+    "vendor_parity": false,
+    "parent_MARKET_211_complete": false
+  }
+}

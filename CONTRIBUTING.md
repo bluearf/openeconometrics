@@ -1,5 +1,8 @@
 # Contributing to OpenEconometrics
 
+Coding agents must also read [AGENTS.md](AGENTS.md), which records the current
+test cadence, local resource policy and human-approved acceptance boundaries.
+
 Use Python 3.13 and Node.js 22.12 or later. Install the committed dependency
 locks from a clean checkout:
 
@@ -16,8 +19,8 @@ weight alignment, full covariance, inference, diagnostics and saved results.
 Coefficient recovery alone does not establish correctness. Record the exact
 reference convention and supported options; do not claim blanket Stata parity.
 
-Run focused checks for the changed behavior, and the repository checks before
-submitting:
+Run focused checks for the changed behavior. Repository verification commands
+include:
 
 ```sh
 uv run --no-sync ruff check src tests scripts packages/openecon-charts
@@ -41,5 +44,8 @@ process described in `SECURITY.md`, without placing secrets in public issues.
 
 Contributions are submitted under the repository's Apache-2.0 license. Keep PR
 descriptions focused on the concrete behavior, reference boundaries and relevant
-validation. GitHub Actions workflows remain manual while runner billing is
-restricted; opening a PR is not permission to incur new CI charges.
+validation. Pull requests require quick Python 3.11/3.13 and web checks. The full
+SDK and package workflow runs daily at 04:17 Europe/Istanbul and can also be
+started manually. Check the full result before a release; a quick green check
+does not establish complete numerical regression coverage. See the
+[CI cadence and exact scopes](docs/validation/ci-cadence.md).

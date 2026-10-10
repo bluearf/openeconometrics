@@ -1,0 +1,27 @@
+{
+  "filename": "shopping_channels.xlsx",
+  "description": "Are Shopping Channels and Membership Independent?; original synthetic teaching data.",
+  "observation_unit": "One synthetic shopping transaction.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710016,
+  "columns": [
+    {
+      "name": "transaction_id",
+      "description": "Transaction identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "channel",
+      "description": "Observed shopping channel",
+      "unit": "Store, Web or App",
+      "missing": 0
+    },
+    {
+      "name": "member",
+      "description": "Membership at purchase",
+      "unit": "0=no, 1=yes",
+      "missing": 0
+    }
+  ]
+}

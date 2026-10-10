@@ -25,9 +25,19 @@ import tomllib
 import xml.etree.ElementTree as ET
 import zipfile
 
+def _report_metadata():
+    try:
+        from scripts import pytest_gate_report_protocol as reports
+    except ModuleNotFoundError as error:
+        if error.name != "scripts":
+            raise
+        import pytest_gate_report_protocol as reports
+    return reports
+
+
 ROOT = Path(__file__).resolve().parents[1]
 VERSIONS = ("3.11", "3.13")
-CONTEXT = "OpenEconometrics / merge gate"
+CONTEXT = "OpenEconometrics / daily full gate"
 COMMON_STEPS = ("ruff", "capabilities", "editor", "web-install", "web-tests", "web-build")
 GATE_ENVIRONMENT = {
     "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
@@ -43,12 +53,7 @@ DISTRIBUTED_GATE_ENVIRONMENT = {
 }
 MAX_PHASE_LINE = 8 * 1024 * 1024
 MAX_PHASE_BYTES = 256 * 1024 * 1024
-SDK_HEAVY_SELECTORS = (
-    "tests/test_econ_saved_prediction_linear.py",
-    "tests/test_control_function_common_prediction.py",
-    "tests/test_streaming_control_function_engine.py",
-    "tests/test_control_stream_acceptance.py",
-)
+SDK_FIXED_GROUPS = (('tests/test_control_stream_acceptance.py',), ('tests/test_econ_saved_prediction_linear.py', 'tests/test_control_function_common_prediction.py', 'tests/test_streaming_control_function_engine.py', 'tests/test_control_function_stream_state.py', 'tests/test_nested_logit_independent.py', 'tests/test_parallel_sdk_groups.py', 'tests/test_bayesian_hypothesis_oracles.py', 'tests/test_bayesian_hypothesis_state.py', 'tests/test_latent_sem_lifecycle.py', 'tests/test_latent_sem_math.py', 'tests/test_latent_sem_state.py', 'tests/test_dynamic_factor.py', 'tests/test_finite_mixture.py', 'tests/test_weakiv_clr_math.py', 'tests/test_weakiv_clr_state.py', 'tests/test_supervised.py', 'tests/test_supervised_integration_lifecycle.py', 'tests/test_five_model_public_integration.py', 'tests/test_bayesian_var_conjugate.py', 'tests/test_bayesian_var_sbc_protocol.py', 'tests/test_bayesian_var_public_integration.py', 'tests/test_bayesian_var_public_admission_v2.py', 'tests/test_editor_catalog_intern_v2.py'))
 
 
 def require(condition, message):
@@ -150,7 +155,7 @@ def expected_binding(values, root):
             "Invalid expected commit binding",
         )
     require(
-        values["event"] in ("pull_request", "push", "merge_group", "workflow_dispatch"),
+        values["event"] in ("pull_request", "push", "merge_group", "workflow_dispatch", "schedule"),
         "Unsupported expected workflow event",
     )
     if values["event"] == "pull_request":
@@ -272,11 +277,13 @@ def commands(report, version, selectors):
     }
     if report.get("schema") == 2:
         result[f"sdk-{version}"] += ["--shard-index", str(report["component_sdk_shard"]),
-                                     "--shard-count", "2"]
+                                     "--shard-count", str(report["sdk_shard_count"])]
+    if report.get("phase_report_protocol") == 2:
+        result[f"sdk-{version}"] += ["--phase-report-protocol", "2"]
     return result
 
 
-def junit_cases(path):
+def _junit_cases_legacy(path):
     require(path.stat().st_size <= 32 * 1024 * 1024, "JUnit metadata exceeds its bound")
     raw = path.read_bytes()
     require(
@@ -322,7 +329,59 @@ def junit_cases(path):
     return result
 
 
-def phase_cases(path, cases, selectors, *, ordered=False, offsets=False,
+def _junit_cases_protocol2(path):
+    reports = _report_metadata()
+    require(path.stat().st_size <= 32 * 1024 * 1024, "JUnit metadata exceeds its bound")
+    raw = path.read_bytes()
+    require(
+        b"<!DOCTYPE" not in raw and b"<!ENTITY" not in raw, "JUnit declarations are not accepted"
+    )
+    root = ET.fromstring(raw)
+    require(root.tag in ("testsuite", "testsuites"), "Invalid JUnit document")
+    require(
+        not any(list(root.iter(tag)) for tag in ("failure", "error", "skipped")),
+        "JUnit contains an unsuccessful outcome",
+    )
+    suites = [suite for suite in root.iter("testsuite") if not suite.findall("testsuite")]
+    require(suites, "JUnit has no leaf test suite")
+    result = []
+    for suite in suites:
+        counts = {}
+        for key in ("tests", "failures", "errors", "skipped"):
+            value = suite.get(key)
+            require(
+                isinstance(value, str) and re.fullmatch(r"[0-9]+", value), "Invalid JUnit counts"
+            )
+            counts[key] = int(value)
+        cases = suite.findall("testcase")
+        require(
+            counts["tests"] == len(cases) + sum(reports.nested_identity(c.get("classname"), c.get("name")) for c in cases)
+            and len(cases) > 0
+            and not any(counts[key] for key in ("failures", "errors", "skipped")),
+            "JUnit must contain actual nonempty passing unskipped cases",
+        )
+        for case in cases:
+            require(
+                not any(case.findall(tag) for tag in ("failure", "error", "skipped")),
+                "JUnit case contains an unsuccessful outcome",
+            )
+            classname, name = case.get("classname"), case.get("name")
+            require(
+                isinstance(classname, str) and classname and isinstance(name, str) and name,
+                "JUnit case lacks its identity",
+            )
+            result.append((classname, name))
+    require(len(result) == len(set(result)), "Duplicate JUnit testcase identity")
+    require(len(list(root.iter("testcase"))) == len(result), "Uncounted JUnit testcase")
+    return result
+
+
+def junit_cases(path, *, report_protocol=1):
+    require(type(report_protocol) is int and report_protocol in (1, 2), "Unknown report protocol")
+    return _junit_cases_protocol2(path) if report_protocol == 2 else _junit_cases_legacy(path)
+
+
+def _phase_cases_legacy(path, cases, selectors, *, ordered=False, offsets=False,
                 require_all_selectors=True, bounds=None):
     require(path.stat().st_size <= MAX_PHASE_BYTES, "Phase evidence exceeds its byte bound")
     groups = []
@@ -393,32 +452,157 @@ def phase_cases(path, cases, selectors, *, ordered=False, offsets=False,
         ),
         "Phase evidence contains tests outside the selectors",
     )
+    # Validate each source once, then bind each distinct JUnit class once.
+    # Keep every matching module: ambiguous dotted paths or module/class
+    # prefixes must still refuse, rather than being overwritten in a map.
+    modules = []
+    for file in files:
+        require(
+            file.endswith(".py")
+            and not PurePosixPath(file).is_absolute()
+            and ".." not in PurePosixPath(file).parts,
+            "Invalid phase source path",
+        )
+        modules.append((file, file[:-3].replace("/", ".")))
+    class_prefixes = {}
     expected_nodes = []
     for classname, name in cases:
-        matches = []
-        for file in files:
-            require(
-                file.endswith(".py")
-                and not PurePosixPath(file).is_absolute()
-                and ".." not in PurePosixPath(file).parts,
-                "Invalid phase source path",
-            )
-            module = file[:-3].replace("/", ".")
-            if classname == module:
-                matches.append(file + "::" + name)
-            elif classname.startswith(module + "."):
-                classes = classname[len(module) + 1 :].replace(".", "::")
-                matches.append(file + "::" + classes + "::" + name)
-        require(len(matches) == 1, "JUnit testcase cannot be bound to one phase source")
-        expected_nodes.append(matches[0])
+        if classname not in class_prefixes:
+            matches = []
+            for file, module in modules:
+                if classname == module:
+                    matches.append(file + "::")
+                elif classname.startswith(module + "."):
+                    classes = classname[len(module) + 1 :].replace(".", "::")
+                    matches.append(file + "::" + classes + "::")
+            require(len(matches) == 1, "JUnit testcase cannot be bound to one phase source")
+            class_prefixes[classname] = matches[0]
+        expected_nodes.append(class_prefixes[classname] + name)
     require(
         Counter(expected_nodes) == Counter(groups), "JUnit and phase testcase identities differ"
     )
     if ordered:
         require(expected_nodes == groups, "JUnit and phase testcase order differs")
-        ranks = [selector_index(node.split("::", 1)[0], selectors) for node in groups]
+        file_ranks = {file: selector_index(file, selectors) for file in files}
+        ranks = [file_ranks[node.split("::", 1)[0]] for node in groups]
         require(ranks == sorted(ranks), "Completed testcase selector order differs")
     return list(zip(groups, ranges, strict=True)) if offsets else groups
+
+
+def _phase_cases_protocol2(path, cases, selectors, *, ordered=False, offsets=False,
+                require_all_selectors=True, bounds=None, root=None, derived=False):
+    reports = _report_metadata()
+    root = ROOT if root is None else Path(root)
+    require(path.stat().st_size <= MAX_PHASE_BYTES, "Phase evidence exceeds its byte bound")
+    groups, pending, ranges, contexts = [], [], [], []
+    seen = set()
+    position = 0
+    expected_phase, parent, native_location = "setup", None, None
+    for record, event, line, _ in reports.bound_reports(path, derived=derived):
+        start = position
+        position += len(line)
+        nodeid = record["nodeid"]
+        if event["report_kind"] == "unittest_subreport":
+            require(expected_phase == "call" and parent == nodeid
+                    and nodeid in reports.CONTEXTS
+                    and event["native_location"] == native_location
+                    and event["parent_nested_ordinal"] == len(contexts),
+                    "Subreport is outside the exact declared parent/call context")
+            contexts.append(event["native_context"])
+            pending.append(nodeid)
+            continue
+        require(record["phase"] == expected_phase and (parent is None or parent == nodeid),
+                "Protocol2 outer reports are incomplete or reordered")
+        if expected_phase == "setup":
+            require(nodeid not in seen, "Repeated protocol2 parent")
+            parent, native_location, triple_start = nodeid, event["native_location"], start
+        else:
+            require(event["native_location"] == native_location, "Native outer location differs")
+        # unittest.addSubTest has genuine zero CallInfo times. Only the three
+        # original outer phases contribute real authenticated UTC bounds.
+        if bounds is not None:
+            bounds[0] = min(bounds[0], record["start"])
+            bounds[1] = max(bounds[1], record["stop"])
+        if expected_phase == "call":
+            reports.check_contexts(nodeid, contexts)
+        pending.append(nodeid)
+        if expected_phase == "teardown":
+            seen.add(nodeid)
+            groups.append(nodeid)
+            ranges.append((triple_start, position - triple_start))
+            pending, contexts, parent, native_location, expected_phase = [], [], None, None, "setup"
+        else:
+            expected_phase = "call" if expected_phase == "setup" else "teardown"
+    require(
+        not pending and groups and len(groups) == len(cases),
+        "Incomplete or truncated phase evidence",
+    )
+    files = {nodeid.split("::", 1)[0] for nodeid in groups}
+    require(
+        not require_all_selectors or all(
+            any(file == selector or file.startswith(selector.rstrip("/") + "/") for file in files)
+            for selector in selectors
+        ),
+        "A required selector has no completed testcase",
+    )
+    require(
+        all(
+            any(
+                file == selector or file.startswith(selector.rstrip("/") + "/")
+                for selector in selectors
+            )
+            for file in files
+        ),
+        "Phase evidence contains tests outside the selectors",
+    )
+    # Validate each source once, then bind each distinct JUnit class once.
+    # Keep every matching module: ambiguous dotted paths or module/class
+    # prefixes must still refuse, rather than being overwritten in a map.
+    modules = []
+    for file in files:
+        require(
+            file.endswith(".py")
+            and not PurePosixPath(file).is_absolute()
+            and ".." not in PurePosixPath(file).parts,
+            "Invalid phase source path",
+        )
+        modules.append((file, file[:-3].replace("/", ".")))
+    class_prefixes = {}
+    expected_nodes = []
+    for classname, name in cases:
+        if classname not in class_prefixes:
+            matches = []
+            for file, module in modules:
+                if classname == module:
+                    matches.append(file + "::")
+                elif classname.startswith(module + "."):
+                    classes = classname[len(module) + 1 :].replace(".", "::")
+                    matches.append(file + "::" + classes + "::")
+            require(len(matches) == 1, "JUnit testcase cannot be bound to one phase source")
+            class_prefixes[classname] = matches[0]
+        expected_nodes.append(class_prefixes[classname] + name)
+    require(
+        Counter(expected_nodes) == Counter(groups), "JUnit and phase testcase identities differ"
+    )
+    if ordered:
+        require(expected_nodes == groups, "JUnit and phase testcase order differs")
+        file_ranks = {file: selector_index(file, selectors) for file in files}
+        ranks = [file_ranks[node.split("::", 1)[0]] for node in groups]
+        require(ranks == sorted(ranks), "Completed testcase selector order differs")
+    reports.terminal(path, groups, root=root, derived=derived)
+    return list(zip(groups, ranges, strict=True)) if offsets else groups
+
+
+def phase_cases(path, cases, selectors, *, ordered=False, offsets=False,
+                require_all_selectors=True, bounds=None, report_protocol=1, root=None, derived=False):
+    require(type(report_protocol) is int and report_protocol in (1, 2), "Unknown report protocol")
+    if report_protocol == 1:
+        require(not derived, "Legacy reports cannot claim a protocol2 derived ledger")
+        return _phase_cases_legacy(path, cases, selectors, ordered=ordered, offsets=offsets,
+                                  require_all_selectors=require_all_selectors, bounds=bounds)
+    return _phase_cases_protocol2(path, cases, selectors, ordered=ordered, offsets=offsets,
+                                 require_all_selectors=require_all_selectors, bounds=bounds,
+                                 root=root, derived=derived)
 
 
 def selector_index(file, selectors):
@@ -558,12 +742,21 @@ def sdk_child_environment(manifest):
     if cgroup["status"] in ("unavailable", "malformed"):
         limits.append(1)
     effective = max(1.0, min(limits, default=1.0))
-    threads = (1 if manifest.get("kind") == "distributed_sdk_shard" else
-               min(2, max(1, math.floor(effective / 2))))
-    workers = min(2, max(1, math.floor(effective)))
+    distributed = manifest.get("kind") == "distributed_sdk_shard"
+    if distributed:
+        shard_count = manifest.get("shard_count")
+        require(type(shard_count) is int and shard_count in (2, 4),
+                "Invalid SDK CPU topology shard count")
+        group_count = 4 // shard_count
+    else:
+        group_count = 3
+    local = (manifest.get("kind") == "parallel_sdk_groups"
+             and "execution" in manifest and manifest["execution"] is None)
+    threads = 1 if distributed or local else min(2, max(1, math.floor(effective / 3)))
+    workers = min(group_count, max(1, math.floor(effective)))
     require(type(budget["effective_cpus"]) in (int, float)
             and math.isfinite(budget["effective_cpus"]) and budget["effective_cpus"] == effective
-            and type(budget["groups"]) is int and budget["groups"] == 2
+            and type(budget["groups"]) is int and budget["groups"] == group_count
             and type(budget["max_concurrent_children"]) is int
             and budget["max_concurrent_children"] == workers
             and type(budget["threads_per_child"]) is int and budget["threads_per_child"] == threads,
@@ -577,16 +770,37 @@ def sdk_child_environment(manifest):
 
 def child_concurrency(manifest, phase_bounds):
     groups = manifest["groups"]
-    require(groups[0]["pid"] != groups[1]["pid"]
-            and groups[0]["start_seconds"] <= groups[1]["start_seconds"]
-            and (groups[0]["stop_seconds"] <= groups[1]["start_seconds"]
-                 if manifest["cpu_budget"]["max_concurrent_children"] == 1 else
-                 max(group["start_seconds"] for group in groups)
-                 < min(group["stop_seconds"] for group in groups)),
-            "SDK children did not honor their concurrent CPU allocation")
-    if manifest["cpu_budget"]["max_concurrent_children"] == 1:
-        require(phase_bounds[0][1] <= phase_bounds[1][0],
-                "Actual SDK phases overlap the one-worker CPU allocation")
+    require(len(groups) == len(phase_bounds)
+            and len({group["pid"] for group in groups}) == len(groups),
+            "SDK child process identity is duplicated")
+    starts = [group["start_seconds"] for group in groups]
+    require(starts == sorted(starts), "SDK children did not execute concurrently in source start order")
+    if manifest.get("kind") == "distributed_sdk_shard" and manifest.get("shard_count") == 4:
+        require(len(groups) == 1,
+                "A four-shard job must contain exactly one verified child")
+        return
+    workers = manifest["cpu_budget"]["max_concurrent_children"]
+    events = sorted((value, change) for group in groups
+                    for value, change in ((group["start_seconds"], 1), (group["stop_seconds"], -1)))
+    active, maximum = 0, 0
+    for _, change in events:
+        active += change
+        maximum = max(maximum, active)
+        require(0 <= active <= workers,
+                "SDK children did not execute concurrently within their CPU allocation")
+    require(active == 0 and (workers == 1 or maximum == workers),
+            "SDK children did not execute concurrently within their CPU allocation")
+    if workers == len(groups):
+        require(max(starts) < min(group["stop_seconds"] for group in groups),
+                "SDK children did not execute concurrently across all actual children")
+    phase_events = sorted((value, change) for start, stop in phase_bounds
+                          for value, change in ((start, 1), (stop, -1)))
+    active = 0
+    for _, change in phase_events:
+        active += change
+        require(0 <= active <= workers,
+                "Actual SDK phases overlap the recorded CPU allocation")
+    require(active == 0, "Actual SDK phases overlap the recorded CPU allocation")
 
 
 def source_child_bootstrap(root):
@@ -645,11 +859,15 @@ def unique_child_temporary_directories(components):
 
 
 def grouped_sdk(directory, report, sdk, execution, version, selectors, cases, nodes):
+    protocol = report.get("phase_report_protocol", 1)
+    require(type(protocol) is int and protocol in (1, 2), "Unknown component report protocol")
+    reports = _report_metadata() if protocol == 2 else None
     relative = f"sdk-{version}-groups/report.json"
     require(sdk.get("sdk_groups") == relative, "Missing grouped SDK evidence binding")
     path = artifact_file(directory, "receipt/" + relative)
     require(sha256(path) == sdk.get("sdk_groups_sha256"), "Grouped SDK manifest hash differs")
     manifest = read_json(path)
+    require(manifest.get("phase_report_protocol", 1) == protocol, "Child manifest protocol differs")
     child_environment = sdk_child_environment(manifest)
     tree = subprocess.check_output(
         ["git", "rev-parse", "HEAD^{tree}"], cwd=report["checkout_root"], text=True
@@ -687,26 +905,27 @@ def grouped_sdk(directory, report, sdk, execution, version, selectors, cases, no
     )
     require(
         len(set(selectors)) == len(selectors)
-        and set(SDK_HEAVY_SELECTORS) <= set(selectors)
+        and set(item for group in SDK_FIXED_GROUPS for item in group) <= set(selectors)
         and not any(
             a.startswith(b.rstrip("/") + "/") for a in selectors for b in selectors if a != b
         ),
         "Complete SDK selectors cannot be partitioned unambiguously",
     )
-    partition = [
-        [item for item in selectors if item in SDK_HEAVY_SELECTORS],
-        [item for item in selectors if item not in SDK_HEAVY_SELECTORS],
-    ]
+    fixed = [item for group in SDK_FIXED_GROUPS for item in group]
+    partition = [[item for item in selectors if item in group] for group in SDK_FIXED_GROUPS]
+    partition.append([item for item in selectors if item not in fixed])
     groups = manifest.get("groups")
     require(
         isinstance(groups, list)
-        and len(groups) == 2
+        and len(groups) == 3
         and all(isinstance(group, dict) for group in groups)
-        and [group.get("index") for group in groups] == [0, 1]
+        and [group.get("index") for group in groups] == [0, 1, 2]
         and all(type(group["index"]) is int for group in groups)
         and all(partition),
-        "Two distinct SDK child groups are required",
+        "Three distinct SDK child groups are required",
     )
+    if protocol == 2:
+        reports.verify_capacity_prepass(path.parent, manifest, ROOT)
     actual = []
     checked = []
     raw_duration = 0.0
@@ -724,6 +943,12 @@ def grouped_sdk(directory, report, sdk, execution, version, selectors, cases, no
             "-o", "cache_dir=" + child + "/pytest-cache",
             *selected,
         ]
+        if protocol == 2:
+            at = expected_command.index("--gate-full-collection") if "--gate-full-collection" in expected_command else expected_command.index("--junitxml")
+            expected_command[at:at] = reports.options(Path(child) / "pytest-timings.jsonl")
+            at = expected_command.index("--junitxml")
+            expected_command[at:at] = ["--gate-report-capacity-source",
+                f"{report['receipt_directory']}/sdk-{version}-groups/capacity-admission/native-location-collection.jsonl"]
         require(
             group.get("selectors") == selected
             and group.get("command") == expected_command
@@ -758,7 +983,12 @@ def grouped_sdk(directory, report, sdk, execution, version, selectors, cases, no
                 and sha256(files[key]) == group.get(key + "_sha256"),
                 "SDK child evidence is missing, empty or changed",
             )
-        raw_cases = junit_cases(files["junit"])
+        if protocol == 2:
+            for key, evidence in zip(("report_ledger", "report_terminal"), reports.paths(files["phase_timings"])[:2], strict=True):
+                require(group.get(key) == f"group-{index}/{evidence.name}"
+                        and group.get(key + "_sha256") == sha256(evidence),
+                        "Native ledger/terminal path or hash differs")
+        raw_cases = junit_cases(files["junit"], report_protocol=protocol)
         require(
             group.get("tests")
             == {"tests": len(raw_cases), "failures": 0, "errors": 0, "skipped": 0},
@@ -767,7 +997,7 @@ def grouped_sdk(directory, report, sdk, execution, version, selectors, cases, no
         bounds = [math.inf, 0.0]
         raw_nodes = phase_cases(
             files["phase_timings"], raw_cases, selected, ordered=True, offsets=True,
-            bounds=bounds,
+            bounds=bounds, report_protocol=protocol, root=ROOT,
         )
         phase_bounds.append(bounds)
         require(
@@ -802,6 +1032,13 @@ def grouped_sdk(directory, report, sdk, execution, version, selectors, cases, no
                 "runtime_environment", "runtime_environment_sha256",
             )
         })
+        if protocol == 2:
+            report_counts = reports.counts([node for node, _ in raw_nodes], reports.expected_nested([node for node, _ in raw_nodes]))
+            require(group.get("phase_report_protocol") == 2 and reports.same_counts(group.get("report_counts"), report_counts),
+                    "Native child parent/subreport/JUnit counters differ")
+            checked[-1].update(phase_report_protocol=2, report_counts=report_counts,
+                              report_ledger_sha256=group["report_ledger_sha256"],
+                              report_terminal_sha256=group["report_terminal_sha256"])
         checked[-1]["actual_runtime_environment"] = runtime_environment
     child_concurrency(manifest, phase_bounds)
     actual.sort(key=lambda row: selector_index(row[0].split("::", 1)[0], selectors))
@@ -810,12 +1047,23 @@ def grouped_sdk(directory, report, sdk, execution, version, selectors, cases, no
         and len({row[0] for row in actual}) == len(actual),
         "Combined SDK identities or ordering differ from the complete raw children",
     )
+    expected_extra = {}
+    if protocol == 2:
+        merged_raw = artifact_file(directory, "receipt/" + sdk["phase_timings"])
+        children_raw = [path.parent / f"group-{index}" / "pytest-timings.jsonl" for index in [0, 1, 2]]
+        info = reports.evidence_fields(merged_raw, nodes, root=ROOT, derived=True)
+        verify_derived_report_origins(merged_raw, nodes, children_raw, ROOT)
+        expected_extra = info
+        require(all((reports.same_counts(sdk.get(k), v) and reports.same_counts(manifest.get(k), v))
+                    if k == "report_counts" else sdk.get(k) == v and manifest.get(k) == v
+                    for k, v in info.items()),
+                "Complete combined report metadata/counters differ")
     combined = manifest.get("combined")
     require(
         combined == {
             "junit": sdk["junit"], "junit_sha256": sdk["junit_sha256"],
             "phase_timings": sdk["phase_timings"],
-            "phase_timings_sha256": sdk["phase_timings_sha256"], "tests": sdk["tests"],
+            "phase_timings_sha256": sdk["phase_timings_sha256"], "tests": sdk["tests"], **expected_extra,
         }
         and manifest.get("tests") == sdk["tests"]
         and manifest.get("junit_sha256") == sdk["junit_sha256"]
@@ -953,26 +1201,33 @@ def full_collection(path, selectors):
                     "Full collection is not canonical actual collection bytes")
             nodes.append(node)
     require(nodes and len(set(nodes)) == len(nodes), "Empty or duplicate full collection")
-    ranks = [selector_index(node.split("::", 1)[0], selectors) for node in nodes]
+    file_ranks = {file: selector_index(file, selectors)
+                  for file in {node.split("::", 1)[0] for node in nodes}}
+    ranks = [file_ranks[node.split("::", 1)[0]] for node in nodes]
     require(ranks == sorted(ranks) and set(ranks) == set(range(len(selectors))),
             "Full collection lacks or reorders a mandatory selector")
     return nodes
 
 
 def distributed_sdk(directory, report, sdk, execution, version, selectors, cases, nodes, root):
+    protocol = report.get("phase_report_protocol", 1)
+    require(type(protocol) is int and protocol in (1, 2), "Unknown component report protocol")
+    reports = _report_metadata() if protocol == 2 else None
     shard = report["component_sdk_shard"]
+    shard_count = report["sdk_shard_count"]
     relative = f"sdk-{version}-groups/report.json"
     require(sdk.get("sdk_groups") == relative, "Missing distributed SDK manifest binding")
     path = artifact_file(directory, "receipt/" + relative)
     require(sha256(path) == sdk.get("sdk_groups_sha256"), "Distributed SDK manifest hash differs")
     manifest = read_json(path)
+    require(manifest.get("phase_report_protocol", 1) == protocol, "Child manifest protocol differs")
     child_environment = sdk_child_environment(manifest)
     tree = subprocess.check_output(["git", "rev-parse", "HEAD^{tree}"], cwd=root, text=True).strip()
     require(type(manifest.get("schema")) is int and manifest["schema"] == 2
             and manifest.get("kind") == "distributed_sdk_shard"
             and manifest.get("partial_scope") is True
             and type(manifest.get("shard_index")) is int and manifest["shard_index"] == shard
-            and type(manifest.get("shard_count")) is int and manifest["shard_count"] == 2
+            and type(manifest.get("shard_count")) is int and manifest["shard_count"] == shard_count
             and type(manifest.get("group_count")) is int and manifest["group_count"] == 4
             and manifest.get("job_name") == execution["workflow_job_name"]
             and manifest.get("status") == "passed" and "error" not in manifest
@@ -1001,11 +1256,12 @@ def distributed_sdk(directory, report, sdk, execution, version, selectors, cases
             and 0 < parent["elapsed_seconds"] <= 900,
             "SDK parent/import clock reset or local deadline mismatch")
     groups = manifest.get("groups")
-    indices = [shard * 2, shard * 2 + 1]
-    require(isinstance(groups, list) and len(groups) == 2
+    width = 4 // shard_count
+    indices = list(range(shard * width, (shard + 1) * width))
+    require(isinstance(groups, list) and len(groups) == width
             and all(isinstance(group, dict) and type(group.get("index")) is int for group in groups)
             and [group["index"] for group in groups] == indices,
-            "Distributed SDK requires its two distinct global child indexes")
+            "Distributed SDK requires its declared distinct global child indexes")
     actual, checked, full, plan, raw_duration = [], [], None, None, 0.0
     phase_bounds = []
     bootstrap = source_child_bootstrap(root)
@@ -1021,6 +1277,9 @@ def distributed_sdk(directory, report, sdk, execution, version, selectors, cases
                    "--gate-group-index", str(index), "--gate-group-count", "4",
                    "--junitxml", child + "/pytest.xml", "--basetemp", child + "/pytest-temp",
                    "-o", "cache_dir=" + child + "/pytest-cache", *selectors]
+        if protocol == 2:
+            at = command.index("--gate-full-collection")
+            command[at:at] = reports.options(Path(child) / "pytest-timings.jsonl")
         require(group.get("selectors") == selectors and group.get("command") == command
                 and group.get("status") == "passed" and type(group.get("exit_code")) is int
                 and group["exit_code"] == 0 and type(group.get("pid")) is int and group["pid"] > 0
@@ -1057,10 +1316,15 @@ def distributed_sdk(directory, report, sdk, execution, version, selectors, cases
                 "Partition plan differs from independently derived source assignments")
         selected = [node for node, assigned in zip(full, plan["assignments"], strict=True)
                     if assigned == index]
-        raw_cases = junit_cases(files["junit"])
+        if protocol == 2:
+            for key, evidence in zip(("report_ledger", "report_terminal"), reports.paths(files["phase_timings"])[:2], strict=True):
+                require(group.get(key) == f"group-{index}/{evidence.name}"
+                        and group.get(key + "_sha256") == sha256(evidence),
+                        "Native ledger/terminal path or hash differs")
+        raw_cases = junit_cases(files["junit"], report_protocol=protocol)
         bounds = [math.inf, 0.0]
         raw_nodes = phase_cases(files["phase_timings"], raw_cases, selectors, ordered=True,
-                                offsets=True, require_all_selectors=False, bounds=bounds)
+                                offsets=True, require_all_selectors=False, bounds=bounds, report_protocol=protocol, root=root)
         phase_bounds.append(bounds)
         require([node for node, _ in raw_nodes] == selected
                 and group.get("tests") == {"tests": len(selected), "failures": 0, "errors": 0, "skipped": 0}
@@ -1085,16 +1349,34 @@ def distributed_sdk(directory, report, sdk, execution, version, selectors, cases
             "temporary_directory", "temporary_directory_fresh_before_launch",
             "temporary_directory_removed_after_stop",
             "runtime_environment", "runtime_environment_sha256")})
+        if protocol == 2:
+            report_counts = reports.counts([node for node, _ in raw_nodes], reports.expected_nested([node for node, _ in raw_nodes]))
+            require(group.get("phase_report_protocol") == 2 and reports.same_counts(group.get("report_counts"), report_counts),
+                    "Native child parent/subreport/JUnit counters differ")
+            checked[-1].update(phase_report_protocol=2, report_counts=report_counts,
+                              report_ledger_sha256=group["report_ledger_sha256"],
+                              report_terminal_sha256=group["report_terminal_sha256"])
         checked[-1]["actual_runtime_environment"] = runtime_environment
     child_concurrency(manifest, phase_bounds)
     order = {node: index for index, node in enumerate(full)}
     actual.sort(key=lambda row: order[row[0]])
     require([row[0] for row in actual] == nodes and len(set(nodes)) == len(nodes),
             "Partial merged IDs differ from the actual two child partitions")
+    expected_extra = {}
+    if protocol == 2:
+        merged_raw = artifact_file(directory, "receipt/" + sdk["phase_timings"])
+        children_raw = [path.parent / f"group-{index}" / "pytest-timings.jsonl" for index in indices]
+        info = reports.evidence_fields(merged_raw, nodes, root=root, derived=True)
+        verify_derived_report_origins(merged_raw, nodes, children_raw, root)
+        expected_extra = info
+        require(all((reports.same_counts(sdk.get(k), v) and reports.same_counts(manifest.get(k), v))
+                    if k == "report_counts" else sdk.get(k) == v and manifest.get(k) == v
+                    for k, v in info.items()),
+                "Complete combined report metadata/counters differ")
     require(manifest.get("combined") == {
         "junit": sdk["junit"], "junit_sha256": sdk["junit_sha256"],
         "phase_timings": sdk["phase_timings"], "phase_timings_sha256": sdk["phase_timings_sha256"],
-        "tests": sdk["tests"]} and manifest.get("tests") == sdk["tests"]
+        "tests": sdk["tests"], **expected_extra} and manifest.get("tests") == sdk["tests"]
         and manifest.get("junit_sha256") == sdk["junit_sha256"]
         and manifest.get("phase_timings_sha256") == sdk["phase_timings_sha256"],
         "Partial combined-output binding differs")
@@ -1291,7 +1573,27 @@ def packages(directory, report, root):
     return checked
 
 
-def validate_component(directory, expected, selectors, root, *, distributed=False):
+def required_report_protocol(root):
+    # Source-pinned historical producers have no separate report protocol.
+    # Their old exact-triple schema remains1. Current source declares2; this
+    # cannot be downgraded by artifact fields, filename tricks or toy content.
+    tree = ast.parse((Path(root) / "scripts/verify_merge_candidate.py").read_bytes())
+    mentions = [node for node in ast.walk(tree) if isinstance(node, ast.Name)
+                and node.id == "PHASE_REPORT_PROTOCOL"]
+    if not mentions:
+        return 1
+    declarations = [node for node in tree.body if isinstance(node, ast.Assign)
+                    and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name)
+                    and node.targets[0].id == "PHASE_REPORT_PROTOCOL"]
+    stores = [node for node in mentions if isinstance(node.ctx, (ast.Store, ast.Del))]
+    require(len(stores) == len(declarations) == 1
+            and isinstance(declarations[0].value, ast.Constant)
+            and type(declarations[0].value.value) is int and declarations[0].value.value == 2,
+            "Invalid explicit source report protocol")
+    return 2
+
+
+def validate_component(directory, expected, selectors, root, *, distributed=False, shard_count=2):
     require(
         directory.is_dir() and not directory.is_symlink(),
         "Component artifact directory is missing or aliased",
@@ -1299,6 +1601,11 @@ def validate_component(directory, expected, selectors, root, *, distributed=Fals
     execution_path = artifact_file(directory, "execution.json")
     report_path = artifact_file(directory, "receipt/report.json")
     execution, report = read_json(execution_path), read_json(report_path)
+    protocol = report.get("phase_report_protocol", 1)
+    require(type(protocol) is int and protocol in (1, 2), "Unknown report protocol")
+    reports = _report_metadata() if protocol == 2 else None
+    require(protocol == required_report_protocol(root),
+            "Report protocol differs from the actual source-pinned producer version")
     version = execution.get("component_sdk_version")
     shard = execution.get("component_sdk_shard")
     if distributed or "host_cpu" in execution:
@@ -1308,7 +1615,8 @@ def validate_component(directory, expected, selectors, root, *, distributed=Fals
                 and 1 <= cpu["available"] <= cpu["logical"] <= 65536,
                 "Invalid recorded host CPU capacity bounds")
     if distributed:
-        require(type(shard) is int and shard in (0, 1)
+        require(type(shard_count) is int and shard_count in (2, 4)
+                and type(shard) is int and 0 <= shard < shard_count
                 and execution.get("workflow_job_name") == f"OpenEconometrics / SDK Python {version} shard {shard}",
                 "Invalid distributed execution shard/job binding")
     require(
@@ -1334,7 +1642,7 @@ def validate_component(directory, expected, selectors, root, *, distributed=Fals
     # This total CI wall budget is a resource policy, not a scientific-domain limit.
     if distributed:
         require(type(report.get("component_sdk_shard")) is int and report["component_sdk_shard"] == shard
-                and type(report.get("sdk_shard_count")) is int and report["sdk_shard_count"] == 2
+                and type(report.get("sdk_shard_count")) is int and report["sdk_shard_count"] == shard_count
                 and type(report.get("sdk_group_count")) is int and report["sdk_group_count"] == 4
                 and report.get("partial_scope") is True
                 and report.get("job_name") == execution["workflow_job_name"],
@@ -1388,7 +1696,7 @@ def validate_component(directory, expected, selectors, root, *, distributed=Fals
             "Component log is missing, empty or changed",
         )
     xml = artifact_file(directory, f"receipt/pytest-{version}.xml")
-    cases = junit_cases(xml)
+    cases = junit_cases(xml, report_protocol=protocol)
     sdk = steps[-2]
     require(
         sdk.get("tests") == {"tests": len(cases), "failures": 0, "errors": 0, "skipped": 0},
@@ -1402,7 +1710,8 @@ def validate_component(directory, expected, selectors, root, *, distributed=Fals
         and sdk.get("phase_timings_sha256") == sha256(timings),
         "JUnit or phase evidence differs from its producer hash binding",
     )
-    nodes = phase_cases(timings, cases, selectors, ordered=True, require_all_selectors=not distributed)
+    nodes = phase_cases(timings, cases, selectors, ordered=True, require_all_selectors=not distributed,
+                        report_protocol=protocol, root=root, derived=protocol == 2)
     raw = None
     if distributed:
         sdk_groups, raw = distributed_sdk(directory, report, sdk, execution, version, selectors,
@@ -1416,7 +1725,7 @@ def validate_component(directory, expected, selectors, root, *, distributed=Fals
         "report_sha256": sha256(report_path),
         "JUnit": sdk["tests"],
         "JUnit_sha256": sha256(xml),
-        "phase_records": 3 * len(nodes),
+        "phase_records": 3 * len(nodes) + (reports.expected_nested(nodes) if protocol == 2 else 0),
         "phase_sha256": sha256(timings),
         "sdk_groups": sdk_groups,
         "step_count": len(steps),
@@ -1429,6 +1738,9 @@ def validate_component(directory, expected, selectors, root, *, distributed=Fals
         ],
         "packages": package_outputs,
     }
+    if protocol == 2:
+        info = reports.evidence_fields(timings, nodes, root=root, derived=True)
+        result.update(info)
     if distributed:
         result.update(shard=shard, job_name=execution["workflow_job_name"],
                       host_cpu=execution["host_cpu"],
@@ -1443,7 +1755,7 @@ def github_time(value):
     return datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc).timestamp()
 
 
-def authenticated_jobs(path, expected):
+def authenticated_jobs(path, expected, shard_count=2):
     require(path.is_file() and not path.is_symlink() and path.stat().st_size <= 8 * 1024 * 1024,
             "Missing or excessive authenticated GitHub jobs response")
     pages = json_value(path.read_bytes())
@@ -1456,7 +1768,7 @@ def authenticated_jobs(path, expected):
             and len({job["id"] for job in jobs}) == len(jobs),
             "Duplicate or invalid authenticated GitHub job ID")
     names = [f"OpenEconometrics / SDK Python {version} shard {shard}"
-             for version in VERSIONS for shard in (0, 1)] + [CONTEXT]
+             for version in VERSIONS for shard in range(shard_count)] + [CONTEXT]
     selected = {}
     for name in names:
         matches = [job for job in jobs if job.get("name") == name]
@@ -1499,16 +1811,96 @@ def clock_inside_job(clock, job, *, replay=False):
             "Recorded aggregate-clock replay needs completed authenticated job bounds")
 
 
-def merge_distributed_rows(results, selectors, output_directory):
+def complete_union_report_metadata(rows, raw_sha256, raw_name, root, output_directory):
+    """Independently rebase ALL native events for the actual aggregate union."""
+    reports = _report_metadata()
+    children = sorted({row[2] for row in rows}, key=lambda p: int(p.parent.name.split("-")[-1]))
+    index, terminals, framework = {}, [], None
+    for child in children:
+        selected = reports.read_collection(reports.collection_path(child))
+        t = reports.terminal(child, selected, root=root)
+        require(framework is None or framework == t["framework"], "Union framework identity differs")
+        framework = t["framework"]
+        terminals.append(reports.pin(reports.paths(child)[1], reports.MAX_META))
+        ledger_sha, collection_sha = sha256(reports.paths(child)[0]), sha256(reports.collection_path(child))
+        for record, event, raw, companion in reports.bound_reports(child):
+            index.setdefault(record["nodeid"], []).append((event, raw, {
+                "source_ledger_sha256": ledger_sha,
+                "source_ledger_line_sha256": hashlib.sha256(companion).hexdigest(),
+                "source_raw_report_ordinal": event["raw_report_ordinal"],
+                "source_collection_sha256": collection_sha}))
+    nodes = [row[0] for row in rows]
+    require(set(index) == set(nodes) and len(set(nodes)) == len(nodes), "Aggregate parent origin union differs")
+    ledger_digest, raw_digest = hashlib.sha256(), hashlib.sha256()
+    ordinal = offset = ledger_bytes = 0
+    target = None
+    raw_path = Path(raw_name) if output_directory is None else output_directory / raw_name
+    ledger_path, terminal_path, collection_path = reports.paths(raw_path)
+    if output_directory is not None:
+        require(not any(p.exists() or p.is_symlink() for p in (ledger_path, terminal_path, collection_path)),
+                "Aggregate report metadata outputs must be fresh")
+        target = ledger_path.open("xb")
+    try:
+        for node in nodes:
+            for event, raw, origin in index[node]:
+                updated = dict(event)
+                updated["raw_report_ordinal"], updated["raw_line_offset"] = ordinal, offset
+                updated["origin"] = origin
+                encoded = reports.encode_event(updated, reports.strict_json(raw))
+                require(len(encoded) <= reports.MAX_LINE and ledger_bytes + len(encoded) <= reports.MAX_LEDGER,
+                        "Aggregate all-event ledger exceeds unchanged admission")
+                raw_digest.update(raw)
+                ledger_digest.update(encoded)
+                if target is not None:
+                    target.write(encoded)
+                offset += len(raw)
+                ledger_bytes += len(encoded)
+                ordinal += 1
+    finally:
+        if target is not None:
+            target.close()
+    require(raw_digest.hexdigest() == raw_sha256 and offset + ledger_bytes <= MAX_PHASE_BYTES,
+            "Aggregate complete event union differs or exceeds unchanged256MiB bound")
+    collection_raw = b"".join(reports.encode({"nodeid": n}) for n in nodes)
+    metadata = {"schema": "openecon.pytest.complete-report-terminal.v2", "phase_report_protocol": 2,
+                "kind": "derived_union", "session_finished": True, "session_exitstatus": 0,
+                "raw": {"bytes": offset, "sha256": raw_sha256},
+                "ledger": {"bytes": ledger_bytes, "sha256": ledger_digest.hexdigest()},
+                "collection": {"bytes": len(collection_raw), "sha256": hashlib.sha256(collection_raw).hexdigest()},
+                "collection_name": collection_path.name,
+                "report_counts": reports.counts(nodes, reports.expected_nested(nodes)),
+                "source_identity": reports.source_identity(root), "framework": framework,
+                "original_child_terminals": terminals}
+    terminal_raw = reports.encode(metadata)
+    require(len(terminal_raw) <= reports.MAX_META, "Aggregate report terminal excessive")
+    if output_directory is not None:
+        collection_path.write_bytes(collection_raw)
+        terminal_path.write_bytes(terminal_raw)
+        verify_derived_report_origins(raw_path, nodes, children, root)
+    return {"phase_report_protocol": 2, "report_counts": metadata["report_counts"],
+            "report_ledger": ledger_path.name, "report_ledger_sha256": ledger_digest.hexdigest(),
+            "report_terminal": terminal_path.name, "report_terminal_sha256": hashlib.sha256(terminal_raw).hexdigest(),
+            "report_collection": collection_path.name,
+            "report_collection_sha256": hashlib.sha256(collection_raw).hexdigest()}
+
+
+def merge_distributed_rows(results, selectors, output_directory, shard_count=2, *, root=None):
     """Reassemble actual complete case elements and raw phase bytes before clock finish."""
+    root = ROOT if root is None else root
     unions, reference = [], None
     for version in VERSIONS:
-        pair = [results[f"{version}:{shard}"] for shard in (0, 1)]
+        pair = [results[f"{version}:{shard}"] for shard in range(shard_count)]
+        protocol = pair[0].get("phase_report_protocol", 1)
+        require(type(protocol) is int and protocol in (1, 2)
+                and all(result.get("phase_report_protocol", 1) == protocol for result in pair),
+                "Complete union mixes report protocols")
         full = pair[0]["_raw"]["full"]
-        require(full == pair[1]["_raw"]["full"] and (reference is None or full == reference),
+        require(all(full == result["_raw"]["full"] for result in pair)
+                and (reference is None or full == reference),
                 "The four Python shard jobs did not collect the same complete ordered tests")
         reference = full
-        require(pair[0]["sdk_groups"]["partition_plan_digest"] == pair[1]["sdk_groups"]["partition_plan_digest"],
+        require(all(pair[0]["sdk_groups"]["partition_plan_digest"]
+                    == result["sdk_groups"]["partition_plan_digest"] for result in pair),
                 "Python shards derived different source-bound partition plans")
         order = {node: index for index, node in enumerate(full)}
         rows = [row for result in pair for row in result["_raw"]["rows"]]
@@ -1520,9 +1912,12 @@ def merge_distributed_rows(results, selectors, output_directory):
         require(set(selector_index(row[0].split("::", 1)[0], selectors) for row in rows)
                 == set(range(len(selectors))), "Complete executed union lacks a mandatory selector")
         counts = {"tests": len(rows), "failures": 0, "errors": 0, "skipped": 0}
+        xml_counts = dict(counts)
+        if protocol == 2:
+            xml_counts["tests"] += _report_metadata().expected_nested(full)
         suite = ET.Element("testsuite", name="pytest-sdk-distributed",
                            time=str(sum(result["_raw"]["duration"] for result in pair)),
-                           **{key: str(value) for key, value in counts.items()})
+                           **{key: str(value) for key, value in xml_counts.items()})
         for _, element, _, _ in rows:
             suite.append(element)
         tree = ET.Element("testsuites")
@@ -1554,9 +1949,12 @@ def merge_distributed_rows(results, selectors, output_directory):
                 target.close()
         unions.append({"version": version, "JUnit": counts,
                        "JUnit_sha256": hashlib.sha256(xml).hexdigest(),
-                       "phase_records": 3 * len(rows), "phase_sha256": phases.hexdigest(),
+                       "phase_records": 3 * len(rows) + (_report_metadata().expected_nested(full) if protocol == 2 else 0), "phase_sha256": phases.hexdigest(),
                        "full_collection_sha256": pair[0]["sdk_groups"]["full_collection_sha256"],
                        "partition_plan_digest": pair[0]["sdk_groups"]["partition_plan_digest"]})
+        if protocol == 2:
+            unions[-1].update(complete_union_report_metadata(rows, phases.hexdigest(),
+                              f"pytest-{version}-timings.jsonl", root, output_directory))
     return unions
 
 
@@ -1565,18 +1963,20 @@ def validate_components(component_paths, expected, job_results, *, root=None, sh
     started = time.monotonic(), time.time()
     root = ROOT if root is None else root
     source_binding = expected_binding(expected, root)
-    require(type(shard_count) is int and shard_count in (1, 2), "Invalid aggregate shard count")
-    if shard_count == 2:
-        require(job_results == {f"{version}:{shard}": "success" for version in VERSIONS for shard in (0, 1)},
-                "All four genuine SDK shard jobs must finish successfully")
-        require(len(component_paths) == 4 and len({path.resolve() for path in component_paths}) == 4,
-                "Exactly four distinct partial shard artifacts are required")
+    require(type(shard_count) is int and shard_count in (1, 2, 4), "Invalid aggregate shard count")
+    if shard_count in (2, 4):
+        require(job_results == {f"{version}:{shard}": "success" for version in VERSIONS for shard in range(shard_count)},
+                "All declared genuine SDK shard jobs must finish successfully")
+        require(len(component_paths) == 2 * shard_count
+                and len({path.resolve() for path in component_paths}) == 2 * shard_count,
+                "Exactly all declared distinct partial shard artifacts are required")
         require(github_jobs is not None, "Distributed gate requires authenticated current-attempt job bounds")
-        jobs = authenticated_jobs(github_jobs, expected)
+        jobs = authenticated_jobs(github_jobs, expected, shard_count)
         selectors = selector_contract(root)
         components = {}
         for directory in component_paths:
-            result, _ = validate_component(directory, expected, selectors, root, distributed=True)
+            result, _ = validate_component(directory, expected, selectors, root,
+                                           distributed=True, shard_count=shard_count)
             key = f"{result['version']}:{result['shard']}"
             require(key not in components, "Duplicate component Python/shard identity")
             job = jobs[result["job_name"]]
@@ -1585,12 +1985,12 @@ def validate_components(component_paths, expected, job_results, *, root=None, sh
             components[key] = result
         require(set(components) == set(job_results), "Missing SDK Python/shard component")
         unique_child_temporary_directories(components.values())
-        unions = merge_distributed_rows(components, selectors, output_directory)
+        unions = merge_distributed_rows(components, selectors, output_directory, shard_count, root=root)
         clock = aggregate_clock(started) if recorded_aggregate_clock is None else clock_value(recorded_aggregate_clock)
         clock_inside_job(clock, jobs[CONTEXT], replay=recorded_aggregate_clock is not None)
         cohorts = []
         for version in VERSIONS:
-            pair = [components[f"{version}:{shard}"] for shard in (0, 1)]
+            pair = [components[f"{version}:{shard}"] for shard in range(shard_count)]
             earliest = min(result["sdk_groups"]["sdk_clock"]["started_utc"] for result in pair)
             latest = max(result["sdk_groups"]["sdk_clock"]["finished_utc"] for result in pair)
             require(clock["started_utc"] >= latest - 1 and clock["finished_utc"] >= latest,
@@ -1604,8 +2004,8 @@ def validate_components(component_paths, expected, job_results, *, root=None, sh
         return {"schema": 2, "kind": "current-run distributed hosted merge gate aggregate",
                 "status": "passed", "status_context": CONTEXT, "execution": expected,
                 "job_results": job_results, "verified_git": source_binding, "timeout_seconds": 900,
-                "selected_tests": selectors, "shard_count": 2, "group_count": 4,
-                "components": [components[f"{version}:{shard}"] for version in VERSIONS for shard in (0, 1)],
+                "selected_tests": selectors, "shard_count": shard_count, "group_count": 4,
+                "components": [components[f"{version}:{shard}"] for version in VERSIONS for shard in range(shard_count)],
                 "complete_sdk_unions": unions, "sdk_cohorts": cohorts,
                 "aggregate_clock": clock, "aggregate_clock_mode": "recorded-completed-job-replay" if recorded_aggregate_clock is not None else "live-source-validation",
                 "authenticated_aggregate_job": jobs[CONTEXT], "github_jobs_sha256": sha256(github_jobs),
@@ -1662,7 +2062,7 @@ def main(argv=None):
     for name in ("source", "head", "base", "event", "run-id", "run-attempt"):
         parser.add_argument("--expected-" + name, required=True)
     parser.add_argument("--job-result", action="append", required=True, metavar="VERSION=RESULT")
-    parser.add_argument("--shard-count", type=int, choices=(1, 2), default=1)
+    parser.add_argument("--shard-count", type=int, choices=(1, 2, 4), default=1)
     parser.add_argument("--github-jobs", type=Path)
     parser.add_argument("--report", type=Path, required=True)
     args = parser.parse_args(argv)
@@ -1685,7 +2085,7 @@ def main(argv=None):
         )
         result = validate_components(args.component, expected, dict(pairs), shard_count=args.shard_count,
                                      github_jobs=args.github_jobs,
-                                     output_directory=args.report.parent / "complete-sdk-unions" if args.shard_count == 2 else None)
+                                     output_directory=args.report.parent / "complete-sdk-unions" if args.shard_count in (2, 4) else None)
     except (
         ValueError,
         OSError,
@@ -1705,6 +2105,43 @@ def main(argv=None):
         )
     )
     return 0 if result["status"] == "passed" else 1
+
+
+
+
+def verify_derived_report_origins(raw, nodes, children, root):
+    reports = _report_metadata()
+    actual_terminal = reports.terminal(raw, nodes, root=root, derived=True)
+    expected, terminal_pins = {}, []
+    for child in children:
+        selected = reports.read_collection(reports.collection_path(child))
+        reports.terminal(child, selected, root=root)
+        ledger = reports.paths(child)[0]
+        ledger_sha = sha256(ledger)
+        collection_sha = sha256(reports.collection_path(child))
+        terminal_pins.append(reports.pin(reports.paths(child)[1], reports.MAX_META))
+        for original, event, line, companion in reports.bound_reports(child):
+            expected.setdefault(original["nodeid"], []).append((event, line, {
+                "source_ledger_sha256": ledger_sha,
+                "source_ledger_line_sha256": hashlib.sha256(companion).hexdigest(),
+                "source_raw_report_ordinal": event["raw_report_ordinal"],
+                "source_collection_sha256": collection_sha}))
+    require(set(expected) == set(nodes) and actual_terminal["original_child_terminals"] == terminal_pins,
+            "Derived union native parent/terminal origins differ")
+    cursor = iter(reports.bound_reports(raw, derived=True))
+    for node in nodes:
+        for event, line, origin in expected[node]:
+            item = next(cursor, None)
+            require(item is not None, "Missing derived report origin")
+            _, derived, actual_line, _ = item
+            require(actual_line == line and derived["origin"] == origin
+                    and {k: v for k, v in derived.items() if k not in
+                         ("raw_report_ordinal", "raw_line_offset", "origin")}
+                    == {k: v for k, v in event.items() if k not in
+                        ("raw_report_ordinal", "raw_line_offset")},
+                    "Complete derived raw/class/context/ordinal origin differs from actual child")
+    require(next(cursor, None) is None, "Extra derived report origin")
+    return actual_terminal["report_counts"]
 
 
 if __name__ == "__main__":

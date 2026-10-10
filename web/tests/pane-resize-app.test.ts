@@ -208,14 +208,14 @@ function setup({
   projectId = "pane-test-project",
   clearStorage = true,
   readOnly = false,
-  isolatedRuns = false,
+  syncOnly = false,
   emptyHistory = false,
   sharedHistory = false,
 }: {
   projectId?: string;
   clearStorage?: boolean;
   readOnly?: boolean;
-  isolatedRuns?: boolean;
+  syncOnly?: boolean;
   emptyHistory?: boolean;
   sharedHistory?: boolean;
 } = {}) {
@@ -235,7 +235,7 @@ function setup({
     request: async <T>(path: string, options: RequestInit = {}) => {
       calls.push({ path, method: options.method ?? "GET" });
       if (path === "/bootstrap") return {
-        session: { token: "", version: "test", environment: "team", read_only: true, execution_mode: "isolated" },
+        session: { token: "", version: "test", environment: "team", read_only: true, execution_mode: "desktop" },
         draft: { name: "analysis.py", code, version: 2 }, datasets: [], status: { running: false, session_generation: 0 },
       } as T;
       if (path.startsWith("/console/history?")) return {
@@ -278,7 +278,7 @@ function setup({
   const root = createRoot(document.getElementById("app")!);
   const render = async () => {
     await React.act(() =>
-      root.render(React.createElement(App, { client, readOnly, isolatedRuns })),
+      root.render(React.createElement(App, { client, readOnly, syncOnly })),
     );
     await frame();
   };
@@ -623,11 +623,14 @@ test("Home, End and double click expose useful bounds and reset the default layo
   }
 });
 
-test("read-only users can adjust their own layout and isolated execution does not add a terminal handle", async () => {
-  const env = setup({ readOnly: true, isolatedRuns: true });
+test("read-only users can adjust their own layout and the browser sync view adds no run controls or terminal", async () => {
+  const env = setup({ readOnly: true, syncOnly: true });
   try {
     await env.render();
     assert.equal(document.querySelector(".workspace-terminal"), null);
+    assert.equal(document.querySelector(".run-button"), null);
+    assert.equal(document.querySelector(".selection-run"), null);
+    assert.match(document.querySelector(".desktop-run-note")?.textContent ?? "", /desktop app/);
     assert.equal(
       document.querySelector(
         `[role="separator"][aria-label="${labels.terminal}"]`,
@@ -749,7 +752,7 @@ test.after(() => dom.window.close());
 test("App opens an archived team result without replacing the editor or losing it on a history refresh", async () => {
   Object.defineProperty(dom.window.HTMLDialogElement.prototype, "showModal", { configurable: true, value() { this.setAttribute("open", ""); } });
   Object.defineProperty(dom.window.HTMLDialogElement.prototype, "close", { configurable: true, value() { this.removeAttribute("open"); } });
-  const env = setup({ sharedHistory: true, readOnly: true, isolatedRuns: true });
+  const env = setup({ sharedHistory: true, readOnly: true, syncOnly: true });
   try {
     await env.render(); await env.click("History");
     const archived = [...document.querySelectorAll<HTMLButtonElement>("button")].find(button => button.textContent?.includes("old-archived-run"))!;

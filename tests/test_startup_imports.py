@@ -122,8 +122,8 @@ def test_workspace_analysis_retains_patchable_fit_hooks(tmp_path, monkeypatch, m
     assert calls == [("wage", 480)]
 
 
-@pytest.mark.parametrize('backend', ['jobs', 'sandbox'])
-def test_team_cloud_bootstrap_serves_public_config_without_analysis_runtime(backend):
+@pytest.mark.parametrize('legacy_runner', [None, 'jobs', 'sandbox'])
+def test_team_cloud_bootstrap_serves_public_config_without_analysis_runtime(legacy_runner):
     fresh_process('''
         import importlib.abc
         import json
@@ -146,7 +146,8 @@ def test_team_cloud_bootstrap_serves_public_config_without_analysis_runtime(back
         from openecon.cloud import cloud_app
         from openecon.team_store import MemoryDocuments
         from fastapi.testclient import TestClient
-        backend = BACKEND_PLACEHOLDER
+        legacy_runner = LEGACY_PLACEHOLDER
+        commit = "0123456789abcdef0123456789abcdef01234567"
 
         project = "openecon-test"
         origin = "https://openecon.example"
@@ -157,29 +158,37 @@ def test_team_cloud_bootstrap_serves_public_config_without_analysis_runtime(back
             "OPENECON_PUBLIC_ORIGIN": origin, "OPENECON_OWNER_EMAIL": "owner@example.com",
             "OPENECON_BUCKET": project + "-projects",
             "OPENECON_SIGNER_EMAIL": "signer@" + project + ".iam.gserviceaccount.com",
-            "OPENECON_COMPUTE_EMAIL": "compute@" + project + ".iam.gserviceaccount.com",
-            "OPENECON_COMPUTE_JOB": "openecon-compute",
-            "OPENECON_RUNNER": backend,
-            "OPENECON_COMPUTE_SERVICE": "openecon-sandbox",
-            "OPENECON_COMPUTE_ORIGIN": "https://openecon-sandbox-123.us-central1.run.app",
-            "OPENECON_COMPUTE_IMAGE": "image@sha256:" + "a" * 64,
             "OPENECON_FIREBASE_CONFIG": json.dumps(config),
+            "OPENECON_SOURCE_COMMIT": commit,
         }
+        if legacy_runner:
+            # Retired compute settings left on an old service are ignored.
+            settings.update({
+                "OPENECON_RUNNER": legacy_runner, "OPENECON_COMPUTE_JOB": "openecon-compute",
+                "OPENECON_COMPUTE_EMAIL": "compute@" + project + ".iam.gserviceaccount.com",
+                "OPENECON_COMPUTE_SERVICE": "openecon-sandbox",
+                "OPENECON_COMPUTE_ORIGIN": "https://openecon-sandbox-123.us-central1.run.app",
+                "OPENECON_COMPUTE_IMAGE": "image@sha256:" + "a" * 64,
+            })
         # Replace external service clients only; run the real cloud branch,
         # configuration validation, auth middleware and HTTP bootstrap route.
         with patch.dict(os.environ, settings), \\
              patch("openecon.team_store.FirestoreDocuments", return_value=MemoryDocuments()), \\
-             patch("openecon.team_storage.TeamStorage", return_value=SimpleNamespace()), \\
-             patch("openecon.team_runner.GoogleJobRunner", return_value=SimpleNamespace()), \\
-             patch("openecon.team_sandbox_runner.GoogleSandboxRunner", return_value=SimpleNamespace()):
+             patch("openecon.team_storage.TeamStorage", return_value=SimpleNamespace()):
             app = cloud_app()
             with TestClient(app, base_url=origin) as client:
                 response = client.get("/api/auth/config")
                 assert response.status_code == 200
-                assert response.json()["firebase"]["projectId"] == project
+                body = response.json()
+                assert body["firebase"]["projectId"] == project
+                assert body["source_commit"] == commit
+                assert body["cloud_execution_available"] is False
                 assert client.get("/api/projects").status_code == 401
         assert not any(name in sys.modules for name in blocked)
-    '''.replace('BACKEND_PLACEHOLDER', repr(backend)))
+        assert not any(name.startswith(("openecon.team_sandbox", "openecon.team_runner",
+                                        "openecon.team_job", "google.cloud.run"))
+                       for name in sys.modules)
+    '''.replace('LEGACY_PLACEHOLDER', repr(legacy_runner)))
 
 
 def test_lazy_public_api_keeps_exports_identity_and_import_star():
