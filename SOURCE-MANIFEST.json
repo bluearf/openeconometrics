@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_commit": "623d13b4922eeed80c25f72cd1dea795fc286191",
+  "source_commit": "61b755236b32d612f10e1d689daad8794bd8c827",
   "publication_state": "prepared source snapshot; public access requires separate verification",
   "history": "new snapshot only; private Git history, branches, PRs and issues excluded",
   "research_data": "external fixture bytes excluded; obtain separately from original providers under their terms",
@@ -8679,9 +8679,9 @@
     },
     {
       "path": "docs/validation/actions-performance-2026-10-09.md",
-      "bytes": 6834,
-      "sha256": "32cec74207396e634b42238ff5e662bfa9dbd61df9e69c822d622d27300c9369",
-      "original_sha256": "32cec74207396e634b42238ff5e662bfa9dbd61df9e69c822d622d27300c9369",
+      "bytes": 8613,
+      "sha256": "8df3955f3d3cbaaa0a5385ea20ccc1640d07d689d8db013083e11d425c2ad5a0",
+      "original_sha256": "8df3955f3d3cbaaa0a5385ea20ccc1640d07d689d8db013083e11d425c2ad5a0",
       "transformed": false
     },
     {
@@ -9603,9 +9603,9 @@
     },
     {
       "path": "scripts/run_parallel_sdk_groups.py",
-      "bytes": 916250,
-      "sha256": "09dbfd2bf6e159b2507f2a9733e15c5b33372a60f28b85d42282eefc546c266f",
-      "original_sha256": "09dbfd2bf6e159b2507f2a9733e15c5b33372a60f28b85d42282eefc546c266f",
+      "bytes": 890126,
+      "sha256": "d382ef7b01e3ab681f2c9b94d6a8124097563c8872bfe3a987a35d4dc873f79e",
+      "original_sha256": "d382ef7b01e3ab681f2c9b94d6a8124097563c8872bfe3a987a35d4dc873f79e",
       "transformed": false
     },
     {
@@ -10793,9 +10793,9 @@
     },
     {
       "path": "scripts/verify_parallel_merge_gate.py",
-      "bytes": 113134,
-      "sha256": "25843580196d4bef6fdb89671c7702bb0c0a23af3a739897676e5e61a2e25e77",
-      "original_sha256": "25843580196d4bef6fdb89671c7702bb0c0a23af3a739897676e5e61a2e25e77",
+      "bytes": 113409,
+      "sha256": "89dc9886eb88cce48494f3456430b75727a711acd72103e0738dd257fb9fbc02",
+      "original_sha256": "89dc9886eb88cce48494f3456430b75727a711acd72103e0738dd257fb9fbc02",
       "transformed": false
     },
     {
@@ -20726,9 +20726,9 @@
     },
     {
       "path": "tests/test_parallel_merge_gate.py",
-      "bytes": 121513,
-      "sha256": "b23552747c2824ebfda7edd2e6a4a1ed8f77ef16a4eb6a92d1faba90ebb04a25",
-      "original_sha256": "b23552747c2824ebfda7edd2e6a4a1ed8f77ef16a4eb6a92d1faba90ebb04a25",
+      "bytes": 123931,
+      "sha256": "7eeb90d487dadd53e2b79aaefa84bfff2f8ed5a1b73cf7313f5f46baf86daf8f",
+      "original_sha256": "7eeb90d487dadd53e2b79aaefa84bfff2f8ed5a1b73cf7313f5f46baf86daf8f",
       "transformed": false
     },
     {
@@ -30476,7 +30476,7 @@
     "tests/fixtures/supervised-cart-native-reference.json",
     "tests/fixtures/supervised-cart-native-source-inputs.json"
   ],
-  "source_files_sha256": "1cc91db919edd7d44002d0a4acda61b73463d8dad075f95ee3b1cb825ceeedd2",
+  "source_files_sha256": "b8d0b9ea530d35f55a898c731baf0301be8d6957d815d43f467b1619896a53b1",
   "publication_documentation_transforms": [
     {
       "path": "README.md",

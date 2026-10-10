@@ -32,3 +32,30 @@ The two Python minors, all eight shards, full historical component checkouts, ev
 Local validation: all 798 merge-gate/parallel-gate/SDK-ownership tests passed with zero failures/errors/skips; independent review, Ruff, Actionlint and whitespace checks passed. Capability declarations and editor entries remain intact; only their project-source provenance was refreshed. Twenty platform/minor dependency graph checks and both exact frozen Linux sync dry runs selected the CPU build and removed 19 unused accelerator dependencies only on Linux x86_64. Official index hashes match the locked CPU wheels. Actual Linux binary installation, full scientific equivalence and any elapsed-time improvement require the fresh hosted gate; its results are attached to the PR rather than inferred from dry runs.
 
 Bounded audit summaries, provider metadata, copied failed-log examples and local receipts are retained under `artifacts/actions-audit/` in the development worktree. This change does not disable tests, relax numerical tolerances, increase acceptance deadlines or suppress genuine reference failures.
+
+## Complete cohort failure and scheduling correction (2026-10-10)
+
+Release candidate `623d13b4922eeed80c25f72cd1dea795fc286191`, full run
+`38078149341`, passed all eight Python/shard jobs but failed the unchanged
+900-second aggregate cohort bound. Its earliest SDK clock to aggregate finish
+was approximately 919 seconds. This is a failed full gate, not release approval.
+
+Package replay was repeatedly seeking through each gzip sdist for source files.
+The aggregate now reads tar headers in archive order, preserving every member
+safety/duplicate check, exact Python source inventory, metadata and source bytes.
+A replay of one actual component on the Mac took 3.50 seconds for the previous
+package validator and 0.55 seconds for the streaming validator, with identical
+four-package output receipts. These local measurements are not hosted speed
+acceptance. Adversaries include wrong/missing metadata, missing/extra/changed
+source and unsafe or duplicate headers after all expected content.
+
+The source-bound advisory case weights now use the maximum observed complete
+setup/call/teardown duration from the two Python minors in that same eight-job
+run. Existing entries are retained; newly measured cases at least as expensive
+as the existing 0.02-second default are added. Only scheduling constants changed:
+the longest-processing-time algorithm, full collection, selector inventory,
+process ownership/cleanup, native thread limits, report protocol and 900-second
+clocks remain unchanged. An AST comparison excluding the one advisory constant
+confirmed that all runner code is identical. The aggregate continues to derive
+the partition independently from the tracked constants and rejects missing or
+repeated test evidence. A fresh full hosted run is required for acceptance.
