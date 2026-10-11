@@ -42,7 +42,9 @@ private build output or unreviewed third-party datasets. Retain all license and
 notice files in distributions. Report security concerns through the private
 process described in `SECURITY.md`, without placing secrets in public issues.
 
-Contributions are submitted under the repository's Apache-2.0 license. Keep PR
+Contributions are submitted under the repository's Apache-2.0 license. The
+[licensing and commercial-services policy](docs/licensing.md) explains the scope,
+existing contributor terms and planned service model. Keep PR
 descriptions focused on the concrete behavior, reference boundaries and relevant
 validation. Pull requests require quick Python 3.11/3.13 and web checks. The full
 SDK and package workflow runs daily at 04:17 Europe/Istanbul and can also be

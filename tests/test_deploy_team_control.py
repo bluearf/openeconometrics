@@ -90,6 +90,82 @@ def test_service_variable_cannot_override_the_image_source_commit():
     assert 'OPENECON_SOURCE_COMMIT' not in env
 
 
+@pytest.mark.parametrize('service', [deploy.PREVIEW, deploy.PRODUCTION])
+def test_email_sender_secret_pair_is_applied_atomically_and_preserves_other_env(service):
+    source = production()
+    before = deepcopy(source)
+    candidate = deploy.candidate_config(source, service=service, image=IMAGE,
+                                        key_version='1', smtp_version='2')
+    assert source == before
+    env = environment(candidate)
+    for name, secret in deploy.EMAIL_CODE_SECRETS.items():
+        assert env[name] == {'name': name, 'valueSource': {'secretKeyRef': {
+            'secret': secret, 'version': '1' if name.endswith('_KEY') else '2'}}}
+    assert env['KEEP_SECRET_REFERENCE'] == environment(source)['KEEP_SECRET_REFERENCE']
+    assert 'private-config-sentinel' == env['OPENECON_FIREBASE_CONFIG']['value']
+    assert len(candidate['template']['containers'][0]['env']) == len(env)
+
+
+def test_sender_rotation_replaces_both_old_values_and_default_preserves_secret_refs():
+    source = production()
+    source['template']['containers'][0]['env'].extend([
+        {'name': name, 'valueSource': {'secretKeyRef': {'secret': secret, 'version': '1'}}}
+        for name, secret in deploy.EMAIL_CODE_SECRETS.items()])
+    unchanged = environment(deploy.candidate_config(source, service=deploy.PREVIEW, image=IMAGE))
+    assert all(unchanged[name] == environment(source)[name] for name in deploy.EMAIL_CODE_SECRETS)
+    rotated = environment(deploy.candidate_config(source, service=deploy.PRODUCTION, image=IMAGE,
+                                                 key_version='3', smtp_version='4'))
+    assert rotated['OPENECON_EMAIL_CODE_KEY']['valueSource']['secretKeyRef']['version'] == '3'
+    assert rotated['OPENECON_EMAIL_CODE_SMTP']['valueSource']['secretKeyRef']['version'] == '4'
+
+
+def test_partial_existing_sender_config_is_rejected_without_explicit_repair_pair():
+    source = production()
+    source['template']['containers'][0]['env'].append({'name': 'OPENECON_EMAIL_CODE_KEY', 'value': 'old'})
+    with pytest.raises(ValueError, match='together'):
+        deploy.candidate_config(source, service=deploy.PREVIEW, image=IMAGE)
+    env = environment(deploy.candidate_config(source, service=deploy.PREVIEW, image=IMAGE,
+                                             key_version='1', smtp_version='1'))
+    assert 'value' not in env['OPENECON_EMAIL_CODE_KEY']
+
+
+@pytest.mark.parametrize('key,smtp', [
+    ('1', None), (None, '1'), ('latest', '1'), ('1', 'latest'),
+    ('0', '1'), ('1', '-1'), ('1\n', '2'), ('1', 'other/versions/2'),
+])
+def test_invalid_or_unpaired_sender_versions_fail_before_cloud_access(monkeypatch, key, smtp):
+    operator = Mock(side_effect=AssertionError('No cloud access before version validation'))
+    monkeypatch.setattr(deploy, 'Operator', operator)
+    args = ['deploy', '--image', IMAGE]
+    if key is not None:
+        args.extend(['--email-code-key-version', key])
+    if smtp is not None:
+        args.extend(['--email-code-smtp-version', smtp])
+    monkeypatch.setattr('sys.argv', args)
+    with pytest.raises(SystemExit):
+        deploy.main()
+    operator.assert_not_called()
+
+
+def test_sender_cli_passes_pinned_refs_in_one_preview_mutation(monkeypatch, capsys):
+    operator = Mock()
+    operator.call.side_effect = [production(), {
+        'bindings': [{'role': 'roles/run.invoker', 'members': ['allUsers']}]},
+        None, {'name': 'operation'}, {}, production()]
+    monkeypatch.setattr(deploy, 'Operator', lambda: operator)
+    monkeypatch.setattr(deploy, 'save_baseline', Mock())
+    monkeypatch.setattr('sys.argv', ['deploy', '--image', IMAGE, '--apply',
+                                    '--email-code-key-version', '1', '--email-code-smtp-version', '2'])
+    deploy.main()
+    mutation = operator.call.call_args_list[3]
+    env = environment(mutation.args[2])
+    assert set(deploy.EMAIL_CODE_SECRETS) <= env.keys()
+    assert all('valueSource' in env[name] for name in deploy.EMAIL_CODE_SECRETS)
+    summary = json.loads(capsys.readouterr().out)
+    assert summary['email_code_secret_versions'] == {
+        'OPENECON_EMAIL_CODE_KEY': '1', 'OPENECON_EMAIL_CODE_SMTP': '2'}
+
+
 @pytest.mark.parametrize('change', [
     lambda s: s['template'].update(serviceAccount=COMPUTE),
     lambda s: s['template']['scaling'].update(minInstanceCount=1),

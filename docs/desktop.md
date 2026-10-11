@@ -81,6 +81,13 @@ automatically enqueued for team publication.
 
 An already opened, cached team project can continue locally if the network fails.
 New team projects, membership changes and uncached downloads require a connection.
+
+The Files menu's **Download file** action opens the native Save panel for shared
+CSV and Parquet inputs, including for viewers. The native broker verifies current
+project access and the file checksum, rechecks them after the Save panel, and
+copies the input using a 64 KiB buffer. The existing 2 GiB input limit applies;
+the renderer does not create a whole-file Blob. Cancelling the panel writes no
+export, and a corrupt cached input cannot replace an existing destination.
 An explicit cloud 401/403/404 does not become an offline permission fallback.
 Downloaded data stays on the user's computer; removing membership cannot erase
 copies the user already received.

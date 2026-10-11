@@ -6,7 +6,7 @@ separate, live authorization checks; neither email nor token claims confer roles
 from __future__ import annotations
 
 from collections.abc import Callable, Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import os
 import re
 import threading
@@ -33,6 +33,8 @@ class TeamIdentity:
     email: str
     name: str = ""
     email_verified: bool = False
+    provider: str = field(default="", compare=False)
+    auth_time: int | None = field(default=None, compare=False)
 
 
 class TeamAuth:
@@ -44,12 +46,14 @@ class TeamAuth:
     project resources must retain the default and check membership separately.
     """
 
-    def __init__(self, project_id: str, *, verifier: Callable[[str], Mapping[str, Any]] | None = None):
+    def __init__(self, project_id: str, *, verifier: Callable[[str], Mapping[str, Any]] | None = None,
+                 passwordless_only: bool = False):
         if not isinstance(project_id, str) or not _PROJECT_ID.fullmatch(project_id):
             raise ValueError("A canonical Firebase project ID is required.")
         if verifier is not None and not callable(verifier):
             raise TypeError("verifier must be callable.")
         self.project_id = project_id
+        self.passwordless_only = passwordless_only
         self._verifier = verifier or self._firebase_verify
 
     def _firebase_verify(self, token: str) -> Mapping[str, Any]:
@@ -118,8 +122,10 @@ class TeamAuth:
             and isinstance(email, str) and len(email) <= 254 and _EMAIL.fullmatch(email)
             and isinstance(firebase, Mapping)
             and isinstance(firebase.get("sign_in_provider"), str)
-            and (firebase.get("sign_in_provider") in {"password", "google.com"}
-                 or (firebase.get("sign_in_provider") == "custom" and claims.get("openecon_desktop") is True))
+            and (firebase.get("sign_in_provider") == "google.com"
+                 or (not self.passwordless_only and firebase.get("sign_in_provider") == "password")
+                 or (firebase.get("sign_in_provider") == "custom"
+                     and (claims.get("openecon_desktop") is True or claims.get("openecon_email_code") is True)))
             and not firebase.get("tenant")
             and isinstance(claims.get("email_verified"), bool)
         )
@@ -133,4 +139,7 @@ class TeamAuth:
         name = claims.get("name", "")
         return TeamIdentity(uid=uid, email=email.lower(),
                             name=name.strip()[:200] if isinstance(name, str) else "",
-                            email_verified=verified)
+                            email_verified=verified,
+                            provider=firebase["sign_in_provider"],
+                            auth_time=(claims["auth_time"] if type(claims.get("auth_time")) is int
+                                       else None))

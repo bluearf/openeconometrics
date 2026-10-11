@@ -2,7 +2,7 @@
 import { decodeEditorWire as decodePreservedWire, admitLogicalCatalog } from "./editor-catalog-intern.ts";
 export { admitLogicalCatalog };
 const SCHEMA = "openecon.editor-api.shaped-arrays.v1";
-const MAX_WIRE_BYTES = 500_000;
+const MAX_WIRE_BYTES = 2_000_000;
 const MAX_DECODED_BYTES = 8 * 1024 * 1024;
 const MAX_ITEMS = 500_000;
 const MAX_DEPTH = 32;

@@ -511,3 +511,439 @@ def test_break_tests_scale_to_a_million_rows():
     assert math.isfinite(oe.zandrews(frame, "walk", break_="both", lags=4).attrs["statistic"])
     assert math.isfinite(oe.egranger(frame, "walk", ["x0", "x1"], lags=2).attrs["statistic"])
     assert time.perf_counter() - started < 30
+
+
+# ---- Lee-Strazicich minimum LM -------------------------------------------------------
+
+
+def _gauss_round(value):
+    return math.floor(value + 0.5)
+
+
+def _ls_regression(y, dates, lag, model):
+    """Literal NumPy transcription of nLMk / nLMCk in Lee's LS_One.g / LS_two.g."""
+    n = len(y)
+    t = np.arange(1, n + 1, dtype=float)
+    columns = [t] + [np.r_[np.zeros(p), np.ones(n - p)] for p in dates]
+    if model == "break":
+        columns += [np.r_[np.zeros(p), np.arange(1, n - p + 1)] for p in dates]
+    z = np.column_stack(columns)
+    dz, dy = np.diff(z, axis=0), np.diff(y)
+    delta = np.linalg.lstsq(dz, dy, rcond=None)[0]
+    s = y - (y[0] - z[0] @ delta) - z @ delta
+    change = np.diff(s)
+    lagged = [s[:-1]] + [np.r_[np.full(k, np.nan), change[:-k]] for k in range(1, lag + 1)]
+    x = np.column_stack([np.column_stack(lagged)[lag:], dz[lag:]])
+    beta = np.linalg.lstsq(x, dy[lag:], rcond=None)[0]
+    resid = dy[lag:] - x @ beta
+    covariance = resid @ resid / (len(resid) - x.shape[1]) * np.linalg.inv(x.T @ x)
+    return beta / np.sqrt(np.diag(covariance))
+
+
+def _ls_by_transcription(y, breaks, model, maxk, trim=0.1, fixed=None):
+    n = len(y)
+    first, last = _gauss_round(trim * n), _gauss_round((1 - trim) * n)
+    if first < maxk + 2:
+        first = maxk + 3
+    if breaks == 1:
+        configs = [(a,) for a in range(first, last + 1)]
+    else:
+        gap = 2 if model == "crash" else 3
+        configs = [(a, b) for a in range(first, last + 1) for b in range(a + gap, last + 1)]
+    best = (np.inf, None, None)
+    for dates in configs:
+        if fixed is not None:
+            lag = fixed
+        else:
+            lag = 0
+            for k in range(maxk, 0, -1):
+                if abs(_ls_regression(y, dates, k, model)[k]) > 1.645:
+                    lag = k
+                    break
+        statistic = _ls_regression(y, dates, lag, model)[0]
+        if statistic < best[0]:
+            best = (statistic, dates, lag)
+    return best
+
+
+@pytest.fixture(scope="module")
+def trend_break():
+    rng = np.random.default_rng(1082)
+    n = 48
+    e = rng.standard_normal(n)
+    y = np.zeros(n)
+    for i in range(1, n):
+        y[i] = 0.55 * y[i - 1] + e[i] + 0.4 * e[i - 1]
+    t = np.arange(n)
+    y = 20 + 0.1 * t + 2.5 * (t >= 18) + 0.15 * (t >= 31) * (t - 31) + y
+    return pd.DataFrame({"y": y, "quarter": 200 + t})
+
+
+@pytest.mark.parametrize("breaks", [1, 2])
+@pytest.mark.parametrize("model", ["crash", "break"])
+def test_lee_strazicich_matches_the_authors_gauss_procedure(trend_break, breaks, model):
+    result = oe.lee_strazicich(trend_break, "y", time="quarter", breaks=breaks, model=model,
+                               maxlag=3)
+    statistic, dates, lag = _ls_by_transcription(trend_break.y.to_numpy(), breaks, model, 3)
+    assert result.attrs["statistic"] == pytest.approx(statistic, rel=1e-9)
+    assert result.attrs["break_indices"] == [d - 1 for d in dates]
+    assert result.attrs["break_periods"] == [200 + d - 1 for d in dates]
+    assert result.attrs["lags"] == lag
+    # The final regression with explicit impulse dummies reproduces the statistic.
+    assert result["regression"].loc["S(t-1)", "statistic"] == pytest.approx(statistic, rel=1e-9)
+    assert pd.isna(result["regression"].loc["S(t-1)", "p_value"])
+    json.dumps(result.attrs, allow_nan=False)
+    assert "\\caption{test}" in result.to_latex()
+
+
+def test_lee_strazicich_fixed_lag_search_table_and_invariance(trend_break):
+    fixed = oe.lee_strazicich(trend_break, "y", breaks=1, model="break", lags=2)
+    statistic, dates, _ = _ls_by_transcription(trend_break.y.to_numpy(), 1, "break", 2, fixed=2)
+    assert fixed.attrs["statistic"] == pytest.approx(statistic, rel=1e-9)
+    assert fixed.attrs["lag_selection"] == "fixed"
+    search = fixed["search"]
+    assert search.statistic.min() == pytest.approx(statistic, rel=1e-12)
+    assert int(search.break_index[search.statistic.idxmin()]) == dates[0] - 1
+    moved = trend_break.assign(y=1e6 - 37 * trend_break.y)
+    again = oe.lee_strazicich(moved, "y", breaks=1, model="break", lags=2)
+    assert again.attrs["statistic"] == pytest.approx(statistic, rel=1e-8)
+
+
+def test_lee_strazicich_critical_values_follow_the_published_tables(trend_break):
+    from openecon.econometrics.unitroot import break_tables
+    from openecon.econometrics.unitroot import lee_strazicich as ls
+
+    assert ls._critical(1, "crash", [0.3])[0] == {"1%": -4.239, "5%": -3.566, "10%": -3.211}
+    assert ls._critical(2, "crash", [0.3, 0.6])[0] == {"1%": -4.545, "5%": -3.842, "10%": -3.504}
+    # Model C, one break: symmetric in lambda and 1 - lambda, linear between rows.
+    values, status, _ = ls._critical(1, "break", [0.75])
+    assert status == "published_table_interpolated"
+    expected = [a + 0.5 * (b - a)
+                for a, b in zip(break_tables.LS1_BREAK[0.2], break_tables.LS1_BREAK[0.3])]
+    assert list(values.values()) == pytest.approx(expected, abs=1e-12)
+    assert list(ls._critical(1, "break", [0.5])[0].values()) == [-5.11, -4.51, -4.17]
+    values, status, rule = ls._critical(2, "break", [0.42, 0.79])
+    assert status == "published_table_nearest_cell"
+    assert list(values.values()) == [-6.42, -5.65, -5.32]
+    assert "OpenEconometrics convention" in rule
+    result = oe.lee_strazicich(trend_break, "y", breaks=1, model="break", maxlag=2)
+    fraction = result.attrs["break_fractions"][0]
+    assert result.attrs["critical_values"] == ls._critical(1, "break", [fraction])[0]
+    assert result.attrs["p_value"] is None
+    assert result.attrs["reject"] == {k: result.attrs["statistic"] < v
+                                      for k, v in result.attrs["critical_values"].items()}
+
+
+def test_lee_strazicich_failure_contract(trend_break):
+    assert code(oe.lee_strazicich, trend_break, "y", breaks=3) == "invalid_option"
+    assert code(oe.lee_strazicich, trend_break, "y", model="trend") == "invalid_option"
+    assert code(oe.lee_strazicich, trend_break, "y", trim=0.5) == "invalid_option"
+    assert code(oe.lee_strazicich, trend_break.iloc[:14], "y", maxlag=8) == \
+        "insufficient_observations"
+    assert code(oe.lee_strazicich, trend_break, "y", breaks=2, max_work=1000) == "work_limit"
+    assert code(oe.lee_strazicich, trend_break.assign(y=3.0), "y") == "constant_series"
+    holes = trend_break.copy()
+    holes.loc[5, "y"] = np.nan
+    assert code(oe.lee_strazicich, holes, "y") == "missing_values"
+    line = trend_break.assign(y=1.0 + 0.5 * np.arange(len(trend_break)))
+    assert code(oe.lee_strazicich, line, "y", maxlag=0) in {"perfect_fit", "collinear_regressors"}
+
+
+# ---- Clemente-Montanes-Reyes / Perron-Vogelsang --------------------------------------
+
+
+def _cmr_regression(y, dates, k, model):
+    """Literal NumPy transcription of Perron and Ng's iom0alph / aom0alph regressions."""
+    n = len(y)
+    rows = np.arange(k + 2, n + 1)
+    if model == "io":
+        columns = [np.ones(len(rows))]
+        for b in dates:
+            columns += [(rows > b).astype(float), (rows == b + 1).astype(float)]
+        columns.append(y[rows - 2])
+        columns += [np.diff(y)[rows - 2 - j] for j in range(1, k + 1)]
+        x, target, alpha = np.column_stack(columns), y[rows - 1], 1 + 2 * len(dates)
+        last = x.shape[1] - 1
+    else:
+        t = np.arange(1, n + 1)
+        level = np.column_stack([np.ones(n)] + [(t > b).astype(float) for b in dates])
+        u = y - level @ np.linalg.lstsq(level, y, rcond=None)[0]
+        columns = [u[rows - 2]] + [np.diff(u)[rows - 2 - j] for j in range(1, k + 1)]
+        for b in dates:
+            columns += [(rows == b + 1 + i).astype(float) for i in range(k + 1)]
+        x = np.column_stack(columns)
+        x = x[:, np.sort(np.unique(x, axis=1, return_index=True)[1])]   # duplicate impulses
+        target, alpha, last = u[rows - 1], 0, k
+    beta = np.linalg.lstsq(x, target, rcond=None)[0]
+    resid = target - x @ beta
+    covariance = resid @ resid / (len(target) - x.shape[1]) * np.linalg.inv(x.T @ x)
+    se = np.sqrt(np.diag(covariance))
+    return (beta[alpha] - 1) / se[alpha], (beta[last] / se[last] if k else None)
+
+
+def _cmr_by_transcription(y, model, breaks, maxk, trim=0.05, separation=2):
+    n = len(y)
+    edge = int(trim * n + 0.49)
+    first = max(edge + 1, maxk + 2)
+    last = min(n - edge, n - 2 if model == "io" else n - maxk - 2)
+    configs = ([(a,) for a in range(first, last + 1)] if breaks == 1 else
+               [(a, b) for a in range(first, last + 1) for b in range(a + separation, last + 1)])
+    best = (np.inf, None, None)
+    for dates in configs:
+        k = maxk
+        while k >= 1 and abs(_cmr_regression(y, dates, k, model)[1]) < 1.645:
+            k -= 1
+        statistic = _cmr_regression(y, dates, k, model)[0]
+        if statistic < best[0]:
+            best = (statistic, dates, k)
+    return best
+
+
+@pytest.fixture(scope="module")
+def mean_shifts():
+    rng = np.random.default_rng(175)
+    n = 50
+    e = rng.standard_normal(n)
+    y = np.zeros(n)
+    for i in range(1, n):
+        y[i] = 0.5 * y[i - 1] + e[i]
+    y[15:] += 3.0
+    y[33:] -= 2.5
+    return pd.DataFrame({"y": 100 + y, "month": np.arange(n)})
+
+
+@pytest.mark.parametrize("breaks", [1, 2])
+@pytest.mark.parametrize("model", ["io", "ao"])
+def test_clemente_matches_perron_ng_rats_transcription(mean_shifts, model, breaks):
+    result = oe.clemente(mean_shifts, "y", time="month", model=model, breaks=breaks, maxlag=3)
+    statistic, dates, lag = _cmr_by_transcription(mean_shifts.y.to_numpy(), model, breaks, 3)
+    assert result.attrs["statistic"] == pytest.approx(statistic, rel=1e-8)
+    assert result.attrs["break_indices"] == [d - 1 for d in dates]
+    assert result.attrs["lags"] == lag
+    assert result.attrs["stata"] == f"clem{model}{breaks}"
+    assert result["regression"].loc["L1.y", "statistic"] == pytest.approx(statistic, rel=1e-8)
+    if breaks == 2:
+        assert result.attrs["critical_values"] is None and result.attrs["p_value"] is None
+        assert result.attrs["inference_status"].startswith("unavailable")
+    json.dumps(result.attrs, allow_nan=False)
+    str(result)
+
+
+def test_clemente_asymptotic_distribution_is_vogelsangs_table(mean_shifts):
+    from openecon.econometrics.unitroot import break_tables
+    from openecon.econometrics.unitroot import clemente as cmr
+
+    table_ = break_tables.PV_MODEL0_PERCENTILES
+    assert len(table_) == 99 and all(a < b for a, b in zip(table_[:-1], table_[1:]))
+    assert (table_[0], table_[4], table_[9]) == (-4.949133, -4.443649, -4.193627)
+    assert cmr.asymptotic_p(table_[4])[0] == pytest.approx(0.05, abs=1e-12)
+    middle = 0.5 * (table_[9] + table_[10])
+    assert cmr.asymptotic_p(middle)[0] == pytest.approx(0.105, abs=1e-12)
+    assert cmr.asymptotic_p(-9.0) == (0.01, "The asymptotic p-value is below 0.01.")
+    assert cmr.asymptotic_p(0.0)[0] == 0.99
+    result = oe.clemente(mean_shifts, "y", model="io", breaks=1, maxlag=2)
+    assert result.attrs["critical_values"] == {"1%": table_[0], "5%": table_[4], "10%": table_[9]}
+    assert result.attrs["p_value"] == pytest.approx(cmr.asymptotic_p(result.attrs["statistic"])[0])
+
+
+def test_clemente_monte_carlo_repeats_the_whole_procedure(mean_shifts):
+    import torch
+
+    short = mean_shifts.iloc[:30]
+    result = oe.clemente(short, "y", model="ao", breaks=1, maxlag=1, calibration="monte_carlo",
+                         replications=19, seed=5)
+    again = oe.clemente(short, "y", model="ao", breaks=1, maxlag=1, calibration="monte_carlo",
+                        replications=19, seed=5)
+    assert result.attrs == again.attrs
+    generator = torch.Generator().manual_seed(5)
+    noise = torch.cat([torch.randn((16, 30), dtype=torch.float64, generator=generator),
+                       torch.randn((3, 30), dtype=torch.float64, generator=generator)])
+    null = np.array([_cmr_by_transcription(path, "ao", 1, 1)[0]
+                     for path in noise.cumsum(dim=1).numpy()])
+    assert result.attrs["exceedances"] == int((null <= result.attrs["statistic"]).sum())
+    assert result.attrs["p_value"] == pytest.approx((result.attrs["exceedances"] + 1) / 20)
+    assert list(result.attrs["critical_values"].values()) == pytest.approx(
+        np.quantile(null, [0.01, 0.05, 0.10]), rel=1e-7)
+    assert result.attrs["monte_carlo_denominator"] == 20
+
+
+def test_clemente_failure_contract(mean_shifts):
+    assert code(oe.clemente, mean_shifts, "y", model="xo") == "invalid_option"
+    assert code(oe.clemente, mean_shifts, "y", calibration="bootstrap") == "invalid_option"
+    assert code(oe.clemente, mean_shifts, "y", breaks=0) == "invalid_option"
+    assert code(oe.clemente, mean_shifts, "y", separation=1) == "invalid_option"
+    assert code(oe.clemente, mean_shifts, "y", replications=10) == "invalid_option"
+    assert code(oe.clemente, mean_shifts.iloc[:14], "y", maxlag=8) == "insufficient_observations"
+    assert code(oe.clemente, mean_shifts, "y", breaks=2, calibration="monte_carlo",
+                max_work=10_000) == "work_limit"
+    assert code(oe.clemente, mean_shifts.assign(y=2.0), "y") == "constant_series"
+
+
+# ---- Bai-Perron robust, sequential and date-interval extensions ----------------------
+
+
+@pytest.fixture(scope="module")
+def bp_reference():
+    with open("tests/fixtures/unitroot_breaks/bai_perron_r_oracles.json") as handle:
+        return json.load(handle)
+
+
+def _bp_frame(case):
+    y = np.asarray(case["y"])
+    if case["x"]:
+        return pd.DataFrame({"y": y, "x": case["x"]}), ["x"]
+    return pd.DataFrame({"y": y}), []
+
+
+@pytest.mark.parametrize("name", ["mean", "regression"])
+@pytest.mark.parametrize("errors,prewhiten,key", [
+    ("hac", True, "robust1_prewhit1"), ("hac", False, "robust1_prewhit0"),
+    ("iid_gaussian", False, "robust0_prewhit0")])
+def test_bai_perron_supf_and_sequential_match_mbreaks(bp_reference, name, errors, prewhiten, key):
+    case = bp_reference[name]
+    frame, x = _bp_frame(case)
+    q = 1 + len(x)
+    result = oe.bai_perron(frame, "y", x, max_breaks=case["m"], trim=case["eps"], errors=errors,
+                           prewhiten=prewhiten, replications=19)
+    datevec = np.asarray(case["datevec"])
+    assert result["models"].break_indices.tolist()[1:] == \
+        [list(datevec[:k, k - 1]) for k in range(1, case["m"] + 1)]
+    asymptotic = result["asymptotic_tests"]
+    supf = asymptotic[(asymptotic.level == "5%") & asymptotic.test.str.startswith("supF")]
+    # mbreaks reports q times the F statistic.
+    assert_allclose(supf.statistic * q, case[key]["supf_scaled"], rtol=1e-10)
+    assert_allclose(result["sequential"].statistic * q, case[key]["sequential_scaled"], rtol=1e-10)
+    if errors == "hac":
+        assert_allclose(result["tests"].statistic.iloc[:-1] * q, case[key]["supf_scaled"],
+                        rtol=1e-10)
+        assert result.attrs["p_value"] is None and result.attrs["replications"] == 0
+    else:
+        assert_allclose(result["tests"].statistic.iloc[:-1], supf.statistic, rtol=1e-10)
+
+
+@pytest.mark.parametrize("name", ["mean", "regression"])
+def test_bai_perron_date_intervals_match_strucchange_and_the_gauss_code(bp_reference, name):
+    import torch
+
+    from openecon.econometrics.unitroot import bai_perron_robust as robust
+
+    case = bp_reference[name]
+    frame, x = _bp_frame(case)
+    n = len(frame)
+    z = torch.tensor(np.column_stack([np.ones(n)] + ([frame.x] if x else [])))
+    y = torch.tensor(frame.y.to_numpy())
+    for k in range(1, case["m"] + 1):
+        reference = case[f"strucchange_{k}"]
+        dates = np.atleast_1d(reference["breaks"]).tolist()
+        rows = robust.date_intervals(z, y, [0, *dates, n], "iid_gaussian", False)
+        for row, c95, c90 in zip(rows, reference["ci95"], reference["ci90"], strict=True):
+            assert [row["lower_95_raw"], row["upper_95_raw"]] == pytest.approx(c95, abs=1e-8)
+            assert [row["lower_90_raw"], row["upper_90_raw"]] == pytest.approx(c90, abs=1e-8)
+            assert row["lower_95"] == math.trunc(row["lower_95_raw"])
+            assert row["upper_95"] == math.trunc(row["upper_95_raw"]) + 1
+        for prewhiten in (True, False):
+            gauss = case[f"gauss_hac_interval_{k}"][f"prewhit{int(prewhiten)}"]
+            rows = robust.date_intervals(z, y, [0, *dates, n], "hac", prewhiten)
+            for row, g in zip(rows, gauss, strict=True):
+                assert [row["lower_95_raw"], row["upper_95_raw"], row["lower_90_raw"],
+                        row["upper_90_raw"], row["eta"], row["phi1"], row["phi2"]] == \
+                    pytest.approx(g, abs=1e-8)
+
+
+def test_bai_perron_argmax_cdf_matches_strucchange_pargmaxv(bp_reference):
+    from openecon.econometrics.unitroot import bai_perron_robust as robust
+
+    for item in bp_reference["cdf"]:
+        eta, phi1, phi2 = item["xi"], item["phi1"] ** 2, item["phi2"] ** 2
+        a = phi1 / phi2
+        b = math.sqrt(phi1 * eta / phi2)
+        args = ((1 + 2 * a) / 2, a * (1 + a) / 2, b, math.sqrt(phi2 * eta / phi1) + b / 2,
+                ((phi2 / phi1) + 1) * eta / 2)
+        ours = [robust._funcg(value, *args) for value in item["x"]]
+        assert ours == pytest.approx(item["cdf"], abs=1e-13)
+    # The homogeneous case is symmetric about 0.
+    quantiles = robust.cvg(1.0, 1.0, 1.0)
+    assert quantiles[0] == pytest.approx(-quantiles[3], rel=1e-10)
+
+
+def test_bai_perron_heteroskedastic_f_against_explicit_sandwich(bp_reference):
+    case = bp_reference["regression"]
+    frame, x = _bp_frame(case)
+    result = oe.bai_perron(frame, "y", x, max_breaks=2, trim=0.2, errors="heteroskedastic")
+    z = np.column_stack([np.ones(len(frame)), frame.x])
+    y = frame.y.to_numpy()
+    n, q = z.shape
+    for k, dates in enumerate(result["models"].break_indices.tolist()[1:], start=1):
+        bounds = [0, *dates, n]
+        deltas, blocks = [], []
+        for a, b in zip(bounds[:-1], bounds[1:]):
+            beta = np.linalg.lstsq(z[a:b], y[a:b], rcond=None)[0]
+            u = y[a:b] - z[a:b] @ beta
+            bread = np.linalg.inv(z[a:b].T @ z[a:b])
+            meat = (z[a:b] * u[:, None]).T @ (z[a:b] * u[:, None]) * (b - a) / (b - a - q)
+            deltas.append(beta)
+            blocks.append(bread @ meat @ bread)
+        delta = np.concatenate(deltas)
+        v = np.zeros((len(delta), len(delta)))
+        for j, block in enumerate(blocks):
+            v[j * q:(j + 1) * q, j * q:(j + 1) * q] = block
+        r = np.zeros((k * q, (k + 1) * q))
+        for j in range(k):
+            r[j * q:(j + 1) * q, j * q:(j + 1) * q] = -np.eye(q)
+            r[j * q:(j + 1) * q, (j + 1) * q:(j + 2) * q] = np.eye(q)
+        wald = (r @ delta) @ np.linalg.solve(r @ v @ r.T, r @ delta)
+        expected = (n - (k + 1) * q) * wald / (n * k * q)
+        assert result["tests"].statistic.iloc[k - 1] == pytest.approx(expected, rel=1e-10)
+    selected = result.attrs["selected_breaks"]
+    assert selected >= 1
+    regime = result["covariance"].iloc[:q, :q].to_numpy()
+    assert np.all(np.linalg.eigvalsh(regime) > 0)
+
+
+def test_bai_perron_tables_wdmax_and_sequential_selection(bp_reference):
+    from openecon.econometrics.unitroot import bai_perron_robust as robust
+
+    # Bai-Perron (2003, Table 1), trim 0.15: 8.58 (q = 1) and 11.47 (q = 2) at 5%, q-scaled.
+    assert robust.critical_value("supf", 0.15, 1, 0, "5%") == 8.58
+    assert robust.critical_value("supf", 0.15, 2, 0, "5%") == pytest.approx(11.47 / 2)
+    assert robust.critical_value("sequential", 0.15, 1, 1, "5%") == 10.13
+    assert robust.critical_value("dmax", 0.15, 1, 0, "5%") == 8.88
+    assert robust.critical_value("dmax", 0.15, 1, 1, "5%") == 9.91
+    assert robust.critical_value("supf", 0.12, 1, 0, "5%") is None
+    assert robust.critical_value("supf", 0.25, 1, 2, "5%") is None
+    case = bp_reference["mean"]
+    frame, _ = _bp_frame(case)
+    result = oe.bai_perron(frame, "y", [], max_breaks=5, trim=0.15, errors="hac")
+    table_ = result["asymptotic_tests"]
+    five = table_[table_.level == "5%"]
+    fstats = five[five.test.str.startswith("supF")].statistic.to_numpy()
+    cvs = np.array([robust.critical_value("supf", 0.15, 1, k, "5%") for k in range(5)])
+    wdmax = five[five.test == "WDmax"]
+    assert wdmax.statistic.iloc[0] == pytest.approx(np.max(cvs[0] / cvs * fstats))
+    assert wdmax.critical_value.iloc[0] == 9.91
+    sequential = result["sequential"]
+    rejected = sequential.statistic.to_numpy() > sequential.critical_5pct.to_numpy()
+    expected = int(np.argmin(rejected)) if not rejected.all() else 5
+    assert result.attrs["sequential_breaks"] == expected
+    assert result.attrs["selection_method"] == "sequential"
+    assert result.attrs["selected_breaks"] == expected
+    assert len(result["date_intervals"]) == expected
+    json.dumps(result.attrs, allow_nan=False)
+    assert dict((row.setting, json.loads(row.value_json))
+                for row in result["settings"].itertuples()) == result.attrs
+    off_grid = oe.bai_perron(frame, "y", [], max_breaks=2, trim=0.12, errors="hac")
+    assert off_grid.attrs["selection_method"] == "bic"
+    assert off_grid["tests"].critical_5pct.isna().all()
+    assert "unavailable" in off_grid.attrs["asymptotic_inference"]
+
+
+def test_bai_perron_undatable_break_reports_status_instead_of_failing():
+    import torch
+
+    from openecon.econometrics.unitroot import bai_perron_robust as robust
+
+    z = torch.ones((40, 1), dtype=torch.float64)
+    y = torch.cat([torch.zeros(20), torch.zeros(20)]).to(torch.float64)
+    rows = robust.date_intervals(z, y, [0, 20, 40], "iid_gaussian", False)
+    assert rows[0]["status"].startswith("unavailable")
+    assert rows[0]["lower_95"] is None and rows[0]["upper_90_raw"] is None

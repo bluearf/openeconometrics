@@ -96,6 +96,7 @@ async function harness(
     empty?: boolean;
     readOnly?: boolean;
     disabled?: boolean;
+    uploading?: boolean;
     invoke?: ProjectTransferDependencies["invoke"];
   } = {},
 ) {
@@ -126,6 +127,7 @@ async function harness(
           actions: next,
           readOnly: !!opts.readOnly,
           disabled: !!opts.disabled,
+          uploading: !!opts.uploading,
           onReady(value: DatasetProfile) {
             ready.push(value);
           },
@@ -220,6 +222,61 @@ test("other workspace work disables resume without hiding cancellation", async (
     assert.deepEqual(h.calls, ["list:"]);
   } finally {
     await h.close();
+  }
+});
+test("first native picker upload discovers a new journal before completion and permits cancel; polling stops on unmount", async () => {
+  const originalSet = window.setInterval;
+  const originalClear = window.clearInterval;
+  const timers = new Map<number, () => void>();
+  let nextTimer = 0;
+  window.setInterval = ((callback: () => void) => {
+    const id = ++nextTimer;
+    timers.set(id, callback);
+    return id;
+  }) as typeof window.setInterval;
+  window.clearInterval = (id?: number) => { if (id !== undefined) timers.delete(id); };
+  let discovered = false;
+  let heldStatus = false;
+  const pendingStatus = deferred<{ status: number; body: unknown }>();
+  const h = await harness({
+    uploading: true,
+    disabled: true,
+    async invoke(action) {
+      if (action === "list")
+        return { status: 200, body: { transfers: discovered ? [{ ...view, acknowledged_bytes: 0 }] : [] } };
+      if (action === "status") return heldStatus ? pendingStatus.promise : { status: 200, body: view };
+      if (action === "cancel") {
+        discovered = false;
+        return { status: 200, body: { cancelled: true, request_id: id } };
+      }
+      throw new Error("Discovery must not resume, import or execute a model");
+    },
+  });
+  try {
+    assert.equal(h.host.querySelector("section"), null);
+    discovered = true;
+    await React.act(async () => { for (const callback of timers.values()) callback(); });
+    assert.match(h.host.textContent!, /observations.csv/);
+    assert.equal(h.host.querySelector("progress")!.value, 4_000_000);
+    assert.equal(h.button("Devam et").disabled, true);
+    assert.equal(h.button("İptal").disabled, false);
+    heldStatus = true;
+    await React.act(async () => { for (const callback of timers.values()) callback(); });
+    assert.equal(h.host.querySelector("progress")!.value, 4_000_000);
+    const inFlightCalls = h.calls.length;
+    await React.act(async () => { for (const callback of timers.values()) callback(); });
+    assert.equal(h.calls.length, inFlightCalls, "A slow native status must not create overlapping polls");
+    await h.click("İptal");
+    await React.act(async () => pendingStatus.resolve({ status: 200, body: view }));
+    assert.equal(h.host.querySelector("section"), null);
+    assert.deepEqual(h.ready, []);
+    assert.equal(h.calls.some((call) => call.startsWith("resume:")), false);
+  } finally {
+    pendingStatus.resolve({ status: 200, body: view });
+    await h.close();
+    assert.equal(timers.size, 0);
+    window.setInterval = originalSet;
+    window.clearInterval = originalClear;
   }
 });
 test("changing project controller ignores an old pending resume callback", async () => {

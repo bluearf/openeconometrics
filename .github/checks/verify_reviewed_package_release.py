@@ -23,12 +23,12 @@ def sha(data):
 
 
 def verify(directory, profile):
-    require(profile["schema_version"] == 3, "Unknown review profile")
+    require(profile["schema_version"] == 4, "Unknown review profile")
     require(
-        profile["versions"] == {"sdk": "0.3.19a1", "charts": "0.3.1a1"},
+        profile["versions"] == {"sdk": "0.3.20a1", "charts": "0.3.2a1"},
         "Package version tuple differs",
     )
-    require(profile["release"] == "python-v0.3.19a1", "Release identity differs")
+    require(profile["release"] == "python-v0.3.20a1", "Release identity differs")
     require(profile["repository"] == "bluearf/openeconometrics", "Repository differs")
     assets = profile["assets"]
     require(
@@ -48,10 +48,10 @@ def verify(directory, profile):
     provenance = json.loads((directory / "RELEASE-PROVENANCE.json").read_bytes())
     require(provenance == profile["release_provenance"], "Complete reviewed provenance differs")
     distribution_names = {
-        "openecon-0.3.19a1-py3-none-any.whl",
-        "openecon-0.3.19a1.tar.gz",
-        "openecon_charts-0.3.1a1-py3-none-any.whl",
-        "openecon_charts-0.3.1a1.tar.gz",
+        "openecon-0.3.20a1-py3-none-any.whl",
+        "openecon-0.3.20a1.tar.gz",
+        "openecon_charts-0.3.2a1-py3-none-any.whl",
+        "openecon_charts-0.3.2a1.tar.gz",
     }
     build = json.loads((directory / "PACKAGE-PAIR-PROVENANCE.json").read_bytes())
     require(
@@ -68,7 +68,7 @@ def verify(directory, profile):
         "Source inventory differs",
     )
     require(
-        provenance["linux_fixed_pair"]["run_id"] == "37894416408",
+        provenance["linux_fixed_pair"]["run_id"] == "38160252640",
         "Accepted fixed build run differs",
     )
     for minor in ("3.11", "3.13"):
@@ -80,7 +80,7 @@ def verify(directory, profile):
             execution = json.loads(evidence.read("_temp/pair-execution.json"))
             require(
                 execution["status"] == "passed"
-                and execution["run_id"] == "37894416408"
+                and execution["run_id"] == "38160252640"
                 and execution["run_attempt"] == "1"
                 and execution["artifacts"] == build["artifacts"],
                 "Accepted Linux execution differs",
@@ -93,8 +93,8 @@ def verify(directory, profile):
             for suite, count in [
                 ("installed-inventory-guards", 33),
                 ("sdk-regressions", 290),
-                ("network-export-wheel", 53),
-                ("network-export-sdist", 53),
+                ("network-export-wheel", 88),
+                ("network-export-sdist", 88),
             ]:
                 tree = ET.fromstring(evidence.read(f"_temp/{suite}.xml"))
                 require(
@@ -130,7 +130,7 @@ def verify(directory, profile):
         len(mac["sandboxed_browser_export_cases"]) == 2
         and all(
             r["status"] == "passed"
-            and r["tests"] == 53
+            and r["tests"] == 88
             and r["failures"] == r["errors"] == r["skipped"] == 0
             and r["temporary_root_fresh_before_launch"]
             and r["temporary_root_removed_after_process_exit"]
@@ -150,25 +150,43 @@ def verify(directory, profile):
         "Current private scientific gate has not passed",
     )
     require(
-        current["production_bridge"]["complete_changed_paths"]
-        == [
-            ".github/workflows/ci.yml",
-            "scripts/run_parallel_sdk_groups.py",
-            "scripts/verify_merge_candidate.py",
-            "scripts/verify_parallel_merge_gate.py",
-            "tests/test_merge_gate.py",
-            "tests/test_parallel_merge_gate.py",
-            "tests/test_parallel_sdk_groups.py",
-        ]
-        and current["production_bridge"][
-            "package_web_native_and_numerical_production_byte_identical"
-        ]
-        is True,
-        "Unreviewed current-source production change",
+        current["source_commit"] == build["source_commit"]
+        == "a805870d971c0d571f6d5dec79e914b91d6479aa"
+        and current["production_bridge"] == {
+            "status": "exact_same_tested_and_packaged_source",
+            "package_source_commit": build["source_commit"],
+            "scientific_source_commit": build["source_commit"],
+        },
+        "Scientific gate and packaged source differ",
+    )
+    aggregate = json.loads((directory / "SCIENTIFIC-GATE.json").read_bytes())
+    require(
+        aggregate["status"] == "passed"
+        and aggregate["execution"]["source_commit"] == build["source_commit"]
+        and aggregate["execution"]["run_id"] == current["run_id"] == "38158545101"
+        and aggregate["timeout_seconds"] == 900
+        and len(aggregate["selected_tests"]) == len(current["selected_tests"]) == 171
+        and aggregate["selected_tests"] == current["selected_tests"]
+        and len(aggregate["job_results"]) == 8
+        and all(value == "success" for value in aggregate["job_results"].values()),
+        "Complete exact-source scientific gate differs",
+    )
+    regularized = json.loads((directory / "MACOS-REGULARIZED-PACKAGE-ACCEPTANCE.json").read_bytes())
+    require(
+        regularized["status"] == "passed"
+        and regularized["source_commit"] == build["source_commit"]
+        and regularized["build_run"] == "38160252640"
+        and all(regularized[key] is True for key in (
+            "four_complete_models", "fresh_process_replay_with_fit_disabled",
+            "weighted_categorical_and_forced_controls", "predictions_tables_and_latex_equal",
+            "temporary_environments_removed"))
+        and all(regularized[key] is False for key in (
+            "selected_model_inference", "frozen_binary_acceptance", "native_window_acceptance")),
+        "Installed regularized package replay differs",
     )
     require(
         all(
-            r["tests"] == 10280 and r["failures"] == r["errors"] == r["skipped"] == 0
+            r["tests"] == 14667 and r["failures"] == r["errors"] == r["skipped"] == 0
             for r in current["complete_sdk_unions"]
         )
         and len(current["complete_sdk_unions"]) == 2,
@@ -182,10 +200,10 @@ def verify(directory, profile):
     source = directory / "_source"
     require(not source.exists(), "Source verification destination must be fresh")
     source.mkdir()
-    with tarfile.open(directory / "openeconometrics-source-a8eb8799-public.tar.gz") as archive:
+    with tarfile.open(directory / "openeconometrics-source-a805870d-public.tar.gz") as archive:
         members = archive.getmembers()
         require(
-            len(members) == 2322 and sum(m.size for m in members) < 80 * 1024 * 1024,
+            len(members) == 3468 and sum(m.size for m in members) < 160 * 1024 * 1024,
             "Source archive scope differs",
         )
         names = set()
@@ -211,7 +229,7 @@ def verify(directory, profile):
         sha((source / "SOURCE-MANIFEST.json").read_bytes()) == build["source_manifest_sha256"],
         "Published manifest differs",
     )
-    with zipfile.ZipFile(directory / "openecon-0.3.19a1-py3-none-any.whl") as wheel:
+    with zipfile.ZipFile(directory / "openecon-0.3.20a1-py3-none-any.whl") as wheel:
         for name in wheel.namelist():
             if name.startswith("openecon/static/") and not name.endswith("/"):
                 path = PurePosixPath(name)
@@ -227,7 +245,7 @@ def verify(directory, profile):
         shutil.copyfile(directory / name, dist / name)
     checker = runpy.run_path(str(source / "scripts/verify_public_package_pair.py"))["verify"]
     require(
-        checker(source, dist, "0.3.19a1", "0.3.1a1", build["source_commit"]) == build,
+        checker(source, dist, "0.3.20a1", "0.3.2a1", build["source_commit"]) == build,
         "Complete source, package contents, dependency metadata or notices differ",
     )
     for project, prefix in [("openecon", "openecon-"), ("openecon-charts", "openecon_charts-")]:
@@ -251,12 +269,12 @@ def main():
     args = parser.parse_args()
     profile = json.loads(args.profile.read_text())
     args.directory.mkdir(exist_ok=False)
-    base = "https://github.com/bluearf/openeconometrics/releases/download/python-v0.3.19a1/"
+    base = "https://github.com/bluearf/openeconometrics/releases/download/python-v0.3.20a1/"
     for name, expected in profile["assets"].items():
         require(
             PurePosixPath(name).name == name
             and type(expected["bytes"]) is int
-            and 0 < expected["bytes"] < 32 * 1024 * 1024,
+            and 0 < expected["bytes"] < 128 * 1024 * 1024,
             "Unsafe reviewed asset bound",
         )
         with urllib.request.urlopen(base + name, timeout=60) as response:

@@ -41,7 +41,9 @@ def configuration(monkeypatch):
 def test_sync_backend_needs_only_identity_and_storage_settings(configuration):
     kwargs = team_app()
     assert set(kwargs) == {'store', 'storage', 'auth', 'public_origin', 'firebase_config',
-                           'source_commit_id'}
+                           'source_commit_id', 'email_codes', 'passwordless_only'}
+    assert kwargs['passwordless_only'] is True
+    assert kwargs['email_codes'] is None
     assert 'runner' not in kwargs
     assert kwargs['public_origin'] == 'https://openecon.example'
     assert kwargs['source_commit_id'] is None

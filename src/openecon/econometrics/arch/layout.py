@@ -9,6 +9,7 @@ The reported parameter vector is ordered as Stata prints it:
     ARCH            a_i, g_i, b_j, omega       ARCH:L<i>.arch ... ARCH:Intercept
     POWER           phi                        POWER:power            (power ARCH only)
     distribution    ln(df - 2) | ln(shape)     /lndfm2 | /lnshape
+                    (+ skewness)               /lndfm2 /atlambda (skewt) | /lnshape /lnxi (sged)
 
 With variance regressors the variance constant is ``HET:Intercept`` and there is no
 ``ARCH:Intercept``, as in Stata. The names of the ARCH terms depend on the model:
@@ -17,6 +18,13 @@ With variance regressors the variance constant is ``HET:Intercept`` and there is
     gjr / tarch           L.arch  L.tarch   L.garch
     egarch                L.earch L.earch_a L.egarch
     parch                 L.parch           L.pgarch
+    cgarch                L.arch            L.garch    COMPONENT:L1.rho COMPONENT:L1.phi
+                          (the constant is COMPONENT:Intercept, that of the permanent part)
+    figarch               L.phi             L.beta     ARCH:d
+
+Component GARCH (``cgarch``) has extra variance parameters (rho, phi) and FIGARCH the
+fractional difference d, between the GARCH terms and the constant; ``Index.r`` holds
+their positions.
 """
 
 from __future__ import annotations
@@ -30,18 +38,29 @@ from openecon.analysis_contracts import AnalysisError
 
 MAX_LAG = 60             # largest admissible lag of any ARCH, GARCH, AR or MA term
 _KINDS = {"arch": "garch", "garch": "garch", "igarch": "garch", "gjr": "gjr", "tarch": "gjr",
-          "egarch": "egarch", "parch": "parch"}
+          "egarch": "egarch", "parch": "parch", "cgarch": "cgarch", "figarch": "figarch"}
+# Models outside Stata's arch: one lag each, no ARCH-in-mean, no variance regressors.
+EXTENDED = ("cgarch", "figarch")
+FIGARCH_TRUNCATION = 1000        # default ARCH(infinity) truncation lag (as Python arch)
+MAX_TRUNCATION = 5000
 _TERM_NAMES = {            # (ARCH term, asymmetry term, GARCH term)
     "garch": ("arch", None, "garch"),
     "gjr": ("arch", "tarch", "garch"),
     "egarch": ("earch", "earch_a", "egarch"),
     "parch": ("parch", None, "pgarch"),
+    "cgarch": ("arch", None, "garch"),
+    "figarch": ("phi", None, "beta"),
 }
+_EXTRA_TERMS = {"cgarch": ("COMPONENT:L1.rho", "COMPONENT:L1.phi"), "figarch": ("ARCH:d",)}
+_CONSTANT = {"cgarch": ("COMPONENT:Intercept", "COMPONENT")}
 _ARCHM_TERMS = {"variance": "ARCHM:sigma2", "sd": "ARCHM:sigma", "log": "ARCHM:lnsigma2"}
-_DIST_TERMS = {"t": "/lndfm2", "ged": "/lnshape"}
+_DIST_TERMS = {"normal": (), "t": ("/lndfm2",), "ged": ("/lnshape",),
+               "skewt": ("/lndfm2", "/atlambda"), "sged": ("/lnshape", "/lnxi")}
 _LABELS = {"arch": "ARCH", "garch": "GARCH", "gjr": "GJR-GARCH", "tarch": "GJR-GARCH",
-           "egarch": "EGARCH", "parch": "PARCH", "igarch": "IGARCH"}
-_DIST_LABELS = {"normal": "normal", "t": "Student t", "ged": "GED"}
+           "egarch": "EGARCH", "parch": "PARCH", "igarch": "IGARCH", "cgarch": "CGARCH",
+           "figarch": "FIGARCH"}
+_DIST_LABELS = {"normal": "normal", "t": "Student t", "ged": "GED",
+                "skewt": "Hansen skewed t", "sged": "skewed GED"}
 
 
 @dataclass(frozen=True)
@@ -58,8 +77,9 @@ class Index:
     g: list[int]         # asymmetry terms (tarch, earch_a)
     b: list[int]         # GARCH terms
     p: list[int]         # power (0 or 1 entry)
-    d: list[int]         # distribution parameter (0 or 1 entry)
+    d: list[int]         # distribution parameters (0, 1 or 2 entries)
     k: int
+    r: tuple[int, ...] = ()   # extra variance parameters (cgarch: rho, phi)
 
     @property
     def mean(self) -> list[int]:
@@ -78,6 +98,7 @@ class Layout:
     archm: str | None = None
     k_x: int = 0
     k_z: int = 0
+    truncation: int = 0          # FIGARCH: lags of the truncated ARCH(infinity) form
 
     @property
     def kind(self) -> str:
@@ -114,11 +135,12 @@ class Layout:
         a = take(len(self.arch_lags))
         g = take(len(self.arch_lags) if self.asymmetric else 0)
         b = take(len(self.garch_lags))
+        r = take(len(_EXTRA_TERMS.get(self.kind, ())))
         if c < 0:
             c = take(1)[0]
         p = take(int(self.kind == "parch"))
-        d = take(int(self.dist != "normal"))
-        return Index(x, m, ar, ma, z, c, a, g, b, p, d, position)
+        d = take(len(_DIST_TERMS[self.dist]))
+        return Index(x, m, ar, ma, z, c, a, g, b, p, d, position, tuple(r))
 
     @property
     def k(self) -> int:
@@ -145,19 +167,23 @@ class Layout:
         put(ix.ar, [f"ARMA:L{lag}.ar" for lag in self.ar_lags], "ARMA")
         put(ix.ma, [f"ARMA:L{lag}.ma" for lag in self.ma_lags], "ARMA")
         put(ix.z, z_terms, "HET")
-        put([ix.c], ["HET:Intercept" if self.k_z else "ARCH:Intercept"],
-            "HET" if self.k_z else "ARCH")
+        constant, constant_equation = _CONSTANT.get(self.kind, ("ARCH:Intercept", "ARCH"))
+        put([ix.c], ["HET:Intercept" if self.k_z else constant],
+            "HET" if self.k_z else constant_equation)
+        extra = _EXTRA_TERMS.get(self.kind, ())
+        put(list(ix.r), list(extra), extra[0].split(":")[0] if extra else None)
         put(ix.a, [f"ARCH:L{lag}.{arch_name}" for lag in self.arch_lags], "ARCH")
         if ix.g:
             put(ix.g, [f"ARCH:L{lag}.{asymmetry_name}" for lag in self.arch_lags], "ARCH")
         put(ix.b, [f"ARCH:L{lag}.{garch_name}" for lag in self.garch_lags], "ARCH")
         put(ix.p, ["POWER:power"] if ix.p else [], "POWER")
-        put(ix.d, [_DIST_TERMS[self.dist]] if ix.d else [], None)
+        put(ix.d, list(_DIST_TERMS[self.dist]), None)
         return names, equations
 
     def label(self) -> str:
         """Short model name, e.g. ``GARCH(1,1)``: (ARCH terms, GARCH terms)."""
         orders = f"({len(self.arch_lags)})" if self.model == "arch" \
+            else f"({len(self.arch_lags)},d,{len(self.garch_lags)})" if self.kind == "figarch" \
             else f"({len(self.arch_lags)},{len(self.garch_lags)})"
         text = _LABELS[self.model] + orders
         if self.archm:
@@ -175,7 +201,8 @@ class Layout:
                 "dist": self.dist, "arch_lags": list(self.arch_lags),
                 "garch_lags": list(self.garch_lags), "ar_lags": list(self.ar_lags),
                 "ma_lags": list(self.ma_lags), "archm": self.archm,
-                "mean_terms": self.k_x, "variance_regressors": self.k_z}
+                "mean_terms": self.k_x, "variance_regressors": self.k_z,
+                **({"truncation": self.truncation} if self.kind == "figarch" else {})}
 
 
 def lag_list(value: Any, name: str) -> list[int] | None:
@@ -234,14 +261,41 @@ def read_layout(spec: Any, k_x: int, k_z: int) -> Layout:
         garch_lags: list[int] = []
     else:
         garch_lags = _checked(list([1] if garch_given is None else garch_given), "garch")
-    if not arch_lags:
+    if not arch_lags and model != "figarch":
         raise AnalysisError("invalid_spec", "The variance equation needs at least one ARCH "
                             "term (arch=1): without it the GARCH coefficients are not identified.")
     if model == "igarch" and not garch_lags:
         raise AnalysisError("invalid_spec", "model='igarch' needs at least one GARCH term: the "
                             "ARCH and GARCH coefficients are restricted to sum to one.")
+    truncation = options.get("truncation")
+    if model in EXTENDED:
+        _check_extended(model, arch_lags, garch_lags, options.get("archm"), k_z)
+    if truncation is not None and model != "figarch":
+        raise AnalysisError("invalid_option", "truncation applies to model='figarch' only.")
     return Layout(
         model=model, dist=options.get("dist", "normal"), arch_lags=tuple(arch_lags),
         garch_lags=tuple(garch_lags), ar_lags=tuple(_checked(list(options.get("ar") or []), "ar")),
         ma_lags=tuple(_checked(list(options.get("ma") or []), "ma")),
-        archm=options.get("archm"), k_x=k_x, k_z=k_z)
+        archm=options.get("archm"), k_x=k_x, k_z=k_z,
+        truncation=(FIGARCH_TRUNCATION if truncation is None else int(truncation))
+        if model == "figarch" else 0)
+
+
+def _check_extended(model: str, arch_lags: list[int], garch_lags: list[int],
+                    archm: str | None, k_z: int) -> None:
+    """Refuse the combinations the models outside Stata's arch do not implement."""
+    if model == "cgarch" and (arch_lags != [1] or garch_lags != [1]):
+        raise AnalysisError(
+            "unsupported_combination", "model='cgarch' is the component GARCH(1,1) model of "
+            "Engle and Lee (1999): use arch=1 and garch=1 (higher orders are not implemented).")
+    if model == "figarch" and (arch_lags not in ([], [1]) or garch_lags not in ([], [1])):
+        raise AnalysisError(
+            "unsupported_combination", "model='figarch' is FIGARCH(p,d,q) with p, q in {0, 1} "
+            "(Baillie, Bollerslev and Mikkelsen 1996): use arch=0 or 1 (the phi term) and "
+            "garch=0 or 1 (the beta term).")
+    if archm is not None:
+        raise AnalysisError("unsupported_combination", f"model='{model}' does not support an "
+                            "ARCH-in-mean term; drop archm.")
+    if k_z:
+        raise AnalysisError("unsupported_combination", f"model='{model}' does not support "
+                            "variance regressors (variance_x); drop them.")

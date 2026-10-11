@@ -1,4 +1,14 @@
-"""Native joint Gaussian MGARCH(1,1) likelihood; no matrix projection."""
+"""Native joint Gaussian MGARCH(1,1) likelihood; no matrix projection.
+
+Kinds: ``ccc``, ``dcc``, full ``bekk`` (MARKET-131) and the MARKET-161 extensions
+``dvech`` (diagonal VECH with a positive definite constant and positive diagonal
+persistence; off-diagonal coefficients free, positive definiteness enforced on the
+sample path),
+``dbekk`` (diagonal BEKK) and ``adcc`` (asymmetric DCC of Cappiello, Engle and Sheppard
+2006 with the jointly estimated target of ``dcc`` and the sample second moment of the
+negative standardized residuals). See docs/econometrics/mgarch.md and
+docs/econometrics/garch-extensions.md.
+"""
 
 from __future__ import annotations
 
@@ -18,12 +28,52 @@ def corr_pairs(d):
     return [(i, j) for i in range(d) for j in range(i)]
 
 
+_LIMIT = 1 - 1e-6     # strict stationarity margin shared by every kind
+
+
 def parameter_count(kind, d, mean):
-    return (d if mean else 0) + (
-        len(lower_pairs(d)) + 2 * d * d
-        if kind == "bekk"
-        else 3 * d + len(corr_pairs(d)) + (2 if kind == "dcc" else 0)
-    )
+    pairs = len(lower_pairs(d))
+    count = {
+        "bekk": pairs + 2 * d * d,
+        "dvech": 3 * pairs,
+        "dbekk": pairs + 2 * d,
+        "adcc": 3 * d + len(corr_pairs(d)) + 3,
+    }.get(kind, 3 * d + len(corr_pairs(d)) + (2 if kind == "dcc" else 0))
+    return (d if mean else 0) + count
+
+
+def _symmetric(values, d):
+    out = torch.zeros((d, d), dtype=torch.float64)
+    for value, (i, j) in zip(values, lower_pairs(d), strict=True):
+        out[i, j] = value
+        out[j, i] = value
+    return out
+
+
+def _lower(values, d, positive_diagonal=True):
+    out = torch.zeros((d, d), dtype=torch.float64)
+    for value, (i, j) in zip(values, lower_pairs(d), strict=True):
+        out[i, j] = value.exp() if (i == j and positive_diagonal) else value
+    return out
+
+
+def _stack_lower(matrix):
+    d = matrix.shape[0]
+    return torch.stack([matrix[i, j] for i, j in lower_pairs(d)])
+
+
+def negative_moment(z):
+    """N-bar = (1/T) sum_t n_t n_t', n_t = z_t 1(z_t < 0) (Cappiello-Engle-Sheppard eq. 7)."""
+    n = z * (z < 0).to(torch.float64)
+    return n.T @ n / z.shape[0]
+
+
+def asymmetry_scale(target, nbar):
+    """delta = largest eigenvalue of Qbar^-1/2 Nbar Qbar^-1/2 (via the Cholesky factor)."""
+    factor = torch.linalg.cholesky(target)
+    inner = torch.linalg.solve_triangular(factor, nbar, upper=False)
+    inner = torch.linalg.solve_triangular(factor, inner.T, upper=False)
+    return torch.linalg.eigvalsh(0.5 * (inner + inner.T)).max()
 
 
 def bekk_radius(a, b):
@@ -73,6 +123,46 @@ def decode(raw, kind, d, mean):
             )
         )
         return values, {"mu": mu, "C": c, "A": a, "B": b}
+    if kind == "dvech":
+        pairs = len(lower_pairs(d))
+        c = _lower(raw[index : index + pairs], d)
+        index += pairs
+        ra, rb = raw[index : index + pairs], raw[index + pairs : index + 2 * pairs]
+        a = torch.zeros((d, d), dtype=torch.float64)
+        b = torch.zeros((d, d), dtype=torch.float64)
+        for position, (i, j) in enumerate(lower_pairs(d)):
+            if i == j:
+                # Variance equations: a_ii, b_ii > 0 and a_ii + b_ii < 1 - 1e-6.
+                share = torch.softmax(
+                    torch.stack((ra[position], rb[position], torch.zeros((), dtype=torch.float64))),
+                    dim=0,
+                ) * _LIMIT
+                a[i, i], b[i, i] = share[0], share[1]
+            else:
+                a[i, j] = a[j, i] = ra[position]
+                b[i, j] = b[j, i] = rb[position]
+        matrices = {"mu": mu, "C": c @ c.T, "A": a, "B": b}
+        values = torch.cat(
+            (
+                mu if mean else raw[:0],
+                _stack_lower(matrices["C"]),
+                _stack_lower(matrices["A"]),
+                _stack_lower(matrices["B"]),
+            )
+        )
+        return values, matrices
+    if kind == "dbekk":
+        pairs = len(lower_pairs(d))
+        c = _lower(raw[index : index + pairs], d)
+        index += pairs
+        ra, rb = raw[index : index + d], raw[index + d : index + 2 * d]
+        # The first entries are positive (a and -a give the same model).
+        ra = torch.cat((ra[:1].exp(), ra[1:]))
+        rb = torch.cat((rb[:1].exp(), rb[1:]))
+        scale = torch.sqrt(_LIMIT / (1 + ra.square() + rb.square()))
+        a, b = ra * scale, rb * scale
+        values = torch.cat((mu if mean else raw[:0], _stack_lower(c), a, b))
+        return values, {"mu": mu, "C": c, "a": a, "b": b}
     garch = raw[index : index + 3 * d].reshape(d, 3)
     omega = garch[:, 0].exp()
     probabilities = torch.softmax(
@@ -95,13 +185,58 @@ def decode(raw, kind, d, mean):
         )
         matrices["dcc_alpha"], matrices["dcc_beta"] = probs[0], probs[1]
         values = torch.cat((values, probs[:2]))
+    if kind == "adcc":
+        # a + b + delta g < 1 - 1e-6: the simplex gives (a, b, delta g); delta depends on
+        # the data and is applied in covariance_path ("dcc_gamma_share").
+        probs = torch.softmax(torch.cat((raw[-3:], torch.zeros(1, dtype=torch.float64))), dim=0) * (
+            1 - 1e-6
+        )
+        matrices["dcc_alpha"], matrices["dcc_beta"] = probs[0], probs[1]
+        matrices["dcc_gamma_share"] = probs[2]
+        values = torch.cat((values, probs[:3]))
     return values, matrices
 
 
-def encode(values, kind, d, mean):
-    """Physical inverse map, used only for starting values/reference checks."""
+def encode(values, kind, d, mean, delta=None):
+    """Physical inverse map, used only for starting values/reference checks.
+
+    ``adcc`` needs ``delta`` (``asymmetry_scale``) to map dcc_gamma onto its share.
+    """
     index = d if mean else 0
     prefix = values[:d] if mean else values[:0]
+    if kind in {"dvech", "dbekk"}:
+        m = physical_matrices(values, kind, d, mean)
+        lc = m["C"] if kind == "dbekk" else torch.linalg.cholesky(m["C"])
+        raw_c = torch.stack(
+            [lc[i, j].log() if i == j else lc[i, j] for i, j in lower_pairs(d)]
+        )
+        if kind == "dbekk":
+            a, b = m["a"], m["b"]
+            size = a.square() + b.square()
+            if float(size.max()) >= _LIMIT or float(a[0]) <= 0 or float(b[0]) <= 0:
+                raise KernelError(
+                    "mgarch_stationarity",
+                    "Diagonal BEKK requires a_i^2 + b_i^2 < 1-1e-6 and positive a_1, b_1.",
+                )
+            stretch = torch.sqrt((1 + size / (_LIMIT - size)) / _LIMIT)
+            ra, rb = a * stretch, b * stretch
+            ra = torch.cat((ra[:1].log(), ra[1:]))
+            rb = torch.cat((rb[:1].log(), rb[1:]))
+            return torch.cat((prefix, raw_c, ra, rb))
+        raw_a, raw_b = [], []
+        for i, j in lower_pairs(d):
+            a, b = m["A"][i, j], m["B"][i, j]
+            if i == j:
+                remainder = _LIMIT - a - b
+                if float(a) <= 0 or float(b) <= 0 or float(remainder) <= 0:
+                    raise KernelError(
+                        "mgarch_stationarity",
+                        "Diagonal VECH requires a_ii, b_ii > 0 and a_ii + b_ii < 1-1e-6.",
+                    )
+                a, b = (a / remainder).log(), (b / remainder).log()
+            raw_a.append(a)
+            raw_b.append(b)
+        return torch.cat((prefix, raw_c, torch.stack(raw_a), torch.stack(raw_b)))
     if kind == "bekk":
         cvalues = values[index : index + len(lower_pairs(d))]
         c = torch.stack(
@@ -133,6 +268,10 @@ def encode(values, kind, d, mean):
     if kind == "dcc":
         remainder = (1 - 1e-6) - values[-2:].sum()
         raw = torch.cat((raw, (values[-2:] / remainder).log()))
+    if kind == "adcc":
+        shares = torch.stack((values[-3], values[-2], values[-1] * delta))
+        remainder = (1 - 1e-6) - shares.sum()
+        raw = torch.cat((raw, (shares / remainder).log()))
     return raw
 
 
@@ -140,6 +279,18 @@ def physical_matrices(values, kind, d, mean):
     """Reporting-unit matrices for persisted forecasts and independent tests."""
     index = d if mean else 0
     mu = values[:d] if mean else torch.zeros(d, dtype=torch.float64)
+    if kind == "dvech":
+        pairs = len(lower_pairs(d))
+        blocks = [values[index + k * pairs : index + (k + 1) * pairs] for k in range(3)]
+        return {"mu": mu, **{name: _symmetric(block, d) for name, block in zip("CAB", blocks)}}
+    if kind == "dbekk":
+        pairs = len(lower_pairs(d))
+        c = torch.zeros((d, d), dtype=torch.float64)
+        for value, (i, j) in zip(values[index : index + pairs], lower_pairs(d), strict=True):
+            c[i, j] = value
+        index += pairs
+        return {"mu": mu, "C": c, "a": values[index : index + d],
+                "b": values[index + d : index + 2 * d]}
     if kind == "bekk":
         c = torch.zeros((d, d), dtype=torch.float64)
         for value, (i, j) in zip(
@@ -169,12 +320,51 @@ def physical_matrices(values, kind, d, mean):
     }
     if kind == "dcc":
         out.update(dcc_alpha=values[-2], dcc_beta=values[-1])
+    if kind == "adcc":
+        out.update(dcc_alpha=values[-3], dcc_beta=values[-2], dcc_gamma=values[-1])
     return out
 
 
 def validate_matrices(m, kind):
     if any(not bool(torch.isfinite(value).all()) for value in m.values()):
         raise KernelError("mgarch_nonfinite", "MGARCH parameters must be finite.")
+    if kind == "dvech":
+        check_spd(m["C"], "diagonal VECH constant C")
+        a, b = m["A"], m["B"]
+        if bool((a.diagonal() <= 0).any()) or bool((b.diagonal() <= 0).any()):
+            raise KernelError(
+                "mgarch_positivity", "Diagonal VECH a_ii and b_ii must be positive."
+            )
+        persistence = a + b
+        if float(persistence.abs().max()) >= 1 - 1e-6 or float(b.abs().max()) >= 1 - 1e-6:
+            raise KernelError(
+                "mgarch_stationarity",
+                "Diagonal VECH requires |a_ij + b_ij| < 1-1e-6 and |b_ij| < 1-1e-6 for every "
+                "element (each element of H_t is a stationary first-order recursion).",
+            )
+        smallest = [float(torch.linalg.eigvalsh(m[name]).min()) for name in ("A", "B")]
+        unconditional = m["C"] / (1 - persistence)
+        unconditional_pd = int(torch.linalg.cholesky_ex(unconditional)[1]) == 0
+        return {
+            "max_element_persistence": float(persistence.abs().max()),
+            "ding_engle_psd": min(smallest) >= -1e-12,
+            "min_eigenvalue_A": smallest[0],
+            "min_eigenvalue_B": smallest[1],
+            "unconditional_covariance_positive_definite": unconditional_pd,
+        }
+    if kind == "dbekk":
+        if bool((m["C"].diagonal() <= 0).any()) or float(m["a"][0]) <= 0 or float(m["b"][0]) <= 0:
+            raise KernelError(
+                "mgarch_positivity",
+                "Diagonal BEKK C must have a positive diagonal and a_1, b_1 must be positive.",
+            )
+        persistence = (m["a"].square() + m["b"].square()).max()
+        if float(persistence) >= 1 - 1e-6:
+            raise KernelError(
+                "mgarch_stationarity",
+                "Diagonal BEKK covariance stationarity requires a_i^2 + b_i^2 < 1-1e-6.",
+            )
+        return {"spectral_radius": float(persistence)}
     if kind == "bekk":
         if bool((m["C"].diagonal() <= 0).any()):
             raise KernelError("mgarch_positivity", "BEKK C must have positive diagonal.")
@@ -202,6 +392,24 @@ def validate_matrices(m, kind):
             "mgarch_stationarity", "Univariate GARCH alpha+beta must be less than 1-1e-6."
         )
     check_spd(m["target"], "correlation target")
+    if kind == "adcc":
+        if float(m["dcc_alpha"]) <= 0 or float(m["dcc_beta"]) <= 0 or float(m["dcc_gamma"]) <= 0:
+            raise KernelError(
+                "mgarch_stationarity", "aDCC a, b and g must be positive interior values."
+            )
+        persistence = float(m["dcc_alpha"] + m["dcc_beta"])
+        if "nbar" in m:
+            delta = float(asymmetry_scale(m["target"], m["nbar"]))
+            persistence += delta * float(m["dcc_gamma"])
+            if persistence >= 1 - 1e-6:
+                raise KernelError(
+                    "mgarch_stationarity",
+                    "aDCC requires a + b + delta g < 1-1e-6 (positive definite intercept).",
+                )
+        return {
+            "variance_persistence": (m["alpha"] + m["beta"]).tolist(),
+            "adcc_persistence": persistence,
+        }
     if kind == "dcc" and (
         float(m["dcc_alpha"]) <= 0
         or float(m["dcc_beta"]) <= 0
@@ -232,7 +440,19 @@ def check_spd(matrix, label):
 
 def covariance_path(m, y, initial, kind):
     residuals = y - m["mu"]
-    y.shape[1]
+    if kind in {"dvech", "dbekk"}:
+        if kind == "dbekk":
+            c, a, b = m["C"] @ m["C"].T, torch.outer(m["a"], m["a"]), torch.outer(m["b"], m["b"])
+        else:
+            c, a, b = m["C"], m["A"], m["B"]
+        h = initial
+        path = [h]
+        for t in range(1, len(y)):
+            h = c + a * torch.outer(residuals[t - 1], residuals[t - 1]) + b * h
+            path.append(h)
+        return torch.stack(path), residuals, {"H": h, "last_residual": residuals[-1]}
+    if kind == "adcc":
+        return _adcc_path(m, residuals, initial)
     if kind == "bekk":
         h = initial
         path = [h]
@@ -263,6 +483,51 @@ def covariance_path(m, y, initial, kind):
         residuals,
         {"H": covariances[-1], "h": h, "Q": q, "last_residual": residuals[-1]},
     )
+
+
+def _adcc_path(m, residuals, initial):
+    """Asymmetric DCC (Cappiello, Engle and Sheppard 2006, eq. 6-7), scalar version:
+
+    Q_(t+1) = (1 - a - b) Qbar - g Nbar + a z_t z_t' + b Q_t + g n_t n_t',   Q_1 = Qbar,
+
+    with n_t = z_t 1(z_t < 0) and Nbar the sample second moment of n at the current
+    variance parameters (``m["nbar"]`` overrides it for reference checks). With the
+    share parameterization of ``decode`` g = share / delta.
+    """
+    T = residuals.shape[0]
+    h = initial.diagonal()
+    variances = []
+    for t in range(T):
+        variances.append(h)
+        if t < T - 1:
+            h = m["omega"] + m["alpha"] * residuals[t].square() + m["beta"] * h
+    variances = torch.stack(variances)
+    z = residuals / variances.sqrt()
+    nbar = m["nbar"] if "nbar" in m else negative_moment(z)
+    target = m["target"]
+    gamma = m["dcc_gamma"] if "dcc_gamma" in m else m["dcc_gamma_share"] / asymmetry_scale(
+        target, nbar
+    )
+    a, b = m["dcc_alpha"], m["dcc_beta"]
+    intercept = (1 - a - b) * target - gamma * nbar
+    negative = z * (z < 0).to(torch.float64)
+    q = target
+    path = []
+    for t in range(T):
+        correlation = q / q.diagonal().sqrt()[:, None] / q.diagonal().sqrt()[None, :]
+        sd = variances[t].sqrt()
+        path.append(sd[:, None] * correlation * sd[None, :])
+        if t < T - 1:
+            q = (
+                intercept
+                + a * torch.outer(z[t], z[t])
+                + b * q
+                + gamma * torch.outer(negative[t], negative[t])
+            )
+    covariances = torch.stack(path)
+    state = {"H": covariances[-1], "h": variances[-1], "Q": q, "last_residual": residuals[-1],
+             "nbar": nbar}
+    return covariances, residuals, state
 
 
 def log_likelihood(raw, y, initial, kind, mean):
@@ -313,6 +578,19 @@ def fit_joint(y, initial, kind, mean, *, max_iterations=300, tolerance=1e-7):
         start_values = torch.cat(
             (mu, torch.stack([c[i, j] for i, j in lower_pairs(d)]), a.flatten(), b.flatten())
         )
+    elif kind == "dvech":
+        scale = initial.diagonal().sqrt()
+        correlation = initial / scale[:, None] / scale[None, :]
+        start_values = torch.cat(
+            (mu, _stack_lower(0.05 * initial), _stack_lower(0.05 * correlation),
+             _stack_lower(0.9 * correlation))
+        )
+    elif kind == "dbekk":
+        c = torch.linalg.cholesky(0.05 * initial)
+        start_values = torch.cat(
+            (mu, _stack_lower(c), torch.full((d,), math.sqrt(0.05), dtype=torch.float64),
+             torch.full((d,), math.sqrt(0.9), dtype=torch.float64))
+        )
     else:
         target = initial / initial.diagonal().sqrt()[:, None] / initial.diagonal().sqrt()[None, :]
         garch = torch.column_stack(
@@ -329,10 +607,18 @@ def fit_joint(y, initial, kind, mean, *, max_iterations=300, tolerance=1e-7):
                 torch.stack([target[i, j] for i, j in corr_pairs(d)]),
                 torch.tensor([0.05, 0.9], dtype=torch.float64)
                 if kind == "dcc"
+                else torch.tensor([0.04, 0.9, 0.02], dtype=torch.float64)
+                if kind == "adcc"
                 else y[:0].reshape(-1),
             )
         )
-    start = encode(start_values, kind, d, mean)
+    delta = None
+    if kind == "adcc":
+        start_matrices = physical_matrices(start_values, kind, d, mean)
+        nbar = covariance_path(start_matrices, y, initial, kind)[2]["nbar"]
+        delta = asymmetry_scale(start_matrices["target"], nbar)
+        start_values[-1] = min(0.02, 0.05 / float(delta)) if float(delta) > 0 else 0.02
+    start = encode(start_values, kind, d, mean, delta)
 
     def objective(q):
         return log_likelihood(q, y, initial, kind, mean)
@@ -365,7 +651,15 @@ def fit_joint(y, initial, kind, mean, *, max_iterations=300, tolerance=1e-7):
         error.diagnostics = fit.diagnostics
         raise error
     physical, m = decode(fit.theta, kind, d, mean)
+    if kind == "adcc":
+        # The physical asymmetry coefficient g = share / delta at the estimates.
+        nbar = covariance_path(m, y, initial, kind)[2]["nbar"]
+        gamma = m["dcc_gamma_share"] / asymmetry_scale(m["target"], nbar)
+        physical = torch.cat((physical[:-1], gamma.reshape(1)))
+        m = physical_matrices(physical, kind, d, mean)
+        m["nbar"] = nbar
     constraints = validate_matrices(m, kind)
+    m.pop("nbar", None)
 
     # Evaluate actual reporting-unit information, rather than treating the
     # optimizer's approximate stationarity as exact under a nonlinear transform.
@@ -413,11 +707,27 @@ def fit_joint(y, initial, kind, mean, *, max_iterations=300, tolerance=1e-7):
 
 
 def forecast_path(m, state, kind, steps):
-    """Exact one-step; BEKK full expectation, CCC/DCC multistep plug-in."""
+    """Exact one-step; BEKK/diagonal VECH/diagonal BEKK full expectation, CCC/DCC/aDCC
+    multistep plug-in."""
+    if kind == "adcc":
+        m = {**m, "nbar": state["nbar"]}
     validate_matrices(m, kind)
     h = state["H"]
     check_spd(h, "forecast origin covariance")
     paths = []
+    if kind in {"dvech", "dbekk"}:
+        if kind == "dbekk":
+            c, a, b = m["C"] @ m["C"].T, torch.outer(m["a"], m["a"]), torch.outer(m["b"], m["b"])
+        else:
+            c, a, b = m["C"], m["A"], m["B"]
+        # E[e e'] = H turns the recursion into an exact expectation recursion.
+        shock = torch.outer(state["last_residual"], state["last_residual"])
+        for step in range(steps):
+            h = c + a * shock + b * h
+            check_spd(h, "diagonal model forecast covariance")
+            paths.append(h)
+            shock = h
+        return torch.stack(paths)
     if kind == "bekk":
         shock = torch.outer(state["last_residual"], state["last_residual"])
         for step in range(steps):
@@ -449,6 +759,16 @@ def forecast_path(m, state, kind, steps):
     z = state["last_residual"] / variance.sqrt()
     for step in range(steps):
         variance = m["omega"] + m["alpha"] * shock + m["beta"] * variance
+        if kind == "adcc":
+            negative = z * (z < 0).to(torch.float64)
+            a, b, g = m["dcc_alpha"], m["dcc_beta"], m["dcc_gamma"]
+            q = (
+                (1 - a - b) * m["target"] - g * state["nbar"]
+                + a * torch.outer(z, z) + b * q + g * torch.outer(negative, negative)
+                if step == 0
+                # Engle-Sheppard section 7 with E[n n'] replaced by Nbar.
+                else (1 - a - b) * m["target"] + (a + b) * q
+            )
         if kind == "dcc":
             q = (1 - m["dcc_alpha"] - m["dcc_beta"]) * m["target"] + (
                 m["dcc_alpha"] * torch.outer(z, z) + m["dcc_beta"] * q

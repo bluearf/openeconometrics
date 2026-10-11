@@ -46,6 +46,7 @@ that could not be confirmed.
 | [panel_diagnostics.md](panel_diagnostics.md), [panel_dependence.md](panel_dependence.md) | `xtserial`, `xttest3`; `xtcd` (Pesaran CD, balanced BP LM/scaled LM) |
 | [panel_homogeneity.md](panel_homogeneity.md) | `xthst` (Pesaran–Yamagata slope homogeneity, balanced/unbalanced static panels) |
 | [iv.md](iv.md) | `ivregress` (2SLS, LIML, GMM; first-stage, overidentification, endogeneity tests), `xtivreg`, `ivreghdfe` |
+| [iv-extensions.md](iv-extensions.md) | `jive` (JIVE1, JIVE2, UJIVE), `ivlewbel` (Lewbel generated instruments), `shift_share_iv` (AKM/AKM0), `weakivtest` (Montiel Olea–Pflueger critical values) |
 | [dpanel.md](dpanel.md) | `xtdpd`, `xtabond`, `xtdpdsys` (difference and system GMM) |
 | [systems.md](systems.md) | `sureg`, `mvreg`, `reg3`, `gmm`, `frontier`, `xtgls`, `xtpcse` |
 | [quantile.md](quantile.md) | `qreg`, `bsqreg`, `sqreg`, `iqreg`, `rreg`, `nl` |
@@ -62,6 +63,8 @@ that could not be confirmed.
 | [mixed.md](mixed.md) | `mixed`, `melogit`, `meprobit`, `mepoisson`, `xtlogit`, `xtprobit`, `xtpoisson`, `xtgee` |
 | [survival.md](survival.md) | `sts`, `stcox`, `stcurve`, `streg`, `ltable` |
 | [teffects.md](teffects.md) | `teffects` (ra, ipw, ipwra, aipw, nnmatch, psmatch), `didregress`, `eventstudy`, `csdid`, `rdrobust`, `rdplot` |
+| [rd-local-randomization.md](rd-local-randomization.md) | `rdrandinf`, `rdwinselect`, `rdsensitivity`, `rdrbounds` (exact or seeded local randomization inference, window selection and sensitivity) |
+| [survey-calibration.md](survey-calibration.md) | `svycal`, `survey_calibrated_*`, `survey_pps_*` (calibration weighting, design covariance and PPS without replacement) |
 
 ### Time series
 
@@ -74,6 +77,8 @@ that could not be confirmed.
 | [cips.md](cips.md) | `xtcips` (individual CADF, CIPS and CIPS*, fixed/selected lags and published quantiles) |
 | [panic.md](panic.md) | `xtpanic` (Bai–Ng fixed-factor common/idiosyncratic decomposition, component ADF and MQc/MQf tests) |
 | [toda_yamamoto.md](toda_yamamoto.md) | `tycausality` (augmented levels VAR; first base-lag restrictions, asymptotic ML-covariance Wald tests) |
+| [iv-wild-bootstrap.md](iv-wild-bootstrap.md) | `iv_wild_test`, `iv_wild_confidence_set` (WRE bootstrap, AR, certified test inversion), `wild_multiway_test` (two-way WCR), `score_bootstrap_test` (Kline–Santos logit/probit) |
+| [causality-extensions.md](causality-extensions.md) | `konyacausality`, `ekcausality`, `fouriertycausality`, `rollingcausality`, leveraged `asymcausality` (bootstrap panel, Fourier, rolling and asymmetric causality) |
 | [tsmodels.md](tsmodels.md) | `prais`, `ardl`, `tsfilter`, `ucm`, `mswitch`, `threshold` |
 | [nardl.md](nardl.md) | `nardl`, `nardl_multipliers` (delta method and conditional recursive residual/wild bootstrap) |
 

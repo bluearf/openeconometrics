@@ -24,6 +24,7 @@ interface Dependencies {
   chooseAndUpload?: () => Promise<DatasetProfile | null>;
   transferInvoke?: ProjectTransferDependencies["invoke"];
   cancelFileDownload?: (fileId: string) => Promise<void>;
+  saveInputFile?: (fileId: string) => Promise<void>;
 }
 const recoverable = isTransientDesktopFailure;
 function canonicalManifest(value: unknown): string {
@@ -573,6 +574,24 @@ export function createHybridWorkspace(projectId: string, role: SyncState["role"]
   return {
     projectId, teams: true, desktop: true,
     transferActions,
+    saveInputFile: async (id) => {
+      await ready();
+      accessible();
+      let cloudId = id;
+      if (/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(id)) {
+        // Files uses the imported dataset UUID; native transfers use its cloud
+        // identifier. Resolve only this project's verified local cache index.
+        const cached = await local.request<{ files: { dataset_id: string; cloud_id: string }[] }>("/desktop-cached-files");
+        accessible();
+        const matches = cached.files.filter((file) => file.dataset_id === id);
+        if (matches.length !== 1 || !/^[a-f0-9]{32}$/.test(matches[0].cloud_id))
+          throw new ApiError("This dataset has no unique shared file to download.", 404);
+        cloudId = matches[0].cloud_id;
+      } else if (!/^[a-f0-9]{32}$/.test(id)) throw new ApiError("Invalid shared file identifier.", 400);
+      if (!deps.saveInputFile) throw new Error("Native file saving is unavailable.");
+      await deps.saveInputFile(cloudId);
+      accessible();
+    },
     cancelFileDownload: deps.cancelFileDownload ? async (id) => {
       accessible();
       if (downloading?.id !== id) throw new ApiError("This file is no longer downloading.", 409);
@@ -894,6 +913,16 @@ export function createDesktopWorkspaceClient(projectId: string, getToken: TokenG
   return createHybridWorkspace(projectId, role, {
     actorUid, local, cloud,
     transferInvoke,
+    saveInputFile: async (fileId) => {
+      const save = async (forceRefresh = false) => {
+        await nativeInvoke("save_project_file", { projectId, fileId, token: await getToken(forceRefresh) });
+      };
+      try { await save(); }
+      catch (error) {
+        if (!(error instanceof ApiError) || error.status !== 401) throw error;
+        await save(true);
+      }
+    },
     cancelFileDownload: async (fileId) => {
       const response = await transferInvoke("cancel_download", fileId);
       if (response.status !== 200) throw new ApiError("Could not request download cancellation.", response.status);

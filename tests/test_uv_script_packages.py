@@ -162,7 +162,8 @@ def test_application_and_installer_upgrade_retains_existing_project_libraries(ma
     before = wait_job(manager)
     path, generation = manager.active_path(), manager._generation
     manager.close()
-    core = {**before["manifest"]["core"], "openecon": "0.3.7a1", "uv": "0.9.26"}
+    core = {**before["manifest"]["core"], "openecon": "0.3.7a1",
+            "openecon-charts": "0.3.2a1", "uv": "0.9.26"}
     monkeypatch.setattr(project_packages, "protected_versions", lambda: core)
     reopened = manager_fixture.create()
     try:
@@ -184,21 +185,22 @@ def test_matching_uv_core_request_does_not_persist_a_missing_overlay(manager_fix
     assert manager_fixture.create().snapshot()["requirements"] == []
 
 
-@pytest.mark.parametrize("numeric_change", [True, False])
-def test_incompatible_core_upgrade_keeps_original_pointer(manager_fixture, monkeypatch, numeric_change):
+@pytest.mark.parametrize("incompatibility", ["numeric", "openecon", "openecon-charts"])
+def test_incompatible_core_upgrade_keeps_original_pointer(manager_fixture, monkeypatch, incompatibility):
     from openecon import project_packages
     manager = manager_fixture.create()
     manager.start_install("demo")
     before = wait_job(manager)
     pointer = manager.root / "active.json"
     original = pointer.read_bytes()
-    core = {**before["manifest"]["core"], "openecon": "0.3.7a1", "uv": "0.9.26"}
-    if numeric_change:
+    core = {**before["manifest"]["core"], "openecon": "0.3.7a1",
+            "openecon-charts": "0.3.2a1", "uv": "0.9.26"}
+    if incompatibility == "numeric":
         core["numpy"] = "9.0"
     else:
         metadata = next(manager.active_path().glob("demo-*.dist-info/METADATA"))
-        old_version = before["manifest"]["core"]["openecon"]
-        metadata.write_text(metadata.read_text() + f"Requires-Dist: openecon=={old_version}\n")
+        old_version = before["manifest"]["core"].get(incompatibility, "0.3.1a1")
+        metadata.write_text(metadata.read_text() + f"Requires-Dist: {incompatibility}=={old_version}\n")
     manager.close()
     monkeypatch.setattr(project_packages, "protected_versions", lambda: core)
     with pytest.raises(PackageError) as error:

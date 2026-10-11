@@ -161,6 +161,7 @@ EXPORTS: dict[str, str] = {
     "repeated_gls_contrast": "openecon.econometrics.mixed.repeated:repeated_gls_contrast",
     "mixed_satterthwaite": "openecon.econometrics.mixed.contrasts:mixed_satterthwaite",
     "mixed_predict": "openecon.econometrics.mixed.predict:mixed_predict",
+    "mixed_contrast": "openecon.econometrics.mixed.small_sample:mixed_contrast",
 }
 
 _EXT_WORK = Option('max_work', 'int', 2_000_000_000, minimum=1,
@@ -187,6 +188,85 @@ ESTIMATORS = ESTIMATORS + (
         options=(Option('distribution', 'str', 'truncated_normal', choices=('truncated_normal', 'half_normal')),
                  Option('time_varying', 'bool', False), Option('cost', 'bool', False), _EXT_WORK),
         description='Joint panel likelihood with shared truncated/half-normal inefficiency, optionally exponential calendar decay; full information and posterior efficiency delta uncertainty.'),
+)
+
+ESTIMATORS = ESTIMATORS + (
+    EstimatorInfo(
+        name="mixedresid", title="Linear mixed model with structured residual covariance",
+        family="mixed", entry="openecon.econometrics.mixed.residual_lmm:fit_mixedresid",
+        function="mixedresid", stata=("mixed, residuals()",), covariances=("nonrobust",),
+        default_covariance="nonrobust", predictors="optional", inference="z",
+        roles=(
+            Role("group", required=True, kind="label", doc="Grouping column of the random effects."),
+            Role("random", many=True, doc="Columns with random slopes."),
+            Role("occasion", doc="Integer time of residual='ar1' (rho^|t_a - t_b|)."),
+            Role("stratum", kind="label",
+                 doc="Heteroskedastic residual variance per level (nlme varIdent)."),
+            Role("within", kind="label",
+                 doc="Cells nested in the groups that carry the residual correlation."),
+        ),
+        options=(
+            Option("random_intercept", "bool", True, doc="Random intercept of the groups."),
+            Option("covstructure", "str", "independent", choices=("independent", "unstructured"),
+                   doc="Covariance of the random effects."),
+            Option("residual", "str", "ar1", choices=("independent", "ar1", "exchangeable"),
+                   doc="Within-block residual correlation."),
+            Option("method", "str", "reml", choices=("ml", "reml"),
+                   doc="Restricted (default, as nlme lme) or full maximum likelihood."),
+            _EXT_WORK,
+        ),
+        description="Gaussian random intercept/slopes combined with AR(1) or exchangeable "
+                    "within-group residual correlation and stratum-specific residual "
+                    "variances (nlme lme with corAR1/corCompSymm/varIdent; Stata mixed, "
+                    "residuals()), by ML or REML on dense per-group covariances; full "
+                    "fixed/covariance-parameter information.",
+    ),
+)
+
+_RI_GROUP = Role("group", required=True, kind="label",
+                 doc="Grouping column of the normal random intercept.")
+_AGQ_OPTIONS = (
+    Option("intpoints", "int", 12, minimum=1, maximum=64,
+           doc="Gauss-Hermite quadrature points for the random intercept."),
+    Option("intmethod", "str", "mcaghermite", choices=("mcaghermite", "ghermite"),
+           doc="Mode-curvature adaptive (modes recomputed at every parameter) or "
+               "non-adaptive Gauss-Hermite quadrature."),
+    _EXT_WORK,
+)
+
+
+def _me_ordered(name: str, title: str, link: str) -> EstimatorInfo:
+    return EstimatorInfo(
+        name=name, title=title, family="mixed",
+        entry=f"openecon.econometrics.mixed.ordinal_glmm:fit_{name}", function=name,
+        stata=(name,), covariances=("nonrobust",), default_covariance="nonrobust",
+        outcome="ordered", intercept="never", predictors="optional", inference="z",
+        roles=(_RI_GROUP,), options=_AGQ_OPTIONS,
+        description=f"Random-intercept ordered {link}: Pr(y <= k | u) = F(cut_k - x'b - u), "
+                    "u ~ N(0, var), by adaptive Gauss-Hermite quadrature with modes "
+                    "recomputed at every parameter (ordinal::clmm nAGQ); full observed "
+                    "information of slopes, cutpoints and variance.",
+    )
+
+
+ESTIMATORS = ESTIMATORS + (
+    _me_ordered("meologit", "Mixed-effects ordered logistic regression", "logit"),
+    _me_ordered("meoprobit", "Mixed-effects ordered probit regression", "probit"),
+    EstimatorInfo(
+        name="metobit", title="Mixed-effects Tobit regression", family="mixed",
+        entry="openecon.econometrics.mixed.censored_glmm:fit_metobit", function="metobit",
+        stata=("metobit", "xttobit, re"), covariances=("nonrobust",),
+        default_covariance="nonrobust", outcome="censored", predictors="optional",
+        inference="z", roles=(_RI_GROUP,),
+        options=(
+            Option("ll", "float", None, doc="Left-censoring limit: rows with y <= ll."),
+            Option("ul", "float", None, doc="Right-censoring limit: rows with y >= ul."),
+        ) + _AGQ_OPTIONS,
+        description="Random-intercept censored-normal (Tobit) regression with constant left "
+                    "and/or right limits, by adaptive Gauss-Hermite quadrature with modes "
+                    "recomputed at every parameter; full observed information of the "
+                    "coefficients and both variances.",
+    ),
 )
 
 _EXT_INT = (Option('covstructure', 'str', 'independent', choices=('independent', 'unstructured')),

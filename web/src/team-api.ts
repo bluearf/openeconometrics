@@ -39,6 +39,8 @@ export interface TeamProfile {
 export interface TeamAuthConfig {
   mode: "teams";
   account_link_available?: boolean;
+  desktop_reauth_available?: boolean;
+  email_code_available?: boolean;
   firebase: {
     apiKey: string;
     authDomain: string;

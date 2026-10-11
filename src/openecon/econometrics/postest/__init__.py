@@ -26,6 +26,8 @@ EXPORTS: dict[str, str] = {
     "restore_summary": "openecon.econometrics.summary_state:restore_summary",
     "wild_cluster_test": "openecon.econometrics.postest.wild_restricted:wild_cluster_test",
     "wild_cluster_confidence_set": "openecon.econometrics.postest.wild_restricted:wild_cluster_confidence_set",
+    "wild_multiway_test": "openecon.econometrics.postest.wild_multiway:wild_multiway_test",
+    "score_bootstrap_test": "openecon.econometrics.postest.score_bootstrap:score_bootstrap_test",
     "export_group_state": "openecon.econometrics.postest.group_state:export_group_state",
     "lrtest": "openecon.econometrics.postest.likelihood:lrtest",
     "estat_ic": "openecon.econometrics.postest.likelihood:estat_ic",

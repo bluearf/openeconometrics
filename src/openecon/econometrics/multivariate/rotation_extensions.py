@@ -1,4 +1,4 @@
-"""Bounded CF and binary partial-target rotations on CPU float64 tensors.
+"""Bounded CF, partial-target and complete oblique target rotations.
 
 The Crawford--Ferguson criterion is a convex combination of squared-loading
 row and column complexity. Partial targets minimize half the squared error of
@@ -292,3 +292,35 @@ def partial_target(loadings: Tensor, *, target, mask, oblique: bool = False,
     # Persist ignored cells as NaN, making the specified/free distinction explicit.
     persisted = torch.where(mask, target, float("nan"))
     return RotationExtension(rotation, diagnostics, persisted, mask)
+
+
+def oblique_target(loadings: Tensor, *, target, kaiser: bool = True,
+                   max_iter: int = 10000, tol: float = 1e-10) -> RotationExtension:
+    """Complete target on the unit-factor-variance oblique manifold.
+
+    Every target cell is specified, finite and in the loading metric. The
+    target must have full column rank; no missing-cell interpretation or
+    rank repair is applied. Kaiser normalization scales the target and the
+    original loadings by the same original row norms. Caller column order
+    and signs are retained without canonical sorting/sign changes.
+
+    Unlike orthogonal Procrustes, the constrained oblique problem is solved
+    by identity-start projected descent. Full tangent rank and a sufficiently
+    small projected gradient establish local sensitivity and stationarity,
+    not a global optimum or a unique minimum. The returned factor covariance
+    has unit diagonal and exactly preserves the fitted common covariance.
+    """
+    # Validate the loading domain before constructing the fixed full mask.
+    _inputs(loadings, oblique=True, kaiser=kaiser, max_iter=max_iter, tol=tol)
+    full_mask = torch.ones_like(loadings, dtype=torch.bool)
+    complete, full_mask = _target_inputs(target, full_mask, loadings.shape)
+    _condition(complete, "complete target matrix")
+    result = partial_target(loadings, target=complete, mask=full_mask, oblique=True,
+                            kaiser=kaiser, max_iter=max_iter, tol=tol)
+    result.diagnostics.update({
+        "rotation_objective": "half complete-target residual SS",
+        "rotation_orientation": "caller target column order/sign; local identification only",
+        "target_mask_contract": "complete finite full-column-rank target; all cells specified",
+        "target_complete": True,
+    })
+    return result

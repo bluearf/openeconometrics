@@ -34,8 +34,10 @@ Saved numeric unweighted model-based ML/REML fits also support
 `mixed_satterthwaite` for explicit scalar fixed contrasts. The
 [inference guide](next-eight-inference-stability.md) defines the approximate
 df calculation, matched original data, complete variance information and
-resource bounds. It does not change the base fit's asymptotic z reporting or
-add Kenward–Roger/joint multi-df inference.
+resource bounds. It does not change the base fit's asymptotic z reporting.
+Kenward–Roger (REML) and joint multi-df Satterthwaite t/F contrasts are
+provided separately by `oe.mixed_contrast`; see
+[mixed-model extensions](mixed-extensions.md).
 
 ### Model
 

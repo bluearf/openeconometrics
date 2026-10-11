@@ -1,4 +1,12 @@
-# Account sign-in methods (MARKET-91)
+# Historical account-linking implementation (MARKET-91)
+
+The current source uses [Google and email-code sign-in](email-code-signin.md).
+Password creation/linking is absent from the sign-in and account screens, and
+production account-link endpoints are retired in passwordless mode. The text
+below records the earlier implementation and its retained compatibility fixtures;
+it is not the current acceptance checklist or a claim of email-code deployment.
+
+## Earlier implementation receipt
 
 Implementation and isolated checks are complete in the source checkout. The acceptance gate requiring disposable **real Google and password accounts on both web and native clients is still pending**. No production user was linked, no account was merged, no installed application was replaced, and no deployment or release is asserted by this receipt.
 

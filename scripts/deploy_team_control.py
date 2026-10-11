@@ -39,6 +39,20 @@ RETIRED_SETTINGS = frozenset({
 # not be able to report a different revision.
 IMAGE_OWNED_SETTINGS = frozenset({'OPENECON_SOURCE_COMMIT'})
 REQUIRED_SYNC_SETTINGS = ('OPENECON_OWNER_EMAIL', 'OPENECON_SIGNER_EMAIL', 'OPENECON_FIREBASE_CONFIG')
+EMAIL_CODE_SECRETS = {
+    'OPENECON_EMAIL_CODE_KEY': 'openecon-email-code-key',
+    'OPENECON_EMAIL_CODE_SMTP': 'openecon-email-code-smtp',
+}
+
+
+def email_code_versions(key_version, smtp_version):
+    """Require an explicit, pinned pair without accepting raw credentials."""
+    if key_version is None and smtp_version is None:
+        return None
+    if any(not isinstance(value, str) or not re.fullmatch(r'[1-9][0-9]{0,9}', value)
+           for value in (key_version, smtp_version)):
+        raise ValueError('Both email-code secret versions must be pinned positive integers.')
+    return dict(zip(EMAIL_CODE_SECRETS, (key_version, smtp_version)))
 
 
 class Operator:
@@ -95,7 +109,8 @@ def retired_settings(source):
     return sorted(names & RETIRED_SETTINGS)
 
 
-def candidate_config(source, *, service, image):
+def candidate_config(source, *, service, image, key_version=None, smtp_version=None):
+    versions = email_code_versions(key_version, smtp_version)
     if service not in {PRODUCTION, PREVIEW}:
         raise ValueError('Only the fixed control services are allowed.')
     if not isinstance(image, str) or not IMAGE_PATTERN.fullmatch(image):
@@ -138,10 +153,19 @@ def candidate_config(source, *, service, image):
             or any(values.get(key) != value for key, value in expected.items())
             or any(key not in values for key in REQUIRED_SYNC_SETTINGS)):
         raise ValueError('Control identity, storage or sync configuration changed.')
+    if versions is None and len(set(values) & EMAIL_CODE_SECRETS.keys()) == 1:
+        raise ValueError('Email-code settings must be configured together.')
     # Preserve every other environment setting verbatim, including secret
     # references. The source service, not a local artifact, owns these values.
     dropped = RETIRED_SETTINGS | IMAGE_OWNED_SETTINGS | {'OPENECON_PUBLIC_ORIGIN'}
+    if versions is not None:
+        dropped |= EMAIL_CODE_SECRETS.keys()
     container['env'] = [item for item in environment if item['name'] not in dropped]
+    if versions is not None:
+        container['env'].extend({
+            'name': name,
+            'valueSource': {'secretKeyRef': {'secret': EMAIL_CODE_SECRETS[name], 'version': version}},
+        } for name, version in versions.items())
     container['env'].append({'name': 'OPENECON_PUBLIC_ORIGIN', 'value': origin(service)})
     container['image'] = image
     template.pop('revision', None)
@@ -174,9 +198,15 @@ def main():
     parser.add_argument('--image', required=True, help='Immutable reviewed control image digest')
     parser.add_argument('--production', action='store_true', help='Explicitly select the live web service')
     parser.add_argument('--apply', action='store_true', help='Apply the reviewed plan; default is read-only')
+    parser.add_argument('--email-code-key-version', help='Pinned version of the fixed email-code key secret')
+    parser.add_argument('--email-code-smtp-version', help='Pinned version of the fixed SMTP secret; requires key version')
     args = parser.parse_args()
     if not IMAGE_PATTERN.fullmatch(args.image):
         raise SystemExit('The candidate image must be an immutable reviewed OpenEcon digest.')
+    try:
+        versions = email_code_versions(args.email_code_key_version, args.email_code_smtp_version)
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from None
     operator = Operator()
     source_name = f'{PARENT}/services/{PRODUCTION}'
     source = operator.call('GET', source_name)
@@ -184,7 +214,9 @@ def main():
     if not public_web_policy(source_policy):
         raise SystemExit('Public web invocation differs from the reviewed baseline.')
     service = PRODUCTION if args.production else PREVIEW
-    config = candidate_config(source, service=service, image=args.image)
+    config = candidate_config(source, service=service, image=args.image,
+                              key_version=args.email_code_key_version,
+                              smtp_version=args.email_code_smtp_version)
     summary = {
         'project': PROJECT, 'service': service, 'origin': origin(service),
         'candidate_image': args.image, 'minimum_instances': 0, 'cloud_execution': False,
@@ -192,6 +224,7 @@ def main():
         'baseline_ready_revision': source.get('latestReadyRevision'),
         'baseline_image': source['template']['containers'][0]['image'],
         'applied': False,
+        'email_code_secret_versions': versions,
     }
     if not args.apply:
         print(json.dumps(summary))

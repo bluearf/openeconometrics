@@ -23,6 +23,8 @@ function fixture() {
   let datasets: DatasetProfile[] = [];
   let selected: DatasetProfile | null = null;
   let chooserCalls = 0;
+  const savedInputs: string[] = [];
+  let cachedFiles = [{ cloud_id: "2".repeat(32), dataset_id: "44444444-4444-4444-8444-444444444444", sha256: "b".repeat(64) }];
   let executionOutputs: ConsoleOutput[] = [];
   const session = { token: "local-only", version: "0.3", environment: "local" as const, persistent: true };
   const console = { history: [], variables: [], status: { running: false, session_generation: 1 } };
@@ -41,7 +43,7 @@ function fixture() {
       } else if (path === "/console") result = console;
       else if (path === "/datasets") result = { datasets };
       else if (path.startsWith("/datasets/")) result = datasets.find((file) => path === `/datasets/${file.id}`);
-      else if (path === "/desktop-cached-files") result = { files: [{ cloud_id: "2".repeat(32), sha256: "b".repeat(64) }] };
+      else if (path === "/desktop-cached-files") result = { files: cachedFiles };
       else if (path === "/desktop-outbox") {
         if (options.method === "PUT") outbox.push(body);
         result = { items: [...outbox] };
@@ -102,9 +104,11 @@ function fixture() {
     cacheFile: async () => { throw new Error("No fixture files"); },
     cacheFiles: async () => { if (cacheFailure) throw cacheFailure; return []; },
     chooseAndUpload: async () => { chooserCalls++; if (selected) datasets.push(selected); return selected; },
+    saveInputFile: async (id) => { savedInputs.push(id); },
   });
   return {
-    client, localCalls, cloudCalls, outbox,
+    client, localCalls, cloudCalls, outbox, savedInputs,
+    cached(value: typeof cachedFiles) { cachedFiles = value; },
     get code() { return code; }, get state() { return state; },
     offline() { online = false; }, online() { online = true; }, deny() { denied = true; },
     remoteChange() { remoteCode = "other = 2"; version++; },
@@ -122,6 +126,42 @@ function fixture() {
     },
   };
 }
+
+test("a viewer saves shared inputs through the native dialog without a local blob route", async () => {
+  const f = fixture(); f.downgrade();
+  await f.client.request("/bootstrap");
+  const before = f.localCalls.length;
+  await f.client.saveInputFile!("2".repeat(32));
+  assert.deepEqual(f.savedInputs, ["2".repeat(32)]);
+  assert.equal(f.localCalls.slice(before).some((call) => call.path.includes("/download")), false);
+  await assert.rejects(f.client.saveInputFile!("../unsafe"), /Invalid shared file/);
+  assert.equal(f.savedInputs.length, 1);
+  f.client.cancelPending();
+  await assert.rejects(f.client.saveInputFile!("2".repeat(32)), /closed/);
+  assert.equal(f.savedInputs.length, 1);
+});
+
+test("known revoked access prevents native file saving", async () => {
+  const f = fixture(); await f.client.request("/bootstrap"); f.deny();
+  await assert.rejects(f.client.request("/bootstrap"), (error) => error instanceof ApiError && error.status === 403);
+  await assert.rejects(f.client.saveInputFile!("2".repeat(32)), (error) => error instanceof ApiError && error.status === 403);
+  assert.deepEqual(f.savedInputs, []);
+  f.client.cancelPending();
+});
+
+test("a reopened imported dataset UUID resolves to its exact shared file and refuses foreign or ambiguous mappings", async () => {
+  const f = fixture(); f.downgrade(); await f.client.request("/bootstrap");
+  const id = "44444444-4444-4444-8444-444444444444";
+  await f.client.saveInputFile!(id);
+  assert.deepEqual(f.savedInputs, ["2".repeat(32)]);
+  await assert.rejects(f.client.saveInputFile!(localData.id), /no unique shared file/);
+  f.cached([{ dataset_id: id, cloud_id: "invalid", sha256: "b".repeat(64) }]);
+  await assert.rejects(f.client.saveInputFile!(id), /no unique shared file/);
+  f.cached([2, 3].map(value => ({ dataset_id: id, cloud_id: String(value).repeat(32), sha256: "b".repeat(64) })));
+  await assert.rejects(f.client.saveInputFile!(id), /no unique shared file/);
+  assert.deepEqual(f.savedInputs, ["2".repeat(32)]);
+  assert.equal(f.localCalls.some(call => call.path.includes("/download")), false);
+});
 
 test("desktop execute goes only to the local worker and removes cloud dispatch flag", async () => {
   const f = fixture(); await f.client.request("/bootstrap");

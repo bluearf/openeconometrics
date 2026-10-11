@@ -123,6 +123,54 @@ ESTIMATORS = ESTIMATORS + (
     ),
 )
 
+ESTIMATORS = ESTIMATORS + (
+    EstimatorInfo(
+        name="jive", title="Jackknife instrumental-variables regression", family="iv",
+        entry="openecon.econometrics.iv.jive:fit_jive", function="jive",
+        stata=("jive",),
+        covariances=("nonrobust", "robust", "cluster"), default_covariance="robust",
+        predictors="optional", inference="z", cluster_dimensions=1,
+        roles=(_ENDOGENOUS, _INSTRUMENTS),
+        options=(
+            Option("method", "str", "jive1", choices=("jive1", "jive2", "ujive"),
+                   doc="jive1/jive2: Angrist-Imbens-Krueger leave-one-out first stage with "
+                       "1-h or 1-1/N; ujive: Kolesar unbiased JIVE, one endogenous regressor."),
+            Option("small", "bool", False,
+                   doc="t and F with N-K degrees of freedom and regress-style factors."),
+        ),
+        description="Jackknife IV: JIVE1 and JIVE2 (Angrist, Imbens and Krueger 1999) and "
+                    "UJIVE (Kolesar 2013) from the leverage of one QR of the instruments, with "
+                    "the IV sandwich of the jackknife instrument (iid, robust or one-way "
+                    "cluster). Leverage-one observations are rejected, never dropped.",
+    ),
+    EstimatorInfo(
+        name="ivlewbel", title="IV with Lewbel heteroskedasticity-based instruments",
+        family="iv", entry="openecon.econometrics.iv.lewbel:fit_ivlewbel", function="ivlewbel",
+        stata=("ivreg2h",),
+        covariances=("nonrobust", "robust", "cluster"), default_covariance="robust",
+        predictors="required", inference="z", cluster_dimensions=1,
+        roles=(_ENDOGENOUS,
+               Role("instruments", many=True, required=False, kind="numeric",
+                    doc="Optional external excluded instruments, added to the generated ones."),
+               Role("generators", many=True, required=False, kind="numeric",
+                    doc="Numeric exogenous regressors Z generating (Z - mean Z) * e2hat; "
+                        "default: every non-constant exogenous regressor.")),
+        options=(
+            Option("method", "str", "2sls", choices=("2sls", "gmm"),
+                   doc="2sls, or two-step efficient GMM."),
+            Option("first_step", "str", "corrected", choices=("corrected", "ignored"),
+                   doc="corrected: propagate the first-stage coefficients and generator means "
+                       "into the robust/cluster covariance; ignored: ivreg2h convention."),
+            Option("small", "bool", False,
+                   doc="t and F with N-K degrees of freedom and regress-style factors."),
+        ),
+        description="Lewbel (2012) generated instruments (Z - mean Z) times the first-stage "
+                    "residuals of the endogenous regressors on the exogenous regressors, with "
+                    "optional external instruments, by 2SLS or efficient GMM; covariance with "
+                    "or without the first-step correction (ivreg2h treats them as data).",
+    ),
+)
+
 # Extra public functions exported as oe.<name>: {"name": "package.module:function"}.
 EXPORTS: dict[str, str] = {
     "iv_saved_weak_test": "openecon.econometrics.iv.saved_weak:iv_saved_weak_test",
@@ -131,4 +179,9 @@ EXPORTS: dict[str, str] = {
     "stock_yogo": "openecon.econometrics.iv.weak_inference:stock_yogo",
     "iv_weak_test": "openecon.econometrics.iv.weak_inference:iv_weak_test",
     "iv_ar_confidence_set": "openecon.econometrics.iv.weak_inference:iv_ar_confidence_set",
+    "iv_wild_test": "openecon.econometrics.iv.wild_bootstrap:iv_wild_test",
+    "iv_wild_confidence_set": "openecon.econometrics.iv.wild_bootstrap:iv_wild_confidence_set",
+    "shift_share_iv": "openecon.econometrics.iv.shift_share:shift_share_iv",
+    "shift_share_instrument": "openecon.econometrics.iv.shift_share:shift_share_instrument",
+    "weakivtest": "openecon.econometrics.iv.mop:weakivtest",
 }

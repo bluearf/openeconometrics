@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import hashlib
 import importlib.util
 import json
@@ -15,7 +16,12 @@ import traceback
 ROOT = Path(__file__).resolve().parents[1]
 CHILD = ROOT / 'scripts/verify_bvar_chan2020_original_author.py'
 LIFECYCLE = ROOT / 'scripts/run_parallel_sdk_groups.py'
-LIFECYCLE_SHA256 = 'c4e4fae124766f30a316f69637d253d14e978d9cb4e60e7646dd470bebe07615'
+# CI timing refreshes rewrite only this advisory scheduling table, which the
+# runner never reads. The pin covers every other statement of the lifecycle
+# reviewed at 8464c5c4 as a Python-version-stable AST digest; comments and layout
+# are not code. The excluded table must remain an inert str-to-number literal.
+LIFECYCLE_TIMING_TABLE = 'ADVISORY_NODE_SECONDS'
+LIFECYCLE_CODE_SHA256 = '2b016545a45f6a7deef87763c194b5696c60206b18df2b7565be640ca91c4c22'
 OS_SECONDS = 600
 REAP_SECONDS = 15
 
@@ -30,12 +36,41 @@ def require(value, text):
         raise ValueError(text)
 
 
-def ownership():
-    require(pin(LIFECYCLE)['sha256'] == LIFECYCLE_SHA256,
-            'Reviewed full nonreaping SDK lifecycle source differs')
-    spec = importlib.util.spec_from_file_location('original_author_owned_lifecycle', LIFECYCLE)
+def _canonical(node):
+    # Absent, None and empty fields coincide so 3.12+ empty type_params match 3.11.
+    if isinstance(node, ast.AST):
+        return [type(node).__name__, [[name, _canonical(value)] for name in node._fields
+                                      if (value := getattr(node, name, None)) is not None and value != []]]
+    if isinstance(node, list):
+        return [_canonical(item) for item in node]
+    return [type(node).__name__, repr(node)]
+
+
+def lifecycle_code_sha256(raw):
+    module = ast.parse(raw)
+    tables = [statement for statement in module.body if isinstance(statement, ast.Assign)
+              and any(isinstance(target, ast.Name) and target.id == LIFECYCLE_TIMING_TABLE
+                      for target in statement.targets)]
+    require(len(tables) == 1 and len(tables[0].targets) == 1 and isinstance(tables[0].value, ast.Dict),
+            'Reviewed lifecycle needs exactly one advisory timing table')
+    table = tables[0].value
+    require(all(isinstance(key, ast.Constant) and type(key.value) is str for key in table.keys)
+            and all(isinstance(value, ast.Constant) and type(value.value) in (int, float)
+                    for value in table.values),
+            'Advisory timing table must remain an inert str-to-number literal')
+    tables[0].value = ast.Constant('excluded inert advisory timing literal')
+    canonical = json.dumps(_canonical(module), separators=(',', ':'))
+    return hashlib.sha256(canonical.encode()).hexdigest()
+
+
+def ownership(path=LIFECYCLE):
+    raw = path.read_bytes()
+    require(lifecycle_code_sha256(raw) == LIFECYCLE_CODE_SHA256,
+            'Reviewed nonreaping SDK lifecycle code differs')
+    spec = importlib.util.spec_from_file_location('original_author_owned_lifecycle', path)
     module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
+    # Execute the verified bytes themselves, never a second read or cached bytecode.
+    exec(compile(raw, str(path), 'exec', dont_inherit=True), module.__dict__)
     return module
 
 
@@ -74,10 +109,12 @@ def main():
             '--source-commit', args.source_commit, '--ROOT-authorized-original-author-comparison']
     started = time.monotonic()
     deadline = started + OS_SECONDS
-    terminal = {'schema': 'openecon.original-author-Octave.external-OS-once.v2',
+    terminal = {'schema': 'openecon.original-author-Octave.external-OS-once.v3',
                 'status': 'FAILED_OR_INCOMPLETE', 'argv': argv,
                 'supervisor_source': pin(Path(__file__).resolve()), 'child_source': pin(CHILD),
                 'reviewed_nonreaping_lifecycle_source': pin(LIFECYCLE),
+                'reviewed_nonreaping_lifecycle_code': {'ast_sha256': LIFECYCLE_CODE_SHA256,
+                                                       'excluded_literal': LIFECYCLE_TIMING_TABLE},
                 'python_executable_alias': str(python), 'resolved_python_binary': pin(python.resolve()),
                 'started_monotonic': started, 'OS_seconds_cap': OS_SECONDS,
                 'cleanup_reap_seconds_cap': REAP_SECONDS, 'no_retry': True}

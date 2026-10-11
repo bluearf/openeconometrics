@@ -18,7 +18,7 @@ from torch import Tensor
 
 from openecon.analysis_contracts import AnalysisError
 from openecon.econometrics.arch import postfit
-from openecon.econometrics.arch.kernels import ArchLikelihood
+from openecon.econometrics.arch.extended import likelihood
 from openecon.econometrics.arch.layout import Layout, lag_list, read_layout
 from openecon.econometrics.arch.maximize import maximize
 from openecon.econometrics.arch.recursions import dense
@@ -152,7 +152,7 @@ def fit_arch(spec: ModelSpec, data: Any) -> ResultBundle:
         centre = z.mean(dim=0)
         z -= centre
         back[ix.c, ix.z] = -centre
-    like = ArchLikelihood(y, x, z, layout)
+    like = likelihood(y, x, z, layout)
     if not like.linear:
         # EGARCH and ARCH-in-mean: the derivative recursion carries one transition map
         # per observation, of the square of the longest lags.
@@ -196,7 +196,33 @@ def fit_arch(spec: ModelSpec, data: Any) -> ResultBundle:
         frame.warn(f"The estimated variance equation is not covariance stationary (persistence "
                    f"{persist:.4f} >= 1): shocks to the variance do not die out and the "
                    "unconditional variance does not exist. Consider model='igarch'.")
-    if layout.kind != "egarch":
+    if layout.kind == "figarch":
+        from openecon.econometrics.arch.extended import figarch_weights
+        phi = float(theta[ix.a[0]]) if ix.a else 0.0
+        beta = float(theta[ix.b[0]]) if ix.b else 0.0
+        weights, _ = figarch_weights(phi, float(theta[ix.r[0]]), beta, layout.truncation)
+        negative = int((weights < 0).sum())
+        if negative or float(theta[ix.c]) <= 0.0:
+            frame.warn(f"The FIGARCH estimates give {negative} negative ARCH(infinity) weight(s)"
+                       + (" and a non-positive constant" if float(theta[ix.c]) <= 0.0 else "")
+                       + ": the fitted variance is positive at every observation, but it is not "
+                       "guaranteed to stay positive in forecasts or on other data (the "
+                       "Baillie-Bollerslev-Mikkelsen positivity conditions fail). No "
+                       "constraints are imposed.")
+    elif layout.kind == "cgarch":
+        alpha, beta = float(theta[ix.a[0]]), float(theta[ix.b[0]])
+        rho, phi = float(theta[ix.r[0]]), float(theta[ix.r[1]])
+        broken = [text for text, holds in (
+            ("omega > 0", float(theta[ix.c]) > 0.0), ("alpha > 0", alpha > 0.0),
+            ("phi > 0", phi > 0.0), ("beta > phi", beta > phi),
+            ("alpha + beta < rho", alpha + beta < rho), ("rho < 1", rho < 1.0)) if not holds]
+        if broken:
+            frame.warn("The component GARCH estimates violate the Engle-Lee (1999) conditions "
+                       f"for a positive, identified decomposition ({', '.join(broken)}): the "
+                       "fitted variance is positive at every observation, but the permanent "
+                       "and transitory components may be exchanged or the forecasts may leave "
+                       "the positive domain. No constraints are imposed.")
+    elif layout.kind != "egarch":
         # Sufficient conditions for a positive variance: every coefficient non-negative
         # (for GJR also a_i + g_i, the coefficient of a negative shock).
         negative = [terms[i] for i in [*ix.a, *ix.b] if float(theta[i]) < 0.0]
@@ -278,7 +304,8 @@ def arch(*, data: Any, y: str, x: Any = None, time: str | None = None, arch: Any
          archm: str | None = None, ar: Any = None, ma: Any = None, constant: bool = True,
          variance_x: Any = None, covariance: str | None = None, categorical: Any = None,
          test_lags: int | None = None, max_iterations: int = 500, tolerance: float = 1e-8,
-         missing: str = "raise", alpha: float = 0.05) -> ResultBundle:
+         missing: str = "raise", alpha: float = 0.05,
+         truncation: int | None = None) -> ResultBundle:
     """ARCH-family regression: ARCH, GARCH, GJR/TARCH, EGARCH, PARCH, IGARCH (Stata's ``arch``).
 
     Model
@@ -310,6 +337,17 @@ def arch(*, data: Any, y: str, x: Any = None, time: str | None = None, arch: Any
     ``"igarch"``
         the GARCH equation with sum a_i + sum b_j = 1 imposed (the last GARCH coefficient
         is not free); the constant omega is kept.
+    ``"cgarch"``
+        component GARCH(1,1) (Engle and Lee 1999; rugarch's csGARCH parameterization):
+        q_t = omega + rho q_(t-1) + phi (e_(t-1)^2 - h_(t-1)) and
+        h_t = q_t + alpha (e_(t-1)^2 - q_(t-1)) + beta (h_(t-1) - q_(t-1)).
+    ``"figarch"``
+        FIGARCH(p,d,q), p, q in {0, 1} (Baillie, Bollerslev and Mikkelsen 1996; Python arch's
+        parameterization): h_t = omega / (1 - beta) + lambda(L) e_t^2 with
+        lambda(L) = 1 - (1 - phi L)(1 - L)^d / (1 - beta L) truncated at ``truncation``
+        lags (default 1000), 0 < d < 1.
+    The extended models (cgarch, figarch) take no ARCH-in-mean term and no variance
+    regressors; see docs/econometrics/garch-extensions.md.
 
     ``variance_x`` adds regressors z_t to the variance equation as Stata's ``het()`` does:
     multiplicative heteroskedasticity ``exp(l_0 + z_t'l)`` replaces omega (``l_0 + z_t'l``
@@ -353,10 +391,16 @@ def arch(*, data: Any, y: str, x: Any = None, time: str | None = None, arch: Any
         has an ``earch`` (signed) and an ``earch_a`` (absolute) term, for ``"gjr"`` an
         ``arch`` and a ``tarch`` term.
     garch : GARCH order p or a list of lags; default 1 (none for ``model="arch"``).
-    model : ``"arch"``, ``"garch"``, ``"gjr"`` (alias ``"tarch"``), ``"egarch"``, ``"parch"``
-        or ``"igarch"``.
-    dist : ``"normal"``, ``"t"`` (Student t; reports ``/lndfm2 = ln(df - 2)``) or ``"ged"``
-        (generalized error distribution; reports ``/lnshape = ln(shape)``).
+    model : ``"arch"``, ``"garch"``, ``"gjr"`` (alias ``"tarch"``), ``"egarch"``, ``"parch"``,
+        ``"igarch"``, ``"cgarch"`` or ``"figarch"`` (``arch=0`` drops the FIGARCH phi term,
+        ``garch=0`` the beta term).
+    dist : ``"normal"``, ``"t"`` (Student t; reports ``/lndfm2 = ln(df - 2)``), ``"ged"``
+        (generalized error distribution; reports ``/lnshape = ln(shape)``), ``"skewt"``
+        (Hansen's 1994 skewed t, the parameterization of Python arch's SkewStudent; reports
+        ``/lndfm2`` and ``/atlambda = atanh(lambda)``) or ``"sged"`` (Fernandez-Steel skewed
+        GED standardized to unit variance, as fGarch's dsged and rugarch's "sged"; reports
+        ``/lnshape`` and ``/lnxi = ln(xi)``). The skewed densities are not available on the
+        Dataset (streaming) route.
     archm : ``None``, ``"variance"``, ``"sd"`` or ``"log"``.
     ar, ma : AR and MA orders or lists of lags of the disturbance, e.g. ``ar=1, ma=[1, 4]``.
     constant : include the constant of the mean equation (default True).
@@ -372,6 +416,8 @@ def arch(*, data: Any, y: str, x: Any = None, time: str | None = None, arch: Any
     missing : ``"raise"`` or ``"drop"``; dropped rows may only be at the start or end of the
         series (interior gaps raise ``time_gaps``).
     alpha : significance level of the confidence intervals.
+    truncation : FIGARCH only: lags of the truncated ARCH(infinity) form (1..5000, default
+        1000 as in Python arch).
 
     Result
     ------
@@ -380,7 +426,7 @@ def arch(*, data: Any, y: str, x: Any = None, time: str | None = None, arch: Any
     ``HET:<z>`` and ``HET:Intercept`` (with ``variance_x``), ``ARCH:L1.arch``,
     ``ARCH:L1.tarch``, ``ARCH:L1.garch`` (``earch``, ``earch_a``, ``egarch`` for EGARCH;
     ``parch``, ``pgarch`` for power ARCH), ``ARCH:Intercept``, ``POWER:power``, and
-    ``/lndfm2`` or ``/lnshape``.
+    ``/lndfm2`` or ``/lnshape`` (followed by ``/atlambda`` or ``/lnxi`` when skewed).
     ``metrics``: ``log_likelihood``, ``aic``, ``bic``, ``persistence`` (sum a + sum b; plus
     half the threshold terms for GJR; sum b for EGARCH; E|z|^phi sum a + sum b for power
     ARCH; 1 for IGARCH), ``unconditional_variance`` (omega / (1 - persistence) for
@@ -424,7 +470,7 @@ def arch(*, data: Any, y: str, x: Any = None, time: str | None = None, arch: Any
                  "garch": lag_list(garch, "garch"), "archm": archm,
                  "ar": lag_list(ar, "ar") or None, "ma": lag_list(ma, "ma") or None,
                  "test_lags": _integer(test_lags), "max_iterations": _integer(max_iterations),
-                 "tolerance": tolerance},
+                 "tolerance": tolerance, "truncation": _integer(truncation)},
     )
     from openecon.analysis import fit
 

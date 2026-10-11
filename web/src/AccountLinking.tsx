@@ -7,7 +7,10 @@ import {
   accountMethods,
   type AccountMethod,
 } from "./account-linking";
-import { linkDesktopAccount } from "./native-account-link";
+import {
+  linkDesktopAccount,
+  verifyDesktopAccount,
+} from "./native-account-link";
 import { isDesktop } from "./desktop";
 import "./account-linking.css";
 
@@ -16,7 +19,10 @@ export interface AccountLinkingProps {
   user: User;
   target?: AccountMethod;
   nativeAvailable?: boolean;
+  nativePasswordAvailable?: boolean;
   onLinked: () => Promise<void>;
+  verificationOnly?: boolean;
+  onVerified?: () => Promise<void>;
   onBusy?: (busy: boolean) => void;
   refreshFailureMessage?: string;
   /** Injection is used by component tests, never by production auth selection. */
@@ -27,7 +33,10 @@ export default function AccountLinking({
   user,
   target,
   nativeAvailable = false,
+  nativePasswordAvailable = false,
   onLinked,
+  verificationOnly = false,
+  onVerified,
   onBusy,
   refreshFailureMessage = "The method was added, but projects could not be refreshed. Reload to check your project list.",
   session: injected,
@@ -99,8 +108,26 @@ export default function AccountLinking({
     setError("");
     setNotice("");
     try {
-      await session.reauthenticate(method, currentPassword);
-      if (mounted.current) setVerified(true);
+      if (isDesktop() && method === "google.com") {
+        controller.current = new AbortController();
+        await session.reauthenticateNative(() =>
+          verifyDesktopAccount(
+            auth,
+            user,
+            controller.current!.signal,
+            setNotice,
+          ),
+        );
+      } else {
+        await session.reauthenticate(method, currentPassword);
+      }
+      if (mounted.current) {
+        if (verificationOnly) await onVerified?.();
+        else {
+          setNotice("");
+          setVerified(true);
+        }
+      }
     } catch (failure) {
       if (mounted.current) {
         setVerified(false);
@@ -110,6 +137,7 @@ export default function AccountLinking({
       if (mounted.current) {
         setCurrentPassword("");
         setBusy(null);
+        controller.current = null;
       }
     }
   }
@@ -206,14 +234,15 @@ export default function AccountLinking({
           {error}
         </p>
       )}
-      {!missing.length && !target ? (
+      {!missing.length && !target && !verificationOnly ? (
         <p>Both available sign-in methods are linked.</p>
       ) : isDesktop() && !nativeAvailable ? (
         <p role="status">
           Account linking is unavailable on this server. Update the service
           before adding a sign-in method in the app.
         </p>
-      ) : isDesktop() ? (
+      ) : isDesktop() &&
+        (!nativePasswordAvailable || !missing.includes("password")) ? (
         <>
           {missing.map((value) => (
             <button
@@ -234,7 +263,7 @@ export default function AccountLinking({
             </button>
           )}
         </>
-      ) : !verified ? (
+      ) : !verified || verificationOnly ? (
         <form onSubmit={(event) => void verify(event)}>
           <h3>1. Verify your existing sign-in</h3>
           {methods.length > 1 && (
@@ -280,6 +309,15 @@ export default function AccountLinking({
                 ? "Verify password"
                 : "Verify with Google"}
           </button>
+          {isDesktop() && busy === "verify" && method === "google.com" && (
+            <button
+              type="button"
+              className="team-secondary"
+              onClick={() => controller.current?.abort()}
+            >
+              Cancel verification
+            </button>
+          )}
         </form>
       ) : (
         <section>

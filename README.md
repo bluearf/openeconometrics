@@ -1,32 +1,40 @@
 # OpenEconometrics
 
 <!-- BEGIN source-generated capability scope -->
-Current source: **157 registered fit names**, **92 Dataset fit routes**, **74 common saved predict/margins adapters**. The [generated method/option inventory](docs/capabilities.md) states conditions, exclusions and devices.
+Current source: **171 registered fit names**, **92 Dataset fit routes**, **74 common saved predict/margins adapters**. The [generated method/option inventory](docs/capabilities.md) states conditions, exclusions and devices.
 
 Fit routes, common prediction adapters and family-specific helpers/forecasts have separate contracts. Source implementation does not establish independent scientific validation, installed-package verification or public shipment for a method/option. Those require their own dated, source-pinned evidence; historical measurements retain their original scope.
 <!-- END source-generated capability scope -->
 
 An open-source Python statistics library and local research workbench with a code editor, persistent Python session, data inspector, plots and MCP integration. Apache-2.0 licensed.
 
+OpenEconometrics is free and open source. Optional cloud, team and institutional
+support services may be offered in the future. See the
+[licensing policy](docs/licensing.md).
+
 Python package remains `openecon`. Project website: [openeconometrics.com](https://openeconometrics.com).
 
 [Teaching Labs](docs/teaching/README.md): twenty English classroom labs with
 theory, runnable code, computed results and exercises; instructor guides are separate.
 
-Reviewed source snapshots and Mac alpha releases are distributed through
+Reviewed source snapshots and Mac/Windows alpha releases are distributed through
 [bluearf/openeconometrics](https://github.com/bluearf/openeconometrics).
 Mac packages require Apple Silicon and macOS 15 or later. Read each release's
 checksum and signing status before installation. Developer ID signing and
-notarization remain pending. The published PyPI alpha packages are
-[openecon 0.3.18a4](https://pypi.org/project/openecon/0.3.18a4/) and
-[openecon-charts 0.3.0a2](https://pypi.org/project/openecon-charts/0.3.0a2/).
+notarization are deferred until Apple Developer Program enrollment; ad-hoc signed
+Mac alphas are accepted for internal testing. The published PyPI alpha packages are
+[openecon 0.3.19a1](https://pypi.org/project/openecon/0.3.19a1/) and
+[openecon-charts 0.3.1a1](https://pypi.org/project/openecon-charts/0.3.1a1/).
 Their scope follows the reviewed public snapshot. See
 [PUBLIC-SOURCE.md](https://github.com/bluearf/openeconometrics/blob/main/PUBLIC-SOURCE.md) and `SOURCE-MANIFEST.json` in the
 public snapshot for its precise source and external-fixture boundary.
 
-This checkout prepares SDK **0.3.19a1** and charts **0.3.1a1**. Those versions
-require their own frozen public-source manifest, wheel/sdist installation checks
-and verified PyPI publication; the published pair above retains its earlier scope.
+Public Mac **0.3.43**, Windows **0.3.45** and the Python pair each retain their
+own build source and tested scope. See the
+[dated distribution ledger](docs/validation/distribution-status-2026-10-11.md)
+for exact versions, hashes, source/tag pins, producer runs and anonymous access.
+
+The frozen Mac **0.3.46** alpha includes SDK **0.3.20a1** and charts **0.3.2a1** wheels and source distributions in its [GitHub release](https://github.com/bluearf/openeconometrics/releases/tag/v0.3.46-alpha.1). Install those exact assets using [the package instructions](PYPI-README.md). They are separate from the published PyPI pair above; later development commits may have additional capabilities.
 
 Distribution preserves the [third-party notices](THIRD_PARTY.md). See
 [contribution guidelines](CONTRIBUTING.md) and the [private security-reporting
@@ -97,12 +105,12 @@ Relative file paths in the console resolve inside the active workspace (`.openec
 Install the published alpha on Python 3.11–3.14:
 
 ```sh
-python -m pip install 'openecon==0.3.18a4'
+python -m pip install 'openecon==0.3.19a1'
 ```
 
-This version installs its exact chart dependency, `openecon-charts==0.3.0a2`.
-The current source candidate is `openecon==0.3.19a1` with
-`openecon-charts==0.3.1a1`; it has not replaced the published pair above.
+This version installs its exact chart dependency, `openecon-charts==0.3.1a1`.
+The current source candidate is `openecon==0.3.20a1` with
+`openecon-charts==0.3.2a1`; it has not replaced the published pair above.
 The source checkout and desktop candidate have separate release scope;
 see [distribution versions and extras](docs/distribution.md).
 
@@ -232,7 +240,7 @@ chart.save_html("chart.html")
 ```
 
 Install the published chart alpha independently with
-`python -m pip install 'openecon-charts==0.3.0a2'`. From this checkout,
+`python -m pip install 'openecon-charts==0.3.1a1'`. From this checkout,
 use `python -m pip install ./packages/openecon-charts` for the current source version.
 The workspace launcher installs it alongside OpenEconometrics. For distributable wheels,
 build both using `uv build --all-packages` and install both wheels together.
@@ -277,13 +285,13 @@ MCP exposes structured dataset inspection and model-fitting tools to Codex, Clau
 
 ## Current limits
 
-The [team edition](docs/team-deployment.md) provides Google sign-in and verified email/password accounts, persistent projects, email-bound invitations and owner/editor/viewer roles. **All analyses run locally on each member's computer in the desktop app.** The Cloud Run service is a team sync layer only: Firestore and private Cloud Storage retain drafts, data and the results members share from the desktop; the service never executes user code. The browser team page has no Run control, and the retired cloud execution routes refuse older clients. Results produced by the earlier cloud execution backends remain readable. Concurrent draft writes are version-checked; simultaneous collaborative text editing and remote MCP are not included. See [team sync backend deployment](docs/sync-backend-deployment.md).
+The [team edition](docs/team-deployment.md) provides Google sign-in or a delivered six-digit code for each new email session, persistent projects, email-bound invitations and owner/editor/viewer roles. Password setup/link/reset was superseded by this authentication decision. **All analyses run locally on each member's computer in the desktop app.** The Cloud Run service is a team sync layer only: Firestore and private Cloud Storage retain drafts, data and the results members share from the desktop; the service never executes user code. The browser team page has no Run control, and the retired cloud execution routes refuse older clients. Results produced by the earlier cloud execution backends remain readable. Concurrent draft writes are version-checked; simultaneous collaborative text editing and remote MCP are not included. Authentication and live QA cleanup are accepted separately from the remaining installed collaboration checks; see the [dated status](docs/validation/distribution-status-2026-10-11.md) and [team sync backend deployment](docs/sync-backend-deployment.md).
 
 - Large local CSV/Parquet imports automatically use a projected, replayable Dataset. The 32 MiB/100,000-row thresholds choose the bounded reader; they do not reject those formats. Large desktop data stays local. Cloud project uploads retain their 24 MiB limit; eager XLSX/DTA have separate format limits. Native model adapters process complete samples through bounded passes and owned temporary storage, with model-specific option conditions in `oe.capabilities()`. See [large local datasets](docs/streaming.md) for algorithms, resource budgets and measured physical workloads.
 - Statistical estimates and inference use native PyTorch float64. Supported factor operations can use CUDA float64 or checked Mac Metal preconditioning with original CPU float64 refinement; likelihood/state recursions and disk operations remain CPU. Actual execution devices and fallbacks are recorded. CUDA hardware throughput has not been validated.
 - Local console commands have no automatic execution deadline; explicit deadlines and Stop remain available. Output, table previews and history are bounded. Stop/timeout resets the local session; it has no rollback, hard memory quota or OS security sandbox.
 - Workspace fits and MCP `run_analysis` are synchronous and serialized within each process. MCP also offers bounded background jobs with status, cancellation and durable retry IDs; one background job runs per workspace. See the [job contract](docs/agent-integration.md). These jobs are separate from the console's worker.
-- The current catalogue includes weights, absorbed fixed effects, IV/GMM, panel models, time series, survival models and supported postestimation. Complex surveys, imputation, SEM, Stata command execution and do-file translation remain separate work; model coverage does not imply complete Stata parity.
+- The current catalogue includes bounded complex surveys, multiple imputation and continuous latent SEM alongside regression, IV/GMM, panel, time-series and survival methods. Each has supported and excluded options; see the [dated comparison and remaining-issue review](docs/econometrics/comparison-status-2026-10-11.md). Stata command execution and do-file translation are separate from this Python API. Method coverage does not establish complete vendor parity.
 - XLSX reads the first worksheet's stored values. CSV expects UTF-8 and comma separators. DTA labels and tagged missing codes are retained as metadata; this is not a full Stata round trip or DTA export.
 - The local HTTP server is for one trusted local user and only accepts loopback binding. Cloud teams use a separate authenticated sync API with live membership checks and no code execution. Do not expose the local console as a substitute for this team architecture.
 

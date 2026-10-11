@@ -146,13 +146,20 @@ function Get-RegisteredWebViewExecutables([object[]]$Registrations, [hashtable]$
     return @($Registered | Sort-Object)
 }
 
-function Assert-OwnedWebViewPolicyProfile([string]$OwnedRoot, [string]$NativeExecutable, [string]$BrowserProfile) {
+function Assert-OwnedWebViewPolicyProfile([string]$OwnedRoot, [string]$NativeExecutable, [string]$BrowserProfile, [ValidateSet('', 'owner', 'viewer')][string]$CloudActor = '') {
     $Root = [IO.Path]::GetFullPath($OwnedRoot).TrimEnd([IO.Path]::DirectorySeparatorChar)
     $Temporary = [IO.Path]::GetFullPath($env:RUNNER_TEMP).TrimEnd([IO.Path]::DirectorySeparatorChar)
-    if ((Split-Path -Leaf $Root) -notmatch '^OpenEconometrics ölçüm alanı [0-9a-f]{32}$' -or -not (Split-Path -Parent $Root).Equals($Temporary, [StringComparison]::OrdinalIgnoreCase)) { throw 'The browser policy must use the exact owned disposable acceptance root.' }
-    $ExpectedExecutable = Join-Path $Root 'Kurulu uygulama Türkçe/openecon-desktop.exe'
+    if ($CloudActor) {
+        $ExpectedRoot = Join-Path $env:RUNNER_TEMP "openecon-cloud-$($env:GITHUB_RUN_ID)-$($env:GITHUB_RUN_ATTEMPT)"
+        if ($env:GITHUB_ACTIONS -cne 'true' -or $env:RUNNER_ENVIRONMENT -cne 'github-hosted' -or $env:GITHUB_REPOSITORY -cne 'bluearf/openecon' -or $env:GITHUB_WORKFLOW -cne 'OpenEconometrics Windows email-code collaboration' -or $Root -cne $ExpectedRoot) { throw 'Cloud profile admission requires its exact disposable hosted run.' }
+        $ExpectedExecutable = Join-Path $Root 'Kurulum alanı/openecon-desktop.exe'
+        $ExpectedProfile = Join-Path $Root "$CloudActor/Owned WebView2"
+    } else {
+        if ((Split-Path -Leaf $Root) -notmatch '^OpenEconometrics ölçüm alanı [0-9a-f]{32}$' -or -not (Split-Path -Parent $Root).Equals($Temporary, [StringComparison]::OrdinalIgnoreCase)) { throw 'The browser policy must use the exact owned disposable acceptance root.' }
+        $ExpectedExecutable = Join-Path $Root 'Kurulu uygulama Türkçe/openecon-desktop.exe'
+        $ExpectedProfile = Join-Path $Root 'Yerel kullanıcı profili/Owned WebView2'
+    }
     if (-not [IO.Path]::GetFullPath($NativeExecutable).Equals($ExpectedExecutable, [StringComparison]::OrdinalIgnoreCase)) { throw 'The browser policy executable is outside its exact owned installation.' }
-    $ExpectedProfile = Join-Path $Root 'Yerel kullanıcı profili/Owned WebView2'
     $Profile = [IO.Path]::GetFullPath($BrowserProfile).TrimEnd([IO.Path]::DirectorySeparatorChar)
     if (-not $Profile.Equals($ExpectedProfile, [StringComparison]::OrdinalIgnoreCase)) { throw 'The browser policy profile differs from its exact owned synthetic directory.' }
     $Current = $Profile
@@ -168,13 +175,13 @@ function Assert-OwnedWebViewPolicyProfile([string]$OwnedRoot, [string]$NativeExe
     return $Profile
 }
 
-function Set-OwnedDebugPolicy([int]$Port, [string]$OwnedRoot, [string]$NativeExecutable, [string]$BrowserProfile) {
+function Set-OwnedDebugPolicy([int]$Port, [string]$OwnedRoot, [string]$NativeExecutable, [string]$BrowserProfile, [ValidateSet('', 'owner', 'viewer')][string]$CloudActor = '') {
     # Supported exact-executable HKLM overrides survive elevated WebView2 hosts.
     # The profile location isolates real browser storage; it never changes native
     # project/data origins and is kept intact across cold reopen/migration phases.
     if (-not $IsWindows -or $env:GITHUB_ACTIONS -cne 'true' -or $env:RUNNER_ENVIRONMENT -cne 'github-hosted' -or $env:GITHUB_REPOSITORY -cne 'bluearf/openecon' -or $env:ImageOS -notmatch '^win' -or -not ([Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { throw 'Owned browser policy tests require the disposable GitHub-hosted Windows administrator.' }
     if ($Port -lt 1024 -or $Port -gt 65535 -or $null -ne $script:OwnedDebugPolicy) { throw 'Invalid owned WebView2 policy lifecycle.' }
-    $Profile = Assert-OwnedWebViewPolicyProfile -OwnedRoot $OwnedRoot -NativeExecutable $NativeExecutable -BrowserProfile $BrowserProfile
+    $Profile = Assert-OwnedWebViewPolicyProfile -OwnedRoot $OwnedRoot -NativeExecutable $NativeExecutable -BrowserProfile $BrowserProfile -CloudActor $CloudActor
     $Name = [IO.Path]::GetFileName($NativeExecutable)
     if ($Name -cne 'openecon-desktop.exe') { throw 'Only the installed acceptance executable may receive owned WebView2 policies.' }
     $Values = @(

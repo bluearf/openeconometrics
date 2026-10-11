@@ -1,11 +1,13 @@
 # OpenEconometrics Charts
 
-`openecon-charts==0.3.1a1` is an Apache-2.0 Python chart library with no required
+`openecon-charts==0.3.2a1` is an Apache-2.0 Python chart library with no required
 Python dependencies. It accepts column mappings, row records and pandas-style
 tables without requiring pandas. Python 3.10 or later is supported.
 
+These exact alpha packages are distributed as GitHub release assets. The separate PyPI pair remains SDK `0.3.19a1` / charts `0.3.1a1`; the commands below select the GitHub bytes explicitly.
+
 ```sh
-python -m pip install 'openecon-charts==0.3.1a1'
+python -m pip install 'https://github.com/bluearf/openeconometrics/releases/download/v0.3.46-alpha.1/openecon_charts-0.3.2a1-py3-none-any.whl'
 python -m pip check
 ```
 
@@ -38,7 +40,7 @@ open an existing user profile. Ordinary HTML and LaTeX exports need no browser.
 
 ## Source and scope
 
-Charts `0.3.1a1` is also the exact chart dependency of SDK `0.3.19a1`. Installing
+Charts `0.3.2a1` is also the exact chart dependency of SDK `0.3.20a1`. Installing
 charts alone does not install the SDK or its tensor/dataframe dependencies.
 The corresponding public source snapshot records the frozen source commit and
 file inventory; release provenance records distribution hashes and installation

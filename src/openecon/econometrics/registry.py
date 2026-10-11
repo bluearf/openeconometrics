@@ -29,6 +29,7 @@ FAMILIES: tuple[str, ...] = (
     'bayesian', 'latent', 'ivquantile', 'weakiv', 'mixtures', 'supervised',
     'bayesian_var_public',
     'interval_weibull_covariate_public',
+    'rdlocrand', 'survey_calib',
 )
 
 WEIGHT_TYPES = ("aweight", "fweight", "pweight", "iweight")

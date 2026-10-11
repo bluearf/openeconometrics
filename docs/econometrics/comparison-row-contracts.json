@@ -1,0 +1,1938 @@
+{
+  "schema": 1,
+  "review_date": "2026-10-11",
+  "source_baseline": "6eb04e2b9824ac230d14a034961d9b91521e98d1",
+  "policy": "Exact-label bounded API links only; all row-specific option/evidence review remains open under MARKET-832. API=null is unasserted, not absence. Family routing does not assert semantic equivalence.",
+  "families": {
+    "regression": {
+      "issues": [
+        73
+      ],
+      "status_anchor": "regression"
+    },
+    "weak-iv": {
+      "issues": [
+        153
+      ],
+      "status_anchor": "weak-iv"
+    },
+    "glm": {
+      "issues": [
+        177
+      ],
+      "status_anchor": "glm"
+    },
+    "systems": {
+      "issues": [
+        178
+      ],
+      "status_anchor": "systems"
+    },
+    "panel": {
+      "issues": [
+        180,
+        189
+      ],
+      "status_anchor": "panel"
+    },
+    "quantile": {
+      "issues": [
+        214,
+        215
+      ],
+      "status_anchor": "quantile"
+    },
+    "exact": {
+      "issues": [
+        176
+      ],
+      "status_anchor": "exact"
+    },
+    "causal": {
+      "issues": [
+        166,
+        181,
+        187
+      ],
+      "status_anchor": "causal"
+    },
+    "mediation": {
+      "issues": [
+        167
+      ],
+      "status_anchor": "mediation"
+    },
+    "control-function": {
+      "issues": [
+        168,
+        731,
+        732
+      ],
+      "status_anchor": "control-function"
+    },
+    "choice": {
+      "issues": [
+        164
+      ],
+      "status_anchor": "choice"
+    },
+    "survival": {
+      "issues": [
+        163,
+        684
+      ],
+      "status_anchor": "survival"
+    },
+    "spatial": {
+      "issues": [
+        165
+      ],
+      "status_anchor": "spatial"
+    },
+    "mixed": {
+      "issues": [
+        152
+      ],
+      "status_anchor": "mixed"
+    },
+    "sem": {
+      "issues": [
+        360,
+        733
+      ],
+      "status_anchor": "sem"
+    },
+    "bayes": {
+      "issues": [
+        362,
+        685
+      ],
+      "status_anchor": "bayes"
+    },
+    "irt": {
+      "issues": [
+        170
+      ],
+      "status_anchor": "irt"
+    },
+    "mixture": {
+      "issues": [
+        364
+      ],
+      "status_anchor": "mixture"
+    },
+    "categorical": {
+      "issues": [
+        171
+      ],
+      "status_anchor": "categorical"
+    },
+    "multivariate": {
+      "issues": [
+        185
+      ],
+      "status_anchor": "multivariate"
+    },
+    "clustering": {
+      "issues": [
+        832
+      ],
+      "status_anchor": "clustering"
+    },
+    "classical": {
+      "issues": [
+        73,
+        185
+      ],
+      "status_anchor": "classical"
+    },
+    "frontier": {
+      "issues": [
+        832
+      ],
+      "status_anchor": "frontier"
+    },
+    "conjoint": {
+      "issues": [
+        173
+      ],
+      "status_anchor": "conjoint"
+    },
+    "ml": {
+      "issues": [
+        363,
+        686
+      ],
+      "status_anchor": "ml"
+    },
+    "smoothing": {
+      "issues": [
+        158
+      ],
+      "status_anchor": "smoothing"
+    },
+    "mi": {
+      "issues": [
+        145,
+        687
+      ],
+      "status_anchor": "mi"
+    },
+    "survey": {
+      "issues": [
+        211,
+        212
+      ],
+      "status_anchor": "survey"
+    },
+    "volatility": {
+      "issues": [
+        815
+      ],
+      "status_anchor": "volatility"
+    },
+    "timeseries": {
+      "issues": [
+        162,
+        688
+      ],
+      "status_anchor": "timeseries"
+    },
+    "var": {
+      "issues": [
+        150
+      ],
+      "status_anchor": "var"
+    },
+    "ardl": {
+      "issues": [
+        151
+      ],
+      "status_anchor": "ardl"
+    },
+    "fractional": {
+      "issues": [
+        160
+      ],
+      "status_anchor": "fractional"
+    },
+    "unitroot": {
+      "issues": [
+        125,
+        149,
+        179
+      ],
+      "status_anchor": "unitroot"
+    },
+    "state": {
+      "issues": [
+        216
+      ],
+      "status_anchor": "state"
+    },
+    "dfm": {
+      "issues": [
+        217,
+        647
+      ],
+      "status_anchor": "dfm"
+    },
+    "mixed-frequency": {
+      "issues": [
+        159
+      ],
+      "status_anchor": "mixed-frequency"
+    },
+    "dsge": {
+      "issues": [
+        218
+      ],
+      "status_anchor": "dsge"
+    },
+    "meta": {
+      "issues": [
+        174
+      ],
+      "status_anchor": "meta"
+    },
+    "sequential": {
+      "issues": [
+        175
+      ],
+      "status_anchor": "sequential"
+    },
+    "inference": {
+      "issues": [
+        191,
+        192
+      ],
+      "status_anchor": "inference"
+    },
+    "postestimation": {
+      "issues": [
+        143
+      ],
+      "status_anchor": "postestimation"
+    },
+    "capacity": {
+      "issues": [
+        74
+      ],
+      "status_anchor": "capacity"
+    },
+    "distribution": {
+      "issues": [
+        76,
+        833
+      ],
+      "status_anchor": "distribution"
+    },
+    "demand": {
+      "issues": [
+        365
+      ],
+      "status_anchor": "demand"
+    }
+  },
+  "sources": [
+    {
+      "id": "stata-official",
+      "path": "research_notes/Ekonometrik modeller ve Stata kataloğu/stata_official_inventory.md",
+      "product": "Stata official shipped commands; helpers and prefixes separately recorded",
+      "version": "19 / StataNow19.5",
+      "recorded_date": "October2026",
+      "role": "Primary comparison input",
+      "families": [
+        "regression",
+        "postestimation"
+      ],
+      "section_routes": [
+        {
+          "heading_prefix": "2.0 ",
+          "families": [
+            "regression",
+            "glm",
+            "choice",
+            "panel",
+            "survey",
+            "mi",
+            "bayes"
+          ]
+        },
+        {
+          "heading_prefix": "2.1 ",
+          "families": [
+            "regression",
+            "glm",
+            "weak-iv",
+            "causal",
+            "smoothing"
+          ]
+        },
+        {
+          "heading_prefix": "2.2 ",
+          "families": [
+            "timeseries",
+            "var",
+            "fractional",
+            "state",
+            "dfm"
+          ]
+        },
+        {
+          "heading_prefix": "2.3 ",
+          "families": [
+            "panel"
+          ]
+        },
+        {
+          "heading_prefix": "2.4 ",
+          "families": [
+            "mixed"
+          ]
+        },
+        {
+          "heading_prefix": "2.5 ",
+          "families": [
+            "survival"
+          ]
+        },
+        {
+          "heading_prefix": "2.6 ",
+          "families": [
+            "choice"
+          ]
+        },
+        {
+          "heading_prefix": "2.7 ",
+          "families": [
+            "causal",
+            "mediation"
+          ]
+        },
+        {
+          "heading_prefix": "2.8 ",
+          "families": [
+            "control-function"
+          ]
+        },
+        {
+          "heading_prefix": "2.9 ",
+          "families": [
+            "mixture"
+          ]
+        },
+        {
+          "heading_prefix": "2.10 ",
+          "families": [
+            "sem"
+          ]
+        },
+        {
+          "heading_prefix": "2.11 ",
+          "families": [
+            "bayes"
+          ]
+        },
+        {
+          "heading_prefix": "2.12 ",
+          "families": [
+            "bayes"
+          ]
+        },
+        {
+          "heading_prefix": "2.13 ",
+          "families": [
+            "ml",
+            "causal"
+          ]
+        },
+        {
+          "heading_prefix": "2.14 ",
+          "families": [
+            "ml"
+          ]
+        },
+        {
+          "heading_prefix": "2.15 ",
+          "families": [
+            "spatial"
+          ]
+        },
+        {
+          "heading_prefix": "2.16 ",
+          "families": [
+            "dsge"
+          ]
+        },
+        {
+          "heading_prefix": "2.17 ",
+          "families": [
+            "multivariate"
+          ]
+        },
+        {
+          "heading_prefix": "2.18 ",
+          "families": [
+            "meta"
+          ]
+        },
+        {
+          "heading_prefix": "2.19 ",
+          "families": [
+            "irt"
+          ]
+        },
+        {
+          "heading_prefix": "2.20 ",
+          "families": [
+            "survey"
+          ]
+        },
+        {
+          "heading_prefix": "2.21 ",
+          "families": [
+            "mi"
+          ]
+        },
+        {
+          "heading_prefix": "2.22 ",
+          "families": [
+            "regression"
+          ]
+        },
+        {
+          "heading_prefix": "2.23 ",
+          "families": [
+            "sequential"
+          ]
+        },
+        {
+          "heading_prefix": "2.24 ",
+          "families": [
+            "postestimation"
+          ]
+        }
+      ],
+      "method_bullet_sections": [
+        "2.0 ",
+        "2.20 ",
+        "2.21 ",
+        "2.23 ",
+        "2.24 "
+      ],
+      "reviewed_sections": [
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026)",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 1 — Ekim 2026 itibarıyla en güncel Stata sürümü nedir? Stata 20 duyuruldu mu?",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.0 Ana liste: [U] 27 / help \"estimation commands\" — kategori bazında tam döküm",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.1 [R] Base Reference — tahmin komutları",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.10 [SEM] Structural Equation Modeling",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.11 [BAYES] Bayesian Analysis",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.12 [BMA] Bayesian Model Averaging",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.13 [LASSO] Lasso",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.14 [H2OML] Machine Learning in Stata Using H2O",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.15 [SP] Spatial Autoregressive Models",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.16 [DSGE] Dynamic Stochastic General Equilibrium",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.17 [MV] Multivariate Statistics",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.18 [META] Meta-Analysis",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.19 [IRT] Item Response Theory",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.2 [TS] Time Series",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.20 [SVY] Survey Data — `svy:` önekini destekleyen tahmin komutları",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.21 [MI] Multiple Imputation — `mi estimate:` destekleyen komutlar ve `mi impute` yöntemleri",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.22 [FIN] Financial Statistics (yeni el kitabı, yalnızca StataNow)",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.23 [PSS] ve [ADAPT] (kısa)",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.24 Postestimation araçları (kısa) ve önek komutları",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.3 [XT] Longitudinal / Panel Data",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.4 [ME] Multilevel Mixed Effects",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.5 [ST] Survival Analysis",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.6 [CM] Choice Models",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.7 [CAUSAL] Causal Inference and Treatment-Effects Estimation (eski [TE])",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.8 [ERM] Extended Regression Models",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 2 — Her el kitabındaki resmî tahmin komutlarının tam listesi / 2.9 [FMM] Finite Mixture Models",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 3 — Stata 16, 17, 18, 19 ve StataNow (2026'ya kadar) ile gelen yeni tahmin komutları/özellikleri",
+        "Stata resmi tahmin (estimation) komutları envanteri — Stata 19 / StataNow 19.5 (durum: Ekim 2026) / Soru 4 — Toplam resmî tahmin komutu sayısı (yaklaşık)"
+      ]
+    },
+    {
+      "id": "spss-builtins",
+      "path": "research_notes/Ekonometrik modeller Stata EViews SPSS kataloğu/spss_official_procedures.md",
+      "product": "IBM SPSS Statistics; file retains extension exceptions explicitly",
+      "version": "32.0.0",
+      "recorded_date": "October2026",
+      "role": "Primary comparison input",
+      "families": [
+        "classical",
+        "postestimation"
+      ],
+      "section_routes": [
+        {
+          "heading_prefix": "1.1 ",
+          "families": [
+            "classical"
+          ]
+        },
+        {
+          "heading_prefix": "1.2 ",
+          "families": [
+            "regression",
+            "multivariate",
+            "ml",
+            "meta",
+            "sequential"
+          ]
+        },
+        {
+          "heading_prefix": "1.3 ",
+          "families": [
+            "glm",
+            "quantile",
+            "survival"
+          ]
+        },
+        {
+          "heading_prefix": "1.4 ",
+          "families": [
+            "mixed",
+            "glm",
+            "bayes",
+            "survival"
+          ]
+        },
+        {
+          "heading_prefix": "1.5 ",
+          "families": [
+            "postestimation"
+          ]
+        },
+        {
+          "heading_prefix": "1.6 ",
+          "families": [
+            "timeseries",
+            "var"
+          ]
+        },
+        {
+          "heading_prefix": "1.7 ",
+          "families": [
+            "categorical"
+          ]
+        },
+        {
+          "heading_prefix": "1.8 ",
+          "families": [
+            "ml",
+            "mi"
+          ]
+        },
+        {
+          "heading_prefix": "1.9 ",
+          "families": [
+            "survey"
+          ]
+        },
+        {
+          "heading_prefix": "1.10 ",
+          "families": [
+            "ml",
+            "conjoint",
+            "exact"
+          ]
+        }
+      ],
+      "method_bullet_sections": [],
+      "reviewed_sections": [
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 1 — What is the complete list of official modelling procedures in the latest SPSS Statistics, per module, with exact command syntax names?",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 1 — What is the complete list of official modelling procedures in the latest SPSS Statistics, per module, with exact command syntax names? / 1.0 Master list and module structure",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 1 — What is the complete list of official modelling procedures in the latest SPSS Statistics, per module, with exact command syntax names? / 1.1 Statistics Base — descriptive statistics, tests, agreement (Base Edition)",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 1 — What is the complete list of official modelling procedures in the latest SPSS Statistics, per module, with exact command syntax names? / 1.10 Neural Networks, Conjoint, Exact Tests, Direct Marketing (Premium Edition)",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 1 — What is the complete list of official modelling procedures in the latest SPSS Statistics, per module, with exact command syntax names? / 1.11 Verification status of the hinted command names",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 1 — What is the complete list of official modelling procedures in the latest SPSS Statistics, per module, with exact command syntax names? / 1.2 Statistics Base — regression, classification, multivariate, power, meta-analysis, simulation, spatial (Base Edition)",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 1 — What is the complete list of official modelling procedures in the latest SPSS Statistics, per module, with exact command syntax names? / 1.3 Regression option (Standard Edition)",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 1 — What is the complete list of official modelling procedures in the latest SPSS Statistics, per module, with exact command syntax names? / 1.4 Advanced Statistics option (Standard Edition)",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 1 — What is the complete list of official modelling procedures in the latest SPSS Statistics, per module, with exact command syntax names? / 1.5 Custom Tables (Standard Edition)",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 1 — What is the complete list of official modelling procedures in the latest SPSS Statistics, per module, with exact command syntax names? / 1.6 Forecasting option (Professional Edition)",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 1 — What is the complete list of official modelling procedures in the latest SPSS Statistics, per module, with exact command syntax names? / 1.7 Categories option (Professional Edition)",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 1 — What is the complete list of official modelling procedures in the latest SPSS Statistics, per module, with exact command syntax names? / 1.8 Decision Trees, Missing Values (Professional Edition)",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 1 — What is the complete list of official modelling procedures in the latest SPSS Statistics, per module, with exact command syntax names? / 1.9 Complex Samples option (Premium Edition)",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 2 — What is the latest SPSS Statistics version as of October 2026, how is it packaged, and what new procedures arrived in each of v25–v32?",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 2 — What is the latest SPSS Statistics version as of October 2026, how is it packaged, and what new procedures arrived in each of v25–v32? / 2.1 Latest version",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 2 — What is the latest SPSS Statistics version as of October 2026, how is it packaged, and what new procedures arrived in each of v25–v32? / 2.2 Packaging (subscription plans, editions, options)",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 2 — What is the latest SPSS Statistics version as of October 2026, how is it packaged, and what new procedures arrived in each of v25–v32? / 2.3 New analysis commands per version (diff of the Command Syntax Reference between documentation sets 24 → 32)",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 2 — What is the latest SPSS Statistics version as of October 2026, how is it packaged, and what new procedures arrived in each of v25–v32? / 2.4 What IBM's \"What's new\" pages say, version by version",
+        "IBM SPSS Statistics — complete official inventory of statistical modelling procedures (state as of October 2026: v32.0.0) / Key question 3 — Roughly how many modelling procedures are there in total?"
+      ]
+    },
+    {
+      "id": "spss-extensions",
+      "path": "research_notes/Ekonometrik modeller Stata EViews SPSS kataloğu/spss_extensions_amos_gaps.md",
+      "product": "SPSS extensions, third-party macros and separate Amos product; combined gap checklist",
+      "version": "Statistics32; companion versions retained per row",
+      "recorded_date": "October2026",
+      "role": "Primary comparison input",
+      "families": [
+        "regression",
+        "sem",
+        "mi"
+      ],
+      "section_routes": [
+        {
+          "heading_prefix": "A1. ",
+          "families": [
+            "regression",
+            "glm",
+            "smoothing",
+            "inference"
+          ]
+        },
+        {
+          "heading_prefix": "A2. ",
+          "families": [
+            "timeseries",
+            "volatility",
+            "mixed-frequency"
+          ]
+        },
+        {
+          "heading_prefix": "A3. ",
+          "families": [
+            "survival"
+          ]
+        },
+        {
+          "heading_prefix": "A4. ",
+          "families": [
+            "causal",
+            "survey"
+          ]
+        },
+        {
+          "heading_prefix": "A5. ",
+          "families": [
+            "bayes"
+          ]
+        },
+        {
+          "heading_prefix": "A6. ",
+          "families": [
+            "irt",
+            "sem"
+          ]
+        },
+        {
+          "heading_prefix": "A7. ",
+          "families": [
+            "ml",
+            "clustering"
+          ]
+        },
+        {
+          "heading_prefix": "A8. ",
+          "families": [
+            "classical",
+            "sequential",
+            "inference"
+          ]
+        },
+        {
+          "heading_prefix": "A9. ",
+          "families": [
+            "distribution"
+          ]
+        },
+        {
+          "heading_prefix": "A10. ",
+          "families": [
+            "ml",
+            "mi",
+            "smoothing"
+          ]
+        },
+        {
+          "heading_prefix": "B1. ",
+          "families": [
+            "sem"
+          ]
+        },
+        {
+          "heading_prefix": "B2. ",
+          "families": [
+            "mediation"
+          ]
+        },
+        {
+          "heading_prefix": "B3. ",
+          "families": [
+            "mediation"
+          ]
+        },
+        {
+          "heading_prefix": "B4. ",
+          "families": [
+            "distribution"
+          ]
+        },
+        {
+          "heading_prefix": "C1. ",
+          "families": [
+            "glm",
+            "mixed",
+            "timeseries"
+          ]
+        },
+        {
+          "heading_prefix": "C2. ",
+          "families": [
+            "regression",
+            "panel",
+            "sem",
+            "timeseries",
+            "ml",
+            "survey"
+          ]
+        }
+      ],
+      "method_bullet_sections": [
+        "A1. ",
+        "A2. ",
+        "A3. ",
+        "A4. ",
+        "A5. ",
+        "A6. ",
+        "A7. ",
+        "A8. ",
+        "B1. ",
+        "B2. ",
+        "B3. ",
+        "B4. "
+      ],
+      "reviewed_sections": [
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026)",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 1 (Part A): Which extension commands add econometric/statistical models to SPSS, with exact names, engines and sources?",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 1 (Part A): Which extension commands add econometric/statistical models to SPSS, with exact names, engines and sources? / A0. Distribution, plug-ins, bundling (applies to every row below unless noted)",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 1 (Part A): Which extension commands add econometric/statistical models to SPSS, with exact names, engines and sources? / A1. Regression / econometrics extensions (limited dependent variables, systems, robust, diagnostics)",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 1 (Part A): Which extension commands add econometric/statistical models to SPSS, with exact names, engines and sources? / A10. Hinted names that were checked and do NOT exist (in the 267-repo org listing, 2026-10-03) — [GitHub org IBMPredictiveAnalytics](https://github.com/IBMPredictiveAnalytics)",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 1 (Part A): Which extension commands add econometric/statistical models to SPSS, with exact names, engines and sources? / A2. Time-series extensions",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 1 (Part A): Which extension commands add econometric/statistical models to SPSS, with exact names, engines and sources? / A3. Survival extensions",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 1 (Part A): Which extension commands add econometric/statistical models to SPSS, with exact names, engines and sources? / A4. Causal-inference / matching / weighting extensions",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 1 (Part A): Which extension commands add econometric/statistical models to SPSS, with exact names, engines and sources? / A5. Bayesian extensions (R `BayesFactor` / `BAS`)",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 1 (Part A): Which extension commands add econometric/statistical models to SPSS, with exact names, engines and sources? / A6. Psychometrics / latent-variable extensions",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 1 (Part A): Which extension commands add econometric/statistical models to SPSS, with exact names, engines and sources? / A7. Machine-learning / classification / clustering extensions",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 1 (Part A): Which extension commands add econometric/statistical models to SPSS, with exact names, engines and sources? / A8. Other statistical tests / distributions / power / design / optimization",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 1 (Part A): Which extension commands add econometric/statistical models to SPSS, with exact names, engines and sources? / A9. Extensions IBM itself advertises as new product features (2021-2026)",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 2 (Part B): What do Amos and PROCESS (and other companions/macros) cover, and what are their latest versions as of 2026?",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 2 (Part B): What do Amos and PROCESS (and other companions/macros) cover, and what are their latest versions as of 2026? / B1. IBM SPSS Amos",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 2 (Part B): What do Amos and PROCESS (and other companions/macros) cover, and what are their latest versions as of 2026? / B2. PROCESS macro (Andrew F. Hayes) and related Hayes macros",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 2 (Part B): What do Amos and PROCESS (and other companions/macros) cover, and what are their latest versions as of 2026? / B3. IBM's own built-in mediation command (new in v32; relevant to PROCESS positioning)",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 2 (Part B): What do Amos and PROCESS (and other companions/macros) cover, and what are their latest versions as of 2026? / B4. Other third-party add-ons and related products",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 3 (Part C): Econometric gap analysis — for each model family: built-in, extension, or not available?",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 3 (Part C): Econometric gap analysis — for each model family: built-in, extension, or not available? / C1. Verified facts about relevant built-ins (only as needed for the table)",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 3 (Part C): Econometric gap analysis — for each model family: built-in, extension, or not available? / C2. Gap table (state: SPSS Statistics 32.0, October 2026)",
+        "SPSS Statistics: extensions, companion products (Amos, PROCESS, macros) and econometric gap analysis (state as of October 2026) / Key Question 4: How do researchers typically work around SPSS gaps?"
+      ]
+    },
+    {
+      "id": "eviews-equations",
+      "path": "research_notes/Ekonometrik modeller Stata EViews SPSS kataloğu/eviews_single_equation_time_series.md",
+      "product": "EViews; built-in/add-in/missing/beta flags remain row-specific",
+      "version": "14 GA;15 beta explicitly separate",
+      "recorded_date": "2026-10-03",
+      "role": "Primary comparison input",
+      "families": [
+        "timeseries",
+        "regression"
+      ],
+      "section_routes": [
+        {
+          "heading_prefix": "1.0 ",
+          "families": [
+            "regression",
+            "glm",
+            "volatility",
+            "ardl"
+          ]
+        },
+        {
+          "heading_prefix": "1.1 ",
+          "families": [
+            "regression",
+            "fractional"
+          ]
+        },
+        {
+          "heading_prefix": "1.2 ",
+          "families": [
+            "weak-iv",
+            "systems"
+          ]
+        },
+        {
+          "heading_prefix": "1.3 ",
+          "families": [
+            "ardl",
+            "quantile",
+            "unitroot"
+          ]
+        },
+        {
+          "heading_prefix": "1.4 ",
+          "families": [
+            "volatility"
+          ]
+        },
+        {
+          "heading_prefix": "1.5 ",
+          "families": [
+            "glm"
+          ]
+        },
+        {
+          "heading_prefix": "1.6 ",
+          "families": [
+            "timeseries"
+          ]
+        },
+        {
+          "heading_prefix": "1.7 ",
+          "families": [
+            "mixed-frequency",
+            "ml"
+          ]
+        },
+        {
+          "heading_prefix": "1.8 ",
+          "families": [
+            "unitroot"
+          ]
+        },
+        {
+          "heading_prefix": "1.9 ",
+          "families": [
+            "unitroot"
+          ]
+        },
+        {
+          "heading_prefix": "1.10 ",
+          "families": [
+            "inference",
+            "postestimation"
+          ]
+        },
+        {
+          "heading_prefix": "1.11 ",
+          "families": [
+            "timeseries",
+            "smoothing"
+          ]
+        }
+      ],
+      "method_bullet_sections": [
+        "1.0 ",
+        "1.1 ",
+        "1.2 ",
+        "1.3 ",
+        "1.4 ",
+        "1.5 ",
+        "1.6 ",
+        "1.7 ",
+        "1.8 ",
+        "1.9 ",
+        "1.10 ",
+        "1.11 "
+      ],
+      "reviewed_sections": [
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 1 — What is the full list of single-equation estimation methods and time-series tests built into the latest EViews, with exact command/method keywords?",
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 1 — What is the full list of single-equation estimation methods and time-series tests built into the latest EViews, with exact command/method keywords? / 1.0 Master list of Equation estimation methods (verbatim descriptions from the Equation object reference)",
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 1 — What is the full list of single-equation estimation methods and time-series tests built into the latest EViews, with exact command/method keywords? / 1.1 Least squares family (options of `ls` and relatives)",
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 1 — What is the full list of single-equation estimation methods and time-series tests built into the latest EViews, with exact command/method keywords? / 1.10 Equation diagnostics and tests (Equation views)",
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 1 — What is the full list of single-equation estimation methods and time-series tests built into the latest EViews, with exact command/method keywords? / 1.11 Smoothing, filters, seasonal adjustment, forecasting tools (Series procs/views)",
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 1 — What is the full list of single-equation estimation methods and time-series tests built into the latest EViews, with exact command/method keywords? / 1.2 IV / GMM",
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 1 — What is the full list of single-equation estimation methods and time-series tests built into the latest EViews, with exact command/method keywords? / 1.3 Cointegrating regression, ARDL / NARDL / QARDL, error-correction forms",
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 1 — What is the full list of single-equation estimation methods and time-series tests built into the latest EViews, with exact command/method keywords? / 1.4 Volatility models (`arch`)",
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 1 — What is the full list of single-equation estimation methods and time-series tests built into the latest EViews, with exact command/method keywords? / 1.5 Limited dependent variable models and GLM",
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 1 — What is the full list of single-equation estimation methods and time-series tests built into the latest EViews, with exact command/method keywords? / 1.6 Structural-break and regime models",
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 1 — What is the full list of single-equation estimation methods and time-series tests built into the latest EViews, with exact command/method keywords? / 1.7 Mixed-frequency, regularization / ML-type estimators",
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 1 — What is the full list of single-equation estimation methods and time-series tests built into the latest EViews, with exact command/method keywords? / 1.8 Unit-root, stationarity, independence and related univariate tests (Series object)",
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 1 — What is the full list of single-equation estimation methods and time-series tests built into the latest EViews, with exact command/method keywords? / 1.9 Single-equation cointegration tests",
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 2 — What is the latest EViews version as of October 2026, and what did each of EViews 10–latest add in this area?",
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 2 — What is the latest EViews version as of October 2026, and what did each of EViews 10–latest add in this area? / 2.1 Version status",
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 2 — What is the latest EViews version as of October 2026, and what did each of EViews 10–latest add in this area? / 2.2 What each version added (single-equation / time-series items only; multi-equation items in brackets for cross-reference)",
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 3 — Availability checklist: built-in vs add-in vs not available (EViews 14 GA)",
+        "EViews — Built-in Single-Equation Estimation Methods and Time-Series Tests/Tools (state as of 3 October 2026) / Key Question 4 — Which widely used single-equation / time-series methods are missing from EViews entirely?"
+      ]
+    },
+    {
+      "id": "eviews-systems",
+      "path": "research_notes/Ekonometrik modeller Stata EViews SPSS kataloğu/eviews_multivariate_panel_addins.md",
+      "product": "EViews built-ins, official library/community add-ins and gap checklist; row flags decide product type",
+      "version": "14 GA;15 beta separate in current erratum",
+      "recorded_date": "2026-10-03",
+      "role": "Primary comparison input",
+      "families": [
+        "systems",
+        "var",
+        "panel",
+        "state"
+      ],
+      "section_routes": [
+        {
+          "heading_prefix": "A1. ",
+          "families": [
+            "systems",
+            "volatility"
+          ]
+        },
+        {
+          "heading_prefix": "A2. ",
+          "families": [
+            "dsge",
+            "systems"
+          ]
+        },
+        {
+          "heading_prefix": "A3. ",
+          "families": [
+            "var",
+            "bayes",
+            "mixed-frequency"
+          ]
+        },
+        {
+          "heading_prefix": "A4. ",
+          "families": [
+            "state",
+            "dfm"
+          ]
+        },
+        {
+          "heading_prefix": "A5. ",
+          "families": [
+            "multivariate"
+          ]
+        },
+        {
+          "heading_prefix": "A6. ",
+          "families": [
+            "panel"
+          ]
+        },
+        {
+          "heading_prefix": "A7. ",
+          "families": [
+            "unitroot",
+            "panel"
+          ]
+        },
+        {
+          "heading_prefix": "A8. ",
+          "families": [
+            "postestimation"
+          ]
+        },
+        {
+          "heading_prefix": "B1. ",
+          "families": [
+            "timeseries",
+            "var",
+            "panel",
+            "volatility",
+            "unitroot"
+          ]
+        },
+        {
+          "heading_prefix": "B2. ",
+          "families": [
+            "distribution"
+          ]
+        },
+        {
+          "heading_prefix": "B3. ",
+          "families": [
+            "timeseries",
+            "var"
+          ]
+        },
+        {
+          "heading_prefix": "B4. ",
+          "families": [
+            "unitroot",
+            "var",
+            "panel"
+          ]
+        }
+      ],
+      "method_bullet_sections": [
+        "A1. ",
+        "A2. ",
+        "A3. ",
+        "A4. ",
+        "A5. ",
+        "A6. ",
+        "A7. ",
+        "A8. "
+      ],
+      "reviewed_sections": [
+        "EViews — Çok Denklemli / VAR-VEC / State-Space / Faktör / Panel-Pool Envanteri, Resmî Add-ins Kütüphanesi ve Eksik Model Aileleri (durum: 3 Ekim 2026, güncel sürüm EViews 14) / 1. Soru: EViews'ın en güncel sürümünde yerleşik (built-in) çok denklemli / VAR / state-space / faktör / panel yöntemlerinin tam listesi nedir (nesne + metot anahtar sözcüğü + giriş sürümü)? [Part A]",
+        "EViews — Çok Denklemli / VAR-VEC / State-Space / Faktör / Panel-Pool Envanteri, Resmî Add-ins Kütüphanesi ve Eksik Model Aileleri (durum: 3 Ekim 2026, güncel sürüm EViews 14) / 1. Soru: EViews'ın en güncel sürümünde yerleşik (built-in) çok denklemli / VAR / state-space / faktör / panel yöntemlerinin tam listesi nedir (nesne + metot anahtar sözcüğü + giriş sürümü)? [Part A] / A1. System nesnesi (sistem tahmini, eşanlı denklemler, çok değişkenli ARCH)",
+        "EViews — Çok Denklemli / VAR-VEC / State-Space / Faktör / Panel-Pool Envanteri, Resmî Add-ins Kütüphanesi ve Eksik Model Aileleri (durum: 3 Ekim 2026, güncel sürüm EViews 14) / 1. Soru: EViews'ın en güncel sürümünde yerleşik (built-in) çok denklemli / VAR / state-space / faktör / panel yöntemlerinin tam listesi nedir (nesne + metot anahtar sözcüğü + giriş sürümü)? [Part A] / A2. Model nesnesi (çözüm, simülasyon, senaryo) ve DSGE durumu",
+        "EViews — Çok Denklemli / VAR-VEC / State-Space / Faktör / Panel-Pool Envanteri, Resmî Add-ins Kütüphanesi ve Eksik Model Aileleri (durum: 3 Ekim 2026, güncel sürüm EViews 14) / 1. Soru: EViews'ın en güncel sürümünde yerleşik (built-in) çok denklemli / VAR / state-space / faktör / panel yöntemlerinin tam listesi nedir (nesne + metot anahtar sözcüğü + giriş sürümü)? [Part A] / A3. Var nesnesi (VAR / VEC / BVAR / SVAR / MF-VAR / Switching VAR / BTVCVAR)",
+        "EViews — Çok Denklemli / VAR-VEC / State-Space / Faktör / Panel-Pool Envanteri, Resmî Add-ins Kütüphanesi ve Eksik Model Aileleri (durum: 3 Ekim 2026, güncel sürüm EViews 14) / 1. Soru: EViews'ın en güncel sürümünde yerleşik (built-in) çok denklemli / VAR / state-space / faktör / panel yöntemlerinin tam listesi nedir (nesne + metot anahtar sözcüğü + giriş sürümü)? [Part A] / A4. Sspace nesnesi (state space, Kalman filtresi)",
+        "EViews — Çok Denklemli / VAR-VEC / State-Space / Faktör / Panel-Pool Envanteri, Resmî Add-ins Kütüphanesi ve Eksik Model Aileleri (durum: 3 Ekim 2026, güncel sürüm EViews 14) / 1. Soru: EViews'ın en güncel sürümünde yerleşik (built-in) çok denklemli / VAR / state-space / faktör / panel yöntemlerinin tam listesi nedir (nesne + metot anahtar sözcüğü + giriş sürümü)? [Part A] / A5. Factor nesnesi ve principal components",
+        "EViews — Çok Denklemli / VAR-VEC / State-Space / Faktör / Panel-Pool Envanteri, Resmî Add-ins Kütüphanesi ve Eksik Model Aileleri (durum: 3 Ekim 2026, güncel sürüm EViews 14) / 1. Soru: EViews'ın en güncel sürümünde yerleşik (built-in) çok denklemli / VAR / state-space / faktör / panel yöntemlerinin tam listesi nedir (nesne + metot anahtar sözcüğü + giriş sürümü)? [Part A] / A6. Pool nesnesi ve panel denklem tahmini (DiD dahil)",
+        "EViews — Çok Denklemli / VAR-VEC / State-Space / Faktör / Panel-Pool Envanteri, Resmî Add-ins Kütüphanesi ve Eksik Model Aileleri (durum: 3 Ekim 2026, güncel sürüm EViews 14) / 1. Soru: EViews'ın en güncel sürümünde yerleşik (built-in) çok denklemli / VAR / state-space / faktör / panel yöntemlerinin tam listesi nedir (nesne + metot anahtar sözcüğü + giriş sürümü)? [Part A] / A7. Panel/pool testleri (birim kök, kointegrasyon, nedensellik, yatay kesit bağımlılığı, etki testleri)",
+        "EViews — Çok Denklemli / VAR-VEC / State-Space / Faktör / Panel-Pool Envanteri, Resmî Add-ins Kütüphanesi ve Eksik Model Aileleri (durum: 3 Ekim 2026, güncel sürüm EViews 14) / 1. Soru: EViews'ın en güncel sürümünde yerleşik (built-in) çok denklemli / VAR / state-space / faktör / panel yöntemlerinin tam listesi nedir (nesne + metot anahtar sözcüğü + giriş sürümü)? [Part A] / A8. Diğer yerleşik özellikler (kısa)",
+        "EViews — Çok Denklemli / VAR-VEC / State-Space / Faktör / Panel-Pool Envanteri, Resmî Add-ins Kütüphanesi ve Eksik Model Aileleri (durum: 3 Ekim 2026, güncel sürüm EViews 14) / 1. Soru: EViews'ın en güncel sürümünde yerleşik (built-in) çok denklemli / VAR / state-space / faktör / panel yöntemlerinin tam listesi nedir (nesne + metot anahtar sözcüğü + giriş sürümü)? [Part A] / Ek doğrulayıcı bulgular",
+        "EViews — Çok Denklemli / VAR-VEC / State-Space / Faktör / Panel-Pool Envanteri, Resmî Add-ins Kütüphanesi ve Eksik Model Aileleri (durum: 3 Ekim 2026, güncel sürüm EViews 14) / 2. Soru: Ekim 2026 itibarıyla en güncel EViews sürümü hangisi ve EViews 11, 12, 13, 14 bu alanlarda ne ekledi?",
+        "EViews — Çok Denklemli / VAR-VEC / State-Space / Faktör / Panel-Pool Envanteri, Resmî Add-ins Kütüphanesi ve Eksik Model Aileleri (durum: 3 Ekim 2026, güncel sürüm EViews 14) / 3. Soru: Resmî EViews Add-ins listesinde tam olarak neler var ve (özellikle Türkiye uygulamalı literatüründe yaygın) hangi yöntemler yalnızca add-in olarak mevcut? [Part B]",
+        "EViews — Çok Denklemli / VAR-VEC / State-Space / Faktör / Panel-Pool Envanteri, Resmî Add-ins Kütüphanesi ve Eksik Model Aileleri (durum: 3 Ekim 2026, güncel sürüm EViews 14) / 3. Soru: Resmî EViews Add-ins listesinde tam olarak neler var ve (özellikle Türkiye uygulamalı literatüründe yaygın) hangi yöntemler yalnızca add-in olarak mevcut? [Part B] / B1. Resmî sayfadaki tüm add-in ve user object'ler (159 satır; kaynak: [eviews.com/Addins/addins.shtml](https://www.eviews.com/Addins/addins.shtml), paket sürümü/nesne tipi: [addinsrss.xml](https://www.eviews.com/Addins/addinsrss.xml); forum başlığını açan kullanıcı: [Add-in Support forumu](https://forums.eviews.com/viewforum.php?f=23))",
+        "EViews — Çok Denklemli / VAR-VEC / State-Space / Faktör / Panel-Pool Envanteri, Resmî Add-ins Kütüphanesi ve Eksik Model Aileleri (durum: 3 Ekim 2026, güncel sürüm EViews 14) / 3. Soru: Resmî EViews Add-ins listesinde tam olarak neler var ve (özellikle Türkiye uygulamalı literatüründe yaygın) hangi yöntemler yalnızca add-in olarak mevcut? [Part B] / B2. EViews Libraries (4 satır; kaynak: [Add-ins sayfası](https://www.eviews.com/Addins/addins.shtml))",
+        "EViews — Çok Denklemli / VAR-VEC / State-Space / Faktör / Panel-Pool Envanteri, Resmî Add-ins Kütüphanesi ve Eksik Model Aileleri (durum: 3 Ekim 2026, güncel sürüm EViews 14) / 3. Soru: Resmî EViews Add-ins listesinde tam olarak neler var ve (özellikle Türkiye uygulamalı literatüründe yaygın) hangi yöntemler yalnızca add-in olarak mevcut? [Part B] / B3. Tematik dizin (yalnızca yukarıdaki doğrulanmış adlar; kaynak: [Add-ins sayfası](https://www.eviews.com/Addins/addins.shtml))",
+        "EViews — Çok Denklemli / VAR-VEC / State-Space / Faktör / Panel-Pool Envanteri, Resmî Add-ins Kütüphanesi ve Eksik Model Aileleri (durum: 3 Ekim 2026, güncel sürüm EViews 14) / 3. Soru: Resmî EViews Add-ins listesinde tam olarak neler var ve (özellikle Türkiye uygulamalı literatüründe yaygın) hangi yöntemler yalnızca add-in olarak mevcut? [Part B] / B4. Türkiye uygulamalı literatüründe yaygın yöntemlerin EViews'taki durumu",
+        "EViews — Çok Denklemli / VAR-VEC / State-Space / Faktör / Panel-Pool Envanteri, Resmî Add-ins Kütüphanesi ve Eksik Model Aileleri (durum: 3 Ekim 2026, güncel sürüm EViews 14) / 4. Soru: EViews'ın (yerleşik + add-in) hiç kapsamadığı ekonometrik model aileleri hangileri? [Part C — gap analizi]"
+      ]
+    },
+    {
+      "id": "stata-causal",
+      "path": "research_notes/Ekonometrik modeller ve Stata kataloğu/causal_inference_ml.md",
+      "product": "Stata official and community causal/ML methods; status retained per row",
+      "version": "19 / StataNow; dated community releases",
+      "recorded_date": "October2026",
+      "role": "Companion research context; historical vendor availability, not implementation evidence",
+      "families": [
+        "causal",
+        "ml"
+      ],
+      "section_routes": [
+        {
+          "heading_prefix": "1A. ",
+          "families": [
+            "causal"
+          ]
+        },
+        {
+          "heading_prefix": "1B. ",
+          "families": [
+            "causal",
+            "control-function"
+          ]
+        },
+        {
+          "heading_prefix": "1C. ",
+          "families": [
+            "causal"
+          ]
+        },
+        {
+          "heading_prefix": "1D. ",
+          "families": [
+            "causal"
+          ]
+        },
+        {
+          "heading_prefix": "1E. ",
+          "families": [
+            "causal"
+          ]
+        },
+        {
+          "heading_prefix": "1F. ",
+          "families": [
+            "mediation",
+            "quantile",
+            "inference"
+          ]
+        },
+        {
+          "heading_prefix": "1G. ",
+          "families": [
+            "ml",
+            "causal"
+          ]
+        }
+      ],
+      "method_bullet_sections": [],
+      "reviewed_sections": [
+        "Causal Inference / Program Evaluation / Treatment Effects and ML-Based Econometrics — Stata Command Catalog (as of October 2026) / Key Question 1 — What is the full list of methods in each sub-family and the exact Stata command (official vs community)?",
+        "Causal Inference / Program Evaluation / Treatment Effects and ML-Based Econometrics — Stata Command Catalog (as of October 2026) / Key Question 1 — What is the full list of methods in each sub-family and the exact Stata command (official vs community)? / 1A. Selection on observables (Gözlenenlere dayalı seçim; TR: eşleştirme / eğilim skoru yöntemleri)",
+        "Causal Inference / Program Evaluation / Treatment Effects and ML-Based Econometrics — Stata Command Catalog (as of October 2026) / Key Question 1 — What is the full list of methods in each sub-family and the exact Stata command (official vs community)? / 1B. Endogenous treatment, IV-based causal designs, bounds (İçsel tedavi; araç değişken tabanlı nedensel tasarımlar)",
+        "Causal Inference / Program Evaluation / Treatment Effects and ML-Based Econometrics — Stata Command Catalog (as of October 2026) / Key Question 1 — What is the full list of methods in each sub-family and the exact Stata command (official vs community)? / 1C. Difference-in-differences and event studies (Farkların farkı ve olay çalışmaları)",
+        "Causal Inference / Program Evaluation / Treatment Effects and ML-Based Econometrics — Stata Command Catalog (as of October 2026) / Key Question 1 — What is the full list of methods in each sub-family and the exact Stata command (official vs community)? / 1D. Synthetic control family (Sentetik kontrol yöntemleri)",
+        "Causal Inference / Program Evaluation / Treatment Effects and ML-Based Econometrics — Stata Command Catalog (as of October 2026) / Key Question 1 — What is the full list of methods in each sub-family and the exact Stata command (official vs community)? / 1E. Regression discontinuity, kinks, bunching (Regresyon süreksizliği, kırılma ve yığılma)",
+        "Causal Inference / Program Evaluation / Treatment Effects and ML-Based Econometrics — Stata Command Catalog (as of October 2026) / Key Question 1 — What is the full list of methods in each sub-family and the exact Stata command (official vs community)? / 1F. Mediation, dose-response, QTE, decomposition, randomization inference, multiple testing, design (Aracılık, doz-yanıt, kantil etkiler, ayrıştırma, rastgeleleştirme çıkarımı)",
+        "Causal Inference / Program Evaluation / Treatment Effects and ML-Based Econometrics — Stata Command Catalog (as of October 2026) / Key Question 1 — What is the full list of methods in each sub-family and the exact Stata command (official vs community)? / 1G. Machine learning for econometrics (Ekonometri için makine öğrenmesi)",
+        "Causal Inference / Program Evaluation / Treatment Effects and ML-Based Econometrics — Stata Command Catalog (as of October 2026) / Key Question 2 — What does the official [CAUSAL] manual (Stata 19 / StataNow) contain, command by command, and what was added in Stata 17, 18, 19 and StataNow?",
+        "Causal Inference / Program Evaluation / Treatment Effects and ML-Based Econometrics — Stata Command Catalog (as of October 2026) / Key Question 3 — Which frontier methods (2020–2026) are still not available in Stata and where are they implemented instead?",
+        "Causal Inference / Program Evaluation / Treatment Effects and ML-Based Econometrics — Stata Command Catalog (as of October 2026) / Key Question 4 — What recent methodological developments (2018–2026) changed applied practice?"
+      ]
+    },
+    {
+      "id": "stata-community",
+      "path": "research_notes/Ekonometrik modeller ve Stata kataloğu/community_packages_specialized.md",
+      "product": "Stata community packages, official equivalents and research-only methods; row status retained",
+      "version": "Dated package versions retained per row",
+      "recorded_date": "October2026",
+      "role": "Companion research context; historical vendor availability, not implementation evidence",
+      "families": [
+        "regression",
+        "timeseries",
+        "causal"
+      ],
+      "section_routes": [
+        {
+          "heading_prefix": "A1. ",
+          "families": [
+            "regression",
+            "panel"
+          ]
+        },
+        {
+          "heading_prefix": "A2. ",
+          "families": [
+            "weak-iv",
+            "inference"
+          ]
+        },
+        {
+          "heading_prefix": "A3. ",
+          "families": [
+            "panel"
+          ]
+        },
+        {
+          "heading_prefix": "A4. ",
+          "families": [
+            "timeseries",
+            "var",
+            "unitroot"
+          ]
+        },
+        {
+          "heading_prefix": "A5. ",
+          "families": [
+            "causal"
+          ]
+        },
+        {
+          "heading_prefix": "A6. ",
+          "families": [
+            "ml"
+          ]
+        },
+        {
+          "heading_prefix": "A7. ",
+          "families": [
+            "glm",
+            "choice"
+          ]
+        },
+        {
+          "heading_prefix": "A8. ",
+          "families": [
+            "spatial"
+          ]
+        },
+        {
+          "heading_prefix": "A9. ",
+          "families": [
+            "frontier"
+          ]
+        },
+        {
+          "heading_prefix": "A10. ",
+          "families": [
+            "demand"
+          ]
+        },
+        {
+          "heading_prefix": "A11. ",
+          "families": [
+            "survival"
+          ]
+        },
+        {
+          "heading_prefix": "A12. ",
+          "families": [
+            "mixed",
+            "sem"
+          ]
+        },
+        {
+          "heading_prefix": "A13. ",
+          "families": [
+            "postestimation",
+            "distribution"
+          ]
+        }
+      ],
+      "method_bullet_sections": [],
+      "reviewed_sections": [
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 1 — Uygulamalı iktisatta fiili standart olan topluluk paketleri hangileri (SSC indirme sıraları / atıf)?",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 2 — Bölüm A: Kategorize topluluk tahmin paketleri envanteri (komut, model, yazar, dağıtım, tarih, resmi eşdeğer)",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 2 — Bölüm A: Kategorize topluluk tahmin paketleri envanteri (komut, model, yazar, dağıtım, tarih, resmi eşdeğer) / A1. Yüksek boyutlu sabit etkiler ve hızlı tahmin",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 2 — Bölüm A: Kategorize topluluk tahmin paketleri envanteri (komut, model, yazar, dağıtım, tarih, resmi eşdeğer) / A10. Talep / ticaret / IO / yapısal",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 2 — Bölüm A: Kategorize topluluk tahmin paketleri envanteri (komut, model, yazar, dağıtım, tarih, resmi eşdeğer) / A11. Sağkalım / biyoistatistik kökenli modeller",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 2 — Bölüm A: Kategorize topluluk tahmin paketleri envanteri (komut, model, yazar, dağıtım, tarih, resmi eşdeğer) / A12. Çok düzeyli / gizil",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 2 — Bölüm A: Kategorize topluluk tahmin paketleri envanteri (komut, model, yazar, dağıtım, tarih, resmi eşdeğer) / A13. Çıktı ve iş akışı (kısa liste)",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 2 — Bölüm A: Kategorize topluluk tahmin paketleri envanteri (komut, model, yazar, dağıtım, tarih, resmi eşdeğer) / A2. IV / GMM / çıkarım",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 2 — Bölüm A: Kategorize topluluk tahmin paketleri envanteri (komut, model, yazar, dağıtım, tarih, resmi eşdeğer) / A3. Panel veri",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 2 — Bölüm A: Kategorize topluluk tahmin paketleri envanteri (komut, model, yazar, dağıtım, tarih, resmi eşdeğer) / A4. Zaman serisi",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 2 — Bölüm A: Kategorize topluluk tahmin paketleri envanteri (komut, model, yazar, dağıtım, tarih, resmi eşdeğer) / A5. Nedensel çıkarım (eşleştirme, DiD, SC, RD, sınırlar, duyarlılık)",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 2 — Bölüm A: Kategorize topluluk tahmin paketleri envanteri (komut, model, yazar, dağıtım, tarih, resmi eşdeğer) / A6. Makine öğrenmesi",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 2 — Bölüm A: Kategorize topluluk tahmin paketleri envanteri (komut, model, yazar, dağıtım, tarih, resmi eşdeğer) / A7. Sınırlı bağımlı değişken / tercih / sayım",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 2 — Bölüm A: Kategorize topluluk tahmin paketleri envanteri (komut, model, yazar, dağıtım, tarih, resmi eşdeğer) / A8. Mekânsal",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 2 — Bölüm A: Kategorize topluluk tahmin paketleri envanteri (komut, model, yazar, dağıtım, tarih, resmi eşdeğer) / A9. Etkinlik / üretim",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 3 — Resmi Stata 16–19/StataNow hangi topluluk işlevlerine yerli karşılık ekledi?",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 4 — Bölüm B: Uzmanlaşmış model aileleri ve Stata erişilebilirliği (resmi / topluluk / yok → yaygın yazılım)",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 5 — Stata'da (topluluk dahil) hâlâ bulunmayan önemli model aileleri",
+        "Topluluk Katkılı Stata Ekonometri Paketleri ve Uzmanlaşmış Model Aileleri — Envanter (Ekim 2026 itibarıyla) / Anahtar Soru 6 — 2023–2026'da çıkan dikkat çekici yeni topluluk paketleri"
+      ]
+    },
+    {
+      "id": "stata-regression",
+      "path": "research_notes/Ekonometrik modeller ve Stata kataloğu/core_regression_iv_gmm.md",
+      "product": "Stata official and community linear/IV/systems methods; row status retained",
+      "version": "19 / StataNow; dated community releases",
+      "recorded_date": "October2026",
+      "role": "Companion research context; historical vendor availability, not implementation evidence",
+      "families": [
+        "regression",
+        "weak-iv"
+      ],
+      "section_routes": [
+        {
+          "heading_prefix": "1. Linear",
+          "families": [
+            "regression"
+          ]
+        },
+        {
+          "heading_prefix": "2. Inference",
+          "families": [
+            "inference"
+          ]
+        },
+        {
+          "heading_prefix": "3. Systems",
+          "families": [
+            "systems"
+          ]
+        },
+        {
+          "heading_prefix": "4. Demand",
+          "families": [
+            "demand"
+          ]
+        },
+        {
+          "heading_prefix": "5. Production",
+          "families": [
+            "demand"
+          ]
+        },
+        {
+          "heading_prefix": "6. Instrumental",
+          "families": [
+            "weak-iv"
+          ]
+        },
+        {
+          "heading_prefix": "7. Weak",
+          "families": [
+            "weak-iv"
+          ]
+        },
+        {
+          "heading_prefix": "8. Quantile",
+          "families": [
+            "quantile"
+          ]
+        },
+        {
+          "heading_prefix": "9. Nonparametric",
+          "families": [
+            "smoothing"
+          ]
+        },
+        {
+          "heading_prefix": "10. Classical",
+          "families": [
+            "postestimation"
+          ]
+        },
+        {
+          "heading_prefix": "11. Historical",
+          "families": [
+            "regression"
+          ]
+        }
+      ],
+      "method_bullet_sections": [],
+      "reviewed_sections": [
+        "Core cross-section / linear-family econometric models and estimators, with Stata commands (classical → current, as of October 2026)",
+        "Core cross-section / linear-family econometric models and estimators, with Stata commands (classical → current, as of October 2026) / Key Question 1 — Full inventory per sub-family and the exact Stata command (official vs community)",
+        "Core cross-section / linear-family econometric models and estimators, with Stata commands (classical → current, as of October 2026) / Key Question 1 — Full inventory per sub-family and the exact Stata command (official vs community) / 1. Linear regression (Doğrusal regresyon) — core estimators",
+        "Core cross-section / linear-family econometric models and estimators, with Stata commands (classical → current, as of October 2026) / Key Question 1 — Full inventory per sub-family and the exact Stata command (official vs community) / 10. Classical specification and diagnostic tests tied to linear/IV models (Belirtim ve tanı testleri)",
+        "Core cross-section / linear-family econometric models and estimators, with Stata commands (classical → current, as of October 2026) / Key Question 1 — Full inventory per sub-family and the exact Stata command (official vs community) / 11. Historical / \"old\" estimators worth cataloguing (Tarihsel tahminciler)",
+        "Core cross-section / linear-family econometric models and estimators, with Stata commands (classical → current, as of October 2026) / Key Question 1 — Full inventory per sub-family and the exact Stata command (official vs community) / 2. Inference for linear models: robust, cluster-robust, HAC, bootstrap (Dayanıklı çıkarsama)",
+        "Core cross-section / linear-family econometric models and estimators, with Stata commands (classical → current, as of October 2026) / Key Question 1 — Full inventory per sub-family and the exact Stata command (official vs community) / 3. Systems of equations and simultaneous equations (Eşanlı denklem sistemleri)",
+        "Core cross-section / linear-family econometric models and estimators, with Stata commands (classical → current, as of October 2026) / Key Question 1 — Full inventory per sub-family and the exact Stata command (official vs community) / 4. Demand systems (Talep sistemleri)",
+        "Core cross-section / linear-family econometric models and estimators, with Stata commands (classical → current, as of October 2026) / Key Question 1 — Full inventory per sub-family and the exact Stata command (official vs community) / 5. Production-function / TFP estimation (Üretim fonksiyonu tahmini)",
+        "Core cross-section / linear-family econometric models and estimators, with Stata commands (classical → current, as of October 2026) / Key Question 1 — Full inventory per sub-family and the exact Stata command (official vs community) / 6. Instrumental variables and GMM (Araç değişkenler ve genelleştirilmiş momentler yöntemi)",
+        "Core cross-section / linear-family econometric models and estimators, with Stata commands (classical → current, as of October 2026) / Key Question 1 — Full inventory per sub-family and the exact Stata command (official vs community) / 7. Weak-instrument diagnostics and weak-IV-robust inference (Zayıf araç değişken testleri ve dayanıklı çıkarsama)",
+        "Core cross-section / linear-family econometric models and estimators, with Stata commands (classical → current, as of October 2026) / Key Question 1 — Full inventory per sub-family and the exact Stata command (official vs community) / 8. Quantile and distributional regression (Kantil ve dağılım regresyonu)",
+        "Core cross-section / linear-family econometric models and estimators, with Stata commands (classical → current, as of October 2026) / Key Question 1 — Full inventory per sub-family and the exact Stata command (official vs community) / 9. Nonparametric and semiparametric regression (Parametrik olmayan ve yarı parametrik regresyon)",
+        "Core cross-section / linear-family econometric models and estimators, with Stata commands (classical → current, as of October 2026) / Key Question 2 — What is new in Stata 17, 18, 19 and StataNow (through October 2026) within this family?",
+        "Core cross-section / linear-family econometric models and estimators, with Stata commands (classical → current, as of October 2026) / Key Question 3 — Important estimators with no official Stata command (community-only or absent)",
+        "Core cross-section / linear-family econometric models and estimators, with Stata commands (classical → current, as of October 2026) / Key Question 4 — Most recent methodological developments (2018–2026) in this family"
+      ]
+    },
+    {
+      "id": "stata-discrete",
+      "path": "research_notes/Ekonometrik modeller ve Stata kataloğu/limited_dependent_choice_count_survival.md",
+      "product": "Stata official/community limited-response, choice and survival methods; row status retained",
+      "version": "19 / StataNow; dated community releases",
+      "recorded_date": "October2026",
+      "role": "Companion research context; historical vendor availability, not implementation evidence",
+      "families": [
+        "glm",
+        "choice",
+        "survival"
+      ],
+      "section_routes": [
+        {
+          "heading_prefix": "1.1 ",
+          "families": [
+            "glm"
+          ]
+        },
+        {
+          "heading_prefix": "1.2 ",
+          "families": [
+            "glm"
+          ]
+        },
+        {
+          "heading_prefix": "1.3 ",
+          "families": [
+            "choice"
+          ]
+        },
+        {
+          "heading_prefix": "1.4 ",
+          "families": [
+            "glm"
+          ]
+        },
+        {
+          "heading_prefix": "1.5 ",
+          "families": [
+            "glm",
+            "control-function"
+          ]
+        },
+        {
+          "heading_prefix": "1.6 ",
+          "families": [
+            "glm"
+          ]
+        },
+        {
+          "heading_prefix": "1.7 ",
+          "families": [
+            "glm"
+          ]
+        },
+        {
+          "heading_prefix": "1.8 ",
+          "families": [
+            "control-function"
+          ]
+        },
+        {
+          "heading_prefix": "1.9 ",
+          "families": [
+            "mixture"
+          ]
+        },
+        {
+          "heading_prefix": "1.10 ",
+          "families": [
+            "survival"
+          ]
+        },
+        {
+          "heading_prefix": "1.11 ",
+          "families": [
+            "inference"
+          ]
+        },
+        {
+          "heading_prefix": "1.12 ",
+          "families": [
+            "panel",
+            "mixed",
+            "bayes"
+          ]
+        }
+      ],
+      "method_bullet_sections": [],
+      "reviewed_sections": [
+        "Sınırlı Bağımlı Değişken, Kesikli Seçim, Sayma, Seçim, Kesirli ve Sağkalım/Süre Modelleri — Stata Komut Kataloğu (Ekim 2026 itibarıyla)",
+        "Sınırlı Bağımlı Değişken, Kesikli Seçim, Sayma, Seçim, Kesirli ve Sağkalım/Süre Modelleri — Stata Komut Kataloğu (Ekim 2026 itibarıyla) / Anahtar Soru 1: Her alt ailedeki modellerin tam listesi ve her biri için tam Stata komutu (resmi vs. topluluk)",
+        "Sınırlı Bağımlı Değişken, Kesikli Seçim, Sayma, Seçim, Kesirli ve Sağkalım/Süre Modelleri — Stata Komut Kataloğu (Ekim 2026 itibarıyla) / Anahtar Soru 1: Her alt ailedeki modellerin tam listesi ve her biri için tam Stata komutu (resmi vs. topluluk) / 1.1 İkili sonuç modelleri (Binary outcome / İkili bağımlı değişken modelleri)",
+        "Sınırlı Bağımlı Değişken, Kesikli Seçim, Sayma, Seçim, Kesirli ve Sağkalım/Süre Modelleri — Stata Komut Kataloğu (Ekim 2026 itibarıyla) / Anahtar Soru 1: Her alt ailedeki modellerin tam listesi ve her biri için tam Stata komutu (resmi vs. topluluk) / 1.10 Sağkalım / süre modelleri — [ST] kılavuzu (Survival / duration / Sağkalım (yaşam süresi) analizi)",
+        "Sınırlı Bağımlı Değişken, Kesikli Seçim, Sayma, Seçim, Kesirli ve Sağkalım/Süre Modelleri — Stata Komut Kataloğu (Ekim 2026 itibarıyla) / Anahtar Soru 1: Her alt ailedeki modellerin tam listesi ve her biri için tam Stata komutu (resmi vs. topluluk) / 1.11 Genel maksimum olabilirlik araçları (Maximum likelihood tools / Maksimum (en çok) olabilirlik araçları)",
+        "Sınırlı Bağımlı Değişken, Kesikli Seçim, Sayma, Seçim, Kesirli ve Sağkalım/Süre Modelleri — Stata Komut Kataloğu (Ekim 2026 itibarıyla) / Anahtar Soru 1: Her alt ailedeki modellerin tam listesi ve her biri için tam Stata komutu (resmi vs. topluluk) / 1.12 Çapraz referans: aynı modellerin panel, çok düzeyli, Bayesyen ve lasso sürümleri",
+        "Sınırlı Bağımlı Değişken, Kesikli Seçim, Sayma, Seçim, Kesirli ve Sağkalım/Süre Modelleri — Stata Komut Kataloğu (Ekim 2026 itibarıyla) / Anahtar Soru 1: Her alt ailedeki modellerin tam listesi ve her biri için tam Stata komutu (resmi vs. topluluk) / 1.2 Sıralı ve çok terimli sonuç modelleri (Ordered & multinomial / Sıralı ve çok kategorili modeller)",
+        "Sınırlı Bağımlı Değişken, Kesikli Seçim, Sayma, Seçim, Kesirli ve Sağkalım/Süre Modelleri — Stata Komut Kataloğu (Ekim 2026 itibarıyla) / Anahtar Soru 1: Her alt ailedeki modellerin tam listesi ve her biri için tam Stata komutu (resmi vs. topluluk) / 1.3 Kesikli seçim modelleri — [CM] kılavuzu (Discrete choice / Kesikli seçim)",
+        "Sınırlı Bağımlı Değişken, Kesikli Seçim, Sayma, Seçim, Kesirli ve Sağkalım/Süre Modelleri — Stata Komut Kataloğu (Ekim 2026 itibarıyla) / Anahtar Soru 1: Her alt ailedeki modellerin tam listesi ve her biri için tam Stata komutu (resmi vs. topluluk) / 1.4 Sayma verisi modelleri (Count data / Sayma veri modelleri)",
+        "Sınırlı Bağımlı Değişken, Kesikli Seçim, Sayma, Seçim, Kesirli ve Sağkalım/Süre Modelleri — Stata Komut Kataloğu (Ekim 2026 itibarıyla) / Anahtar Soru 1: Her alt ailedeki modellerin tam listesi ve her biri için tam Stata komutu (resmi vs. topluluk) / 1.5 Sansürlü / kesikli / seçim / engel / rejim değiştirme modelleri (Censored, truncated, selection, hurdle, switching)",
+        "Sınırlı Bağımlı Değişken, Kesikli Seçim, Sayma, Seçim, Kesirli ve Sağkalım/Süre Modelleri — Stata Komut Kataloğu (Ekim 2026 itibarıyla) / Anahtar Soru 1: Her alt ailedeki modellerin tam listesi ve her biri için tam Stata komutu (resmi vs. topluluk) / 1.6 Kesirli ve sınırlı sonuçlar (Fractional & bounded outcomes / Kesirli sonuç modelleri)",
+        "Sınırlı Bağımlı Değişken, Kesikli Seçim, Sayma, Seçim, Kesirli ve Sağkalım/Süre Modelleri — Stata Komut Kataloğu (Ekim 2026 itibarıyla) / Anahtar Soru 1: Her alt ailedeki modellerin tam listesi ve her biri için tam Stata komutu (resmi vs. topluluk) / 1.7 GLM ailesi (Generalized linear models / Genelleştirilmiş doğrusal modeller)",
+        "Sınırlı Bağımlı Değişken, Kesikli Seçim, Sayma, Seçim, Kesirli ve Sağkalım/Süre Modelleri — Stata Komut Kataloğu (Ekim 2026 itibarıyla) / Anahtar Soru 1: Her alt ailedeki modellerin tam listesi ve her biri için tam Stata komutu (resmi vs. topluluk) / 1.8 Genişletilmiş regresyon modelleri — [ERM] (Extended regression models)",
+        "Sınırlı Bağımlı Değişken, Kesikli Seçim, Sayma, Seçim, Kesirli ve Sağkalım/Süre Modelleri — Stata Komut Kataloğu (Ekim 2026 itibarıyla) / Anahtar Soru 1: Her alt ailedeki modellerin tam listesi ve her biri için tam Stata komutu (resmi vs. topluluk) / 1.9 Sonlu karışım modelleri [FMM] ve latent sınıf analizi (Finite mixture models / Sonlu karışım; Latent class / Örtük sınıf)",
+        "Sınırlı Bağımlı Değişken, Kesikli Seçim, Sayma, Seçim, Kesirli ve Sağkalım/Süre Modelleri — Stata Komut Kataloğu (Ekim 2026 itibarıyla) / Anahtar Soru 2: Stata 17, 18, 19 ve StataNow'da bu aile için yeni olanlar (ve Ekim 2026 itibarıyla en son sürümün doğrulanması)",
+        "Sınırlı Bağımlı Değişken, Kesikli Seçim, Sayma, Seçim, Kesirli ve Sağkalım/Süre Modelleri — Stata Komut Kataloğu (Ekim 2026 itibarıyla) / Anahtar Soru 3: Resmi Stata komutu olmayan önemli modeller (yalnızca topluluk veya hiç yok)",
+        "Sınırlı Bağımlı Değişken, Kesikli Seçim, Sayma, Seçim, Kesirli ve Sağkalım/Süre Modelleri — Stata Komut Kataloğu (Ekim 2026 itibarıyla) / Anahtar Soru 4: 2018–2026 arasındaki önemli metodolojik gelişmeler (bu aile için)"
+      ]
+    },
+    {
+      "id": "stata-panel",
+      "path": "research_notes/Ekonometrik modeller ve Stata kataloğu/panel_multilevel_spatial_frontier.md",
+      "product": "Stata official and community panel/mixed/spatial/frontier methods; row status retained",
+      "version": "19 / StataNow; dated community releases",
+      "recorded_date": "2026-10-03",
+      "role": "Companion research context; historical vendor availability, not implementation evidence",
+      "families": [
+        "panel",
+        "mixed",
+        "spatial",
+        "frontier"
+      ],
+      "section_routes": [
+        {
+          "heading_prefix": "1A. ",
+          "families": [
+            "panel"
+          ]
+        },
+        {
+          "heading_prefix": "1B. ",
+          "families": [
+            "panel"
+          ]
+        },
+        {
+          "heading_prefix": "1C. ",
+          "families": [
+            "panel",
+            "unitroot"
+          ]
+        },
+        {
+          "heading_prefix": "1D. ",
+          "families": [
+            "panel",
+            "glm"
+          ]
+        },
+        {
+          "heading_prefix": "1E. ",
+          "families": [
+            "mixed"
+          ]
+        },
+        {
+          "heading_prefix": "1F. ",
+          "families": [
+            "spatial"
+          ]
+        },
+        {
+          "heading_prefix": "1G. ",
+          "families": [
+            "frontier"
+          ]
+        },
+        {
+          "heading_prefix": "1H. ",
+          "families": [
+            "panel",
+            "mixed"
+          ]
+        }
+      ],
+      "method_bullet_sections": [],
+      "reviewed_sections": [
+        "Panel Data, Multilevel/Mixed-Effects, Spatial Econometrics and Stochastic Frontier / Efficiency Models — Stata Command Catalog (as of 2026-10-03)",
+        "Panel Data, Multilevel/Mixed-Effects, Spatial Econometrics and Stochastic Frontier / Efficiency Models — Stata Command Catalog (as of 2026-10-03) / Key Question 1 — Full inventory of models/tests per sub-family and the exact Stata command (official vs community)",
+        "Panel Data, Multilevel/Mixed-Effects, Spatial Econometrics and Stochastic Frontier / Efficiency Models — Stata Command Catalog (as of 2026-10-03) / Key Question 1 — Full inventory of models/tests per sub-family and the exact Stata command (official vs community) / 1A. Static linear panel models (Statik doğrusal panel modelleri)",
+        "Panel Data, Multilevel/Mixed-Effects, Spatial Econometrics and Stochastic Frontier / Efficiency Models — Stata Command Catalog (as of 2026-10-03) / Key Question 1 — Full inventory of models/tests per sub-family and the exact Stata command (official vs community) / 1B. Dynamic panel models (Dinamik panel modelleri)",
+        "Panel Data, Multilevel/Mixed-Effects, Spatial Econometrics and Stochastic Frontier / Efficiency Models — Stata Command Catalog (as of 2026-10-03) / Key Question 1 — Full inventory of models/tests per sub-family and the exact Stata command (official vs community) / 1C. Panel time series / macro panels (Panel zaman serisi / makro paneller)",
+        "Panel Data, Multilevel/Mixed-Effects, Spatial Econometrics and Stochastic Frontier / Efficiency Models — Stata Command Catalog (as of 2026-10-03) / Key Question 1 — Full inventory of models/tests per sub-family and the exact Stata command (official vs community) / 1D. Nonlinear panel models (Doğrusal olmayan panel modelleri)",
+        "Panel Data, Multilevel/Mixed-Effects, Spatial Econometrics and Stochastic Frontier / Efficiency Models — Stata Command Catalog (as of 2026-10-03) / Key Question 1 — Full inventory of models/tests per sub-family and the exact Stata command (official vs community) / 1E. Multilevel / mixed-effects models ([ME] manual) (Çok düzeyli / karma etkiler modelleri)",
+        "Panel Data, Multilevel/Mixed-Effects, Spatial Econometrics and Stochastic Frontier / Efficiency Models — Stata Command Catalog (as of 2026-10-03) / Key Question 1 — Full inventory of models/tests per sub-family and the exact Stata command (official vs community) / 1F. Spatial econometrics ([SP] manual + community) (Mekânsal ekonometri)",
+        "Panel Data, Multilevel/Mixed-Effects, Spatial Econometrics and Stochastic Frontier / Efficiency Models — Stata Command Catalog (as of 2026-10-03) / Key Question 1 — Full inventory of models/tests per sub-family and the exact Stata command (official vs community) / 1G. Stochastic frontier & efficiency analysis (Stokastik sınır analizi ve etkinlik ölçümü)",
+        "Panel Data, Multilevel/Mixed-Effects, Spatial Econometrics and Stochastic Frontier / Efficiency Models — Stata Command Catalog (as of 2026-10-03) / Key Question 1 — Full inventory of models/tests per sub-family and the exact Stata command (official vs community) / 1H. Recent / current developments 2015–2026 (Güncel gelişmeler)",
+        "Panel Data, Multilevel/Mixed-Effects, Spatial Econometrics and Stochastic Frontier / Efficiency Models — Stata Command Catalog (as of 2026-10-03) / Key Question 2 — Which of these are new in Stata 17, 18, 19 and StataNow?",
+        "Panel Data, Multilevel/Mixed-Effects, Spatial Econometrics and Stochastic Frontier / Efficiency Models — Stata Command Catalog (as of 2026-10-03) / Key Question 3 — Widely used panel/spatial models missing from official Stata (community-only or unavailable)",
+        "Panel Data, Multilevel/Mixed-Effects, Spatial Econometrics and Stochastic Frontier / Efficiency Models — Stata Command Catalog (as of 2026-10-03) / Key Question 4 — Methods most used in applied macro-panel literature and their exact Stata commands"
+      ]
+    },
+    {
+      "id": "stata-timeseries",
+      "path": "research_notes/Ekonometrik modeller ve Stata kataloğu/time_series_macro.md",
+      "product": "Stata official and community time-series/macro methods; row status retained",
+      "version": "19 / StataNow; dated community releases",
+      "recorded_date": "October2026",
+      "role": "Companion research context; historical vendor availability, not implementation evidence",
+      "families": [
+        "timeseries",
+        "var",
+        "unitroot"
+      ],
+      "section_routes": [
+        {
+          "heading_prefix": "1.1 ",
+          "families": [
+            "ardl",
+            "timeseries"
+          ]
+        },
+        {
+          "heading_prefix": "1.2 ",
+          "families": [
+            "timeseries",
+            "fractional"
+          ]
+        },
+        {
+          "heading_prefix": "1.3 ",
+          "families": [
+            "volatility"
+          ]
+        },
+        {
+          "heading_prefix": "1.4 ",
+          "families": [
+            "var",
+            "bayes"
+          ]
+        },
+        {
+          "heading_prefix": "1.5 ",
+          "families": [
+            "state",
+            "dfm",
+            "mixed-frequency",
+            "dsge"
+          ]
+        },
+        {
+          "heading_prefix": "1.6 ",
+          "families": [
+            "unitroot"
+          ]
+        },
+        {
+          "heading_prefix": "1.7 ",
+          "families": [
+            "unitroot"
+          ]
+        },
+        {
+          "heading_prefix": "1.8 ",
+          "families": [
+            "quantile",
+            "timeseries"
+          ]
+        }
+      ],
+      "method_bullet_sections": [],
+      "reviewed_sections": [
+        "Time Series & Macro-Econometric Models, Tests and Their Stata Commands (classical → October 2026) / KQ1. Full inventory by sub-family: model/test → exact Stata command (official vs community)",
+        "Time Series & Macro-Econometric Models, Tests and Their Stata Commands (classical → October 2026) / KQ1. Full inventory by sub-family: model/test → exact Stata command (official vs community) / 1.1 Classical dynamic regression, autocorrelation corrections, ARDL family",
+        "Time Series & Macro-Econometric Models, Tests and Their Stata Commands (classical → October 2026) / KQ1. Full inventory by sub-family: model/test → exact Stata command (official vs community) / 1.2 Univariate models, filters, smoothers, spectral, regime switching, structural breaks",
+        "Time Series & Macro-Econometric Models, Tests and Their Stata Commands (classical → October 2026) / KQ1. Full inventory by sub-family: model/test → exact Stata command (official vs community) / 1.3 Volatility models",
+        "Time Series & Macro-Econometric Models, Tests and Their Stata Commands (classical → October 2026) / KQ1. Full inventory by sub-family: model/test → exact Stata command (official vs community) / 1.4 Multivariate: VAR, SVAR, VECM, Bayesian/panel/factor/global VAR, local projections, causality",
+        "Time Series & Macro-Econometric Models, Tests and Their Stata Commands (classical → October 2026) / KQ1. Full inventory by sub-family: model/test → exact Stata command (official vs community) / 1.5 State-space, factor, nowcasting, mixed frequency, DSGE",
+        "Time Series & Macro-Econometric Models, Tests and Their Stata Commands (classical → October 2026) / KQ1. Full inventory by sub-family: model/test → exact Stata command (official vs community) / 1.6 Unit-root and stationarity tests",
+        "Time Series & Macro-Econometric Models, Tests and Their Stata Commands (classical → October 2026) / KQ1. Full inventory by sub-family: model/test → exact Stata command (official vs community) / 1.7 Cointegration tests and long-run estimators",
+        "Time Series & Macro-Econometric Models, Tests and Their Stata Commands (classical → October 2026) / KQ1. Full inventory by sub-family: model/test → exact Stata command (official vs community) / 1.8 Recent/current methods (2015–2026) and quantile/wavelet tools",
+        "Time Series & Macro-Econometric Models, Tests and Their Stata Commands (classical → October 2026) / KQ2. What is new in Stata 17, 18, 19 and StataNow (verified against stata.com)",
+        "Time Series & Macro-Econometric Models, Tests and Their Stata Commands (classical → October 2026) / KQ3. Widely used time-series models missing from Stata entirely (official and community)",
+        "Time Series & Macro-Econometric Models, Tests and Their Stata Commands (classical → October 2026) / KQ4. Methods popular in applied (incl. Turkish) literature and their Stata commands"
+      ]
+    }
+  ],
+  "reviewed_api_links": [
+    {
+      "source": "stata-official",
+      "label": "`regress`",
+      "family": "regression",
+      "apis": [
+        "ols"
+      ],
+      "guide": "linear.md",
+      "scope": "Native linear OLS; inspect documented sample, VCE and saved targets",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "stata-official",
+      "label": "`mprobit`",
+      "family": "choice",
+      "apis": [
+        "mprobit"
+      ],
+      "guide": "mprobit.md",
+      "scope": "Declared 2–3 alternatives; full observed/HC0/CR0 covariance; no four-plus or fit weights",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "stata-official",
+      "label": "`cmmprobit`",
+      "family": "choice",
+      "apis": [
+        "mprobit"
+      ],
+      "guide": "mprobit.md",
+      "scope": "Bounded Gaussian choice route; not all CM/panel options",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "stata-official",
+      "label": "`nlogit`",
+      "family": "choice",
+      "apis": [
+        "nlogit"
+      ],
+      "guide": "nested-choice.md",
+      "scope": "Two-level disjoint nests; no deeper/cross-nested model claim",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "stata-official",
+      "label": "`cmrologit`",
+      "family": "choice",
+      "apis": [
+        "rologit"
+      ],
+      "guide": "rank-ordered-choice.md",
+      "scope": "Strict full/partial rankings; no tie or fit-weight equivalence",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "stata-official",
+      "label": "`sem`",
+      "family": "sem",
+      "apis": [
+        "latent_sem"
+      ],
+      "guide": "latent-sem.md",
+      "scope": "Single-group continuous structural SEM; oe.sem is spatial error",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "stata-official",
+      "label": "`bmaregress`",
+      "family": "bayes",
+      "apis": [
+        "bayes_bma"
+      ],
+      "guide": "bayesian-bma.md",
+      "scope": "Finite all-subsets proper-prior Gaussian BMA; not MC3/default-g-prior equivalence",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "stata-official",
+      "label": "`arfima`",
+      "family": "fractional",
+      "apis": [
+        "arfima"
+      ],
+      "guide": "fractional-memory.md",
+      "scope": "Conditional finite-filter ARFIMA; exact stationary Gaussian ML remains separate",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "stata-official",
+      "label": "`dfactor`",
+      "family": "dfm",
+      "apis": [
+        "dfactor"
+      ],
+      "guide": "dynamic-factor.md",
+      "scope": "Known finite-prior AR1 factors/white idiosyncratic noise; stationary serial DFM separate",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "stata-official",
+      "label": "`sspace`",
+      "family": "state",
+      "apis": [
+        "sspace",
+        "sspace_diffuse"
+      ],
+      "guide": "sspace-scheduled.md",
+      "scope": "Proper-prior parameter fit and separate fixed-equation exact-diffuse API",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "stata-official",
+      "label": "`stintreg`",
+      "family": "survival",
+      "apis": [
+        "stinterval_weibull_regression"
+      ],
+      "guide": "interval-weibull-covariate.md",
+      "scope": "Covariate Weibull interval likelihood; not the whole stintreg family",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "spss-builtins",
+      "label": "`CATREG`",
+      "family": "categorical",
+      "apis": [
+        "catreg_nominal",
+        "catreg_ordinal"
+      ],
+      "guide": "categorical.md",
+      "scope": "Bounded optimal scaling; degree-one spline/count bootstrap domains separate",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "spss-builtins",
+      "label": "`CATPCA`",
+      "family": "categorical",
+      "apis": [
+        "catpca"
+      ],
+      "guide": "categorical.md",
+      "scope": "Bounded nominal/ordinal component scaling; no universal FACTOR/CATPCA equivalence",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "spss-builtins",
+      "label": "`OVERALS`",
+      "family": "categorical",
+      "apis": [
+        "overals"
+      ],
+      "guide": "categorical.md",
+      "scope": "Bounded nonlinear canonical correlation",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "spss-builtins",
+      "label": "`TREE`",
+      "family": "ml",
+      "apis": [
+        "cart"
+      ],
+      "guide": "supervised-cart.md",
+      "scope": "Numeric CART; no CHAID/QUEST/RF/boosting equivalence",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "spss-builtins",
+      "label": "`FACTOR`",
+      "family": "multivariate",
+      "apis": [
+        "factor",
+        "factor_matrix"
+      ],
+      "guide": "multivariate.md",
+      "scope": "Declared extraction/rotation/scoring routes; inspect current selected-model and weighting exclusions",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "spss-builtins",
+      "label": "`MANOVA`",
+      "family": "multivariate",
+      "apis": [
+        "manova",
+        "manova_contrast"
+      ],
+      "guide": "multivariate-selection-contrasts.md",
+      "scope": "Saved general LBM=C hypothesis support; tests retain their own exact/approximate labels",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "spss-builtins",
+      "label": "`MULTIPLE IMPUTATION`",
+      "family": "mi",
+      "apis": [
+        "mi_chained",
+        "mi_discrete",
+        "mi_monotone",
+        "mi_mvn"
+      ],
+      "guide": "mi-generation.md",
+      "scope": "Bounded Gaussian and discrete imputation routes; no generic mixed-chain parity",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "spss-builtins",
+      "label": "`CONJOINT`",
+      "family": "conjoint",
+      "apis": [
+        "conjoint_fit",
+        "conjoint_bootstrap_importance",
+        "conjoint_bootstrap_shares"
+      ],
+      "guide": "conjoint.md",
+      "scope": "Scored conjoint plus bounded importance/share bootstrap; CBC/true-market calibration separate",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "spss-extensions",
+      "label": "`STATS GAM`",
+      "family": "smoothing",
+      "apis": [
+        "gam_gaussian"
+      ],
+      "guide": "smoothing-stages.md",
+      "scope": "Gaussian GAM; non-Gaussian link families are not asserted",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "spss-extensions",
+      "label": "`STATS_EARTH`",
+      "family": "smoothing",
+      "apis": [
+        "mars"
+      ],
+      "guide": "smoothing-stages.md",
+      "scope": "Bounded Gaussian MARS; extension GLM options not equivalent",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "spss-extensions",
+      "label": "`STATS LOESS`",
+      "family": "smoothing",
+      "apis": [
+        "loess"
+      ],
+      "guide": "smoothing-stages.md",
+      "scope": "Bounded local polynomial smoothing and saved query derivatives",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "spss-extensions",
+      "label": "`SPSSINC RASCH`",
+      "family": "irt",
+      "apis": [
+        "irt_rasch"
+      ],
+      "guide": "irt.md",
+      "scope": "Fixed discrimination resident standard-normal marginal fit; not calibrated-bank scoring",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "spss-extensions",
+      "label": "ARFIMA",
+      "family": "fractional",
+      "apis": [
+        "arfima"
+      ],
+      "guide": "fractional-memory.md",
+      "scope": "Conditional finite-filter likelihood; exact stationary ML remains open",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "eviews-equations",
+      "label": "ARFIMA",
+      "family": "fractional",
+      "apis": [
+        "arfima"
+      ],
+      "guide": "fractional-memory.md",
+      "scope": "Conditional finite-filter likelihood; exact stationary ML remains open",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "eviews-equations",
+      "label": "U-MIDAS",
+      "family": "mixed-frequency",
+      "apis": [
+        "umidas"
+      ],
+      "guide": "tsworkflows.md",
+      "scope": "Unrestricted aligned high-frequency lags, separate release-aware sample contract",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    },
+    {
+      "source": "eviews-systems",
+      "label": "`BVAR`",
+      "family": "bayes",
+      "apis": [
+        "bayes_var",
+        "bayes_var_forecast",
+        "bayes_var_irf"
+      ],
+      "guide": "../bayesian_var_conjugate.md",
+      "scope": "Proper MNIW conditional VAR; no TVP/SV or add-in default equivalence",
+      "review_state": "bounded-api-link-only; vendor option and evidence review pending"
+    }
+  ]
+}

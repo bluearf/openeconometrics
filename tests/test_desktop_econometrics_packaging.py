@@ -166,10 +166,12 @@ def test_frozen_metadata_preserves_utf8_and_record_hashes_under_windows_locale(
         assert row[1:] == ["sha256=" + expected, str(len(metadata))]
 
 
-def test_pyinstaller_command_includes_inventory_and_preserves_native_bootstrap(packager, monkeypatch, tmp_path):
+@pytest.mark.parametrize("target_platform", ["darwin", "win32"])
+def test_pyinstaller_command_includes_inventory_and_preserves_native_bootstrap(packager, monkeypatch, tmp_path, target_platform):
     module, _, _, _ = packager
     inventory = module.econometrics_hidden_imports()
     monkeypatch.setattr(sys, "argv", ["package_runtime.py", "--skip-web-build"])
+    monkeypatch.setattr(module.sys, "platform", target_platform)
     monkeypatch.setattr(module, "uv_bundle_inputs", lambda: (tmp_path / "uv", [], {}))
     monkeypatch.setattr(module.importlib.metadata, "distribution", lambda name: object())
     commands = []
@@ -193,6 +195,7 @@ def test_pyinstaller_command_includes_inventory_and_preserves_native_bootstrap(p
     assert hidden[:3] == ["openecon.desktop_entry", "openecon.desktop_runtime", "openecon.server"]
     assert "openecon._network_signed" in hidden
     assert "openecon.console_worker" in hidden and "openecon_charts.annotations" in hidden
+    assert ("jwt" in hidden) == (target_platform == "win32")
     assert {"openecon._network_store", "openecon._network_disk_algorithms"} <= set(hidden)
     assert "openecon._network_multi" in hidden
     assert {"openecon._network_dynamic", "openecon._network_dynamic_io"} <= set(hidden)
@@ -394,3 +397,45 @@ def test_default_mac_bundle_names_follow_product_config(mac_packager, monkeypatc
     mac_packager.main()
     assert captured["app"] == desktop / "src-tauri/target/release/bundle/macos/OpenEconometrics.app"
     assert captured["output"] == desktop / "src-tauri/target/release/bundle/dmg/OpenEconometrics_0.3.35_aarch64.dmg"
+
+
+@pytest.mark.parametrize("damage", [None, "lock", "requirement", "python", "numeric", "unknown",
+                                    "sdk", "charts", "unbound-core"])
+def test_windows_upgrade_distinguishes_bundled_versions_from_persisted_state(damage):
+    from copy import deepcopy
+
+    path = Path(__file__).resolve().parents[1] / "desktop/scripts/verify_windows_runtime.py"
+    spec = importlib.util.spec_from_file_location("windows_migration_contract", path)
+    verifier = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(verifier)
+    before = {"schema": 2, "python": "3.13", "core": {"openecon": "0.3.19a1",
+              "openecon-charts": "0.3.1a1", "uv": "0.9.25", "numpy": "2.2.5"},
+              "requirements": [{"name": "demo", "version": "1.0"}],
+              "specifications": ["demo>=1,<2"],
+              "locked": [{"name": "demo", "version": "1.0"}]}
+    after = deepcopy(before)
+    after["core"].update(openecon="0.3.20a1", uv="0.9.26")
+    after["core"]["openecon-charts"] = "0.3.2a1"
+    bundled = deepcopy(after["core"])
+    if damage == "lock":
+        after["locked"][0]["version"] = "1.1"
+    elif damage == "requirement":
+        after["specifications"] = ["demo>=2"]
+    elif damage == "python":
+        after["python"] = "3.14"
+    elif damage == "numeric":
+        after["core"]["numpy"] = bundled["numpy"] = "9.0"
+    elif damage == "unknown":
+        after["new_field"] = True
+    elif damage in {"sdk", "charts"}:
+        key = "openecon" if damage == "sdk" else "openecon-charts"
+        after["core"][key] = bundled[key] = "9.0"
+    elif damage == "unbound-core":
+        after["core"]["uv"] = "0.9.27"
+    if damage is not None:
+        with pytest.raises(RuntimeError):
+            verifier.verify_migrated_environment(before, after, bundled, "0.3.20a1", "0.3.2a1")
+    else:
+        changes = verifier.verify_migrated_environment(before, after, bundled, "0.3.20a1", "0.3.2a1")
+        assert set(changes) == {"openecon", "openecon-charts", "uv"}
+        assert before["locked"] == after["locked"]

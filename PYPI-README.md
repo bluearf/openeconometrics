@@ -5,25 +5,27 @@ analysis. It provides model fitting, persistent JSON results, saved prediction,
 LaTeX tables and offline charts. The package is an alpha with bounded method and
 option coverage; full Stata or other vendor parity has not been established.
 
+These exact alpha packages are distributed as GitHub release assets. The separate PyPI pair remains SDK `0.3.19a1` / charts `0.3.1a1`; the commands below select the GitHub bytes explicitly.
+
 ## Install this package version
 
 ```sh
-python -m pip install 'openecon==0.3.19a1' 'openecon-charts==0.3.1a1'
+python -m pip install 'https://github.com/bluearf/openeconometrics/releases/download/v0.3.46-alpha.1/openecon_charts-0.3.2a1-py3-none-any.whl' 'https://github.com/bluearf/openeconometrics/releases/download/v0.3.46-alpha.1/openecon-0.3.20a1-py3-none-any.whl'
 python -m pip check
 ```
 
-Python must be at least 3.11 and below 3.15. The SDK pins charts `0.3.1a1`
+Python must be at least 3.11 and below 3.15. The SDK pins charts `0.3.2a1`
 exactly. Charts also works as a standalone package with no required Python
 dependencies:
 
 ```sh
-python -m pip install 'openecon-charts==0.3.1a1'
+python -m pip install 'https://github.com/bluearf/openeconometrics/releases/download/v0.3.46-alpha.1/openecon_charts-0.3.2a1-py3-none-any.whl'
 ```
 
 The base SDK installation does not require the web server, CLI, MCP service or
 additional Excel/Stata file readers. Optional application layers are described
 in the [distribution guide](https://github.com/bluearf/openeconometrics/blob/main/docs/distribution.md).
-For example, Excel and Stata readers use `python -m pip install 'openecon[files]==0.3.19a1'`.
+For example, Excel and Stata readers use `python -m pip install 'openecon[files] @ https://github.com/bluearf/openeconometrics/releases/download/v0.3.46-alpha.1/openecon-0.3.20a1-py3-none-any.whl'`.
 
 ## Fit and save a result
 
@@ -54,7 +56,7 @@ a browser or open a user's existing profile.
 
 ## Scope and provenance
 
-SDK `0.3.19a1` and charts `0.3.1a1` form one source-based package pair. The
+SDK `0.3.20a1` and charts `0.3.2a1` form one source-based package pair. The
 corresponding public source snapshot records the frozen source commit and file
 inventory in `SOURCE-MANIFEST.json`. Release provenance identifies the exact
 wheel/sdist hashes and the scope of their installation checks. Numerical tests,

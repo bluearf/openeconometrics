@@ -15,16 +15,17 @@ from torch import Tensor
 
 from openecon.analysis_contracts import AnalysisError
 from openecon.econometrics.core import TableSet
+from openecon.econometrics.resident_cpu import resident_cpu
 from openecon.econometrics.multivariate import common as c
 from openecon.econometrics.multivariate import extraction as ex
 from openecon.econometrics.multivariate import rotation as rot
 from openecon.econometrics.multivariate.pca import eigen_table, standardize
 
-METHODS = ("pf", "ipf", "ml", "pcf", "minres", "alpha", "image_covariance")
+METHODS = ("pf", "ipf", "ml", "pcf", "minres", "alpha", "image_covariance", "gls", "generalized_image")
 ROTATIONS = (*rot.ORTHOGONAL, *rot.OBLIQUE, "target", "geomin", "cf", "partial_target")
 # Stata's defaults: factors with an eigenvalue above 5e-6 (pf, ipf, ml), above 1 for pcf.
 _MINEIGEN = {"pf": 5e-6, "ipf": 5e-6, "ml": 5e-6, "pcf": 1.0, "minres": 5e-6,
-             "alpha": 5e-6, "image_covariance": 5e-6}
+             "alpha": 5e-6, "image_covariance": 5e-6, "gls": 5e-6, "generalized_image": 5e-6}
 # SPSS's defaults for iterated principal axis factoring; BFGS and rotations get 1000.
 _IPF_ITERATIONS, _IPF_TOLERANCE, _ITERATIONS = 25, 1e-3, 1000
 # Gradient projection converges linearly; its steps cost microseconds.
@@ -131,6 +132,7 @@ def _variance_table(loadings: Tensor, rotated: rot.Rotation | None, p: int) -> p
 
 
 @c.procedure
+@resident_cpu
 def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | None = None,
            mineigen: float | None = None, rotate: str | None = None, kaiser: bool = True,
            power: float = 4.0, gamma: float = 0.0, scores: str | None = None,
@@ -168,7 +170,14 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
     * ``"image_covariance"`` decomposes the covariance of leave-one-variable
       linear predictions (SAS/Guttman variant, not SPSS generalized image).
       Full prediction coefficients and covariance are returned.
-      These three methods require an explicit factor count and no mineigen.
+    * ``"gls"`` minimizes half the squared tail-root discrepancies of the
+      uniqueness-scaled correlation. Three fixed starts, uniqueness bound .005,
+      stationary strict local minimum and separated retained roots. Optimized
+      uniquenesses are retained; no model chi-square or loading SE is supplied.
+    * ``"generalized_image"`` uses conditional variances D and eigenpairs of
+      D^-1/2 R D^-1/2; L=D^1/2 V (gamma-1)/sqrt(gamma). Full generalized roots,
+      conditional/image/anti-image matrices persist. It is distinct from image
+      covariance PCA. These five methods require an explicit count, no mineigen.
 
     Number of factors. ``factors`` is the maximum number kept; factors whose
     eigenvalue (of the SMC-reduced matrix for pf / ipf / ml, of R for pcf) does not
@@ -210,7 +219,11 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
         n records the count total, with separate physical/missing/zero counts.
         Only weight_type="fweight" is supported; counts/total must be <=2**53.
     cf_kappa, cf_oblique : CF criterion and geometry, only with rotate="cf".
-    target_mask, target_oblique : partial-target mask and geometry.
+    target_mask : binary mask for partial-target rotation only.
+    target_oblique : oblique geometry for complete or partial targets. Complete
+        oblique targets must be finite and full rank; all cells contribute to
+        half residual SS, caller axes persist and factor variances remain one.
+        The identified tangent and gradient certify only local stationarity.
     rotation_tolerance : CF/partial-target gradient tolerance, 1e-12 to 1e-5.
 
     Returns
@@ -262,10 +275,10 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
     names = c.name_list(columns, "columns", minimum=2 if method == "pcf" else 3)
     if factors is not None:
         factors = c.check_count(factors, "factors")
-    fixed_count = method in ("minres", "alpha", "image_covariance")
+    fixed_count = method in ("minres", "alpha", "image_covariance", "gls", "generalized_image")
     if fixed_count and (factors is None or mineigen is not None):
         raise AnalysisError("invalid_option", f"{method} EFA requires an explicit factors count and does not use mineigen selection.")
-    if method in ("alpha", "image_covariance") and factors >= len(names):
+    if method in ("alpha", "image_covariance", "gls", "generalized_image") and factors >= len(names):
         raise AnalysisError("too_many_factors", "Alpha/image-covariance extraction needs fewer factors than variables.")
     c.check_choice(weight_type, "weight_type", ("fweight",))
     cutoff = _MINEIGEN[method] if mineigen is None else c.check_number(
@@ -298,12 +311,14 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
     if (cf_oblique or cf_kappa != 0) and rotate != "cf":
         raise AnalysisError("invalid_option", "Crawford–Ferguson options require rotate='cf'.")
     c.check_flag(target_oblique, "target_oblique")
-    if (target_mask is not None or target_oblique) and rotate != "partial_target":
+    if target_mask is not None and rotate != "partial_target":
         raise AnalysisError("invalid_option", "Partial-target options require rotate='partial_target'.")
+    if target_oblique and rotate not in ("target", "partial_target"):
+        raise AnalysisError("invalid_option", "target_oblique requires a complete or partial target rotation.")
     if rotate == "partial_target" and target_mask is None:
         raise AnalysisError("invalid_option", "Partial-target rotation requires an explicit binary target_mask.")
     rotation_tolerance = c.check_number(rotation_tolerance, "rotation_tolerance", minimum=1e-12, maximum=1e-5)
-    if rotation_tolerance != 1e-10 and rotate not in ("cf", "partial_target"):
+    if rotation_tolerance != 1e-10 and not (rotate in ("cf", "partial_target") or (rotate == "target" and target_oblique)):
         raise AnalysisError("invalid_option", "rotation_tolerance is used by CF and partial-target rotation.")
     c.check_flag(geomin_oblique, "geomin_oblique")
     geomin_epsilon = c.check_number(geomin_epsilon, "geomin_epsilon", minimum=1e-12, maximum=1)
@@ -311,12 +326,21 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
         raise AnalysisError("invalid_option", "Geomin options require rotate='geomin'.")
     if max_iterations is not None:
         max_iterations = c.check_count(max_iterations, "max_iterations")
-    if rotate in ("cf", "partial_target"):
+    if method == "gls":
+        if tolerance is not None:
+            c.check_number(tolerance, "tolerance", minimum=1e-12, maximum=1e-7)
+        if len(names) > 32:
+            raise AnalysisError("workspace_limit", "GLS extraction supports at most 32 variables.")
+        if (max_iterations or _ITERATIONS) > 10000:
+            raise AnalysisError("invalid_option", "GLS allows at most 10000 iterations.")
+        if 3 * (max_iterations or _ITERATIONS) * len(names)**4 > 2_000_000_000:
+            raise AnalysisError("work_limit", "GLS starts, iterations and curvature exceed the work budget.")
+    if rotate in ("cf", "partial_target") or (rotate == "target" and target_oblique):
         if factors is not None and not 2 <= factors <= 16:
             raise AnalysisError("invalid_option", "CF and partial-target rotation require 2–16 factors.")
         if max_iterations is not None and max_iterations > 10000:
             raise AnalysisError("invalid_option", "CF and partial-target rotation allow at most 10000 iterations.")
-    if method == "image_covariance" and (tolerance is not None or (max_iterations is not None and rotate is None)):
+    if method in ("image_covariance", "generalized_image") and (tolerance is not None or (max_iterations is not None and rotate is None)):
         raise AnalysisError("invalid_option", "Image-covariance extraction is closed form; tolerance is not used and max_iterations only applies with rotation.")
     tol = _IPF_TOLERANCE if tolerance is None else c.check_number(
         tolerance, "tolerance", minimum=0.0, exclusive=True)
@@ -326,12 +350,12 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
         from openecon.dataset import Dataset
         from .summary import Summary
         rows = 0 if isinstance(data, (Dataset, Summary)) else len(c.source(data))
-        matrix_iterations = max_iterations or (1000 if method in ("ml", "minres", "alpha")
+        matrix_iterations = max_iterations or (1000 if method in ("ml", "minres", "alpha", "gls")
                                                else 25 if method == "ipf" else 1)
         if rotate is not None:
             matrix_iterations = max_iterations or 10000
-        diagnostics["option_resource_plan"] = geometry(len(names), rows=rows, iterations=matrix_iterations,
-            parameters=len(names) * min(factors, len(names)) if method == "minres" else 0)
+        diagnostics["option_resource_plan"] = geometry(len(names), rows=rows, iterations=3*(max_iterations or _ITERATIONS)*len(names) + (matrix_iterations if rotate else 0) if method == "gls" else matrix_iterations,
+            parameters=len(names) * min(factors, len(names)) if method == "minres" else len(names) if method == "gls" else 0)
         diagnostics.update({"precision": "float64", "device": "cpu"})
     r, mean, std, n, dropped = _correlation(data, names, missing, diagnostics, weights)
     p = len(names)
@@ -345,10 +369,10 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
         smc = ex.squared_multiple_correlations(r)
         screen = ex.reduced_eigen(r, smc)[0]
     limit = p if factors is None else min(factors, p)
-    if method in ("ml", "minres"):
+    if method in ("ml", "minres", "gls"):
         limit = min(limit, max(m for m in range(p) if (p - m) ** 2 >= p + m))
     m = factors if fixed_count else min(int((screen > cutoff).sum()), limit)
-    if method == "minres" and m > limit:
+    if method in ("minres", "gls") and m > limit:
         raise AnalysisError("too_many_factors", "Minimum-residual factor count is not identified.")
     if m < 1:
         raise AnalysisError("no_factors", f"No factor has an eigenvalue above {cutoff:g}; lower "
@@ -370,6 +394,12 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
         value, gradient = ex.minres_objective(fit.loadings, r)
         diagnostics.update({"objective": "half_off_diagonal_residual_ss", "gradient_max": float(gradient.abs().max()),
                             "converged": True, "loading_inference": "not provided"})
+    elif method in ("gls", "generalized_image"):
+        from .extraction_additional import generalized_image_factors, generalized_least_squares
+        fit = (generalized_least_squares(r, smc, m, max_iter=max_iterations or _ITERATIONS,
+                                         tol=1e-7 if tolerance is None else tol)
+               if method == "gls" else generalized_image_factors(r, m))
+        diagnostics.update(fit.diagnostics)
     elif method in ("alpha", "image_covariance"):
         from .extraction_extensions import alpha_factors, image_covariance_factors
         fit = (alpha_factors(r, smc, m, max_iter=max_iterations or _ITERATIONS,
@@ -384,30 +414,34 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
         fit = ex.maximum_likelihood(r, smc, m, max_iter=max_iterations or _ITERATIONS)
     loadings = c.fix_signs(fit.loadings)
     communality = loadings.square().sum(1)
-    uniqueness = fit.uniqueness if method == "ml" else 1.0 - communality
+    uniqueness = fit.uniqueness if method in ("ml", "gls") else 1.0 - communality
     heywood = [names[i] for i in fit.heywood]
-    if method != "ml":
+    if method not in ("ml", "gls"):
         heywood = [name for name, value in zip(names, communality.tolist(), strict=True)
                    if value >= 1.0]
     if heywood:
         where = (f"the uniqueness of {', '.join(heywood)} is at its lower bound "
-                 f"{ex.PSI_FLOOR:g}" if method == "ml" else
+                 f"{ex.PSI_FLOOR:g}" if method in ("ml", "gls") else
                  f"the communality of {', '.join(heywood)} reached or exceeded 1")
         notes.append(f"Heywood case: {where}; interpret the solution, the tests and the factor "
                      "scores with caution.")
 
     labels = c.numbered("Factor", m)
     eigen_rows = eigen_table(fit.factored, "Factor",
-                             float(fit.factored.sum()) if method == "ml" else None)
-    if method == "ml":
+                             float(fit.factored.sum()) if method in ("ml", "gls") else None)
+    if method in ("ml", "gls"):
         eigen_rows = eigen_rows.reindex(c.numbered("Factor", p))
     eigen_rows["initial_eigenvalue"] = initial.tolist()
     rotated = None
     rotation_extension = None
     if rotate is not None:
-        if rotate in ("cf", "partial_target"):
-            from .rotation_extensions import cf, partial_target
-            rotation_extension = (cf(loadings, kappa=cf_kappa, oblique=cf_oblique, kaiser=kaiser,
+        if rotate in ("cf", "partial_target") or (rotate == "target" and target_oblique):
+            from .rotation_extensions import cf, partial_target, oblique_target
+            if rotate == "target":
+                rotation_extension = oblique_target(loadings, target=target, kaiser=kaiser,
+                    max_iter=max_iterations or _ROTATION_ITERATIONS, tol=rotation_tolerance)
+            else:
+                rotation_extension = (cf(loadings, kappa=cf_kappa, oblique=cf_oblique, kaiser=kaiser,
                                      max_iter=max_iterations or _ROTATION_ITERATIONS, tol=rotation_tolerance)
                 if rotate == "cf" else partial_target(loadings, target=target, mask=target_mask,
                     oblique=target_oblique, kaiser=kaiser, max_iter=max_iterations or _ROTATION_ITERATIONS,
@@ -422,7 +456,7 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
             notes.append("A single factor cannot be rotated; the rotated loadings equal the "
                          "unrotated ones.")
         elif not rotated.converged:
-            requested = rotation_tolerance if rotate in ("cf", "partial_target") else 1e-10
+            requested = rotation_tolerance if rotate in ("cf", "partial_target") or (rotate == "target" and target_oblique) else 1e-10
             notes.append("The rotation stopped with the criterion gradient below 1e-5 "
                          f"but above the requested {requested:g} tolerance.")
     pattern = loadings if rotated is None else rotated.pattern
@@ -433,7 +467,7 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
         "variance": _variance_table(loadings, rotated, p),
         "loadings": c.frame(loadings, columns=labels, index=names),
     }
-    if method in ("alpha", "image_covariance"):
+    if method in ("alpha", "image_covariance", "gls", "generalized_image"):
         for key, matrix in fit.matrices.items():
             tables[key] = c.frame(matrix, columns=names, index=names)
     if rotated is not None:
@@ -447,7 +481,7 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
         if rotate == "partial_target":
             tables["rotation_target"] = c.frame(rotation_extension.target, columns=labels, index=names)
             tables["rotation_target_mask"] = c.frame(rotation_extension.mask.to(c.FLOAT), columns=labels, index=names)
-        if rotate in ("target", "geomin"):
+        if rotate in ("target", "geomin") and not (rotate == "target" and target_oblique):
             diagnostics.update({"rotation_converged": rotated.converged, "rotation_oblique": rotated.oblique,
                                 "rotation_orientation": "caller target order/sign" if rotate == "target" else "descending pattern SS; largest loading positive",
                                 "geomin_epsilon": geomin_epsilon if rotate == "geomin" else None,
@@ -488,7 +522,8 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
     title = {"pf": "principal factors", "ipf": "iterated principal factors",
              "pcf": "principal-component factors", "ml": "maximum likelihood",
              "minres": "minimum residual", "alpha": "alpha factors",
-             "image_covariance": "image-covariance factors"}[method]
+             "image_covariance": "image-covariance factors", "gls": "generalized least squares",
+             "generalized_image": "generalized image factors"}[method]
     return TableSet(
         tables, title=f"Factor analysis ({title}) of {', '.join(names)}",
         procedure="factor", n=n, n_missing=dropped, method=method, factors=m, rotate=rotate,
@@ -497,7 +532,7 @@ def factor(data: Any, columns: list[str], *, method: str = "pf", factors: int | 
         iterations=fit.iterations, discrepancy=fit.discrepancy,
         rotation_iterations=None if rotated is None else rotated.iterations,
         heywood=heywood, scores=score_method if coefficients is not None else None,
-        mineigen=None if method in ("alpha", "image_covariance") else cutoff, notes=notes, missing="listwise",
+        mineigen=None if method in ("alpha", "image_covariance", "gls", "generalized_image") else cutoff, notes=notes, missing="listwise",
         sign_convention="caller target orientation" if rotate in ("target", "partial_target") else "largest absolute loading of each factor is positive", **diagnostics)
 
 
@@ -573,6 +608,7 @@ def factortest(data: Any, columns: list[str], *, missing: str = "drop",
 
 
 @c.procedure
+@resident_cpu
 def factor_scores(result: TableSet, data: Any) -> pd.DataFrame:
     """Factor scores of the rows of ``data`` (Stata ``predict`` after factor, SPSS /SAVE).
 

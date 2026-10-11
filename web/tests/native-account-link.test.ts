@@ -3,6 +3,7 @@ import test from "node:test";
 import type { Auth, User } from "firebase/auth";
 import {
   linkDesktopAccount,
+  verifyDesktopAccount,
   type NativeLinkDependencies,
 } from "../src/native-account-link.ts";
 function deferred<T>() {
@@ -179,4 +180,51 @@ test("auth changes during browser approval cannot refresh the new user", async (
   response.resolve({ linked: true, uid: "same-uid", target: "password" });
   await outcome;
   assert.equal(f.reloaded(), 0);
+});
+
+test("native verification requires its own same-UID response and carries no password", async () => {
+  for (const accepted of [true, false]) {
+    const f = fixture();
+    const bodies: Record<string, unknown>[] = [];
+    f.deps.request = async <T>(
+      path: string,
+      token: string,
+      options?: RequestInit,
+    ): Promise<T> => {
+      assert.equal(token, "synthetic-id-token");
+      if (options?.method === "DELETE") return { cancelled: true } as T;
+      const body = JSON.parse(String(options?.body));
+      bodies.push(body);
+      if (path === "/api/desktop/account-link") {
+        assert.deepEqual(Object.keys(body).sort(), [
+          "action",
+          "challenge",
+          "target",
+        ]);
+        assert.equal(body.action, "verify");
+        assert.equal(body.target, "google.com");
+        return { request_id: "grant", code: "ABC" } as T;
+      }
+      assert.deepEqual(Object.keys(body), ["verifier"]);
+      return (
+        accepted
+          ? { verified: true, uid: "same-uid", target: "google.com" }
+          : { linked: true, uid: "same-uid", target: "google.com" }
+      ) as T;
+    };
+    const pending = verifyDesktopAccount(
+      f.auth,
+      f.user,
+      undefined,
+      undefined,
+      f.deps,
+    );
+    if (accepted) await pending;
+    else await assert.rejects(pending);
+    assert.equal(f.auth.currentUser, f.user);
+    assert.equal(f.reloaded(), accepted ? 1 : 0);
+    assert.ok(
+      bodies.every((body) => !("password" in body) && !("uid" in body)),
+    );
+  }
 });

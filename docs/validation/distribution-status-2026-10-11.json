@@ -1,0 +1,488 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-10-11T15:43:25.110709+00:00",
+  "issue": "MARKET-833",
+  "source_checkout": "6eb04e2b9824ac230d14a034961d9b91521e98d1",
+  "source_versions": {
+    "desktop": "0.3.46",
+    "sdk": "0.3.20a1",
+    "charts": "0.3.2a1"
+  },
+  "claims": "Dated public byte/readback reconciliation; no new installation, scientific, release or team-UI acceptance.",
+  "public_releases": [
+    {
+      "tag": "v0.3.43-alpha.1",
+      "release_url": "https://github.com/bluearf/openeconometrics/releases/tag/v0.3.43-alpha.1",
+      "published_at": "2026-10-07T05:31:57Z",
+      "public_tag_target": "7cb7517bf8bacf91f92c85f8df9a2904e76e8974",
+      "artifact": {
+        "url": "https://github.com/bluearf/openeconometrics/releases/download/v0.3.43-alpha.1/OpenEconometrics_0.3.43_aarch64.dmg",
+        "http_status": 200,
+        "authenticated": false,
+        "bytes": 317969037,
+        "sha256": "3668701f4e7461faad743ffd20979af91e5fac1a8e8e54f62ad8043d37fde801",
+        "matches_published_digest": true,
+        "checked_at": "2026-10-11T15:43:32.627266+00:00"
+      },
+      "provenance": {
+        "url": "https://github.com/bluearf/openeconometrics/releases/download/v0.3.43-alpha.1/RELEASE-PROVENANCE.json",
+        "http_status": 200,
+        "authenticated": false,
+        "bytes": 4319,
+        "sha256": "68640b4faf7ecbdf893b0596bd28ce83002da5c64395abd1f5b24d1c2add1014",
+        "matches_published_digest": true,
+        "checked_at": "2026-10-11T15:43:32.965139+00:00"
+      },
+      "build_source": "6cd9079a330b03a4f1a568e28aca04a23a8d897b",
+      "versions": {
+        "desktop": "0.3.43",
+        "sdk": "0.3.18a1",
+        "charts": "0.3.0a1",
+        "python": "3.13.5",
+        "torch": "2.14.0"
+      },
+      "producer": "Local Mac build; no hosted producer run recorded in public provenance.",
+      "acceptance_layer": "Historical exact-DMG native/frozen smoke and bounded source-to-bundle identity; actual execution macOS 26.6.2, binary minimum macOS 15."
+    },
+    {
+      "tag": "v0.3.45-windows-alpha.1",
+      "release_url": "https://github.com/bluearf/openeconometrics/releases/tag/v0.3.45-windows-alpha.1",
+      "published_at": "2026-10-09T12:06:36Z",
+      "public_tag_target": "1379566c7d09ab29ad49efd14dbfbbabf680e936",
+      "artifact": {
+        "url": "https://github.com/bluearf/openeconometrics/releases/download/v0.3.45-windows-alpha.1/OpenEconometrics_0.3.45_x64-setup.exe",
+        "http_status": 200,
+        "authenticated": false,
+        "bytes": 192720594,
+        "sha256": "ccaf15ea9472b89c19f292cff62d94dfa6c92d7f639388d7fc6bca490766515c",
+        "matches_published_digest": true,
+        "checked_at": "2026-10-11T15:43:43.886705+00:00"
+      },
+      "provenance": {
+        "url": "https://github.com/bluearf/openeconometrics/releases/download/v0.3.45-windows-alpha.1/windows-release-provenance.json",
+        "http_status": 200,
+        "authenticated": false,
+        "bytes": 6202,
+        "sha256": "bdb95aa8375a554c6f023667a9e99264e311f00c116e477ccc5060ef3866e771",
+        "matches_published_digest": true,
+        "checked_at": "2026-10-11T15:43:44.263594+00:00"
+      },
+      "build_source": "f1d2eb629db815b716a40e32b07ad55f5d5b5088",
+      "versions": {
+        "desktop": "0.3.45",
+        "sdk": "0.3.19a1",
+        "charts": "0.3.1a1"
+      },
+      "producer": {
+        "id": 37921893600,
+        "head_sha": "f1d2eb629db815b716a40e32b07ad55f5d5b5088",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 1,
+        "path": ".github/workflows/openecon-desktop.yml",
+        "html_url": "https://github.com/bluearf/openecon/actions/runs/37921893600"
+      },
+      "acceptance_layer": "Historical GitHub-hosted Windows 2025 x64 installed/native/offline/upgrade/rollback/cold-state: 18 bounded checks."
+    },
+    {
+      "tag": "python-v0.3.19a1",
+      "release_url": "https://github.com/bluearf/openeconometrics/releases/tag/python-v0.3.19a1",
+      "published_at": "2026-10-09T08:40:24Z",
+      "public_tag_target": "2060fb8ef4ea9c6e8a4371cef3de42c63d9f2b31",
+      "artifact": {
+        "url": "https://github.com/bluearf/openeconometrics/releases/download/python-v0.3.19a1/openeconometrics-source-a8eb8799-public.tar.gz",
+        "http_status": 200,
+        "authenticated": false,
+        "bytes": 11719833,
+        "sha256": "11e92922b7b398aadc2d52437c7a427dc733b1060fa25cb9b6bd81323fcbc780",
+        "matches_published_digest": true,
+        "checked_at": "2026-10-11T15:43:46.200071+00:00"
+      },
+      "provenance": {
+        "url": "https://github.com/bluearf/openeconometrics/releases/download/python-v0.3.19a1/RELEASE-PROVENANCE.json",
+        "http_status": 200,
+        "authenticated": false,
+        "bytes": 10937,
+        "sha256": "26975f921b1f250620eb14e6d616077f6e45b8ffcbb2817fad2801772fb1f998",
+        "matches_published_digest": true,
+        "checked_at": "2026-10-11T15:43:46.534391+00:00"
+      },
+      "build_source": "a8eb8799ca46e00ebedd362ad6c69461a172a8ca",
+      "versions": {
+        "charts": "0.3.1a1",
+        "sdk": "0.3.19a1"
+      },
+      "producer": {
+        "run_attempt": "1",
+        "run_id": "37894416408",
+        "tested_public_merge_commit": "fa2c18a80c8daac07449b266913a19ea29fd36cd",
+        "url": "https://github.com/bluearf/openeconometrics/actions/runs/37894416408"
+      },
+      "acceptance_layer": "Historical Linux 3.11/3.13 and macOS installed-package checks; separate protected-main PyPI publication run37907165716."
+    }
+  ],
+  "pypi": [
+    {
+      "package": "openecon",
+      "version": "0.3.19a1",
+      "latest_at_readback": "0.3.19a1",
+      "metadata_url": "https://pypi.org/pypi/openecon/0.3.19a1/json",
+      "project_url": "https://pypi.org/project/openecon/0.3.19a1/",
+      "build_source": "a8eb8799ca46e00ebedd362ad6c69461a172a8ca",
+      "producer_run": "https://github.com/bluearf/openeconometrics/actions/runs/37894416408",
+      "publication_run": "https://github.com/bluearf/openeconometrics/actions/runs/37907165716",
+      "files": [
+        {
+          "url": "https://files.pythonhosted.org/packages/f9/f0/0a9b53cd8569fac4bf75eb16f2c1a2c60af90a4f2ae448eaa1400577f32c/openecon-0.3.19a1-py3-none-any.whl",
+          "http_status": 200,
+          "authenticated": false,
+          "bytes": 5669381,
+          "sha256": "09377fe0220c4c35ff27289236fa29f63666684ba72edb4de82ae89b4cbdc85a",
+          "matches_published_digest": true,
+          "checked_at": "2026-10-11T15:43:48.265603+00:00",
+          "filename": "openecon-0.3.19a1-py3-none-any.whl",
+          "uploaded_at": "2026-10-09T08:54:00.931487Z"
+        },
+        {
+          "url": "https://files.pythonhosted.org/packages/e4/50/06163c845f7e6e240330d1e7dccf380f964a3644be3f4f1784369ba3bcf5/openecon-0.3.19a1.tar.gz",
+          "http_status": 200,
+          "authenticated": false,
+          "bytes": 11233675,
+          "sha256": "98bbbea50d7225788dd72413d1ecda85ef025e05c80b41353284f84727ab54c7",
+          "matches_published_digest": true,
+          "checked_at": "2026-10-11T15:43:50.110294+00:00",
+          "filename": "openecon-0.3.19a1.tar.gz",
+          "uploaded_at": "2026-10-09T08:54:03.566538Z"
+        }
+      ],
+      "requires_charts": "0.3.1a1"
+    },
+    {
+      "package": "openecon-charts",
+      "version": "0.3.1a1",
+      "latest_at_readback": "0.3.1a1",
+      "metadata_url": "https://pypi.org/pypi/openecon-charts/0.3.1a1/json",
+      "project_url": "https://pypi.org/project/openecon-charts/0.3.1a1/",
+      "build_source": "a8eb8799ca46e00ebedd362ad6c69461a172a8ca",
+      "producer_run": "https://github.com/bluearf/openeconometrics/actions/runs/37894416408",
+      "publication_run": "https://github.com/bluearf/openeconometrics/actions/runs/37907165716",
+      "files": [
+        {
+          "url": "https://files.pythonhosted.org/packages/3d/4b/cc7af197baae192f4471a7d7160faefd16ce94eaa498e345fec1b2d5e91c/openecon_charts-0.3.1a1-py3-none-any.whl",
+          "http_status": 200,
+          "authenticated": false,
+          "bytes": 440214,
+          "sha256": "4badfb26cbb1860dbb266d59cc726ad0057b640b007c9cbfb673bf95108ae4b4",
+          "matches_published_digest": true,
+          "checked_at": "2026-10-11T15:43:50.831491+00:00",
+          "filename": "openecon_charts-0.3.1a1-py3-none-any.whl",
+          "uploaded_at": "2026-10-09T08:51:31.580941Z"
+        },
+        {
+          "url": "https://files.pythonhosted.org/packages/7a/37/11a7b16c3d19cee085e6e81890886f96c21f4c8108fd2325b95424714099/openecon_charts-0.3.1a1.tar.gz",
+          "http_status": 200,
+          "authenticated": false,
+          "bytes": 475337,
+          "sha256": "9b053443ebca72332b8da7d7d45548654e742d303073e1e5b398399331fa0e3c",
+          "matches_published_digest": true,
+          "checked_at": "2026-10-11T15:43:51.192927+00:00",
+          "filename": "openecon_charts-0.3.1a1.tar.gz",
+          "uploaded_at": "2026-10-09T08:51:33.546712Z"
+        }
+      ],
+      "requires_charts": null
+    }
+  ],
+  "website": {
+    "url": "https://openeconometrics.com",
+    "html_status": 200,
+    "html_sha256": "2bf5c031d0e25fa1ca180d4fd7c2dd53fd173c20d9b450b33b391277b4889062",
+    "script_url": "https://openeconometrics.com/site.js",
+    "script_status": 200,
+    "script_sha256": "e609af090831f1fa8ad976ea56a0a50c20cfbd629bfe0e2bf34e82828b6ecbff",
+    "anonymous": true,
+    "browser_user_agent": true,
+    "api": "https://api.github.com/repos/bluearf/openeconometrics/releases?per_page=10",
+    "matching_downloads": {
+      "Mac": {
+        "release": "v0.3.43-alpha.1",
+        "asset_url": "https://github.com/bluearf/openeconometrics/releases/download/v0.3.43-alpha.1/OpenEconometrics_0.3.43_aarch64.dmg"
+      },
+      "Windows": {
+        "release": "v0.3.45-windows-alpha.1",
+        "asset_url": "https://github.com/bluearf/openeconometrics/releases/download/v0.3.45-windows-alpha.1/OpenEconometrics_0.3.45_x64-setup.exe"
+      }
+    },
+    "scope": "HTTP/source/controller and anonymous API readback; no rendered-browser or new installation claim.",
+    "default_urllib_user_agent_observation": "403; standard browser user-agent returned 200."
+  },
+  "workflow_observations": [
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-10-11T07:16:12Z",
+      "databaseId": 38120796245,
+      "event": "schedule",
+      "headSha": "7a195f6231023c025104115b2e3c8ebea411ff51",
+      "name": "Verify OpenEconometrics",
+      "status": "completed",
+      "updatedAt": "2026-10-11T07:37:48Z",
+      "url": "https://github.com/bluearf/openecon/actions/runs/38120796245",
+      "checked_at": "2026-10-11T15:43:54.815867+00:00",
+      "authenticated_metadata": true
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-10-11T14:11:11Z",
+      "databaseId": 38146156565,
+      "event": "workflow_dispatch",
+      "headSha": "fd12cc1310b9e68a6bc0370989ba5adc5091c2e9",
+      "name": "Verify OpenEconometrics",
+      "status": "completed",
+      "updatedAt": "2026-10-11T14:38:20Z",
+      "url": "https://github.com/bluearf/openecon/actions/runs/38146156565",
+      "checked_at": "2026-10-11T15:43:55.633422+00:00",
+      "authenticated_metadata": true
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-10-11T14:11:13Z",
+      "databaseId": 38146158847,
+      "event": "workflow_dispatch",
+      "headSha": "fd12cc1310b9e68a6bc0370989ba5adc5091c2e9",
+      "name": "OpenEconometrics Windows desktop",
+      "status": "completed",
+      "updatedAt": "2026-10-11T14:42:55Z",
+      "url": "https://github.com/bluearf/openecon/actions/runs/38146158847",
+      "checked_at": "2026-10-11T15:43:56.418470+00:00",
+      "authenticated_metadata": true
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-11T15:16:53Z",
+      "databaseId": 38150617510,
+      "event": "push",
+      "headSha": "6691f50aecadbb1d356af247e5e5c2eff1d1c9ce",
+      "name": "Quick OpenEconometrics checks",
+      "status": "completed",
+      "updatedAt": "2026-10-11T15:19:29Z",
+      "url": "https://github.com/bluearf/openecon/actions/runs/38150617510",
+      "checked_at": "2026-10-11T15:43:57.254238+00:00",
+      "authenticated_metadata": true
+    },
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-10-11T15:17:19Z",
+      "databaseId": 38150647133,
+      "event": "workflow_dispatch",
+      "headSha": "6691f50aecadbb1d356af247e5e5c2eff1d1c9ce",
+      "name": "Verify OpenEconometrics",
+      "status": "completed",
+      "updatedAt": "2026-10-11T15:35:38Z",
+      "url": "https://github.com/bluearf/openecon/actions/runs/38150647133",
+      "checked_at": "2026-10-11T15:43:58.142367+00:00",
+      "authenticated_metadata": true
+    },
+    {
+      "conclusion": "",
+      "createdAt": "2026-10-11T15:17:21Z",
+      "databaseId": 38150649713,
+      "event": "workflow_dispatch",
+      "headSha": "6691f50aecadbb1d356af247e5e5c2eff1d1c9ce",
+      "name": "OpenEconometrics Windows desktop",
+      "status": "in_progress",
+      "updatedAt": "2026-10-11T15:17:25Z",
+      "url": "https://github.com/bluearf/openecon/actions/runs/38150649713",
+      "checked_at": "2026-10-11T15:43:59.080213+00:00",
+      "authenticated_metadata": true
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-11T15:33:31Z",
+      "databaseId": 38151775204,
+      "event": "push",
+      "headSha": "6eb04e2b9824ac230d14a034961d9b91521e98d1",
+      "name": "Quick OpenEconometrics checks",
+      "status": "completed",
+      "updatedAt": "2026-10-11T15:35:49Z",
+      "url": "https://github.com/bluearf/openecon/actions/runs/38151775204",
+      "checked_at": "2026-10-11T15:43:59.897788+00:00",
+      "authenticated_metadata": true
+    },
+    {
+      "conclusion": "",
+      "createdAt": "2026-10-11T15:35:26Z",
+      "databaseId": 38151908157,
+      "event": "workflow_dispatch",
+      "headSha": "69946e2a9cc74cb3871eb71fd02d95b7519f797f",
+      "name": "Verify OpenEconometrics",
+      "status": "in_progress",
+      "updatedAt": "2026-10-11T15:35:45Z",
+      "url": "https://github.com/bluearf/openecon/actions/runs/38151908157",
+      "checked_at": "2026-10-11T15:44:00.730700+00:00",
+      "authenticated_metadata": true
+    }
+  ],
+  "tracker_observations": {
+    "checked_at": "2026-10-11T15:44:00.730743+00:00",
+    "MARKET-91": "Done: Google plus delivered six-digit email code every new email session; historical password setup/link/reset superseded.",
+    "MARKET-802": "Done: existing live owned-session cleanup after unchanged690s, residual_resources=0.",
+    "MARKET-515": "In Progress: new unified release separate.",
+    "MARKET-801": "In Progress: installed native collaboration chain separate."
+  },
+  "completed_at": "2026-10-11T15:44:00.730750+00:00",
+  "final_readback_at": "2026-10-11T15:48:11.271610+00:00",
+  "latest_default_branch_observation": {
+    "source_commit": "aa9adfc6ea69e8f3ba97b3f368389dcefa0a020c",
+    "committed_at": "2026-10-11T15:45:14Z",
+    "source_versions": {
+      "desktop": "0.3.46",
+      "sdk": "0.3.20a1",
+      "charts": "0.3.2a1"
+    },
+    "checked_at": "2026-10-11T15:48:11.271610+00:00",
+    "authenticated_metadata": true,
+    "runs": [
+      {
+        "conclusion": "success",
+        "createdAt": "2026-10-11T15:45:18Z",
+        "databaseId": 38152602603,
+        "event": "push",
+        "headSha": "aa9adfc6ea69e8f3ba97b3f368389dcefa0a020c",
+        "status": "completed",
+        "updatedAt": "2026-10-11T15:47:54Z",
+        "url": "https://github.com/bluearf/openecon/actions/runs/38152602603",
+        "workflowName": "Quick OpenEconometrics checks"
+      }
+    ]
+  },
+  "workflow_refresh": [
+    {
+      "conclusion": "failure",
+      "createdAt": "2026-10-11T15:17:19Z",
+      "databaseId": 38150647133,
+      "event": "workflow_dispatch",
+      "headSha": "6691f50aecadbb1d356af247e5e5c2eff1d1c9ce",
+      "name": "Verify OpenEconometrics",
+      "status": "completed",
+      "updatedAt": "2026-10-11T15:35:38Z",
+      "url": "https://github.com/bluearf/openecon/actions/runs/38150647133",
+      "checked_at": "2026-10-11T15:48:14.260571+00:00",
+      "authenticated_metadata": true
+    },
+    {
+      "conclusion": "success",
+      "createdAt": "2026-10-11T15:17:21Z",
+      "databaseId": 38150649713,
+      "event": "workflow_dispatch",
+      "headSha": "6691f50aecadbb1d356af247e5e5c2eff1d1c9ce",
+      "name": "OpenEconometrics Windows desktop",
+      "status": "completed",
+      "updatedAt": "2026-10-11T15:47:39Z",
+      "url": "https://github.com/bluearf/openecon/actions/runs/38150649713",
+      "checked_at": "2026-10-11T15:48:15.108391+00:00",
+      "authenticated_metadata": true
+    },
+    {
+      "conclusion": "",
+      "createdAt": "2026-10-11T15:35:26Z",
+      "databaseId": 38151908157,
+      "event": "workflow_dispatch",
+      "headSha": "69946e2a9cc74cb3871eb71fd02d95b7519f797f",
+      "name": "Verify OpenEconometrics",
+      "status": "in_progress",
+      "updatedAt": "2026-10-11T15:35:45Z",
+      "url": "https://github.com/bluearf/openecon/actions/runs/38151908157",
+      "checked_at": "2026-10-11T15:48:15.845850+00:00",
+      "authenticated_metadata": true
+    }
+  ],
+  "accepted_windows_candidate_refresh": {
+    "checked_at": "2026-10-11T15:50:08.290171+00:00",
+    "run_id": 38150649713,
+    "run_attempt": 1,
+    "source_commit": "6691f50aecadbb1d356af247e5e5c2eff1d1c9ce",
+    "controller_source_commit": "6691f50aecadbb1d356af247e5e5c2eff1d1c9ce",
+    "versions": {
+      "desktop": "0.3.46",
+      "sdk": "0.3.20a1",
+      "charts": "0.3.2a1"
+    },
+    "status": "passed",
+    "acceptance_kind": "fresh exact-source installed release acceptance",
+    "runner_os": "Windows-2025Server-10.0.26100-SP0",
+    "runner_image": "win25-vs2026",
+    "installer": {
+      "filename": "OpenEconometrics_0.3.46_x64-setup.exe",
+      "bytes": 194960419,
+      "sha256": "db4afee5ddd6a9c7c23edc5e2dd4d40cf0f723725359b17ec673c0eff28c158b",
+      "downloaded_and_hashed": true,
+      "authenticated_download": true,
+      "public_release": false,
+      "artifact_id": 11707775511,
+      "artifact_url": "https://github.com/bluearf/openecon/actions/runs/38150649713/artifacts/11707775511",
+      "artifact_zip_sha256": "2ed0f8899fed58c2d1e586f35cc6536777d5c5a69f824266ac43240e7c3abcb1"
+    },
+    "acceptance_artifact": {
+      "id": 11707640642,
+      "url": "https://github.com/bluearf/openecon/actions/runs/38150649713/artifacts/11707640642",
+      "artifact_zip_sha256": "4975df6389a4aa378954dc9a0617e00866ee4b62bea6ea6dbf77bd8f0c87747a"
+    },
+    "receipt_files": {
+      "build-inputs.json": "8ebe189fc6a28115afec59fce50e60d897cd80427f85d1777d052265842997f1",
+      "windows-installed-acceptance.json": "5285c8db74fcdba73152a3486d572ab7490b4b0d3b710779bec614bfd8b9038a",
+      "installed-native-ui-create.json": "8cdad3714fd5795e7744884ccbeb7bed7582d0db224ba708bb50acd6fef1e3e8",
+      "installed-native-ui-reopen.json": "7364bd47bf2bd00f468420e54881414b08a415b6b18315ad4672c3b8d1f924fe",
+      "installed-regularized-all-family.json": "bfd63d6f5734d5c267fdb6c5d17f201762cd7e1e3b1d080f06a303b2a8bdc39c",
+      "installed-saved-binomial-suest.json": "4856fe4f358b3cc4e1034808b5d26fd7f03c3d77d91eae1507a512009cbe1f76",
+      "installed-twostep-adaptive.json": "a78dfca859426a3e5ff6572d3898a05400d7151658a5c99627ed7222eaab2994"
+    },
+    "installed_checks": {
+      "genuine_webview2_absence_then_embedded_bootstrapper_install": true,
+      "nsis_installed_in_unicode_space_path": true,
+      "critical_installed_resources_match_exact_source_build": true,
+      "installed_native_shell_bundled_python_and_restart": true,
+      "default_installed_webview2_render_trusted_ipc_and_shutdown_without_profile_override": true,
+      "actual_installed_webview2_render_and_trusted_ipc": true,
+      "same_version_reinstall_preserves_owned_application_data": true,
+      "enabled_firewall_scoped_internet_block_and_loopback_compute": true,
+      "installed_frozen_numerical_packages_and_project_persistence": true,
+      "installed_frozen_four_regularized_methods_full_state_and_cold_replay": true,
+      "installed_frozen_saved_binomial_full_state_and_cold_replay": true,
+      "installed_frozen_twostep_adaptive_full_state_and_cold_replay": true,
+      "previous_public_version_upgrade_preserves_real_project": true,
+      "rollback_to_previous_public_version_preserves_real_project": true,
+      "normal_native_ui_three_models_and_cold_history_reopen": true,
+      "normal_native_ui_four_regularized_methods_and_cold_history_reopen": true,
+      "native_four_regularized_saved_markers_match_actual_files_after_create_and_cold_reopen": true,
+      "native_eight_saved_binomial_tables_and_saved_files_match_after_cold_reopen": true,
+      "nsis_uninstall_removes_application_and_preserves_user_data": true
+    },
+    "previous_installer": {
+      "version": "0.3.44",
+      "sha256": "6a6587e4b570f57ae783ce37cfbdc383d6862eadae0b74f648b08cd77a403938",
+      "source_sha": "8d844ef70a1f6c4ec78d3d3da6790c44591a36e9",
+      "public_url": "https://github.com/bluearf/openeconometrics/releases/download/v0.3.44-windows-alpha.1/OpenEconometrics_0.3.44_x64-setup.exe"
+    },
+    "human_data_access": false,
+    "owned_processes_remaining_at_cleanup": 0,
+    "scope": "Readback of completed hosted installed/native/upgrade/rollback/cold-state receipts and exact retained installer bytes; no new local Windows run, public publication, cloud/team acceptance or other-source scientific full-gate claim."
+  },
+  "documentation_validation": {
+    "checked_at": "2026-10-11T15:52:17.048485+00:00",
+    "markdown_files_checked": 4,
+    "local_links_checked": 43,
+    "missing_targets": 0,
+    "tracked_sparse_targets": [
+      "docs/teaching/README.md"
+    ],
+    "public_release_and_pypi_pages_http200": 5,
+    "anonymous_complete_public_artifact_hashes": 7,
+    "anonymous_complete_provenance_hashes": 3,
+    "authenticated_candidate_installer_hashes": 1,
+    "candidate_installed_checks_reviewed": 19,
+    "published_version_pin_content_checks": "passed",
+    "sensitive_data_scan": "passed",
+    "numerical_tests_run": false,
+    "scope": "Documentation-only content/link/receipt validation; generated catalogue check and strict fresh quick gate are handled by the integrating PR."
+  }
+}

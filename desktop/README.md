@@ -1,7 +1,7 @@
 # OpenEconometrics desktop
 
 <!-- BEGIN source-generated capability scope -->
-Current source: **157 registered fit names**, **92 Dataset fit routes**, **74 common saved predict/margins adapters**. The [generated method/option inventory](../docs/capabilities.md) states conditions, exclusions and devices.
+Current source: **171 registered fit names**, **92 Dataset fit routes**, **74 common saved predict/margins adapters**. The [generated method/option inventory](../docs/capabilities.md) states conditions, exclusions and devices.
 
 Fit routes, common prediction adapters and family-specific helpers/forecasts have separate contracts. Source implementation does not establish independent scientific validation, installed-package verification or public shipment for a method/option. Those require their own dated, source-pinned evidence; historical measurements retain their original scope.
 <!-- END source-generated capability scope -->
@@ -90,6 +90,7 @@ Use `window.__TAURI__.core.invoke(command, args)` only when
 | `desktop_info` | none | `local_origin`, `data_root`, fixed `cloud_origin`, `version` |
 | `cloud_request` | `method`, `path`, optional `token`, optional JSON `body` | `{status, body}`; HTTP errors preserve status and JSON |
 | `download_project_file` | `projectId`, `fileId`, `token` | `{cloud_id,name,python_path,data_hash,sha256,size_bytes,reused}` |
+| `save_project_file` | `projectId`, `fileId`, `token` | native Save panel; streams the authenticated, checksum-pinned input from the managed cache and returns a saved/cancelled export receipt |
 | `download_project_files` | `projectId`, `token` | array of cache records; authenticated listing, at most 20 files / 8 GiB shared bytes; legacy inline files retain a separate 64 MiB budget |
 | `upload_project_file` | `projectId`, `token` | native chooser; negotiated chunked upload or legacy multipart; picker cancellation returns status 204 |
 | `project_transfer_action` | `projectId`, optional `requestId`, `token`, `action` | pending local upload list/status, explicit resume/cancel, or active chunked download cancellation |

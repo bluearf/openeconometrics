@@ -1,0 +1,32 @@
+The Bayer-Hanck null distributions in
+src/openecon/econometrics/unitroot/bayer_hanck_null.xz are a re-encoding
+(values rounded to multiples of 1e-4) of the matrix ``null_dist`` in
+R/sysdata.rda of the CRAN package combcoint 0.2.0
+(https://cran.r-project.org/src/contrib/Archive/combcoint/combcoint_0.2.0.tar.gz,
+sha256 2d7986b6779f87e172f2bcb1f3bfd70116d24f4a0a3129d126062c729ed5753c),
+which equals, to float32 precision, NullDistr.dta of the authors' Stata module
+bayerhanck (Christian Bayer and Christoph Hanck). combcoint is distributed
+under the MIT license reproduced below (DESCRIPTION: "MIT + file LICENSE";
+LICENSE: YEAR 2025, COPYRIGHT HOLDER Janine Langerbein and Jens Klenke).
+
+MIT License
+
+Copyright (c) 2025 Janine Langerbein and Jens Klenke
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

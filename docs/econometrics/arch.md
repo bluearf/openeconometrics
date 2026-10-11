@@ -41,6 +41,7 @@ oe.forecast(fit, steps=10)                                        # mean and var
 | `arch ..., noconstant` | `..., constant=False` |
 | `predict v, variance dynamic(...)`; EViews Forecast | `oe.forecast(fit, steps=h)` |
 | `estat archlm` on a series or residuals | `oe.archlm(df, "y", lags=4)` (arima family) |
+| GARCH-MIDAS (R mfGARCH) | `oe.garch_midas(data=df, y="ret", period="month", covariate="x", lags=12)`; see [GARCH extensions](garch-extensions.md#4-garch-midas-oegarch_midas) |
 
 ## `oe.arch`
 
@@ -67,6 +68,8 @@ The conditional variance follows one of (lags `i` from `arch`, `j` from `garch`)
 | `"egarch"` | `ln h_t = omega + sum a_i z_(t-i) + sum g_i (abs(z_(t-i)) - sqrt(2/pi)) + sum b_j ln h_(t-j)`, `z = e / sqrt(h)` (Nelson 1991) | `ARCH:L1.earch`, `ARCH:L1.earch_a`, `ARCH:L1.egarch` |
 | `"parch"` | `h_t^(phi/2) = omega + sum a_i abs(e_(t-i))^phi + sum b_j h_(t-j)^(phi/2)`, power `phi` estimated (Ding, Granger and Engle 1993, symmetric form) | `ARCH:L1.parch`, `ARCH:L1.pgarch`, `POWER:power` |
 | `"igarch"` | the GARCH equation with `sum a_i + sum b_j = 1` imposed (Engle and Bollerslev 1986); the constant is kept | as GARCH |
+| `"figarch"` | FIGARCH(p,d,q), p, q in {0, 1} (Baillie, Bollerslev and Mikkelsen 1996): `h_t = omega/(1 - beta) + lambda(L) e_t^2`, truncated at `truncation` lags (default 1000); see [GARCH extensions](garch-extensions.md#3-figarch-modelfigarch) | `ARCH:L1.phi`, `ARCH:L1.beta`, `ARCH:d`, `ARCH:Intercept` |
+| `"cgarch"` | component GARCH(1,1) (Engle and Lee 1999): permanent `q_t = omega + rho q_(t-1) + phi (e^2 - h)_(t-1)`, `h_t = q_t + alpha (e^2 - q)_(t-1) + beta (h - q)_(t-1)`; see [GARCH extensions](garch-extensions.md#2-component-garch-modelcgarch) | `ARCH:L1.arch`, `ARCH:L1.garch`, `COMPONENT:L1.rho`, `COMPONENT:L1.phi`, `COMPONENT:Intercept` |
 
 - **Threshold sign.** `ARCH:L1.tarch` multiplies `1(e < 0)`, the GJR and EViews
   convention: a positive coefficient means that bad news raises the variance
@@ -93,6 +96,11 @@ variance:
 | `"normal"` | standard normal | none |
 | `"t"` | Student t with `nu > 2` degrees of freedom, scaled by `sqrt((nu-2)/nu)` | `/lndfm2 = ln(nu - 2)` |
 | `"ged"` | generalized error distribution with shape `s` (`s = 2` normal, `s = 1` Laplace) | `/lnshape = ln(s)` |
+| `"skewt"` | Hansen (1994) skewed t (Python `arch`'s `SkewStudent`), asymmetry `-1 < lambda < 1` | `/lndfm2`, `/atlambda = atanh(lambda)` |
+| `"sged"` | Fernandez-Steel skewed GED standardized to unit variance (`fGarch::dsged`, rugarch `"sged"`), skewness `xi > 0` | `/lnshape`, `/lnxi = ln(xi)` |
+
+The two skewed densities, their derivatives, moments, forecast quantiles and
+validation are documented in [GARCH extensions](garch-extensions.md#1-skewed-innovation-distributions-distskewt-distsged).
 
 `extra["distribution"]` reports `df` or `shape` on the natural scale with the
 confidence interval obtained by transforming the end points of the interval of
@@ -108,8 +116,9 @@ the log parameter, as Stata prints them.
 | `time` | optional time column (integer periods or datetimes); without it the row order is the time order |
 | `arch` | ARCH order `q` (lags `1..q`) or a list of lags; default `1` |
 | `garch` | GARCH order `p` or a list of lags; default `1` (none for `model="arch"`) |
-| `model` | `"arch"`, `"garch"` (default), `"gjr"` / `"tarch"`, `"egarch"`, `"parch"`, `"igarch"` |
-| `dist` | `"normal"` (default), `"t"`, `"ged"` |
+| `model` | `"arch"`, `"garch"` (default), `"gjr"` / `"tarch"`, `"egarch"`, `"parch"`, `"igarch"`, `"cgarch"`, `"figarch"` |
+| `truncation` | FIGARCH only: lags of the truncated ARCH(infinity) form (default 1000) |
+| `dist` | `"normal"` (default), `"t"`, `"ged"`, `"skewt"`, `"sged"` |
 | `archm` | `None`, `"variance"`, `"sd"`, `"log"` |
 | `ar`, `ma` | AR and MA orders or lists of lags of the disturbance, e.g. `ar=1`, `ma=[1, 4]` |
 | `constant` | include the constant of the mean equation (default `True`) |
@@ -578,8 +587,10 @@ residuals are close to zero.
     samples of 600 observations and 10% of samples of 2000. There is no option
     to fix the power; `model="garch"` is the power-2 member of the family.
 - Power ARCH is the symmetric Ding-Granger-Engle form; the asymmetric
-  variants (Stata's `aparch`, `nparch`, `tparch`, `sdgarch`, `abarch`, ...) and
-  component or fractionally integrated GARCH are not implemented.
+  variants (Stata's `aparch`, `nparch`, `tparch`, `sdgarch`, `abarch`, ...) are
+  not implemented. Component GARCH(1,1), FIGARCH and the skewed densities are
+  documented in [GARCH extensions](garch-extensions.md); FIEGARCH is not
+  implemented.
 - The ARCH-in-mean term uses the current conditional variance only (no
   `archmlags()`), and one of three fixed transformations.
 - The Student-t likelihood is stopped at 1000 degrees of freedom: when the

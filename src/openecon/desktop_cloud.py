@@ -31,6 +31,7 @@ class LoginExchange(BaseModel):
 
 class AccountLinkBegin(LoginBegin):
     target: Literal["google.com", "password"]
+    action: Literal["link", "verify"] = "link"
 
 
 class DesktopResult(BaseModel):
@@ -44,7 +45,7 @@ def public_desktop_login(path: str, method: str) -> bool:
         re.fullmatch(r"/api/desktop/login/[0-9a-f]{32}/exchange", path)))
 
 
-def firebase_custom_token(storage, uid: str) -> str:
+def firebase_custom_token(storage, uid: str, *, email_code=False) -> str:
     from google.auth import jwt
     timestamp = int(datetime.now(timezone.utc).timestamp())
     return jwt.encode(storage.signer.signer, {
@@ -52,7 +53,7 @@ def firebase_custom_token(storage, uid: str) -> str:
         "sub": storage.signer.service_account_email,
         "aud": "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit",
         "iat": timestamp, "exp": timestamp + 300, "uid": uid,
-        "claims": {"openecon_desktop": True},
+        "claims": {"openecon_email_code": True} if email_code else {"openecon_desktop": True},
     }).decode("ascii")
 
 
@@ -158,6 +159,8 @@ def attach_desktop_cloud_routes(app, *, store, storage, token_issuer=None):
                     "expires_at": expires,
                     "uid": request.state.user.uid,
                     "target": body.target,
+                    "action": body.action,
+                    "created_at": now,
                     "completed": False,
                 },
             )
@@ -175,7 +178,10 @@ def attach_desktop_cloud_routes(app, *, store, storage, token_issuer=None):
             _, grant = active(db, request_id)
             if grant.get("kind") == "account-link":
                 account_grant(db, request_id, request.state.user.uid)
-                return {"kind": "account-link", "target": grant["target"], "uid": grant["uid"]}
+                result = {"kind": "account-link", "target": grant["target"], "uid": grant["uid"]}
+                if grant.get("action") == "verify":
+                    result["action"] = "verify"
+                return result
             return {"kind": "login"}
 
         return store.db.atomic(inspect)
@@ -184,6 +190,16 @@ def attach_desktop_cloud_routes(app, *, store, storage, token_issuer=None):
     def complete_account_link(request_id: str, request: Request):
         def complete(db):
             path, grant = account_grant(db, request_id, request.state.user.uid)
+            if grant.get("action") == "verify":
+                # A browser acknowledgement alone cannot authorize the native
+                # password form. Require the server-verified provider and an
+                # actual reauthentication after this one-use request began.
+                user = request.state.user
+                now = datetime.now(timezone.utc).timestamp()
+                if (user.provider != grant["target"] or user.auth_time is None
+                        or user.auth_time < int(grant["created_at"].timestamp())
+                        or not 0 <= now - user.auth_time <= 300):
+                    raise TeamError("REAUTH_REQUIRED", "Verify your current sign-in again.", 403)
             # This is only a same-UID acknowledgement, never a credential or
             # authorization upgrade. The native client independently reloads
             # Firebase providerData and requires the target before success.
@@ -206,7 +222,8 @@ def attach_desktop_cloud_routes(app, *, store, storage, token_issuer=None):
             if not grant["completed"]:
                 return None
             db.delete(path)
-            return {"linked": True, "uid": grant["uid"], "target": grant["target"]}
+            return {("verified" if grant.get("action") == "verify" else "linked"): True,
+                    "uid": grant["uid"], "target": grant["target"]}
 
         result = store.db.atomic(consume)
         return result if result is not None else JSONResponse({"pending": True}, status_code=202)

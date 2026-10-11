@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import ast
 from collections import Counter
+from contextlib import contextmanager, ExitStack
 from datetime import datetime, timezone
 from email.parser import BytesParser
 import hashlib
@@ -1209,6 +1210,17 @@ def full_collection(path, selectors):
     return nodes
 
 
+@contextmanager
+def phase_source_streams(rows):
+    """Own one read-only handle per already verified raw phase source."""
+    with ExitStack() as stack:
+        streams = {}
+        for _, _, path, _ in rows:
+            if path not in streams:
+                streams[path] = stack.enter_context(path.open("rb"))
+        yield streams
+
+
 def distributed_sdk(directory, report, sdk, execution, version, selectors, cases, nodes, root):
     protocol = report.get("phase_report_protocol", 1)
     require(type(protocol) is int and protocol in (1, 2), "Unknown component report protocol")
@@ -1387,15 +1399,16 @@ def distributed_sdk(directory, report, sdk, execution, version, selectors, cases
             and [element_value(element) for element in combined_root.iter("testcase")]
             == [element_value(row[1]) for row in actual],
             "Partial merged JUnit differs from actual raw child contents")
-    with artifact_file(directory, "receipt/" + sdk["phase_timings"]).open("rb") as output:
+    with artifact_file(directory, "receipt/" + sdk["phase_timings"]).open("rb") as output, \
+            phase_source_streams(actual) as streams:
         for _, _, raw_path, (offset, length) in actual:
-            with raw_path.open("rb") as stream:
-                stream.seek(offset)
-                while length:
-                    block = stream.read(min(length, 1024 * 1024))
-                    require(block and output.read(len(block)) == block,
-                            "Partial merged phase bytes differ from actual raw child records")
-                    length -= len(block)
+            stream = streams[raw_path]
+            stream.seek(offset)
+            while length:
+                block = stream.read(min(length, 1024 * 1024))
+                require(block and output.read(len(block)) == block,
+                        "Partial merged phase bytes differ from actual raw child records")
+                length -= len(block)
         require(not output.read(1), "Partial merged phase output has extra records")
     return {"manifest": relative, "manifest_sha256": sha256(path), "kind": manifest["kind"],
             "seconds": manifest["seconds"], "sdk_clock": parent, "groups": checked,
@@ -1464,45 +1477,39 @@ def check_package(path, project, package, sources, wheel):
                 )
     else:
         require(path.name == distribution + ".tar.gz", "Unexpected sdist filename")
-        with tarfile.open(path, "r:gz") as archive:
-            members = archive.getmembers()
-            names = [member.name for member in members]
-            require(len(names) == len(set(names)), "Duplicate sdist member")
-            require(
-                all(
+        # Read compressed members in archive order. Random extractfile(name)
+        # seeks repeatedly inflated the same gzip stream for each source file.
+        # Every header, duplicate, source byte and metadata field is still checked.
+        prefix = distribution + "/src/" + package + "/"
+        expected_sources = {prefix + name: raw for name, raw in sources.items()}
+        names, python_members, metadata_seen = set(), set(), False
+        with tarfile.open(path, "r|gz") as archive:
+            for member in archive:
+                require(member.name not in names, "Duplicate sdist member")
+                names.add(member.name)
+                require(
                     not PurePosixPath(member.name).is_absolute()
                     and ".." not in PurePosixPath(member.name).parts
-                    and (member.isfile() or member.isdir())
-                    for member in members
-                ),
-                "Unsafe sdist member",
-            )
-            metadata = archive.extractfile(distribution + "/PKG-INFO")
-            require(metadata is not None, "Missing sdist metadata")
-            metadata_matches(metadata.read(), project)
-            prefix = distribution + "/src/" + package + "/"
-            python_members = {
-                member.name
-                for member in members
-                if member.isfile()
-                and member.name.startswith(prefix)
-                and member.name.endswith(".py")
-            }
-            require(
-                python_members == {prefix + name for name in sources},
-                "Sdist Python source inventory differs from checkout",
-            )
-            for name, raw in sources.items():
-                require(
-                    archive.getmember(distribution + "/src/" + package + "/" + name).size
-                    == len(raw),
-                    "Sdist source size differs from tested checkout",
+                    and (member.isfile() or member.isdir()),
+                    "Unsafe sdist member",
                 )
-                member = archive.extractfile(distribution + "/src/" + package + "/" + name)
-                require(
-                    member is not None and member.read() == raw,
-                    "Sdist source differs from tested checkout",
-                )
+                if member.name == distribution + "/PKG-INFO":
+                    metadata = archive.extractfile(member)
+                    require(metadata is not None, "Missing sdist metadata")
+                    metadata_matches(metadata.read(), project)
+                    metadata_seen = True
+                elif member.isfile() and member.name.startswith(prefix) and member.name.endswith(".py"):
+                    python_members.add(member.name)
+                    require(member.name in expected_sources,
+                            "Sdist Python source inventory differs from checkout")
+                    raw = expected_sources[member.name]
+                    require(member.size == len(raw), "Sdist source size differs from tested checkout")
+                    source = archive.extractfile(member)
+                    require(source is not None and source.read() == raw,
+                            "Sdist source differs from tested checkout")
+        require(metadata_seen, "Missing sdist metadata")
+        require(python_members == set(expected_sources),
+                "Sdist Python source inventory differs from checkout")
 
 
 def packages(directory, report, root):
@@ -1934,8 +1941,9 @@ def merge_distributed_rows(results, selectors, output_directory, shard_count=2, 
             xml_path.write_bytes(xml)
             target = phase_path.open("wb")
         try:
-            for _, _, path, (offset, length) in rows:
-                with path.open("rb") as stream:
+            with phase_source_streams(rows) as streams:
+                for _, _, path, (offset, length) in rows:
+                    stream = streams[path]
                     stream.seek(offset)
                     while length:
                         block = stream.read(min(length, 1024 * 1024))

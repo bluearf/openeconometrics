@@ -500,8 +500,10 @@ ratio that overflows is reported as missing (`None`).
 
 ## Limitations
 
-- Not implemented: Stata's `exactm` ties, shared frailty (`shared()`),
-  parametric frailty, `stcrreg`, `stintreg`, Gönen-Heller concordance and a
+- Shared frailty (`stcox, shared()`; `streg, shared() frailty()` for the
+  exponential and Weibull models) is a separate estimator family member, see
+  [shared frailty and recurrent events](survival-frailty.md).
+- Not implemented: Stata's `exactm` ties, `stcrreg`, `stintreg`, Gönen-Heller concordance and a
   standard error of Harrell's C, `stcurve` after `streg`, `anc2()` (covariates
   for the generalized gamma's kappa), the SPSS `COXREG` stepwise methods.
 - `stcox` baseline functions and PH tests are not computed after `tvc` (they

@@ -6,18 +6,19 @@ They are method-level coverage, not blanket Stata parity. Neither requires
 SciPy, R or an external estimation engine at runtime.
 
 ```python
-ng = oe.ngperron(df, "income", time="period", trend="constant", maxlag=8)
+ng = oe.ngperron(df, "income", time="period", trend="constant", maxlag=8,
+                 inference="published")
 fixed = oe.ngperron(df, "income", trend="trend", lags=2)
 nonlinear = oe.kss(df, "income", time="period", trend="constant", lags=2)
 print(ng)
 ng.to_latex()
 ```
 
-KSS tests a unit-root null and rejects in the **lower tail**. Every KSS row
-contains its statistic, the published 1%, 5% and 10% critical values and
-three rejection indicators. Ng–Perron currently returns **statistics only**:
-its independent published-table calibration remains unresolved in MARKET-136.
-No Ng–Perron critical values or rejection decisions are returned.
+Both tests have a unit-root null and reject in the **lower tail**. Every KSS
+row contains its statistic, the published 1%, 5% and 10% critical values and
+three rejection indicators. Ng–Perron rows contain the same columns only for
+`trend="constant"` with `inference="published"`. By default, and always for
+`trend="trend"`, Ng–Perron returns **statistics only**.
 `p_value` is explicitly `None`: interpolation or
 a conventional Student-t p-value would fabricate a distribution not supplied
 by these references. The quantiles are **asymptotic**, including for small
@@ -32,15 +33,25 @@ define MZa, MZt, MSB and MPT in equations (3)–(6), (8)–(9), with critical
 values in Table I (p. 1524). `trend="constant"` tests level stationarity with
 GLS local parameter c=−7; `trend="trend"` tests trend stationarity with c=−13.5.
 
-`inference="none"` is the only currently available inference mode. Asking
-for `inference="published"` raises `critical_values_unverified`, rather than
-producing an unverified decision. The independent Table I simulation retained
-20,000 paths/5,000 steps and found about 8.2–8.5% lower-tail rejection at the
-published trend 10% thresholds, outside its declared tolerance. This is an
-unresolved replication discrepancy, not evidence that the paper is wrong.
+`inference="none"` is the default and returns statistics only.
+`inference="published"` behaves differently by case:
+
+- **Constant case.** Table I's constant-row critical values and rejection flags
+  are added. That row passed a
+  preregistered replication (internal evidence excluded from this public snapshot)
+  of the Theorem-1 limit on a fresh seed, with unchanged counts and tolerance.
+  An exact, simulation-free evaluation of the same limit shows that the 1% MSB
+  and MPT thresholds are conservative. Their limiting size is about 0.57% and
+  0.69%, rather than 1%.
+- **Trend case.** `critical_values_unverified` is raised. Under their
+  Theorem-1 limit, the published trend thresholds reject less often than
+  nominal: at 10%, the exact limiting size of MZa, MSB and MPT is 8.5–8.8%.
+  MZa falls outside the declared tolerance even in the exact limit. No
+  substitute critical values are generated for this row.
+
 The statistics and MAIC selection separately agree with an independent SVD
-replication. The following table documents the publication, not available
-calibrated engine output; MARKET-136 remains open.
+replication. The table below lists the publication. The engine uses only its
+constant rows.
 
 The n input levels represent y₀,…,yT, **T=n−1**, rather than n increments.
 GLS uses α=1+c/T and an unweighted initial observation, followed by the
@@ -125,12 +136,16 @@ The [independent SVD reference](../../scripts/unitroot_reference.py) refits
 each lag separately and uses the original unnormalized observations. The
 [validation script](../../scripts/validate_unitroot_methods.py) reproduces the
 papers' simulation counts: 20,000 Wiener paths/5,000 steps for Ng–Perron;
-100,000 normal random walks/T=1,000 for KSS. A separate declared 250-draw
+100,000 normal random walks/T=1,000 for KSS. It decides each (method, trend)
+unit separately. The [exact-limit script](../../scripts/ngperron_exact_limit.py)
+evaluates the Ng–Perron Table I rejection rates of MZa, MSB and MPT without
+Monte Carlo. A separate declared 250-draw
 finite-sample grid records unconditional rejection rates, failures and Wilson
 intervals for iid and AR(.4) unit roots, and linear/ESTAR alternatives at
 100/250 levels. It is a bounded diagnostic, not universal size/power validation.
-See the acceptance evidence (internal evidence excluded from this public snapshot).
+See the acceptance evidence (internal evidence excluded from this public snapshot)
+and the constant-case Ng–Perron evidence (internal evidence excluded from this public snapshot).
 
-MARKET-137 covers calibrated KSS; MARKET-136 retains the unresolved Ng–Perron
-calibration. Parent MARKET-125 retains
+MARKET-137 covers calibrated KSS. MARKET-136 covers constant-case Ng–Perron
+inference; the trend row is a separate research item. Parent MARKET-125 retains
 the other break, Fourier, cointegration and causality methods as open scope.

@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "kind": "advisory_scheduling_provenance",
+  "source_commit": "7a195f6231023c025104115b2e3c8ebea411ff51",
+  "run_url": "https://github.com/bluearf/openecon/actions/runs/38120796245",
+  "aggregate_conclusion": "failure",
+  "aggregate_failure": "complete cohort exceeded unchanged 900-second deadline",
+  "sdk_job_conclusions": "all eight passed",
+  "cases_per_minor": 14218,
+  "phase_timings_sha256": {
+    "3.11": "ce5f91781b79ef106722dab16ed9e0481efdea7ae5805be717a6b9e876d33aea",
+    "3.13": "33690c423b9746ac19b3641766cb1effd7ed365cd72467be896acbcbf413f6b6"
+  },
+  "method": "maximum per-node setup/call/teardown duration across Python minors; 30% reserve for indivisible exhaustive law; positive 0.02s fallback",
+  "acceptance_evidence": false
+}

@@ -366,7 +366,7 @@ def error_code(**keywords):
 def test_specification_errors(frames):
     frame = frames["garch"]
     base = dict(data=frame, y="y", x=["x"])
-    assert error_code(**base, model="figarch") == "invalid_spec"
+    assert error_code(**base, model="aparch") == "invalid_spec"
     assert error_code(**base, dist="cauchy") == "invalid_spec"
     assert error_code(**base, archm="cube") == "invalid_spec"
     assert error_code(**base, covariance="cluster") == "invalid_spec"
@@ -393,7 +393,7 @@ def test_specification_errors(frames):
     assert error_code(data=frame, y="y", x=["nope"]) == "missing_columns"
     assert error_code(data=frame.iloc[:0], y="y", x=["x"]) == "empty_data"
     # A ModelSpec built directly keeps pydantic's ValidationError.
-    for options in ({"model": "figarch"}, {"arch": 1}, {"lags": 3}):
+    for options in ({"model": "aparch"}, {"arch": 1}, {"lags": 3}):
         with pytest.raises(ValidationError):
             ModelSpec(estimator="arch", outcome="y", options=options)
     with pytest.raises(ValidationError):

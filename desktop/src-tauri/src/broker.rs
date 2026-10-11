@@ -104,6 +104,8 @@ pub fn allowed_route(method: &str, path: &str) -> bool {
     }
     match p.as_slice() {
         ["", "api", "auth", "config"] | ["", "api", "me"] => method == "GET",
+        ["", "api", "auth", "email-code"] => method == "POST",
+        ["", "api", "auth", "email-code", request, "verify"] => method == "POST" && account_grant_id(request),
         ["", "api", "desktop", "login"] => method == "POST",
         ["", "api", "desktop", "login", request] => {
             method == "GET" && account_grant_id(request)
@@ -206,6 +208,21 @@ async fn json_response(mut response: reqwest::Response) -> Result<CloudResponse,
 /// cannot carry a password, Google credential, caller-selected UID or token.
 fn auth_request_policy(method: &str, path: &str, body: Option<&Value>) -> Result<bool, String> {
     let parts: Vec<&str> = path.split('/').collect();
+    if method == "POST" && matches!(parts.as_slice(), ["", "api", "auth", "email-code"] | ["", "api", "auth", "email-code", _, "verify"]) {
+        let object = body.and_then(Value::as_object).ok_or("Invalid email sign-in request.")?;
+        let begin = parts.len() == 4;
+        let proof_key = if begin { "challenge" } else { "verifier" };
+        let proof = object.get(proof_key).and_then(Value::as_str).is_some_and(|value| {
+            value.len() == 64 && value.bytes().all(|c| c.is_ascii_digit() || (b'a'..=b'f').contains(&c))
+        });
+        let field = object.get(if begin { "email" } else { "code" }).and_then(Value::as_str);
+        let valid = field.is_some_and(|value| if begin {
+            (3..=254).contains(&value.len()) && value.is_ascii() && value.contains('@')
+                && !value.chars().any(char::is_control)
+        } else { value.len() == 6 && value.bytes().all(|c| c.is_ascii_digit()) });
+        if object.len() != 2 || !proof || !valid { return Err("Invalid email sign-in request.".into()); }
+        return Ok(true);
+    }
     let (key, public, target) = match (method, parts.as_slice()) {
         ("POST", ["", "api", "desktop", "login"]) => ("challenge", true, false),
         ("POST", ["", "api", "desktop", "login", _, "exchange"]) => ("verifier", true, false),
@@ -222,11 +239,24 @@ fn auth_request_policy(method: &str, path: &str, body: Option<&Value>) -> Result
     let valid_proof = object.get(key).and_then(Value::as_str).is_some_and(|value| {
         value.len() == 64 && value.bytes().all(|c| c.is_ascii_digit() || (b'a'..=b'f').contains(&c))
     });
-    if object.len() != (if target { 2 } else { 1 }) || !valid_proof
+    let verification = target && object.get("action").and_then(Value::as_str) == Some("verify");
+    if object.len() != (if target { if verification { 3 } else { 2 } } else { 1 }) || !valid_proof
         || (target && !object.get("target").and_then(Value::as_str).is_some_and(|value| matches!(value, "google.com" | "password"))) {
         return Err("Invalid account request.".into());
     }
     Ok(public)
+}
+
+/// Cloud ingress requires an explicit length even when a POST has no payload.
+pub(crate) fn frame_bodyless_post(
+    builder: reqwest::RequestBuilder,
+    method: &Method,
+) -> reqwest::RequestBuilder {
+    if method == Method::POST {
+        builder.header(reqwest::header::CONTENT_LENGTH, "0")
+    } else {
+        builder
+    }
 }
 
 pub async fn request(
@@ -245,7 +275,7 @@ pub async fn request(
     let public_login = auth_request_policy(method, path, body.as_ref())?;
     let method = Method::from_bytes(method.as_bytes()).map_err(|_| "Invalid cloud method.")?;
     let mut builder = authorize(
-        client.request(method, format!("{CLOUD_ORIGIN}{path}")),
+        client.request(method.clone(), format!("{CLOUD_ORIGIN}{path}")),
         token,
         path == "/api/auth/config" || public_login,
     )?;
@@ -264,6 +294,8 @@ pub async fn request(
         builder = builder
             .header("Content-Type", "application/json")
             .body(bytes);
+    } else {
+        builder = frame_bodyless_post(builder, &method);
     }
     json_response(builder.send().await.map_err(|_| "OPENECON_NETWORK")?).await
 }
@@ -771,6 +803,47 @@ pub async fn upload(client: &Client, root: &Dir, project: &str, token: &str, loc
 mod tests {
     use super::*;
     #[test]
+    fn email_code_routes_require_canonical_ids_and_strict_public_proofs() {
+        let id = "a".repeat(32);
+        let proof = "b".repeat(64);
+        let verify = format!("/api/auth/email-code/{id}/verify");
+        let begin = serde_json::json!({"email": "qa@example.test", "challenge": proof});
+        let finish = serde_json::json!({"code": "012345", "verifier": proof});
+        assert!(allowed_route("POST", "/api/auth/email-code"));
+        assert!(allowed_route("POST", &verify));
+        assert!(!allowed_route("GET", &verify));
+        assert!(!allowed_route("POST", "/api/auth/email-code/../verify"));
+        assert!(!allowed_route("POST", &format!("/api/auth/email-code/{}/verify", "A".repeat(32))));
+        assert_eq!(auth_request_policy("POST", "/api/auth/email-code", Some(&begin)), Ok(true));
+        assert_eq!(auth_request_policy("POST", &verify, Some(&finish)), Ok(true));
+        for field in ["uid", "password", "token", "redirect"] {
+            let mut injected = begin.clone();
+            injected[field] = serde_json::json!("unexpected");
+            assert!(auth_request_policy("POST", "/api/auth/email-code", Some(&injected)).is_err());
+        }
+        for code in ["12345", "1234567", "１２３４５６", "12345\n"] {
+            let body = serde_json::json!({"code": code, "verifier": proof});
+            assert!(auth_request_policy("POST", &verify, Some(&body)).is_err());
+        }
+        assert!(auth_request_policy("POST", &verify, None).is_err());
+    }
+    #[test]
+    fn native_model_json_preserves_float_bits_across_request_and_response() {
+        // Values observed in an actual saved HC3 model's interval, predictions
+        // and p-value. The native JSON broker must not round these a second time.
+        let raw = "[1.8183335056294878,44.726301815618164,-1.5466964797787845,1.4552615370818851e-180]";
+        let expected: [f64; 4] = [1.8183335056294878, 44.726301815618164,
+                                 -1.5466964797787845, 1.4552615370818851e-180];
+        let mut value: Value = serde_json::from_str(raw).unwrap();
+        for _ in 0..3 {
+            for (index, original) in expected.iter().enumerate() {
+                assert_eq!(value[index].as_f64().unwrap().to_bits(), original.to_bits());
+            }
+            value = serde_json::from_slice(&serde_json::to_vec(&value).unwrap()).unwrap();
+        }
+    }
+
+    #[test]
     fn account_link_routes_are_canonical_and_do_not_allow_native_completion() {
         let id = "a".repeat(32);
         for (method, path) in [
@@ -803,6 +876,8 @@ mod tests {
         for target in ["google.com", "password"] {
             let body = serde_json::json!({"challenge": proof, "target": target});
             assert_eq!(auth_request_policy("POST", "/api/desktop/account-link", Some(&body)), Ok(false));
+            let verify = serde_json::json!({"challenge": proof, "target": target, "action": "verify"});
+            assert_eq!(auth_request_policy("POST", "/api/desktop/account-link", Some(&verify)), Ok(false));
         }
         let exchange = serde_json::json!({"verifier": proof});
         assert_eq!(auth_request_policy("POST", &format!("/api/desktop/account-link/{id}/exchange"), Some(&exchange)), Ok(false));
@@ -817,6 +892,8 @@ mod tests {
             serde_json::json!({"challenge": proof, "target": "github.com"}),
             serde_json::json!({"challenge": "B".repeat(64), "target": "password"}),
             serde_json::json!({"target": "password"}),
+            serde_json::json!({"challenge": proof, "target": "google.com", "action": "verify", "password": "not-for-transport"}),
+            serde_json::json!({"challenge": proof, "target": "google.com", "action": "login"}),
             serde_json::json!([]),
         ] {
             assert_eq!(auth_request_policy("POST", "/api/desktop/account-link", Some(&body)), Err("Invalid account request.".to_string()));
@@ -826,6 +903,29 @@ mod tests {
         assert!(authorize(client.post(CLOUD_ORIGIN), None, public).is_err());
         assert!(auth_request_policy("GET", &format!("/api/desktop/login/{id}"), Some(&exchange)).is_err());
     }
+    #[test]
+    fn bodyless_post_carries_explicit_zero_length_before_protocol_negotiation() {
+        let client = Client::new();
+        let request = frame_bodyless_post(
+            client.post(format!("{CLOUD_ORIGIN}/api/invitations/test/accept")),
+            &Method::POST,
+        )
+        .build()
+        .unwrap();
+        assert_eq!(request.headers()[reqwest::header::CONTENT_LENGTH], "0");
+        assert!(request.body().is_none());
+        assert!(!request.headers().contains_key(reqwest::header::CONTENT_TYPE));
+        for method in [Method::GET, Method::DELETE] {
+            let request = frame_bodyless_post(
+                client.request(method.clone(), CLOUD_ORIGIN),
+                &method,
+            )
+            .build()
+            .unwrap();
+            assert!(!request.headers().contains_key(reqwest::header::CONTENT_LENGTH));
+        }
+    }
+
     #[test]
     fn large_local_upload_has_explicit_format_origin_and_role_boundaries() {
         assert!(!local_upload(MAX_FILE_BYTES, "wages.csv").unwrap());

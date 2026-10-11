@@ -1,5 +1,6 @@
 """Real subprocess and tamper checks for complete three-group SDK execution."""
 
+import ast
 import importlib.util
 import builtins
 from collections import Counter
@@ -40,6 +41,44 @@ FIXED_SELECTORS = tuple(item for group in groups.FIXED_GROUPS for item in group)
 SELECTORS = ["tests/test_before.py", TOY_FIXED[1][0], TOY_FIXED[0][0], "tests/test_after.py"]
 # Incoming two-child probe labels retain their exact selector identities.
 TOY_HEAVY = (TOY_FIXED[1][0], TOY_FIXED[0][0])
+
+
+def _assert_extraction_selector_extension(selectors, partition=None):
+    plan = json.loads((ROOT / "docs/econometrics/merge-gate-extraction163-2026-10-11.json").read_text())
+    assert plan["historical_prefix_source"] == "ba011676f4c254745e8edde1dcd03a7692fe5a2a"
+    before = subprocess.check_output([
+        "git", "show", plan["historical_prefix_source"] + ":scripts/verify_merge_candidate.py",
+    ], cwd=ROOT)
+    historical = ast.literal_eval(next(node.value for node in ast.parse(before).body
+        if isinstance(node, ast.Assign) and any(isinstance(target, ast.Name)
+            and target.id == "TESTS" for target in node.targets)))
+    added = ["tests/test_multivariate_extraction_additional.py",
+             "tests/test_multivariate_complete_oblique_target.py",
+             "tests/test_multivariate_extraction_uncertainty.py"]
+    assert historical == plan["historical_prefix"]
+    assert len(historical) == len(set(historical)) == plan["historical_prefix_count"] == 160
+    assert added == plan["added_selectors"]
+    historical_complete = historical + added
+    assert len(historical_complete) == len(set(historical_complete)) == plan["final_count"] == 163
+    incoming_plan = json.loads((ROOT / "docs/econometrics/merge-gate-selected-methods168-2026-10-11.json").read_text())
+    incoming_raw = subprocess.check_output([
+        "git", "show", "7182533f7f7f4b819e149b7ebd0688bad4b9471a:scripts/verify_merge_candidate.py",
+    ], cwd=ROOT)
+    incoming = ast.literal_eval(next(node.value for node in ast.parse(incoming_raw).body
+        if isinstance(node, ast.Assign) and any(isinstance(target, ast.Name)
+            and target.id == "TESTS" for target in node.targets)))
+    assert incoming == incoming_plan["complete_selectors"]
+    assert incoming[:160] == historical
+    assert len(incoming) == len(set(incoming)) == 168
+    assert selectors == incoming + added
+    assert len(selectors) == len(set(selectors)) == 171
+    if partition is not None:
+        historical_partition = groups.split_groups(historical)
+        assert list(map(len, historical_partition)) == [1, 23, 136]
+        assert partition[:2] == historical_partition[:2]
+        assert list(map(len, groups.split_groups(historical_complete))) == [1, 23, 139]
+        assert partition[2] == historical_partition[2] + incoming[160:] + added
+        assert list(map(len, partition)) == [1, 23, 147]
 
 
 def repository(path, bodies=None):
@@ -484,7 +523,7 @@ def test_preregistered_three_groups_retain_actual_source_scope_and_order():
         "tests/test_nested_logit_independent.py",
     )
     assert expected_fixed[1][5] == "tests/test_parallel_sdk_groups.py"
-    assert selectors == gate.TESTS and len(selectors) == 160
+    assert selectors == gate.TESTS
     partition = groups.split_groups(selectors)
     assert partition[:2] == [[item for item in selectors if item in group] for group in current_fixed]
     assert partition[2] == [item for item in selectors if item not in FIXED_SELECTORS]
@@ -496,7 +535,7 @@ def test_preregistered_three_groups_retain_actual_source_scope_and_order():
     assert selectors[145:146] == ["tests/test_multivariate_score_uncertainty.py"]
     assert selectors[138:142] == ["tests/test_weighted_binary.py", "tests/test_econ_glm.py", "tests/test_econ_glm_oracle.py", "tests/test_econ_saved_prediction_categories.py"]
     assert plan["effective_groups"] == groups.split_groups(baseline, expected_fixed)
-    assert list(map(len, partition)) == [1, 23, 136]
+    _assert_extraction_selector_extension(selectors, partition)
     assert plan["environment"] == groups.GATE_ENVIRONMENT
     assert plan["timeout_seconds"] == 900
     assert plan["selected_test_scope_sha256"] == hashlib.sha256(
@@ -521,9 +560,9 @@ def test_production_four_file_partition_retains_actual_source_scope_and_order():
         "tests/test_control_stream_acceptance.py",
     )
     assert groups.EXPENSIVE == expected_heavy
-    assert selectors == gate.TESTS and len(selectors) == 160
+    assert selectors == gate.TESTS
     partition = groups.split_groups(selectors)
-    assert list(map(len, partition)) == [1, 23, 136]
+    _assert_extraction_selector_extension(selectors, partition)
     assert Counter(item for group in partition for item in group) == Counter(selectors)
     assert set(expected_heavy) <= set(sum(partition[:2], []))
     original_order = [item for item in selectors if item in expected_heavy]
@@ -549,9 +588,8 @@ def test_mprobit_survey_and_categorical_merge_preserves_all_complete_batches():
         "tests/test_survey_four_stage_regression_state.py",
     }
     assert merged_batches <= set(selectors)
-    assert len(selectors) == len(set(selectors)) == 160
     first, second, other = groups.split_groups(selectors)
-    assert [len(first), len(second), len(other)] == [1, 23, 136]
+    _assert_extraction_selector_extension(selectors, [first, second, other])
     assert merged_batches <= set(other)
     assert set(first).isdisjoint(second)
     assert set(first + second).isdisjoint(other)
@@ -586,9 +624,8 @@ def test_mprobit_survey_categorical_causal_and_packaging_merge_preserves_complet
         "tests/test_verify_windows_cloud_ui_fixture.py",
     }
     assert merged_batches <= set(selectors)
-    assert len(selectors) == len(set(selectors)) == 160
     first, second, other = groups.split_groups(selectors)
-    assert [len(first), len(second), len(other)] == [1, 23, 136]
+    _assert_extraction_selector_extension(selectors, [first, second, other])
     assert merged_batches <= set(other)
     assert set(first).isdisjoint(second)
     assert set(first + second).isdisjoint(other)
@@ -1539,7 +1576,8 @@ def test_invalid_complete_node_scope_cannot_create_a_plan(nodes):
 
 def test_actual_current_selector_collection_has_exact_four_way_node_union(tmp_path):
     selectors = groups.selector_contract(ROOT)
-    assert selectors == gate.TESTS and len(selectors) == 160
+    assert selectors == gate.TESTS
+    _assert_extraction_selector_extension(selectors)
     assert selectors[:3] == ["tests/test_sequential_kernels.py", "tests/test_sequential_oracles.py",
                              "tests/test_sequential_contracts.py"]
     assert selectors[3:6] == ["tests/test_mprobit.py", "tests/test_mprobit_postestimation.py",

@@ -253,6 +253,10 @@ def supports_spec(spec):
         from . import registry
         if len(registry.cluster_columns(spec)) > 1:
             return False
+    if spec.estimator == "arch":
+        from .arch import STREAMING_DISTRIBUTIONS, STREAMING_MODELS
+        return (spec.options.get("model", "garch") in STREAMING_MODELS
+                and spec.options.get("dist", "normal") in STREAMING_DISTRIBUTIONS)
     return True
 
 

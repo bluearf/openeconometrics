@@ -14,6 +14,7 @@ licenses or grant redistribution rights for external research datasets.
 | Python/native runtime dependencies | Their original distribution metadata and license files are retained by the frozen packaging process; they are separate from the project license |
 | Bundled uv executable | Upstream distribution license files in frozen `tools/licenses/uv` |
 | Local suggestion engine/model | Separate notices in `desktop/licenses`; model resources and source hashes in the suggestion manifest |
+| Bayer–Hanck cointegration null distributions (re-encoded from CRAN combcoint 0.2.0) | MIT, `openecon/econometrics/unitroot/bayer_hanck_null.LICENSE.txt` next to the data file; source and transformation in `docs/reference-licenses/combcoint-MIT.txt` |
 
 `npm --prefix web run build` verifies the installed production dependencies
 against `web/package-lock.json`, collects their full upstream notices and fails

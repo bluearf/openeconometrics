@@ -99,6 +99,16 @@ EXPORTS = {
     "sspace_smooth": "openecon.econometrics.tsworkflows.sspace:sspace_smooth",
     "sspace_autocov": "openecon.econometrics.tsworkflows.sspace:sspace_autocov",
     "sspace_disturbances": "openecon.econometrics.tsworkflows.sspace:sspace_disturbances",
+    # Native seasonal adjustment and forecasting extensions (MARKET-162).
+    "stl": "openecon.econometrics.tsworkflows.stl:stl",
+    "stl_forecast": "openecon.econometrics.tsworkflows.stl:stl_forecast",
+    "seasonal_restore": "openecon.econometrics.tsworkflows.stl:seasonal_restore",
+    "x11": "openecon.econometrics.tsworkflows.x11:x11",
+    "calendar_regressors": "openecon.econometrics.tsworkflows.calendar:calendar_regressors",
+    "croston": "openecon.econometrics.tsworkflows.intermittent:croston",
+    "forecast_combination": "openecon.econometrics.tsworkflows.combination:forecast_combination",
+    "intervention_regressors": "openecon.econometrics.tsworkflows.calendar:intervention_regressors",
+    "forecast_backtest": "openecon.econometrics.tsworkflows.backtest:forecast_backtest",
 }
 FORECAST = {
     "sspace": "openecon.econometrics.tsworkflows.sspace:forecast",

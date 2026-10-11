@@ -10,12 +10,16 @@ jobs and the web job succeed. Failed, cancelled and skipped prerequisites fail
 this gate. The strict current-base repository rule remains enabled.
 
 Quick checks cover core estimator/reference results, bounded conjoint covariance/target oracles, data readers, LaTeX/saved
-output, package metadata, process cleanup and small full-gate authentication
-fixtures (including the daily job name and scheduled-event binding). Python 3.13 also checks Ruff and
+output, package metadata, process cleanup, the BVAR original-author lifecycle
+code pin and small full-gate authentication fixtures (including the daily job
+name and scheduled-event binding). Python 3.13 also checks Ruff and
 the generated capability/editor catalogues. The web job runs the existing web
 and Cloud source-guard tests and builds the application. SDK and web test commands
 have a three-minute limit; job limits include checkout and installation.
 Quick receipts explicitly state that they do not cover the complete SDK suite.
+Python 3.13 also checks the generated vendor-comparison row index against the
+retained research inputs. This is a document traceability check, not scientific
+or vendor-option acceptance; unresolved row reviews remain visible.
 
 **Verify OpenEconometrics** (`ci.yml`) now runs daily at **01:17 UTC / 04:17
 Europe/Istanbul**, using the latest default-branch commit. GitHub may delay
@@ -24,7 +28,9 @@ specific branch. Daily and manual runs have separate concurrency groups and are
 not cancelled by new pull-request commits.
 
 The full workflow retains both locked Python environments, all eight SDK shards,
-all current registered selectors (160 after the BMA, conjoint, simultaneous score-contrast, Weibull and conjoint bootstrap extensions), package builds, original artifacts and the complete
+all current registered selectors (171: the incoming 168 selectors remain in
+order, followed by three factor extraction/uncertainty test modules), package
+builds, original artifacts and the complete
 source/run-bound aggregate validator. Its result is named
 `OpenEconometrics / daily full gate`. Failed daily runs remain failed and retain
 their evidence. A quick green PR check does not establish full numerical

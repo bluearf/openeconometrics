@@ -2,11 +2,25 @@
 
 This guide records the completed method-level core of [#45](https://github.com/bluearf/openecon/issues/45), [#49](https://github.com/bluearf/openecon/issues/49) and [#76](https://github.com/bluearf/openecon/issues/76). Their original scientific acceptance is retained in the parent audits. Remaining implementation stages are open in [#153](https://github.com/bluearf/openecon/issues/153), [#154](https://github.com/bluearf/openecon/issues/154) and [#158](https://github.com/bluearf/openecon/issues/158). Completing this core does not establish complete Stata, SPSS or EViews family coverage.
 
+**Status update, 11 October 2026:** this is the dated 7 October core and its
+receipts. Later MARKET-628 delivered a separate
+[fixed-equation exact diffuse procedure](sspace-diffuse.md). Exact diffuse
+initialization is therefore no longer wholly absent; it remains outside the
+proper-prior `sspace` estimator described below. Fixed caller-declared diffuse
+equations do not imply diffuse parameter estimation or parameter-uncertain
+forecasting. The [current comparison matrix](comparison-status-2026-10-11.md)
+maps those scopes to their remaining issues. Historical vendor-executable and
+signing prerequisites below are superseded by
+[current acceptance policy](../../AGENTS.md): licensed vendor execution is not
+required, CUDA is deferred, and ad-hoc Mac alpha builds are accepted while
+Developer ID/notarization is deferred. Platform and installed/replay evidence
+remain separate from scientific source checks.
+
 | Parent audit | Completed core | Open continuation |
 | --- | --- | --- |
 | #45 | Release-bound exponential-Almon MIDAS and unrestricted MIDAS; training-window refits; bounded exact-aggregation temporal disaggregation | #153: ragged revised vintages and scoring, additional lag weights, mixed-frequency VAR, estimated-rho disaggregation |
 | #49 | Additive likelihood ETS including damped trend; bounded automatic ARIMA/ETS selection; saved searches and rolling-origin validation | #154: seasonal adjustment and revision diagnostics, transfer functions/interventions/combinations, intermittent-demand and Prophet-style stages, broader selection domains |
-| #76 | Multivariate proper-prior linear Gaussian filtering/ML; masks and declared schedules; full conditional smoothing, lag-one and joint disturbance moments; saved forecasts | #158: exact diffuse and unsupported singular measurement geometry, estimated path coefficients, parameter uncertainty, dynamic factors and DSGE |
+| #76 | Multivariate proper-prior linear Gaussian filtering/ML; masks and declared schedules; full conditional smoothing, lag-one and joint disturbance moments; saved forecasts | #158: diffuse parameter estimation beyond the separate fixed-equation MARKET-628 procedure, unsupported proper singular measurement laws, estimated path coefficients, parameter uncertainty, broader dynamic factors and DSGE |
 
 The current canonical system includes masked and scheduled observations. The older fixed-system discussion in [tsworkflows.md](tsworkflows.md) describes its earlier stage; its exclusions of schedules and partial measurements must not be applied to the current [scheduled system contract](sspace-scheduled.md).
 
@@ -91,7 +105,7 @@ Forecasting starts from the saved next state after the last fitted outgoing tran
 
 The three smoothing/disturbance helpers accept a `ResultBundle`, its JSON object or JSON string. Complete model equations/templates, parameter covariance, observations, masks, periods, sample positions, filtered/next moments and provenance are saved. Integrity/geometry checks apply before replay, with a digest over the complete finite canonical JSON bundle excluding only `extra.state_sha256`. That digest detects accidental state changes; it is not authentication. Helpers replay filtering/smoothing calculations from saved parameter values without optimizing a new model. Restored forecasts similarly use the saved model and explicit future paths.
 
-Resource admission is resident CPU float64 with at most 20,000 periods, 16 states, 8 measurements and 20 free parameters, plus bounded known exogenous widths. Matrix/path/Lyapunov/derivative/smoothing/forecast geometries have explicit 50-million work gates and named workspace plans. Forecast horizons are 1–10,000 subject to those geometry limits. Dataset collection, weights, CUDA/MPS, singular H, exact diffuse, nonlinear systems, automatic DFM/DSGE construction and parameter-uncertain forecasts remain outside this core.
+Resource admission is resident CPU float64 with at most 20,000 periods, 16 states, 8 measurements and 20 free parameters, plus bounded known exogenous widths. Matrix/path/Lyapunov/derivative/smoothing/forecast geometries have explicit 50-million work gates and named workspace plans. Forecast horizons are 1–10,000 subject to those geometry limits. Dataset collection, weights, CUDA/MPS, singular H, exact diffuse, nonlinear systems, automatic DFM/DSGE construction and parameter-uncertain forecasts remain outside this proper-prior core. The separate fixed-equation `sspace_diffuse` procedure has its own singular/diffuse geometry and resource contract; it does not extend this estimator's fitted-parameter domain.
 
 The current independent small-system fixture builds the complete joint Gaussian distribution, masks its observed cells, and compares exact likelihood, full conditional state covariance and next/current lag blocks for static and scheduled systems. Saved-state replay is exercised with the fitting function disabled, and changed observations fail the integrity check. Retained canonical tests additionally cover all six schedules, known exogenous paths, outgoing forecast timing, posterior disturbance cross blocks, singular compatible state geometry, physical transformed-information covariance and rejected domains. Direct analytical agreement is distinct from licensed Stata/EViews execution.
 
@@ -105,6 +119,6 @@ The current independent small-system fixture builds the complete joint Gaussian 
 | New native source example | Complete retained source result archive (internal evidence excluded from this public snapshot), with actual file hashes, all model/output states and exact LaTeX. The local example receipt alone does not claim an installed SDK, external-import guard or desktop launch. |
 | Retained canonical native Run/restart | PR148 source/runtime/persistence pack (internal evidence excluded from this public snapshot) and read-only peer identity review (internal evidence excluded from this public snapshot). These identify their historical scientific pin and exact five reviewed scientific/support bodies, frozen runtime, complete payloads and eight LaTeX exports. They report no new execution by this audit. |
 | Current installed SDK and final integration | Final aggregate receipts belong to the delivery record for the accepted source snapshot. The historical five-file review does not certify new U-MIDAS/ETS exports, later guard changes or the complete current SDK/desktop manifest. |
-| Vendor comparison and public packaging | Actual licensed-vendor outputs remain tracked under [#28](https://github.com/bluearf/openecon/issues/28). An author equation/oracle comparison, a historical research inventory and a local native app receipt are separate from vendor execution, a signed/notarized public release or another platform's validation. |
+| Independent references and public packaging | Historical [#28](https://github.com/bluearf/openecon/issues/28) vendor-executable prerequisites are superseded by the current policy. Independent analytical/author/development references remain method-level evidence. A historical research inventory or local native receipt does not prove a later public release or another platform's installed acceptance. Ad-hoc Mac alpha acceptance does not imply Developer ID signing or notarization. |
 
 The original [Stata time-series research inventory](../../research_notes/Ekonometrik%20modeller%20ve%20Stata%20katalo%C4%9Fu/time_series_macro.md), [EViews single-equation inventory](../../research_notes/Ekonometrik%20modeller%20Stata%20EViews%20SPSS%20katalo%C4%9Fu/eviews_single_equation_time_series.md), [full addition plan](../../reports/OpenEcon%20ekonometri%20tam%20ekleme%20plan%C4%B1.md) and [gap/ordering report](../../reports/OpenEcon%20model%20bo%C5%9Fluklar%C4%B1%20ve%20ekleme%20s%C4%B1ras%C4%B1.md) were reconciled with current APIs and independent evidence. Their earlier plan labels are historical; they are neither present absence claims nor execution proof. The open continuations preserve the original advanced scientific work and its acceptance instead of silently narrowing those obligations.

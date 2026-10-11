@@ -46,7 +46,7 @@ def api():
                           'authDomain': f'{PROJECT}.firebaseapp.com'}, desktop_token_issuer=issuer)
     with TestClient(app, base_url=ORIGIN) as client:
         yield SimpleNamespace(client=client, store=store, storage=storage,
-                              issuer=issuer, pid=project['id'])
+                              issuer=issuer, pid=project['id'], auth=auth)
 
 
 def headers(uid='owner'):

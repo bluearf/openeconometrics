@@ -4,6 +4,14 @@ Eight bounded native CPU float64 method stages extend the existing linear
 PCA/CCA, simple correspondence, metric MDS and row-level Poisson procedures.
 The existing methods remain available separately.
 
+**Status update, 11 October 2026:** the current
+[comparison matrix](comparison-status-2026-10-11.md) distinguishes these bounded
+CATREG/CATPCA/MCA/OVERALS/loglinear deliveries from the remaining MARKET-171
+options. Licensed SPSS, Stata or EViews executables are not required by the
+[human-approved acceptance policy](../../AGENTS.md). Independent analytical,
+development-reference and synthetic-fixture validation remains applicable;
+the policy does not establish vendor parity or certify a later installed app.
+
 | Issue | Delivered method and identification |
 | --- | --- |
 | MARKET-296 | Numeric-outcome nominal optimal-scaling regression; centered unit-variance scalar category maps |
@@ -72,5 +80,7 @@ nonmonotone/monotone CATREG/CATPCA procedures. These are bounded new fitting
 domains; earlier accepted stages are not counted again.
 
 Broader MARKET-171 / GitHub#58 remain open for higher-degree/automatic spline options, additional
-sampling and inference domains and licensed vendor validation. No blanket
-parity or public release is implied.
+sampling and inference domains, including analytic/survey weights and dependent
+inference beyond the declared count-weighted or IID laws. Licensed vendor
+validation is not a remaining closure requirement. No blanket parity or public
+release is implied.

@@ -13,9 +13,16 @@ ROOT = DESKTOP.parent
 
 def main() -> None:
     lock = tomllib.loads((ROOT / "uv.lock").read_text())
-    torch = [item["version"] for item in lock["package"] if item["name"] == "torch"]
+    # Linux's CPU index uses a local version suffix; Windows installs that same
+    # upstream version separately. Reject different upstream versions, rather
+    # than rejecting the platform variants recorded together in the lock.
+    torch = sorted({item["version"].removesuffix("+cpu")
+                    for item in lock["package"] if item["name"] == "torch"})
     if len(torch) != 1:
         raise SystemExit("The runtime lock must contain one unambiguous PyTorch version.")
+    jwt = {item["version"] for item in lock["package"] if item["name"] == "pyjwt"}
+    if len(jwt) != 1:
+        raise SystemExit("The Windows compatibility runtime requires one locked PyJWT version.")
     output = DESKTOP / "build" / "locked-runtime-dependencies.txt"
     output.parent.mkdir(parents=True, exist_ok=True)
     # Torch is installed separately from its official CPU index. All of its
@@ -29,7 +36,7 @@ def main() -> None:
         cwd=ROOT,
         check=True,
     )
-    print(json.dumps({"torch_version": torch[0], "requirements": str(output)}))
+    print(json.dumps({"torch_version": torch[0], "requirements": str(output), "pyjwt_version": jwt.pop()}))
 
 
 if __name__ == "__main__":
