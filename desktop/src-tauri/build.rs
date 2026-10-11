@@ -3,6 +3,7 @@ fn main() {
         tauri_build::AppManifest::new().commands(&[
             "desktop_info",
             "save_text_export",
+            "save_project_file",
             "cloud_request",
             "download_project_file",
             "download_project_files",

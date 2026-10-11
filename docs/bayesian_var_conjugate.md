@@ -1,6 +1,21 @@
 # Proper conjugate Bayesian VAR
 
-This implementation supplies a bounded conditional VAR with one proper matrix-normal/inverse-Wishart (MNIW) prior. The method's child is MARKET-734; its broader Bayesian parent remains open. Shared public integration and targeted tests are implemented in the current integration branch. The bounded original-author deterministic posterior comparison under GNU Octave has passed; installed BVAR application evidence, final current-head/base full hosted gates and merge remain separate pending delivery gates. No completed Stata parity claim is made.
+This implementation supplies a bounded conditional VAR with one proper
+matrix-normal/inverse-Wishart (MNIW) prior. The completed method child is
+MARKET-734, integrated by [PR #227](https://github.com/bluearf/openecon/pull/227)
+at `4634f8b95d79ce65d690cb8a2f5cfe248c00e876`; its broader Bayesian parent remains
+open. The bounded original-author deterministic posterior comparison used GNU
+Octave. No completed Stata parity claim is made.
+
+**Status update, 11 October 2026:** the pre-merge checkpoints below preserve
+their actual source pins and failed/incomplete attempts. Their old delivery
+checklist is historical, rather than a current missing-BVAR claim. Later
+integration and child acceptance do not transfer a recorded installed runtime
+receipt to the current whole binary. See the
+[current comparison matrix](econometrics/comparison-status-2026-10-11.md) for
+the method, evidence layers and remaining parent scope, and the
+[current CI policy](validation/ci-cadence.md) for focused/quick versus release
+full validation.
 
 For ordered series `y1,...,ym`, the model conditions on the first `p` observations and uses rows of
 
@@ -54,7 +69,7 @@ A simple IRF at lag `h` has at most `h` coefficient factors, giving the sufficie
 
 Multi-step and IRF covariance fields are named `covariance_mc_estimate` and explicitly labeled IID Monte Carlo estimates. They are exposed only when the appropriate sufficient population second-moment guard passes and at least two draws exist. Mean MCSE uses that second-moment guard. Covariance MCSE is an asymptotic centered-product influence-function plug-in and additionally requires the fourth-moment guard; it is not a certified error bound. When a guard fails, moments/MC errors remain `None`, even though a finite array has finite empirical variance. Quantiles and every retained draw remain available. No estimate is presented as an exact analytic population covariance.
 
-## Evidence and pending gates
+## Evidence at recorded checkpoints
 
 The independent development oracle uses NumPy augmented-design QR, completed-square innovation scale, SciPy inverse-Wishart scalar moments and a matrix-t determinant density. Production uses native Torch factors and does not import those oracle libraries. Fixed common Bartlett, coefficient and future innovation primitives compare full joint arrays, recursive paths and companion-power IRFs deterministically. Negative tests cover dropped cross-equation covariance, wrong t degrees of freedom, tampered full arrays, unsupported source metadata, early allocation refusal and low-df moment rescue.
 
@@ -70,4 +85,13 @@ The three fixed original-author comparisons passed under GNU Octave 8.4.0 on Ubu
 
 Complete archive hashes, exact tested head/base/synthetic source and the independent readback digest are recorded in the [original-author reference](bayesian-var-original-author-octave-reference.md).
 
-Installed BVAR Run/save/full Quit/cold replay, fresh exact-head/current-base full hosted SDK gates on both Python 3.11 and 3.13, merge and child-only tracker readback remain pending. The prior local full-SDK attempt intentionally stopped at the proved report-ledger capacity defect remains failed/incomplete; the historical 84b SDK failures also remain failures. The lossless capacity repair requires fresh full hosted validation and does not change scientific tolerances or resource caps. The existing control-function calibration failures remain separate and unchanged; they are not evidence for this method.
+At the historical pre-merge checkpoint, installed BVAR Run/save/full Quit/cold
+replay, exact-head/current-base full hosted SDK gates, merge and child-only
+tracker readback were still pending. That checklist is superseded by the
+completed MARKET-734 delivery linked above. The prior local full-SDK attempt
+intentionally stopped at the proved report-ledger capacity defect remains
+failed/incomplete; the historical 84b SDK failures also remain failures. The
+capacity repair did not change scientific tolerances or resource caps. The
+separate control-function calibration failures are not evidence for this method.
+Current release claims require the release validation applicable to their own
+tested source; a historical gate or this documentation update is insufficient.

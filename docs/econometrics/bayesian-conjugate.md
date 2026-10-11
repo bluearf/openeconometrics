@@ -7,6 +7,16 @@ It provides proper normal–inverse-gamma inference, exact saved analytic state,
 linear contrasts, conditional-mean credible intervals, future-observation
 predictive intervals and bounded independent joint posterior/predictive draws.
 
+**Status update, 11 October 2026:** the later bounded
+[proper-prior point-null comparison](bayesian-hypothesis.md) (MARKET-680),
+[exhaustive proper Gaussian BMA](bayesian-bma.md) (MARKET-690) and
+[conjugate BVAR](../bayesian_var_conjugate.md) (MARKET-734) are integrated
+deliveries. They must not be listed as wholly absent Bayesian workflows.
+The [current comparison matrix](comparison-status-2026-10-11.md) records their
+exact option boundaries and remaining canonical issues. Historical test and
+application receipts retain their own source pins; this update does not certify
+a new installed binary.
+
 ## Model and prior
 
 The caller declares an iid, homoskedastic Gaussian outcome model:
@@ -184,15 +194,20 @@ python scripts/verify_bayesian_conjugate_oracles.py --posterior receipt.json --r
 ```
 
 Source tests, independent receipt checks, source-built frozen execution,
-installed native Run/export/full Quit/reopen and any licensed vendor reference
-are separate evidence layers. This method document does not claim those
-delivery layers have been completed by its presence in the repository.
+installed native Run/export/full Quit/reopen and public release are separate
+evidence layers. This method document does not claim those delivery layers have
+been completed by its presence in the repository. Licensed Stata/SPSS/EViews
+executables are not an acceptance requirement under the current
+[repository policy](../../AGENTS.md); independent analytical and development
+references remain required for the applicable method scope.
 
-Remaining **MARKET-362** work includes proper competing-hypothesis/Bayes-factor
-workflows beyond continuous contrasts, native multiple-chain sampling and
-diagnostics, logit/GLM posterior families, hierarchical models, variable
-selection/BMA, BVAR posterior forecasts/IRFs and separate TVP-VAR state/samplers.
-The first analytic stage does not complete the general Bayesian family.
+Remaining **MARKET-362** work includes native multiple-chain sampling and
+diagnostics (MARKET-685), logit/GLM posterior families, hierarchical models,
+broader hypothesis/model spaces beyond the declared proper Gaussian laws,
+nonconjugate or search-based BMA, and separate TVP-VAR/stochastic-volatility
+state and sampler domains. The delivered BVAR supplies bounded proper MNIW
+posterior draws, forecasts and IRFs; it does not complete those wider domains.
+The analytic stages do not complete the general Bayesian family.
 
 Normal/inverse-gamma conventions and Gaussian conjugacy are described in
 [Murphy's original-author derivation](https://www.cs.ubc.ca/~murphyk/Papers/bayesGauss.pdf).

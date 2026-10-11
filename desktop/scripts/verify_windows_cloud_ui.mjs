@@ -1,5 +1,6 @@
 // Real installed WebView2 input; no mocked transport, cloud compute, or identity creation.
-import { createHash } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
+import { waitMailboxPacket } from './qa_mailbox.mjs';
 import { lstat, open, readFile, realpath, stat, writeFile } from 'node:fs/promises';
 import { basename, dirname, isAbsolute, join, resolve, win32 } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
@@ -7,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 
 const CLOUD_ORIGIN = 'https://openecon-291739190496.us-central1.run.app';
 const MARKER = 'MARKET87_WINDOWS_NATIVE_SHARE_OK';
-const PHASES = ['password-open', 'browser-approval', 'offline-run', 'offline-reopen', 'retry-online', 'viewer-readback'];
+const PHASES = ['email-request-owner', 'email-open', 'offline-run', 'offline-reopen', 'retry-online', 'email-request-viewer', 'viewer-readback'];
 export const EXECUTION_CODE = `from pathlib import Path
 import openecon as oe
 counter = Path('market87-native-execution-count.txt')
@@ -36,7 +37,7 @@ export function parseArguments(values) {
       throw new Error('Invalid controller arguments.');
     options[key.slice(2)] = values[i + 1];
   }
-  const allowed = new Set(['port', 'browser-port', 'phase', 'state', 'output', 'project-id', 'project-name', 'baseline', 'online-identity']);
+  const allowed = new Set(['port', 'phase', 'state', 'output', 'project-id', 'project-name', 'baseline', 'online-identity', 'email-challenge', 'mailbox-public', 'mailbox-private']);
   if (Object.keys(options).some(key => !allowed.has(key)) || !PHASES.includes(options.phase)
       || !options.state || !options.output
       || !/^[0-9a-f]{32}$/.test(options['project-id'] ?? '')
@@ -44,15 +45,17 @@ export function parseArguments(values) {
       || options['project-name'].length > 120)
     throw new Error('A private owned QA manifest and explicit disposable project are required.');
   options.port = ownedPort(options.port);
-  if (options.phase === 'browser-approval') options['browser-port'] = ownedPort(options['browser-port']);
-  if (options['browser-port'] === options.port) throw new Error('The browser and native ports must differ.');
-  if (['offline-reopen', 'retry-online', 'viewer-readback'].includes(options.phase) && !options.baseline)
+  if (['offline-reopen', 'retry-online', 'email-request-viewer', 'viewer-readback'].includes(options.phase) && !options.baseline)
     throw new Error('The original offline receipt is required.');
-  if (['browser-approval', 'offline-run'].includes(options.phase) && !options['online-identity'])
+  if (['offline-run'].includes(options.phase) && !options['online-identity'])
     throw new Error('The original online owner identity receipt is required.');
-  if (options['online-identity'] && !['browser-approval', 'offline-run'].includes(options.phase))
-    throw new Error('Only browser approval or the first offline phase accepts an online identity receipt.');
-  const paths = [options.state, options.output, options.baseline, options['online-identity']].filter(Boolean).map(value => resolve(value));
+  if (options['online-identity'] && !['offline-run'].includes(options.phase))
+    throw new Error('Only the first offline phase accepts an online identity receipt.');
+  if (['email-open', 'viewer-readback'].includes(options.phase) && !['email-challenge','mailbox-public','mailbox-private'].every(key=>options[key]))
+    throw new Error('Fresh email verification requires its request receipt and one-run mailbox keys.');
+  if (options.phase.startsWith('email-request-') && !options['mailbox-public'])
+    throw new Error('An email request must bind the one-run public mailbox identity.');
+  const paths = [options.state, options.output, options.baseline, options['online-identity'], options['email-challenge'], options['mailbox-public'], options['mailbox-private']].filter(Boolean).map(value => resolve(value));
   if (new Set(paths.map(value => process.platform === 'win32' ? value.toLowerCase() : value)).size !== paths.length)
     throw new Error('Private state, original baseline and new phase receipt paths must differ.');
   return options;
@@ -60,7 +63,7 @@ export function parseArguments(values) {
 
 export async function validateControllerPaths(options, { caseInsensitive = process.platform === 'win32' } = {}) {
   const identities = {};
-  for (const key of ['state', 'baseline', 'online-identity', 'output'].filter(key => options[key])) {
+  for (const key of ['state', 'baseline', 'online-identity', 'email-challenge', 'mailbox-public', 'mailbox-private', 'output'].filter(key => options[key])) {
     const absolute = resolve(options[key]);
     // Resolve the existing parent first: Windows junctions, symlinks and case
     // aliases must be compared before credentials are read or any UI is used.
@@ -109,10 +112,10 @@ export function validateQaManifest(state, options) {
         const user = state.users[role];
         return user && typeof user.uid === 'string' && user.uid.length > 0 && user.uid.length <= 128
           && !/[\x00-\x1f/]/.test(user.uid)
-          && new RegExp(`^openecon-qa-${role}-[0-9a-f]{12}@example\\.com$`).test(user.email)
-          && typeof user.password === 'string' && user.password.length >= 12;
+          && new RegExp(`^anilsen\\+openecon-qa-${role}-[0-9a-f]{12}@openeconometrics\\.com$`).test(user.email)
+          && !Object.prototype.hasOwnProperty.call(user, 'password');
       }) || state.users.owner.uid === state.users.viewer.uid)
-    throw new Error('Only distinct manifest-owned disposable password identities are allowed.');
+    throw new Error('Only distinct manifest-owned passwordless test identities are allowed.');
   if (state.url !== CLOUD_ORIGIN)
     throw new Error('The manifest must target the native broker cloud origin.');
   return state;
@@ -220,16 +223,16 @@ export async function canonicalWorkspaceIdentity(dataRoot, options) {
 export function validatePhaseWorkspaceIdentity(phase, current, original) {
   if (!PHASES.includes(phase) || !validWorkspaceIdentity(current))
     throw new Error('A supported phase and verified existing workspace identity are required.');
-  if (phase === 'password-open') return true;
+  if (['email-open','email-request-owner'].includes(phase)) return true;
   const expected = original?.native_identity?.workspace_identity;
-  return phase === 'viewer-readback' ? requireSeparateWorkspaceIdentity(expected, current)
+  return ['viewer-readback','email-request-viewer'].includes(phase) ? requireSeparateWorkspaceIdentity(expected, current)
     : requireSameWorkspaceIdentity(expected, current);
 }
 
 export async function readAdmittedQaManifest(path, options, workspaceIdentity, original) {
-  if (['browser-approval', 'offline-run'].includes(options.phase))
+  if (['offline-run'].includes(options.phase))
     validateOnlineIdentityReceipt(original, options['project-id']);
-  else if (options.phase !== 'password-open') validateBaseline(original, options['project-id']);
+  else if (!['email-open','email-request-owner'].includes(options.phase)) validateBaseline(original, options['project-id']);
   validatePhaseWorkspaceIdentity(options.phase, workspaceIdentity, original);
   return validateQaManifest(JSON.parse(await readFile(path, 'utf8')), options);
 }
@@ -264,7 +267,7 @@ export function observedIdentityReceipt(observation, user, projectId, role, afte
 
 export function validateOnlineIdentityReceipt(value, projectId, user, workspaceIdentity) {
   const identity = value?.authenticated_identity;
-  if (value?.status !== 'passed' || !['password-open', 'browser-approval'].includes(value.phase)
+  if (value?.status !== 'passed' || value.phase !== 'email-open'
       || value.project_id !== projectId || !value.checks?.fresh_authenticated_uid_and_live_project_role
       || !value.checks?.fresh_authenticated_uid_and_live_project_role_after_phase
       || !value.checks?.canonical_workspace_identity_before_credentials
@@ -397,17 +400,47 @@ class Cdp {
 }
 
 async function enterTeams(client) {
-  await until(() => client.evaluate(`!!document.querySelector('.team-auth,.team-dashboard,.team-workspace')`));
+  await until(() => client.evaluate(`!!document.querySelector('.team-auth,.team-dashboard,.team-workspace') || document.body.innerText.includes('Team projects · sign in')`));
   if (await client.evaluate(`document.body.innerText.includes('Team projects · sign in')`))
     await client.textButton('Team projects · sign in');
   await until(() => client.evaluate(`!!document.querySelector('.team-auth input[type="email"],.team-user-email')`));
 }
 
-async function passwordSignIn(client, user) {
+async function requestEmailCode(client, user, metadata, role) {
+  if (await client.evaluate(`!!document.querySelector('.team-logout')`)) {
+    await client.click('.team-logout'); await enterTeams(client);
+  }
+  if (!await client.evaluate(`!!document.querySelector('.team-auth input[type="email"]')`))
+    throw new Error('A fresh native email sign-in form is required.');
+  await client.fill('.team-auth input[type="email"]', user.email);
+  const requestedAt = Date.now();
+  await client.textButton('Send sign-in code');
+  await until(() => client.evaluate(`!!document.querySelector('.team-auth input[autocomplete="one-time-code"]')`));
+  return {schema:1,run_id:metadata.run_id,nonce:metadata.nonce,challenge:randomBytes(16).toString('hex'),
+    kind:'email-code',role,email_sha256:identityHash(user.email),requested_at:requestedAt,expires_at:requestedAt+600000};
+}
+
+async function emailCodeSignIn(client, user, role, options, paths, workspaceIdentity) {
   if (await client.evaluate(`!!document.querySelector('.team-auth input[type="email"]')`)) {
-    await client.fill('.team-auth input[type="email"]', user.email);
-    await client.fill('.team-auth input[type="password"]', user.password);
-    await client.textButton('Sign in');
+    if (!paths['email-challenge'] || !paths['mailbox-public'] || !paths['mailbox-private'])
+      throw new Error('A new email request and one-run encrypted response are required.');
+    const request = JSON.parse(await readFile(paths['email-challenge'],'utf8'));
+    const challenge = request.email_challenge;
+    if (request.status !== 'awaiting_email_code' || request.project_id !== options['project-id']
+        || request.phase !== `email-request-${role}` || challenge?.role !== role
+        || challenge.email_sha256 !== identityHash(user.email) || challenge.expires_at <= Date.now())
+      throw new Error('The email response does not belong to this fresh native request.');
+    requireSameWorkspaceIdentity(workspaceIdentity,request.native_identity.workspace_identity);
+    const metadata = JSON.parse(await readFile(paths['mailbox-public'],'utf8'));
+    const context = {run_id:challenge.run_id,nonce:challenge.nonce,challenge:challenge.challenge,kind:'email-code',role};
+    const payload = await waitMailboxPacket(metadata,paths['mailbox-private'],context);
+    if (payload.email !== user.email || payload.requested_at !== challenge.requested_at || payload.expires_at > challenge.expires_at)
+      throw new Error('The email response does not match the recipient or request time.');
+    if (!await client.evaluate(`!!document.querySelector('.team-auth input[autocomplete="one-time-code"]')`))
+      throw new Error('The original native code form was replaced. Request a fresh code.');
+    await client.fill('.team-auth input[autocomplete="one-time-code"]',payload.code);
+    payload.code = undefined;
+    await client.textButton('Verify and sign in');
   }
   await until(() => client.evaluate(`document.querySelector('.team-user-email')?.title === ${JSON.stringify(user.email)}`));
 }
@@ -643,44 +676,34 @@ async function run(options) {
     const state = await readAdmittedQaManifest(paths.state, options, workspaceIdentity, baseline ?? onlineIdentity);
     receipt.native_identity.workspace_identity = workspaceIdentity;
     receipt.checks.canonical_workspace_identity_before_credentials = true;
-    if (options.phase === 'viewer-readback') receipt.checks.distinct_viewer_workspace_before_credentials = true;
+    if (['viewer-readback','email-request-viewer'].includes(options.phase)) receipt.checks.distinct_viewer_workspace_before_credentials = true;
     if (baseline) validateBaseline(baseline, options['project-id'], state.users.owner);
     if (onlineIdentity) validateOnlineIdentityReceipt(onlineIdentity, options['project-id'], state.users.owner, workspaceIdentity);
-    const role = options.phase === 'viewer-readback' ? 'viewer' : 'owner';
+    const role = ['viewer-readback','email-request-viewer'].includes(options.phase) ? 'viewer' : 'owner';
     const user = state.users[role];
     if (options.phase === 'retry-online')
       validateOfflineIdentityReceipt(baseline, options['project-id'], user, workspaceIdentity);
     receipt.checks.installed_native_window_and_trusted_ipc = true;
     await installObserver(native, options['project-id']);
     await enterTeams(native);
-    if (options.phase === 'browser-approval') {
-      if (await native.evaluate(`!!document.querySelector('.team-logout')`)) await native.click('.team-logout');
-      await native.click('.team-google-button');
-      let grant;
-      await until(async () => {
-        grant = await native.evaluate(`window.__market87Observer.grant`);
-        return /^[0-9a-f]{32}$/.test(grant ?? '')
-          && await native.evaluate(`window.__market87Observer.opened_grant===${JSON.stringify(grant)}`);
-      });
-      state.desktop_login_ids = [...new Set([...(state.desktop_login_ids ?? []), grant])];
-      // Preserve the private manifest so only this real grant can later be cleaned.
-      await writeFile(paths.state, JSON.stringify(state, null, 2) + '\n', { mode: 0o600 });
-      browser = await Cdp.connect(options['browser-port'], 'browser', grant);
-      if (await browser.evaluate(`!!document.querySelector('.team-auth input[type="email"]')`)) {
-        await browser.fill('.team-auth input[type="email"]', user.email);
-        await browser.fill('.team-auth input[type="password"]', user.password);
-        await browser.textButton('Sign in');
-      }
-      await until(() => browser.evaluate(`document.querySelector('.team-auth')?.innerText.includes(${JSON.stringify(user.email)}) && document.querySelector('.team-auth strong')?.textContent===${JSON.stringify(grant.slice(0, 8).toUpperCase())}`));
-      await browser.textButton('Approve sign-in');
-      await until(() => browser.evaluate(`document.querySelector('h1')?.textContent==='Sign-in complete'`));
-      await until(() => native.evaluate(`document.querySelector('.team-user-email')?.title===${JSON.stringify(user.email)}`));
-      receipt.checks.actual_native_grant_opened_in_owned_system_browser = true;
-      receipt.checks.password_identity_approved_real_browser_handoff = true;
-      receipt.google_provider_acceptance = 'not_tested';
-    } else if (!['offline-run', 'offline-reopen'].includes(options.phase)) {
-      await passwordSignIn(native, user);
-      receipt.checks.actual_password_sign_in_or_same_verified_persisted_actor = true;
+    if (options.phase.startsWith('email-request-')) {
+      const metadata = JSON.parse(await readFile(paths['mailbox-public'],'utf8'));
+      if (metadata.run_id !== process.env.GITHUB_RUN_ID || !/^[a-f0-9]{64}$/.test(metadata.nonce))
+        throw new Error('The email request is not bound to this hosted QA run.');
+      receipt.email_challenge = await requestEmailCode(native,user,metadata,role);
+      receipt.checks.actual_native_email_code_requested = true;
+      const afterRequest = await native.evaluate(`window.__TAURI__.core.invoke('desktop_info')`);
+      requireSameWorkspaceIdentity(workspaceIdentity, await canonicalWorkspaceIdentity(afterRequest.data_root));
+      receipt.checks.workspace_identity_rechecked_after_phase = true;
+      const audit = await native.evaluate(`({local_executions:window.__market87Observer.local_executions,cloud_executions:window.__market87Observer.cloud_executions})`);
+      if (audit.local_executions !== 0 || audit.cloud_executions !== 0) throw new Error('An authentication request must never execute a model.');
+      receipt.observed_execution_requests = audit;
+      receipt.status = 'awaiting_email_code';
+      return;
+    }
+    if (!['offline-run','offline-reopen'].includes(options.phase)) {
+      await emailCodeSignIn(native,user,role,options,paths,workspaceIdentity);
+      receipt.checks.actual_email_code_sign_in_or_same_verified_persisted_actor = true;
     }
     const offline = ['offline-run', 'offline-reopen'].includes(options.phase);
     if (offline) {

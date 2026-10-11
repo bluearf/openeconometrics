@@ -71,6 +71,32 @@ def test_windows_runtime_export_rejects_ambiguous_lock_before_export(
     assert not (tmp_path / "desktop/build").exists()
 
 
+@pytest.mark.parametrize("versions", [[], ["2.15.0", "2.15.1"]])
+def test_windows_runtime_export_rejects_missing_or_ambiguous_compatibility_lock(
+    tmp_path, monkeypatch, versions,
+):
+    spec = importlib.util.spec_from_file_location(
+        "runtime_export_invalid_compatibility", ROOT / "desktop/scripts/export_locked_runtime.py",
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    (tmp_path / "uv.lock").write_text(
+        '[[package]]\nname = "torch"\nversion = "2.14.0+cpu"\n' + "\n".join(
+            f'[[package]]\nname = "pyjwt"\nversion = "{version}"\n' for version in versions
+        )
+    )
+    monkeypatch.setattr(module, "ROOT", tmp_path)
+    monkeypatch.setattr(module, "DESKTOP", tmp_path / "desktop")
+
+    def unexpected_export(*args, **kwargs):
+        pytest.fail("A missing or ambiguous compatibility lock must not start dependency export")
+
+    monkeypatch.setattr(module.subprocess, "run", unexpected_export)
+    with pytest.raises(SystemExit, match="one locked PyJWT version"):
+        module.main()
+    assert not (tmp_path / "desktop/build").exists()
+
+
 @pytest.mark.parametrize("versions", [[], ["2.14.0", "2.15.1"]])
 def test_windows_runtime_export_rejects_missing_or_ambiguous_jwt_before_export(
     tmp_path, monkeypatch, versions,

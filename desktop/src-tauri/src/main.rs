@@ -426,7 +426,7 @@ fn main() {
                     let state = handle.state::<DesktopState>();
                     if state.exiting.load(Ordering::Acquire) { local.stop(); return Ok(()); }
                     let origin = local.ready.url.trim_end_matches('/').to_string();
-                    let capability = json!({"identifier":"local-workspace","windows":["main"],"local":false,"remote":{"urls":[format!("{origin}/*")]},"permissions":["allow-desktop-info","allow-save-text-export","allow-cloud-request","allow-download-project-file","allow-download-project-files","allow-upload-project-file","allow-project-transfer-action","allow-open-desktop-login","allow-suggestions-status","allow-suggestions-install","allow-suggestions-configure","allow-suggestions-complete","allow-suggestions-cancel"]});
+                    let capability = json!({"identifier":"local-workspace","windows":["main"],"local":false,"remote":{"urls":[format!("{origin}/*")]},"permissions":["allow-desktop-info","allow-save-text-export","allow-save-project-file","allow-cloud-request","allow-download-project-file","allow-download-project-files","allow-upload-project-file","allow-project-transfer-action","allow-open-desktop-login","allow-suggestions-status","allow-suggestions-install","allow-suggestions-configure","allow-suggestions-complete","allow-suggestions-cancel"]});
                     handle.add_capability(capability.to_string()).map_err(|_| "The local workspace permission could not start.")?;
                     *state.local_origin.lock().map_err(|_| "The local workspace is unavailable.")? = Some(origin.clone());
                     *state.runtime.lock().map_err(|_| "The local workspace is unavailable.")? = Some(local);

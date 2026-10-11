@@ -270,15 +270,23 @@ export function createProjectTransferActions(
         }
         if (sequence === refreshSequence)
           publish({
-            transfers: views.map((view) =>
-              snapshot.transfers.some(
-                (item) =>
-                  item.request_id === view.request_id &&
-                  item.state === "cancel_pending",
-              )
-                ? { ...view, state: "cancel_pending" }
-                : view,
-            ),
+            transfers: views.map((view) => {
+              const previous = snapshot.transfers.find(
+                (item) => item.request_id === view.request_id,
+              );
+              return {
+                ...view,
+                // Native list discovers journals without a remote status call.
+                // Retain already verified progress for the same pinned source.
+                acknowledged_bytes: Math.max(
+                  view.acknowledged_bytes,
+                  previous?.acknowledged_bytes ?? 0,
+                ),
+                ...(previous?.state === "cancel_pending"
+                  ? { state: "cancel_pending" as const }
+                  : {}),
+              };
+            }),
             error: "",
           });
       } catch (error) {

@@ -163,7 +163,7 @@ def test_every_failed_replication_is_reported_no_successful_subset(monkeypatch):
     assert all(failure["code"] == "singular_matrix" for failure in error.failures)
 
 
-@pytest.mark.parametrize("options", [{"method": "ml"}, {"method": "pcf"}, {"replications": True},
+@pytest.mark.parametrize("options", [{"method": "pcf"}, {"replications": True},
                                     {"replications": 18}, {"replications": 2000}, {"confidence": 1},
                                     {"confidence": 0}, {"confidence": .999}, {"seed": -1}, {"seed": True},
                                     {"seed": 2**63}, {"anchor": "absent"}, {"missing": "pairwise"}])

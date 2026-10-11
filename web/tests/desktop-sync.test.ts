@@ -24,6 +24,7 @@ function fixture() {
   let selected: DatasetProfile | null = null;
   let chooserCalls = 0;
   const savedInputs: string[] = [];
+  let cachedFiles = [{ cloud_id: "2".repeat(32), dataset_id: "44444444-4444-4444-8444-444444444444", sha256: "b".repeat(64) }];
   let executionOutputs: ConsoleOutput[] = [];
   const session = { token: "local-only", version: "0.3", environment: "local" as const, persistent: true };
   const console = { history: [], variables: [], status: { running: false, session_generation: 1 } };
@@ -42,7 +43,7 @@ function fixture() {
       } else if (path === "/console") result = console;
       else if (path === "/datasets") result = { datasets };
       else if (path.startsWith("/datasets/")) result = datasets.find((file) => path === `/datasets/${file.id}`);
-      else if (path === "/desktop-cached-files") result = { files: [{ cloud_id: "2".repeat(32), sha256: "b".repeat(64) }] };
+      else if (path === "/desktop-cached-files") result = { files: cachedFiles };
       else if (path === "/desktop-outbox") {
         if (options.method === "PUT") outbox.push(body);
         result = { items: [...outbox] };
@@ -107,6 +108,7 @@ function fixture() {
   });
   return {
     client, localCalls, cloudCalls, outbox, savedInputs,
+    cached(value: typeof cachedFiles) { cachedFiles = value; },
     get code() { return code; }, get state() { return state; },
     offline() { online = false; }, online() { online = true; }, deny() { denied = true; },
     remoteChange() { remoteCode = "other = 2"; version++; },
@@ -145,6 +147,20 @@ test("known revoked access prevents native file saving", async () => {
   await assert.rejects(f.client.saveInputFile!("2".repeat(32)), (error) => error instanceof ApiError && error.status === 403);
   assert.deepEqual(f.savedInputs, []);
   f.client.cancelPending();
+});
+
+test("a reopened imported dataset UUID resolves to its exact shared file and refuses foreign or ambiguous mappings", async () => {
+  const f = fixture(); f.downgrade(); await f.client.request("/bootstrap");
+  const id = "44444444-4444-4444-8444-444444444444";
+  await f.client.saveInputFile!(id);
+  assert.deepEqual(f.savedInputs, ["2".repeat(32)]);
+  await assert.rejects(f.client.saveInputFile!(localData.id), /no unique shared file/);
+  f.cached([{ dataset_id: id, cloud_id: "invalid", sha256: "b".repeat(64) }]);
+  await assert.rejects(f.client.saveInputFile!(id), /no unique shared file/);
+  f.cached([2, 3].map(value => ({ dataset_id: id, cloud_id: String(value).repeat(32), sha256: "b".repeat(64) })));
+  await assert.rejects(f.client.saveInputFile!(id), /no unique shared file/);
+  assert.deepEqual(f.savedInputs, ["2".repeat(32)]);
+  assert.equal(f.localCalls.some(call => call.path.includes("/download")), false);
 });
 
 test("desktop execute goes only to the local worker and removes cloud dispatch flag", async () => {

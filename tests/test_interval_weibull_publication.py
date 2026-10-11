@@ -61,15 +61,39 @@ def test_complete_current_main_inventory_and_editor_objects_survive_weibull_addi
     import hashlib
     plan = json.loads((ROOT / "docs/econometrics/merge-gate-sdk-groups-plan-Weibull159-2026-10-10.json").read_text())
     def selectors(source):
-        return ast.literal_eval(next(node.value for node in ast.parse(source).body if isinstance(node, ast.Assign) and any(isinstance(target, ast.Name) and target.id == "TESTS" for target in node.targets)))
+        nodes = ast.parse(source).body
+        result = ast.literal_eval(next(node.value for node in nodes if isinstance(node, ast.Assign)
+            and any(isinstance(target, ast.Name) and target.id == "TESTS" for target in node.targets)))
+        for node in nodes:
+            if isinstance(node, ast.AugAssign) and isinstance(node.target, ast.Name) and node.target.id == "TESTS":
+                assert isinstance(node.op, ast.Add)
+                result += ast.literal_eval(node.value)
+        return result
     original = selectors(subprocess.check_output(["git", "show", plan["actual_main_base"] + ":scripts/verify_merge_candidate.py"], cwd=ROOT))
     inventory = selectors((ROOT / "scripts/verify_merge_candidate.py").read_text())
-    # The Weibull159 receipt is historical. Admit only the later conjoint
-    # bootstrap selector under its own receipt and keep every Weibull159 check exact.
+    # Each later additive scope has its own exact receipt. Keep the historical
+    # 160-selector prefix, then bind the three extraction selectors separately.
     bootstrap = json.loads((ROOT / "docs/econometrics/merge-gate-conjoint-bootstrap160-2026-10-10.json").read_text())
+    extraction = json.loads((ROOT / "docs/econometrics/merge-gate-extraction163-2026-10-11.json").read_text())
     assert bootstrap["appended_selectors"] == ["tests/test_econ_conjoint_bootstrap.py"]
-    assert inventory == bootstrap["complete_selectors"] == bootstrap["previous_selectors"] + bootstrap["appended_selectors"]
-    assert len(inventory) == len(set(inventory)) == 160
+    assert inventory[:160] == bootstrap["complete_selectors"] == bootstrap["previous_selectors"] + bootstrap["appended_selectors"]
+    prefix = selectors(subprocess.check_output([
+        "git", "show", extraction["historical_prefix_source"] + ":scripts/verify_merge_candidate.py",
+    ], cwd=ROOT))
+    assert inventory[:160] == prefix == extraction["historical_prefix"]
+    assert len(prefix) == len(set(prefix)) == extraction["historical_prefix_count"] == 160
+    assert extraction["added_selectors"] == [
+        "tests/test_multivariate_extraction_additional.py",
+        "tests/test_multivariate_complete_oblique_target.py",
+        "tests/test_multivariate_extraction_uncertainty.py",
+    ]
+    selected = json.loads((ROOT / "docs/econometrics/merge-gate-selected-methods168-2026-10-11.json").read_text())
+    assert selected["previous_selectors"] == prefix
+    assert len(selected["complete_selectors"]) == 168
+    assert selected["complete_selectors"] == prefix + selected["appended_selectors"]
+    assert inventory == selected["complete_selectors"] + extraction["added_selectors"]
+    assert len(inventory) == len(set(inventory)) == 171
+    assert len(prefix + extraction["added_selectors"]) == extraction["final_count"] == 163
     current = inventory[:159]
     assert current == bootstrap["previous_selectors"]
     assert current[:156] == original == plan["complete_previous156_selectors"]
@@ -96,12 +120,13 @@ def test_complete_current_main_inventory_and_editor_objects_survive_weibull_addi
     old = generator.decode_catalog(generator.read_catalog_wire(old_raw))
     raw = (ROOT / "web/src/editor-api.json").read_bytes()
     complete = generator.decode_catalog(generator.read_catalog_wire(raw))
-    # Undo the explicitly reviewed later catalogue changes, newest first. The
-    # Ng-Perron entry changes under its own exact before/after receipt, so a
-    # historical Weibull baseline must validate and restore it before comparison.
+    # Validate and undo only explicitly reviewed later changes, newest first.
+    # Preserve main's Ng-Perron binding and this batch's exact two-object receipt.
     approved = ["editor-catalog-methods-wave1-approved-changes.json",
                 "editor-catalog-methods-wave2-approved-changes.json",
-                "editor-catalog-ngperron136-approved-changes.json"]
+                "editor-catalog-ngperron136-approved-changes.json",
+                "editor-catalog-extraction-eight-approved-changes.json",
+                "editor-catalog-selected-methods-approved-changes.json"]
     for name in reversed(approved):
         wave = json.loads((ROOT / "tests/fixtures" / name).read_text())
         current_rows = {row["name"]: row for row in complete}

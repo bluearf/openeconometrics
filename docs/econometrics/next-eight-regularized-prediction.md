@@ -8,6 +8,17 @@ describe that earlier snapshot, not the current source. Supervised extensions
 also have their own later source/evidence records; this document is not their
 current inventory.
 
+**Status update, 11 October 2026:** MARKET-683 has delivered bounded
+[numeric weighted CART and explicit train/validation/test partitions](supervised-cart.md).
+Its training-only adapters, pruning, metrics and saved-state replay are distinct
+from causal-forest nuisance learning. The historical absent-CART statement below
+applies to 7 October only. General random forest (MARKET-686), CHAID/QUEST,
+boosting, MLP/RBF, kNN and SVM remain separate supervised work; the
+[current comparison matrix](comparison-status-2026-10-11.md) records those
+boundaries. Neither a historical native receipt nor the completed CART child
+certifies the complete current application. Licensed vendor execution is not an
+acceptance requirement under [current repository policy](../../AGENTS.md).
+
 The native squared-error ridge, lasso, elastic-net and scalar-response PLS1
 implementations now cover the continuous-outcome foundation of GitHub #33,
 including explicit feature-specific penalties and forced controls. Binomial

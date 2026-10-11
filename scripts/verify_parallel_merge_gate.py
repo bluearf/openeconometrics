@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import ast
 from collections import Counter
+from contextlib import contextmanager, ExitStack
 from datetime import datetime, timezone
 from email.parser import BytesParser
 import hashlib
@@ -1209,6 +1210,17 @@ def full_collection(path, selectors):
     return nodes
 
 
+@contextmanager
+def phase_source_streams(rows):
+    """Own one read-only handle per already verified raw phase source."""
+    with ExitStack() as stack:
+        streams = {}
+        for _, _, path, _ in rows:
+            if path not in streams:
+                streams[path] = stack.enter_context(path.open("rb"))
+        yield streams
+
+
 def distributed_sdk(directory, report, sdk, execution, version, selectors, cases, nodes, root):
     protocol = report.get("phase_report_protocol", 1)
     require(type(protocol) is int and protocol in (1, 2), "Unknown component report protocol")
@@ -1387,15 +1399,16 @@ def distributed_sdk(directory, report, sdk, execution, version, selectors, cases
             and [element_value(element) for element in combined_root.iter("testcase")]
             == [element_value(row[1]) for row in actual],
             "Partial merged JUnit differs from actual raw child contents")
-    with artifact_file(directory, "receipt/" + sdk["phase_timings"]).open("rb") as output:
+    with artifact_file(directory, "receipt/" + sdk["phase_timings"]).open("rb") as output, \
+            phase_source_streams(actual) as streams:
         for _, _, raw_path, (offset, length) in actual:
-            with raw_path.open("rb") as stream:
-                stream.seek(offset)
-                while length:
-                    block = stream.read(min(length, 1024 * 1024))
-                    require(block and output.read(len(block)) == block,
-                            "Partial merged phase bytes differ from actual raw child records")
-                    length -= len(block)
+            stream = streams[raw_path]
+            stream.seek(offset)
+            while length:
+                block = stream.read(min(length, 1024 * 1024))
+                require(block and output.read(len(block)) == block,
+                        "Partial merged phase bytes differ from actual raw child records")
+                length -= len(block)
         require(not output.read(1), "Partial merged phase output has extra records")
     return {"manifest": relative, "manifest_sha256": sha256(path), "kind": manifest["kind"],
             "seconds": manifest["seconds"], "sdk_clock": parent, "groups": checked,
@@ -1928,8 +1941,9 @@ def merge_distributed_rows(results, selectors, output_directory, shard_count=2, 
             xml_path.write_bytes(xml)
             target = phase_path.open("wb")
         try:
-            for _, _, path, (offset, length) in rows:
-                with path.open("rb") as stream:
+            with phase_source_streams(rows) as streams:
+                for _, _, path, (offset, length) in rows:
+                    stream = streams[path]
                     stream.seek(offset)
                     while length:
                         block = stream.read(min(length, 1024 * 1024))

@@ -63,6 +63,8 @@ that could not be confirmed.
 | [mixed.md](mixed.md) | `mixed`, `melogit`, `meprobit`, `mepoisson`, `xtlogit`, `xtprobit`, `xtpoisson`, `xtgee` |
 | [survival.md](survival.md) | `sts`, `stcox`, `stcurve`, `streg`, `ltable` |
 | [teffects.md](teffects.md) | `teffects` (ra, ipw, ipwra, aipw, nnmatch, psmatch), `didregress`, `eventstudy`, `csdid`, `rdrobust`, `rdplot` |
+| [rd-local-randomization.md](rd-local-randomization.md) | `rdrandinf`, `rdwinselect`, `rdsensitivity`, `rdrbounds` (exact or seeded local randomization inference, window selection and sensitivity) |
+| [survey-calibration.md](survey-calibration.md) | `svycal`, `survey_calibrated_*`, `survey_pps_*` (calibration weighting, design covariance and PPS without replacement) |
 
 ### Time series
 

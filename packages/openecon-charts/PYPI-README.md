@@ -4,8 +4,10 @@
 Python dependencies. It accepts column mappings, row records and pandas-style
 tables without requiring pandas. Python 3.10 or later is supported.
 
+These exact alpha packages are distributed as GitHub release assets. The separate PyPI pair remains SDK `0.3.19a1` / charts `0.3.1a1`; the commands below select the GitHub bytes explicitly.
+
 ```sh
-python -m pip install 'openecon-charts==0.3.2a1'
+python -m pip install 'https://github.com/bluearf/openeconometrics/releases/download/v0.3.46-alpha.1/openecon_charts-0.3.2a1-py3-none-any.whl'
 python -m pip check
 ```
 

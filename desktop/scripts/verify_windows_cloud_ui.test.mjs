@@ -13,15 +13,15 @@ import { EXECUTION_CODE, EXECUTION_COMMAND, EXPECTED_STDOUT, canonicalWorkspaceI
   validateBaseline, validateControllerPaths, validateOfflineIdentityReceipt, validateOnlineIdentityReceipt, validatePhaseWorkspaceIdentity, validateQaManifest, workspaceIdentityFromFacts } from './verify_windows_cloud_ui.mjs';
 
 const projectId = '1'.repeat(32);
-const owner = { uid: 'owned-qa-owner', email: 'openecon-qa-owner-abcdef012345@example.com', password: 'private-password-sentinel' };
-const viewer = { uid: 'owned-qa-viewer', email: 'openecon-qa-viewer-abcdef012345@example.com', password: 'other-private-password-sentinel' };
+const owner = { uid: 'owned-qa-owner', email: 'anilsen+openecon-qa-owner-abcdef012345@openeconometrics.com' };
+const viewer = { uid: 'owned-qa-viewer', email: 'anilsen+openecon-qa-viewer-abcdef012345@openeconometrics.com' };
 const options = { 'project-id': projectId };
 const hash = value => createHash('sha256').update(value).digest('hex');
 const profileDigest = 'd'.repeat(64);
 const workspaceIdentity = { schema: 1, verification: 'canonical_existing_directory',
   canonical_path_sha256: 'e'.repeat(64), filesystem_id_sha256: 'f'.repeat(64) };
 const online = {
-  status: 'passed', phase: 'password-open', project_id: projectId,
+  status: 'passed', phase: 'email-open', project_id: projectId,
   native_identity: { profile_sha256: profileDigest, workspace_identity: workspaceIdentity },
   authenticated_identity: { ...observedIdentityReceipt({ sequence: 2, status: 200,
     identity: { uid: owner.uid, email: owner.email, project_id: projectId, role: 'owner' } }, owner, projectId, 'owner', 1),
@@ -239,7 +239,7 @@ test('existing workspace roots resolve parent aliases and require real stable di
 
 test('owner phases preserve both original root digests while viewer refuses either independent alias', () => {
   const originalBytes = JSON.stringify(baseline);
-  for (const phase of ['browser-approval', 'offline-run', 'offline-reopen', 'retry-online'])
+  for (const phase of ['email-open', 'offline-run', 'offline-reopen', 'retry-online'])
     assert.equal(validatePhaseWorkspaceIdentity(phase, workspaceIdentity, baseline), true);
   const separate = { ...workspaceIdentity, canonical_path_sha256: '1'.repeat(64), filesystem_id_sha256: '2'.repeat(64) };
   assert.equal(validatePhaseWorkspaceIdentity('viewer-readback', separate, baseline), true);
@@ -302,13 +302,14 @@ test('phase-end identity refuses a recreated root even when the original path te
   assert.throws(() => requireSeparateWorkspaceIdentity(original, replacement), /distinct canonical/);
 });
 
-test('only exact manifest-owned project and distinct disposable password actors are accepted', () => {
+test('only exact manifest-owned project and distinct disposable email-code actors are accepted', () => {
   const fixture = { projects: [projectId], users: { owner, viewer }, url: 'https://openecon-291739190496.us-central1.run.app' };
   assert.equal(validateQaManifest(fixture, options), fixture);
   for (const rejected of [
     { ...fixture, projects: ['2'.repeat(32)] },
     { ...fixture, users: { owner, viewer: owner } },
     { ...fixture, users: { owner: { ...owner, email: 'human@example.com' }, viewer } },
+    { ...fixture, users: { owner: { ...owner, password: 'forbidden-password-sentinel' }, viewer } },
     { ...fixture, url: 'https://unrelated.example.com' },
     { ...fixture, url: undefined }, { ...fixture, url: '' },
     { ...fixture, url: fixture.url + '/' }, { ...fixture, url: fixture.url + '/?foreign=1' },
@@ -360,7 +361,7 @@ test('reopen/retry cannot promote a foreign, recomputed, online or incomplete ba
 });
 
 test('unsafe CLI ports, reused secret/output paths and unknown options are refused', () => {
-  const args = ['--port', '9230', '--phase', 'password-open', '--state', 'private-state.json', '--output', 'public-receipt.json', '--project-id', projectId, '--project-name', 'openecon-qa-native-share'];
+  const args = ['--port', '9230', '--phase', 'email-open', '--state', 'private-state.json', '--output', 'public-receipt.json', '--project-id', projectId, '--project-name', 'openecon-qa-native-share', '--email-challenge', 'email-request.json', '--mailbox-public', 'mailbox-public.json', '--mailbox-private', 'mailbox-private.pem'];
   assert.equal(parseArguments(args).port, 9230);
   for (const rejected of [
     [...args, '--port', '9222'],
@@ -368,18 +369,18 @@ test('unsafe CLI ports, reused secret/output paths and unknown options are refus
     args.map(value => value === 'public-receipt.json' ? 'private-state.json' : value),
     [...args, '--token', 'private-token-sentinel'],
   ]) assert.throws(() => parseArguments(rejected));
-  const retryArgs = args.map(value => value === 'password-open' ? 'offline-reopen' : value);
+  const retryArgs = args.map(value => value === 'email-open' ? 'offline-reopen' : value);
   assert.throws(() => parseArguments([...retryArgs, '--baseline', 'public-receipt.json']));
   assert.throws(() => parseArguments([...retryArgs, '--baseline', 'private-state.json']));
-  const offlineArgs = args.map(value => value === 'password-open' ? 'offline-run' : value);
+  const offlineArgs = args.map(value => value === 'email-open' ? 'offline-run' : value);
   assert.throws(() => parseArguments(offlineArgs));
   assert.equal(parseArguments([...offlineArgs, '--online-identity', 'original-online.json'])['online-identity'], 'original-online.json');
   for (const path of ['private-state.json', 'public-receipt.json'])
     assert.throws(() => parseArguments([...offlineArgs, '--online-identity', path]));
   assert.throws(() => parseArguments([...args, '--online-identity', 'original-online.json']));
-  const browserArgs = args.map(value => value === 'password-open' ? 'browser-approval' : value);
+  const browserArgs = args.map(value => value === 'email-open' ? 'browser-approval' : value);
   assert.throws(() => parseArguments([...browserArgs, '--browser-port', '9231']));
-  assert.equal(parseArguments([...browserArgs, '--browser-port', '9231', '--online-identity', 'original-online.json']).phase, 'browser-approval');
+  assert.throws(() => parseArguments([...browserArgs, '--browser-port', '9231', '--online-identity', 'original-online.json']));
 });
 
 test('canonical parent, case and inode aliases preserve private state and original proof bytes', async t => {
@@ -532,7 +533,7 @@ test('archive comparison normalizes only omission-label order and protects scien
 test('unsupported host or unprovisioned runner exits before private credentials and prints no passed receipt', () => {
   const sentinel = 'private-token-sentinel';
   const result = spawnSync(process.execPath, [fileURLToPath(new URL('./verify_windows_cloud_ui.mjs', import.meta.url)),
-    '--port', '9230', '--phase', 'password-open', '--state', sentinel,
+    '--port', '9230', '--phase', 'email-open', '--state', sentinel,
     '--output', 'never-created-public-receipt.json', '--project-id', projectId,
     '--project-name', 'openecon-qa-native-share'], { encoding: 'utf8', env: { ...process.env,
       GITHUB_ACTIONS: process.platform === 'win32' ? 'false' : 'true' } });

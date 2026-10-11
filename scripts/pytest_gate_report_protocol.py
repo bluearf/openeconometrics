@@ -167,9 +167,14 @@ def _text_reference(value, node):
         common = 0
         while common < size and value[-common - 1] == node[-common - 1]:
             common += 1
-    literal = [3, value]
-    reference = [2, value[:len(value) - common], common]
-    return reference if common and len(encode(reference)) < len(encode(literal)) else literal
+    # With ASCII JSON escaping, J(value) = J(prefix) + J(suffix) - 2.
+    # The newline-inclusive arrays cost J(value)+5 and J(prefix)+digits+6,
+    # so only escaped suffix bytes can determine the strict shorter choice.
+    # Three or more suffix characters always exceed digits(common)+1 bytes.
+    if common and (common >= 3 or len(_DUMPS(value[-common:], allow_nan=False,
+                                            separators=(",", ":"))) - 2 > len(str(common)) + 1):
+        return [2, value[:len(value) - common], common]
+    return [3, value]
 
 
 def _read_text_reference(value, node):

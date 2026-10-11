@@ -10,6 +10,7 @@ from torch import Tensor
 
 from openecon.analysis_contracts import AnalysisError
 from openecon.resources import plan_workspace
+from openecon.econometrics.resident_cpu import resident_cpu
 from . import common as c
 
 MAX_VARIABLES = 256
@@ -141,6 +142,7 @@ def pca_matrix(values: Any, *, n: int, columns: list[str] | None = None,
 
 
 @c.procedure
+@resident_cpu
 def factor_matrix(values: Any, *, n: int, columns: list[str] | None = None,
                   matrix: str = "correlation", means: Any = None, sds: Any = None, **options):
     """EFA of a summary matrix using the same extraction/rotation kernels as raw data.

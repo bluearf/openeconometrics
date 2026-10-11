@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_commit": "df9979bc414640fe91eaeb71f6166595ccd9c1fc",
+  "source_commit": "a805870d971c0d571f6d5dec79e914b91d6479aa",
   "publication_state": "prepared source snapshot; public access requires separate verification",
   "history": "new snapshot only; private Git history, branches, PRs and issues excluded",
   "research_data": "external fixture bytes excluded; obtain separately from original providers under their terms",
@@ -127,16 +127,16 @@
     },
     {
       "path": "PYPI-README.md",
-      "bytes": 3059,
-      "sha256": "2f24d1f0d8607de915c3ddbc9a91563e465b25a53df08c2a1bfbae9bed7f3003",
+      "bytes": 3637,
+      "sha256": "a23ef49293444071d304dbccafc94825533a79458712ac552c7cd3c82f0e67fb",
       "original_sha256": "2f24d1f0d8607de915c3ddbc9a91563e465b25a53df08c2a1bfbae9bed7f3003",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "README.md",
-      "bytes": 23061,
-      "sha256": "5ecdd72b89d658552c134adb51e0fb5677af5d5905b795bbecb24f183284e3e3",
-      "original_sha256": "d1f75f524629dc752471f81e26cf89394a4389a0052afe206338a610d2ae60ba",
+      "bytes": 24050,
+      "sha256": "f53214151110f0c3e32ed4e584c94d73de832f1cedc0b60996df7c7c6fde9693",
+      "original_sha256": "b0e33f0eb35c3d03d0a8167054fb7fa8646483863bc73a7a88f63ef09f080922",
       "transformed": true
     },
     {
@@ -637,6 +637,34 @@
       "transformed": false
     },
     {
+      "path": "desktop/scripts/qa_mailbox.mjs",
+      "bytes": 6102,
+      "sha256": "3a34a863d3b587d3e2561587d0d1c839f009c8680a8b721f68a53debec0b2f86",
+      "original_sha256": "3a34a863d3b587d3e2561587d0d1c839f009c8680a8b721f68a53debec0b2f86",
+      "transformed": false
+    },
+    {
+      "path": "desktop/scripts/qa_mailbox.test.mjs",
+      "bytes": 2774,
+      "sha256": "840403173cb4218e0f74e0529411476df39be1a3dec47ee47c261e298d56a457",
+      "original_sha256": "840403173cb4218e0f74e0529411476df39be1a3dec47ee47c261e298d56a457",
+      "transformed": false
+    },
+    {
+      "path": "desktop/scripts/qa_mailbox_cli.mjs",
+      "bytes": 1225,
+      "sha256": "59dc3d4d7d05574faf5de045d813cda4ceb2011704af2cfa4559aa94ff048f0d",
+      "original_sha256": "59dc3d4d7d05574faf5de045d813cda4ceb2011704af2cfa4559aa94ff048f0d",
+      "transformed": false
+    },
+    {
+      "path": "desktop/scripts/test_windows_cloud_profile.ps1",
+      "bytes": 3796,
+      "sha256": "49d59a9b7ea1e5bbabe3739bc5a5c3711694c8cca8f9a1b250a7226d8475952b",
+      "original_sha256": "49d59a9b7ea1e5bbabe3739bc5a5c3711694c8cca8f9a1b250a7226d8475952b",
+      "transformed": false
+    },
+    {
       "path": "desktop/scripts/test_windows_webview_attribution.ps1",
       "bytes": 24932,
       "sha256": "f30dd5a5f4410f74f816e3c52efb3c8490fcb809c0a0bf7c5872818728bab463",
@@ -645,23 +673,30 @@
     },
     {
       "path": "desktop/scripts/verify_windows_cloud_ui.md",
-      "bytes": 15081,
-      "sha256": "8b9ecf062ddaf65c79821cd25a19bd6b9de9976c2e041d5759065ffd4a8253c0",
-      "original_sha256": "8b9ecf062ddaf65c79821cd25a19bd6b9de9976c2e041d5759065ffd4a8253c0",
+      "bytes": 4442,
+      "sha256": "521549c59d997046d0479659fd39d42fbd3487b48006342c49a506eec45f5937",
+      "original_sha256": "521549c59d997046d0479659fd39d42fbd3487b48006342c49a506eec45f5937",
       "transformed": false
     },
     {
       "path": "desktop/scripts/verify_windows_cloud_ui.mjs",
-      "bytes": 53667,
-      "sha256": "2b0680765a30eaccd878e8c2d591a727b80301fb6668307e72d1f11e92820abc",
-      "original_sha256": "2b0680765a30eaccd878e8c2d591a727b80301fb6668307e72d1f11e92820abc",
+      "bytes": 55977,
+      "sha256": "cf82d52ccbcdba7c0f12c17da83610996e680c2635d6e01526b6187ffd0fba83",
+      "original_sha256": "cf82d52ccbcdba7c0f12c17da83610996e680c2635d6e01526b6187ffd0fba83",
       "transformed": false
     },
     {
       "path": "desktop/scripts/verify_windows_cloud_ui.test.mjs",
-      "bytes": 37196,
-      "sha256": "38ed502cdc5d1b216d6aadb87c471653cd925e85a8dcaf3cd91275b4bbab2e9d",
-      "original_sha256": "38ed502cdc5d1b216d6aadb87c471653cd925e85a8dcaf3cd91275b4bbab2e9d",
+      "bytes": 37336,
+      "sha256": "9eaabbe15b044a0114052b2b111ab9c0edc218bdb4af48dca3d43e0bc6066386",
+      "original_sha256": "9eaabbe15b044a0114052b2b111ab9c0edc218bdb4af48dca3d43e0bc6066386",
+      "transformed": false
+    },
+    {
+      "path": "desktop/scripts/verify_windows_email_cloud.ps1",
+      "bytes": 21230,
+      "sha256": "587427f1983d4afdd52343baed9c5e0f194f296a8967fa79238cb6227ffe5bbe",
+      "original_sha256": "587427f1983d4afdd52343baed9c5e0f194f296a8967fa79238cb6227ffe5bbe",
       "transformed": false
     },
     {
@@ -694,9 +729,9 @@
     },
     {
       "path": "desktop/scripts/windows_webview_attribution.ps1",
-      "bytes": 19744,
-      "sha256": "17de5da7d5ab0cfe2a0650e9b8e4c2a2574fb436c6e32e0d19553712e805aba5",
-      "original_sha256": "17de5da7d5ab0cfe2a0650e9b8e4c2a2574fb436c6e32e0d19553712e805aba5",
+      "bytes": 20553,
+      "sha256": "453c7b9ccdc78972ab7cf784e296d005b2f2b58f3e0e95df5448561f2bdabfa4",
+      "original_sha256": "453c7b9ccdc78972ab7cf784e296d005b2f2b58f3e0e95df5448561f2bdabfa4",
       "transformed": false
     },
     {
@@ -715,9 +750,9 @@
     },
     {
       "path": "desktop/src-tauri/build.rs",
-      "bytes": 644,
-      "sha256": "0a36bc29b6ec5fc06f60fc703d2f8987a8129be48049e7a6b525d93fd04b8d39",
-      "original_sha256": "0a36bc29b6ec5fc06f60fc703d2f8987a8129be48049e7a6b525d93fd04b8d39",
+      "bytes": 677,
+      "sha256": "17d6cb6b094f6975d41f5113322717d2d9d5e035526f90f655dddd24975d0f93",
+      "original_sha256": "17d6cb6b094f6975d41f5113322717d2d9d5e035526f90f655dddd24975d0f93",
       "transformed": false
     },
     {
@@ -819,6 +854,13 @@
       "transformed": false
     },
     {
+      "path": "desktop/src-tauri/permissions/autogenerated/save_project_file.toml",
+      "bytes": 402,
+      "sha256": "5078481443831e73be715e1578b220765eae68fe7a0399313832d5768e80ce76",
+      "original_sha256": "5078481443831e73be715e1578b220765eae68fe7a0399313832d5768e80ce76",
+      "transformed": false
+    },
+    {
       "path": "desktop/src-tauri/permissions/autogenerated/save_text_export.toml",
       "bytes": 396,
       "sha256": "1e47378277e0b55ff1c5542924683c3a94daf1dbfd512406e9d38f24db7775f5",
@@ -883,9 +925,9 @@
     },
     {
       "path": "desktop/src-tauri/src/export.rs",
-      "bytes": 12516,
-      "sha256": "7900c4f5839ec845b81a478c8ed146c65acae94eed590678418e9684303f4863",
-      "original_sha256": "7900c4f5839ec845b81a478c8ed146c65acae94eed590678418e9684303f4863",
+      "bytes": 12694,
+      "sha256": "bd4cc0a5ed1bf4e11e83c570094f0f67f1ad0b0de603edc4fef954a0363c6ed3",
+      "original_sha256": "bd4cc0a5ed1bf4e11e83c570094f0f67f1ad0b0de603edc4fef954a0363c6ed3",
       "transformed": false
     },
     {
@@ -897,9 +939,9 @@
     },
     {
       "path": "desktop/src-tauri/src/main.rs",
-      "bytes": 22092,
-      "sha256": "5efac1cf9d3a3896e5f38c6b7b68572f61f6f0391c01defc851d24ca9db8c20f",
-      "original_sha256": "5efac1cf9d3a3896e5f38c6b7b68572f61f6f0391c01defc851d24ca9db8c20f",
+      "bytes": 22118,
+      "sha256": "99b4c06c7961299d37092525d569e14ae7d1cc70734e30437f99a790fc438ae1",
+      "original_sha256": "99b4c06c7961299d37092525d569e14ae7d1cc70734e30437f99a790fc438ae1",
       "transformed": false
     },
     {
@@ -1009,16 +1051,16 @@
     },
     {
       "path": "docs/bayesian_var_conjugate.md",
-      "bytes": 15433,
-      "sha256": "718263d09eaaca3e14de2fede5ca164228266df84a18e69c353fef09cc4db633",
-      "original_sha256": "718263d09eaaca3e14de2fede5ca164228266df84a18e69c353fef09cc4db633",
+      "bytes": 16073,
+      "sha256": "88ce8f3479fdc00c7d4e0e02544f2368ce4c148bb06057a1f4c91dbc70b70b71",
+      "original_sha256": "88ce8f3479fdc00c7d4e0e02544f2368ce4c148bb06057a1f4c91dbc70b70b71",
       "transformed": false
     },
     {
       "path": "docs/capabilities.md",
       "bytes": 85992,
-      "sha256": "5452b05b3b0f7eddafedab09209198399a3aa9bf0812238dda84483eeea3bbcb",
-      "original_sha256": "5452b05b3b0f7eddafedab09209198399a3aa9bf0812238dda84483eeea3bbcb",
+      "sha256": "e9baaaf3c60522d03ddbf66cc8c41692601a2544a9c590cd22ef5edd9f55d05d",
+      "original_sha256": "e9baaaf3c60522d03ddbf66cc8c41692601a2544a9c590cd22ef5edd9f55d05d",
       "transformed": false
     },
     {
@@ -1058,16 +1100,16 @@
     },
     {
       "path": "docs/distribution.md",
-      "bytes": 4634,
-      "sha256": "07d366dcac3ffbd37d433b719af5f60094f5ef4acf161f271aca3e171e72a231",
-      "original_sha256": "a23eb68860e5e4fb8492e672ca3370e6a2110ae5dd5fdadf735fd3a04d02add9",
+      "bytes": 6099,
+      "sha256": "c10f876a9bfe95b39be3aaacf2ed99dfcc4246a7c10f434410d29bd8ffce7a47",
+      "original_sha256": "3be5dd980ac4fb5b5d93937367aaa5428efc676966e03e0c2f5e6284377bfac3",
       "transformed": true
     },
     {
       "path": "docs/econometrics/README.md",
-      "bytes": 8689,
-      "sha256": "dd214688722384462dbb6c2c35b32e392e315105e7f1972a444354d9ff20ada4",
-      "original_sha256": "dd214688722384462dbb6c2c35b32e392e315105e7f1972a444354d9ff20ada4",
+      "bytes": 9061,
+      "sha256": "dcd3e5dfa8f3788d3f1f5ffe01dbcbb32c695824bbf445c240011f035107a2f1",
+      "original_sha256": "dcd3e5dfa8f3788d3f1f5ffe01dbcbb32c695824bbf445c240011f035107a2f1",
       "transformed": false
     },
     {
@@ -1142,9 +1184,9 @@
     },
     {
       "path": "docs/econometrics/audited-eight-timeseries-2026-10-07.md",
-      "bytes": 23339,
-      "sha256": "3a979f5cd181304011acfd38e499cc51bd1c4e1b38a09cc6cb1f1954550e99c4",
-      "original_sha256": "52f537e876b93fc88c5e8244acad43e438697133417f89bb85544ff422fa9e46",
+      "bytes": 24650,
+      "sha256": "ae0492134f9040b6d7a39d04e8c176e0223c714f9071593bd32bb8809445e07d",
+      "original_sha256": "e6bfaa66cb5a167a311ad86fc003554e157b64275eca6b71e91074d9c860b198",
       "transformed": true
     },
     {
@@ -1163,16 +1205,16 @@
     },
     {
       "path": "docs/econometrics/bayesian-bma.md",
-      "bytes": 10260,
-      "sha256": "27481115d8b5a8d71b0fa77d2a2c60d775b5b64b2d4fb9c4f404aea99bd3097b",
-      "original_sha256": "27481115d8b5a8d71b0fa77d2a2c60d775b5b64b2d4fb9c4f404aea99bd3097b",
+      "bytes": 11042,
+      "sha256": "e7590973e9d089f1adff8e464c79bd9126c50714dcc86cb20362ce51e541f982",
+      "original_sha256": "e7590973e9d089f1adff8e464c79bd9126c50714dcc86cb20362ce51e541f982",
       "transformed": false
     },
     {
       "path": "docs/econometrics/bayesian-conjugate.md",
-      "bytes": 10821,
-      "sha256": "a8e5f339cc82f52ff3304f30f4d81622ae7572e97e9cc36685e283978d6ea36f",
-      "original_sha256": "a8e5f339cc82f52ff3304f30f4d81622ae7572e97e9cc36685e283978d6ea36f",
+      "bytes": 11778,
+      "sha256": "58279be7307367c06b75009cb3907780566bd2fe8653a4516eda6f0a5785e01e",
+      "original_sha256": "58279be7307367c06b75009cb3907780566bd2fe8653a4516eda6f0a5785e01e",
       "transformed": false
     },
     {
@@ -1198,9 +1240,9 @@
     },
     {
       "path": "docs/econometrics/capabilities.generated.json",
-      "bytes": 783463,
-      "sha256": "bee1ad0f32eb63128445ffdfdd6dccac0638db7b5cf672ce40eb37f4c167b742",
-      "original_sha256": "e65fbfe1dec90f9ce8bbcfb6097e2dc708b1906b38402d240bbaa386a67d6b7a",
+      "bytes": 787288,
+      "sha256": "4ee411f7749b4fa5679f0977232e09ed794f91d263c7c2f4c56777143af55b3c",
+      "original_sha256": "29ee08eccea512d203521b81fb8046bef9f2e75132e526280dbb2f2e34c14edc",
       "transformed": true
     },
     {
@@ -1275,9 +1317,9 @@
     },
     {
       "path": "docs/econometrics/categorical.md",
-      "bytes": 5242,
-      "sha256": "ca8499f3dbf50f1af0be9a0b9b807b88b6eeb4b11e41a06d82a9ad7c86c34ec5",
-      "original_sha256": "ca8499f3dbf50f1af0be9a0b9b807b88b6eeb4b11e41a06d82a9ad7c86c34ec5",
+      "bytes": 5897,
+      "sha256": "a59999dda20e3cc8d7b1a206e59678d8cdceaeff2cf5e9749b44881164169391",
+      "original_sha256": "a59999dda20e3cc8d7b1a206e59678d8cdceaeff2cf5e9749b44881164169391",
       "transformed": false
     },
     {
@@ -1456,6 +1498,104 @@
       "transformed": false
     },
     {
+      "path": "docs/econometrics/comparison-row-contracts.json",
+      "bytes": 100650,
+      "sha256": "3baf656c17614706d26a9c6be67a1dc5dc3d2ce9ebb2b6ae205bec3223a96837",
+      "original_sha256": "3baf656c17614706d26a9c6be67a1dc5dc3d2ce9ebb2b6ae205bec3223a96837",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/comparison-rows.md",
+      "bytes": 9242,
+      "sha256": "4466782e78d17a53996269f17ad8d9c9852ca8d467591dc54c4a60bce073e976",
+      "original_sha256": "4466782e78d17a53996269f17ad8d9c9852ca8d467591dc54c4a60bce073e976",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/comparison-rows/eviews-equations.md",
+      "bytes": 221926,
+      "sha256": "9b80649603d7a0b3020c7882442178fb6c0b71f9ac30958f34f308f9760647ec",
+      "original_sha256": "9b80649603d7a0b3020c7882442178fb6c0b71f9ac30958f34f308f9760647ec",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/comparison-rows/eviews-systems.md",
+      "bytes": 388074,
+      "sha256": "41cf1b66e5172332a60e944ca96ba41348d618ee920fb5c532abd3a682568b00",
+      "original_sha256": "41cf1b66e5172332a60e944ca96ba41348d618ee920fb5c532abd3a682568b00",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/comparison-rows/spss-builtins.md",
+      "bytes": 192713,
+      "sha256": "24868a11a6e996a1021b8d9773213525bb87f5f48252943ea1c1eacd094037a1",
+      "original_sha256": "24868a11a6e996a1021b8d9773213525bb87f5f48252943ea1c1eacd094037a1",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/comparison-rows/spss-extensions.md",
+      "bytes": 254212,
+      "sha256": "2c3a2a3402b4203f037154e2563d8ffe261f1b8b8cf884fb24fb13620cc2a356",
+      "original_sha256": "2c3a2a3402b4203f037154e2563d8ffe261f1b8b8cf884fb24fb13620cc2a356",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/comparison-rows/stata-causal.md",
+      "bytes": 147419,
+      "sha256": "c6458ad7328ebef6166ec7d7cb8f58ccf802dee24edf2cdabeacc4dd8f5a5159",
+      "original_sha256": "c6458ad7328ebef6166ec7d7cb8f58ccf802dee24edf2cdabeacc4dd8f5a5159",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/comparison-rows/stata-community.md",
+      "bytes": 220655,
+      "sha256": "a3f39d5e8e1d6ed9c2aee6d685c05c2c234cd510d979e6345b62b259138830fb",
+      "original_sha256": "a3f39d5e8e1d6ed9c2aee6d685c05c2c234cd510d979e6345b62b259138830fb",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/comparison-rows/stata-discrete.md",
+      "bytes": 151249,
+      "sha256": "e2dc5859cf66e26ae632225b74a35d15f0a985655dd3167092bfa68ce9672ac7",
+      "original_sha256": "e2dc5859cf66e26ae632225b74a35d15f0a985655dd3167092bfa68ce9672ac7",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/comparison-rows/stata-official.md",
+      "bytes": 357232,
+      "sha256": "4e8e2dc5bc9b347f7e249a31dac5c198d78ed76cae2d73f026a8d57db6e7359e",
+      "original_sha256": "4e8e2dc5bc9b347f7e249a31dac5c198d78ed76cae2d73f026a8d57db6e7359e",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/comparison-rows/stata-panel.md",
+      "bytes": 147160,
+      "sha256": "48381df434a756fef7b8c80b3399a596a4a402c0b8a7eb12e9e1f8233cb18d4e",
+      "original_sha256": "48381df434a756fef7b8c80b3399a596a4a402c0b8a7eb12e9e1f8233cb18d4e",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/comparison-rows/stata-regression.md",
+      "bytes": 131868,
+      "sha256": "e36ec9fc767bcfc13f43c5a9ca28334e700742d976f7a7061fb9f2dda1b57851",
+      "original_sha256": "e36ec9fc767bcfc13f43c5a9ca28334e700742d976f7a7061fb9f2dda1b57851",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/comparison-rows/stata-timeseries.md",
+      "bytes": 124056,
+      "sha256": "8991c3a97602f874dbc951f38561ad15797af572e15b2d1cb4282e582b3e2957",
+      "original_sha256": "8991c3a97602f874dbc951f38561ad15797af572e15b2d1cb4282e582b3e2957",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/comparison-status-2026-10-11.md",
+      "bytes": 31771,
+      "sha256": "f666007e3a8f0af3fc96fc4568ac92af4c8e295649b029a5c062ae28fe469699",
+      "original_sha256": "b096f2c92da73cbbe2970223b27aca0eccd2f45b741c506e8609f5e213f2bf46",
+      "transformed": true
+    },
+    {
       "path": "docs/econometrics/conditional-regression.md",
       "bytes": 4642,
       "sha256": "b03d523098f46d8fabc77dc2af58fdf2c431ea5cd0445daa96ef7c67b298e7ff",
@@ -1499,9 +1639,9 @@
     },
     {
       "path": "docs/econometrics/coverage.md",
-      "bytes": 24095,
-      "sha256": "d9666c633da03231477403dc5f29b7f02a5756f9b8bc19791181c8fe1f8e2c63",
-      "original_sha256": "d9666c633da03231477403dc5f29b7f02a5756f9b8bc19791181c8fe1f8e2c63",
+      "bytes": 25600,
+      "sha256": "492458d5d92f29412d5426712cc52a1bd35ad434c95d8c55bf97fb2afc7eaf8a",
+      "original_sha256": "492458d5d92f29412d5426712cc52a1bd35ad434c95d8c55bf97fb2afc7eaf8a",
       "transformed": false
     },
     {
@@ -1792,6 +1932,13 @@
       "transformed": false
     },
     {
+      "path": "docs/econometrics/merge-gate-extraction163-2026-10-11.json",
+      "bytes": 7745,
+      "sha256": "d7e036cae9ff5014890d01d6db361bba7a48ee1beda11c1c54e8d0444b611852",
+      "original_sha256": "d7e036cae9ff5014890d01d6db361bba7a48ee1beda11c1c54e8d0444b611852",
+      "transformed": false
+    },
+    {
       "path": "docs/econometrics/merge-gate-sdk-groups-plan-Weibull156-2026-10-10.json",
       "bytes": 15606,
       "sha256": "822305a8c22d58f0f021d5fbd4488a897b084b053d1e2c221d4ade80735577e9",
@@ -1831,6 +1978,13 @@
       "bytes": 36377234,
       "sha256": "ecebc48bca1f2212c095f2d72362160401ccc229d5f8d7a2b4fcac97cfc61c7b",
       "original_sha256": "ecebc48bca1f2212c095f2d72362160401ccc229d5f8d7a2b4fcac97cfc61c7b",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/merge-gate-selected-methods168-2026-10-11.json",
+      "bytes": 17610,
+      "sha256": "bef65c33b5f6cc0074502e7ce3454875a8063c27cd2a92b9024fdfd8323f55a0",
+      "original_sha256": "bef65c33b5f6cc0074502e7ce3454875a8063c27cd2a92b9024fdfd8323f55a0",
       "transformed": false
     },
     {
@@ -1989,9 +2143,9 @@
     },
     {
       "path": "docs/econometrics/multivariate.md",
-      "bytes": 54891,
-      "sha256": "bf485af2b9ead5d0701d05a02a5da0633924ed2cf3c123c314d9a1f0e4b6efe6",
-      "original_sha256": "bf485af2b9ead5d0701d05a02a5da0633924ed2cf3c123c314d9a1f0e4b6efe6",
+      "bytes": 57632,
+      "sha256": "105cf673eb541d9cdb1a71b9053b15fb61e3e6c48562e54ba3fdf37d4f39b33f",
+      "original_sha256": "105cf673eb541d9cdb1a71b9053b15fb61e3e6c48562e54ba3fdf37d4f39b33f",
       "transformed": false
     },
     {
@@ -2031,16 +2185,16 @@
     },
     {
       "path": "docs/econometrics/next-eight-regularized-prediction.md",
-      "bytes": 9293,
-      "sha256": "b39477e10c372a570e9728be39b889df6de86c80928b45cc3dc542e5672c325c",
-      "original_sha256": "b39477e10c372a570e9728be39b889df6de86c80928b45cc3dc542e5672c325c",
+      "bytes": 10067,
+      "sha256": "0b06efbea3025222b7142d8f9665caed7d026905e7bd13189064e5e6fe750560",
+      "original_sha256": "0b06efbea3025222b7142d8f9665caed7d026905e7bd13189064e5e6fe750560",
       "transformed": false
     },
     {
       "path": "docs/econometrics/next-eight-smoothing-multivariate.md",
-      "bytes": 22709,
-      "sha256": "cadf6084f1995b71273900134a437a10e77c030fab39dd11f3cbe857fe07a262",
-      "original_sha256": "c0046db08d4f5b309fd570ac9a846c5c943f215ae56b3f6abfb9c02b9498499e",
+      "bytes": 24408,
+      "sha256": "e9b9aab76cfe684fea577b63dcd4b0e2e0a8c2f3158716e2879ccda6cd6083e4",
+      "original_sha256": "2142847a36bf3c7e00c738e7e5a53e9dfc5b8fa9d1ca0effa83d16277b5fdcb4",
       "transformed": true
     },
     {
@@ -2181,6 +2335,13 @@
       "bytes": 8631,
       "sha256": "96e4ee0ff1fd53531b6761669cf04c5da5ca5a355379562d97d191cc238ca2bf",
       "original_sha256": "96e4ee0ff1fd53531b6761669cf04c5da5ca5a355379562d97d191cc238ca2bf",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/rd-local-randomization.md",
+      "bytes": 22536,
+      "sha256": "a2fd7fa23ef8b7dcbcd77abae259a581dd4999cee54f77ad91e4325146db5f93",
+      "original_sha256": "a2fd7fa23ef8b7dcbcd77abae259a581dd4999cee54f77ad91e4325146db5f93",
       "transformed": false
     },
     {
@@ -2461,6 +2622,13 @@
       "bytes": 10656,
       "sha256": "3209560c01a4485d63ff4f80ad63513b5ebe8b1ed8fb54ba260401942490b7f3",
       "original_sha256": "3209560c01a4485d63ff4f80ad63513b5ebe8b1ed8fb54ba260401942490b7f3",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/survey-calibration.md",
+      "bytes": 20496,
+      "sha256": "3dc87a7a2b1c281af530eed15733afc2ddf0938f026a5f68b70840ce061d82dd",
+      "original_sha256": "3dc87a7a2b1c281af530eed15733afc2ddf0938f026a5f68b70840ce061d82dd",
       "transformed": false
     },
     {
@@ -2797,6 +2965,13 @@
       "bytes": 2731,
       "sha256": "ad882945567761089fc44a9237b881d3f6a7ec39cde63757576861fb0134f67c",
       "original_sha256": "ad882945567761089fc44a9237b881d3f6a7ec39cde63757576861fb0134f67c",
+      "transformed": false
+    },
+    {
+      "path": "docs/examples/extraction_runtime_eight.py",
+      "bytes": 10435,
+      "sha256": "45eec3cd20cc0381d1f23bf36777c9214ac9e9f392f19331f6712a80d14a7d20",
+      "original_sha256": "45eec3cd20cc0381d1f23bf36777c9214ac9e9f392f19331f6712a80d14a7d20",
       "transformed": false
     },
     {
@@ -8821,9 +8996,9 @@
     },
     {
       "path": "docs/validation/ci-cadence.md",
-      "bytes": 2700,
-      "sha256": "5aed24c0ced612694b88d5f1c5ef1a6ecab5ab83066c9c73f522daa443d71f6e",
-      "original_sha256": "5aed24c0ced612694b88d5f1c5ef1a6ecab5ab83066c9c73f522daa443d71f6e",
+      "bytes": 2936,
+      "sha256": "b788708b38a56453d858990949af69a6d5d82cf614f126cae385590c339b752e",
+      "original_sha256": "b788708b38a56453d858990949af69a6d5d82cf614f126cae385590c339b752e",
       "transformed": false
     },
     {
@@ -8845,6 +9020,20 @@
       "bytes": 2302,
       "sha256": "1d148e07ac8b14ddcf87a39d3b5ad7e49e158c2d842bbd339b369e35d885ac93",
       "original_sha256": "1d148e07ac8b14ddcf87a39d3b5ad7e49e158c2d842bbd339b369e35d885ac93",
+      "transformed": false
+    },
+    {
+      "path": "docs/validation/distribution-status-2026-10-11.json",
+      "bytes": 22195,
+      "sha256": "218b5c61bc55c571eb77ca6d349aebb96b32ba6ae7ea9c550950422adcdd8288",
+      "original_sha256": "218b5c61bc55c571eb77ca6d349aebb96b32ba6ae7ea9c550950422adcdd8288",
+      "transformed": false
+    },
+    {
+      "path": "docs/validation/distribution-status-2026-10-11.md",
+      "bytes": 14714,
+      "sha256": "afe2d4a51c1a99fc48082c87415a12401c7650a37629d47f4c270d90c39c8a23",
+      "original_sha256": "afe2d4a51c1a99fc48082c87415a12401c7650a37629d47f4c270d90c39c8a23",
       "transformed": false
     },
     {
@@ -8904,10 +9093,24 @@
       "transformed": false
     },
     {
+      "path": "docs/validation/multivariate-extraction-eight-2026-10-11.md",
+      "bytes": 3564,
+      "sha256": "23c80bf5df6825d83c3791d60efa3e9302569260a802b1ca366183c625e20a43",
+      "original_sha256": "23c80bf5df6825d83c3791d60efa3e9302569260a802b1ca366183c625e20a43",
+      "transformed": false
+    },
+    {
       "path": "docs/validation/sdk-scheduling-38120796245.json",
       "bytes": 768,
       "sha256": "1a6ff6880e273a3e5f17afae64ce25b8286571ba71a803ed81445e50f5512ed1",
       "original_sha256": "1a6ff6880e273a3e5f17afae64ce25b8286571ba71a803ed81445e50f5512ed1",
+      "transformed": false
+    },
+    {
+      "path": "docs/validation/sdk-scheduling-38153394666.json",
+      "bytes": 842,
+      "sha256": "8ba991184dff8b938c799fcb423c41da29d3f5300533889579884cc77e3acb0b",
+      "original_sha256": "8ba991184dff8b938c799fcb423c41da29d3f5300533889579884cc77e3acb0b",
       "transformed": false
     },
     {
@@ -8919,9 +9122,9 @@
     },
     {
       "path": "docs/windows-hosted-acceptance.md",
-      "bytes": 5935,
-      "sha256": "d14bdb1ae3a5b3206785c37a8c9aabf21e05965ac23c0dd796cb5476b8bdd644",
-      "original_sha256": "d14bdb1ae3a5b3206785c37a8c9aabf21e05965ac23c0dd796cb5476b8bdd644",
+      "bytes": 8547,
+      "sha256": "a1928c18fe508ed65a1f9caf5edef5998b233fb3f546cd556cdc81890a84b57f",
+      "original_sha256": "a1928c18fe508ed65a1f9caf5edef5998b233fb3f546cd556cdc81890a84b57f",
       "transformed": false
     },
     {
@@ -8947,10 +9150,10 @@
     },
     {
       "path": "packages/openecon-charts/PYPI-README.md",
-      "bytes": 2546,
-      "sha256": "422642eaf629d2e5471b9e5e229cb8a79358942872806d33ea7773c8e4ef5598",
+      "bytes": 2831,
+      "sha256": "a707263b3813760659c3db0405d026ed5cf05bfc3b6694b6d3a1d57c9efff729",
       "original_sha256": "422642eaf629d2e5471b9e5e229cb8a79358942872806d33ea7773c8e4ef5598",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "packages/openecon-charts/README.md",
@@ -9625,10 +9828,17 @@
       "transformed": false
     },
     {
+      "path": "scripts/generate_comparison_rows.py",
+      "bytes": 21549,
+      "sha256": "6dffb00bfc6414f497590514ce2ec19af0dedc83a74895e47746ca95c69d94d4",
+      "original_sha256": "6dffb00bfc6414f497590514ce2ec19af0dedc83a74895e47746ca95c69d94d4",
+      "transformed": false
+    },
+    {
       "path": "scripts/generate_editor_api.py",
-      "bytes": 248156,
-      "sha256": "922138c7387c6ade5597861ba2616d31f84eabcadf73210d1cf7d62f3a51adb2",
-      "original_sha256": "922138c7387c6ade5597861ba2616d31f84eabcadf73210d1cf7d62f3a51adb2",
+      "bytes": 248675,
+      "sha256": "711dd3faec5465310fd5973a954ce06f2d8ae6ea3a6004e257de9a8265f93bca",
+      "original_sha256": "711dd3faec5465310fd5973a954ce06f2d8ae6ea3a6004e257de9a8265f93bca",
       "transformed": false
     },
     {
@@ -9885,9 +10095,9 @@
     },
     {
       "path": "scripts/pytest_gate_report_protocol.py",
-      "bytes": 56901,
-      "sha256": "53b220a77afd2567d4abefa44ec5f928df2dce13cb102252048910cddeca377c",
-      "original_sha256": "53b220a77afd2567d4abefa44ec5f928df2dce13cb102252048910cddeca377c",
+      "bytes": 57276,
+      "sha256": "913e27a1d81b336c358cb1bf602cafe7214b1afa0c2867ce42ff20cd5019b7af",
+      "original_sha256": "913e27a1d81b336c358cb1bf602cafe7214b1afa0c2867ce42ff20cd5019b7af",
       "transformed": false
     },
     {
@@ -9913,9 +10123,9 @@
     },
     {
       "path": "scripts/run_parallel_sdk_groups.py",
-      "bytes": 866012,
-      "sha256": "12869fd3fefeeccc0feff0ac2180a92219ffc5dcbb48560c79ee826100e1c5ff",
-      "original_sha256": "12869fd3fefeeccc0feff0ac2180a92219ffc5dcbb48560c79ee826100e1c5ff",
+      "bytes": 857862,
+      "sha256": "067b24b853c7743b45dbbc14154b33152ff64b12ea08385a72cc268c18893914",
+      "original_sha256": "067b24b853c7743b45dbbc14154b33152ff64b12ea08385a72cc268c18893914",
       "transformed": false
     },
     {
@@ -10668,6 +10878,13 @@
       "transformed": false
     },
     {
+      "path": "scripts/verify_extraction_runtime_eight.py",
+      "bytes": 15168,
+      "sha256": "e9e8bbad77ee02e1c4c133ad9e0a6ced167dca599639f297dbb47f89f2640328",
+      "original_sha256": "e9e8bbad77ee02e1c4c133ad9e0a6ced167dca599639f297dbb47f89f2640328",
+      "transformed": false
+    },
+    {
       "path": "scripts/verify_finite_installed.py",
       "bytes": 7454,
       "sha256": "969847c24359f3852582bd20eb957be5107bca185f7717eb2dfddedf14e786f7",
@@ -10816,9 +11033,9 @@
     },
     {
       "path": "scripts/verify_merge_candidate.py",
-      "bytes": 32383,
-      "sha256": "6df9b1fe659722902f6e00720071af70461f00e7dfce7ca0c7229e25c839062b",
-      "original_sha256": "6df9b1fe659722902f6e00720071af70461f00e7dfce7ca0c7229e25c839062b",
+      "bytes": 32923,
+      "sha256": "a8dedaacc81c91468b259e0e390c53207b8c2bc02348106a250c5ed36e0848f3",
+      "original_sha256": "a8dedaacc81c91468b259e0e390c53207b8c2bc02348106a250c5ed36e0848f3",
       "transformed": false
     },
     {
@@ -11110,9 +11327,9 @@
     },
     {
       "path": "scripts/verify_parallel_merge_gate.py",
-      "bytes": 113409,
-      "sha256": "89dc9886eb88cce48494f3456430b75727a711acd72103e0738dd257fb9fbc02",
-      "original_sha256": "89dc9886eb88cce48494f3456430b75727a711acd72103e0738dd257fb9fbc02",
+      "bytes": 113873,
+      "sha256": "a67e87692da0eb21f880d9651bcedfcbc1ee3c1fdae16c7851541bb2d1147f37",
+      "original_sha256": "a67e87692da0eb21f880d9651bcedfcbc1ee3c1fdae16c7851541bb2d1147f37",
       "transformed": false
     },
     {
@@ -11985,9 +12202,9 @@
     },
     {
       "path": "src/openecon/analysis_contracts.py",
-      "bytes": 153310,
-      "sha256": "36406b1c879c3a5f6d369f8f7ba8c5c45bd991b958e4721ed884f67f1923369c",
-      "original_sha256": "36406b1c879c3a5f6d369f8f7ba8c5c45bd991b958e4721ed884f67f1923369c",
+      "bytes": 155456,
+      "sha256": "264c981303f0af6640a97f691ba7c0664381c6460619db3d538ebad3b303b169",
+      "original_sha256": "264c981303f0af6640a97f691ba7c0664381c6460619db3d538ebad3b303b169",
       "transformed": false
     },
     {
@@ -14035,6 +14252,13 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/econometrics/multivariate/extraction_additional.py",
+      "bytes": 9605,
+      "sha256": "137bc2dea7c5f87d30dce96ad1e9fa7941744fad792c97520eca08015ab01a02",
+      "original_sha256": "137bc2dea7c5f87d30dce96ad1e9fa7941744fad792c97520eca08015ab01a02",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/econometrics/multivariate/extraction_extensions.py",
       "bytes": 8844,
       "sha256": "f3278172f02e46e9faf0007a39dd7308ef2e6a068cbc4a6c0c8bb22a5c442fb0",
@@ -14042,10 +14266,17 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/econometrics/multivariate/extraction_uncertainty.py",
+      "bytes": 17532,
+      "sha256": "beaaa49d590addffe3de43bacdb5ff451e344ae4c3334842f0e25ed658dfe91c",
+      "original_sha256": "beaaa49d590addffe3de43bacdb5ff451e344ae4c3334842f0e25ed658dfe91c",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/econometrics/multivariate/factor.py",
-      "bytes": 36135,
-      "sha256": "57b7f60ce537fe171e5a6c976f53702764c78b5be429cd0507142ebdf77df4b4",
-      "original_sha256": "57b7f60ce537fe171e5a6c976f53702764c78b5be429cd0507142ebdf77df4b4",
+      "bytes": 39277,
+      "sha256": "9e3c489079d2f0daabdca4ed7e73e4fd919ebc21539acdd97c2eb31ed3bdbdaa",
+      "original_sha256": "9e3c489079d2f0daabdca4ed7e73e4fd919ebc21539acdd97c2eb31ed3bdbdaa",
       "transformed": false
     },
     {
@@ -14148,9 +14379,9 @@
     },
     {
       "path": "src/openecon/econometrics/multivariate/rotation_extensions.py",
-      "bytes": 16094,
-      "sha256": "0fd7cbd4ec97f7ce6ac92f39ecd8c2a95055c45e2ec0b458fd9052aab00ff50c",
-      "original_sha256": "0fd7cbd4ec97f7ce6ac92f39ecd8c2a95055c45e2ec0b458fd9052aab00ff50c",
+      "bytes": 17909,
+      "sha256": "8ad1efbd199ce784c1c08255ccdf250d6f4d3fc781e9391b277e09ca992bf02b",
+      "original_sha256": "8ad1efbd199ce784c1c08255ccdf250d6f4d3fc781e9391b277e09ca992bf02b",
       "transformed": false
     },
     {
@@ -14176,9 +14407,9 @@
     },
     {
       "path": "src/openecon/econometrics/multivariate/summary.py",
-      "bytes": 8685,
-      "sha256": "72ec004f223697957959a59371d5cb3ac182da6b1bd484eca7790995089e3d43",
-      "original_sha256": "72ec004f223697957959a59371d5cb3ac182da6b1bd484eca7790995089e3d43",
+      "bytes": 8759,
+      "sha256": "cac9b395538d818a63eed4eb9e6c50be4029182b17954ccc9f196d23f3d8b3c9",
+      "original_sha256": "cac9b395538d818a63eed4eb9e6c50be4029182b17954ccc9f196d23f3d8b3c9",
       "transformed": false
     },
     {
@@ -14190,9 +14421,9 @@
     },
     {
       "path": "src/openecon/econometrics/multivariate/uncertainty.py",
-      "bytes": 14478,
-      "sha256": "c83ae027bebed3c6a94d6648b79c0914a7c8d1257cbd423b40a881ab8aff2580",
-      "original_sha256": "c83ae027bebed3c6a94d6648b79c0914a7c8d1257cbd423b40a881ab8aff2580",
+      "bytes": 15211,
+      "sha256": "010e4bf0f6bd4310682bd76a8e5ae1bcf76e2df2165c13e68ff41415dbfce441",
+      "original_sha256": "010e4bf0f6bd4310682bd76a8e5ae1bcf76e2df2165c13e68ff41415dbfce441",
       "transformed": false
     },
     {
@@ -14707,10 +14938,59 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/econometrics/rdlocrand/__init__.py",
+      "bytes": 829,
+      "sha256": "73d07ed554fb3db801159da25a16a255a9925193daa5df44b98e7baa6bc7478f",
+      "original_sha256": "73d07ed554fb3db801159da25a16a255a9925193daa5df44b98e7baa6bc7478f",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/rdlocrand/bounds.py",
+      "bytes": 11260,
+      "sha256": "db0d67a43733582ece415754742c6e5ff1ad94ad007462d26c17f3f51abc05f2",
+      "original_sha256": "db0d67a43733582ece415754742c6e5ff1ad94ad007462d26c17f3f51abc05f2",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/rdlocrand/common.py",
+      "bytes": 12670,
+      "sha256": "c3512ea2e4119dd36f57835dada0678e5d950a143b68b861d7d6fc05ef9589f1",
+      "original_sha256": "c3512ea2e4119dd36f57835dada0678e5d950a143b68b861d7d6fc05ef9589f1",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/rdlocrand/kernels.py",
+      "bytes": 28658,
+      "sha256": "e72706ceffa516383f364b189d8968ad34e86e1cb6a806f3bd43474b711cf59b",
+      "original_sha256": "e72706ceffa516383f364b189d8968ad34e86e1cb6a806f3bd43474b711cf59b",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/rdlocrand/randinf.py",
+      "bytes": 30044,
+      "sha256": "9c0b3b64ec651e42cbe9baae1b575e7ef7019f706982b71091d607dc6042651f",
+      "original_sha256": "9c0b3b64ec651e42cbe9baae1b575e7ef7019f706982b71091d607dc6042651f",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/rdlocrand/sensitivity.py",
+      "bytes": 12165,
+      "sha256": "a24471b199f4a9adb39f904ddb3b600e3ec0248c218377a5379f35fef39c1b81",
+      "original_sha256": "a24471b199f4a9adb39f904ddb3b600e3ec0248c218377a5379f35fef39c1b81",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/rdlocrand/windows.py",
+      "bytes": 27419,
+      "sha256": "37e89b038b74bba15155a42fee5aeaafa6785f32e377393ba2851b6f2a974c82",
+      "original_sha256": "37e89b038b74bba15155a42fee5aeaafa6785f32e377393ba2851b6f2a974c82",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/econometrics/registry.py",
-      "bytes": 21227,
-      "sha256": "20b7db214036ded7c84d5a57eb770bc1d0316e6c840fc7b24bfd0e6bed3cdea1",
-      "original_sha256": "20b7db214036ded7c84d5a57eb770bc1d0316e6c840fc7b24bfd0e6bed3cdea1",
+      "bytes": 21260,
+      "sha256": "692c6a70281812d0dd28564f2b58bc9cb07e0e1c2d9c3ea2bafb692488addfe2",
+      "original_sha256": "692c6a70281812d0dd28564f2b58bc9cb07e0e1c2d9c3ea2bafb692488addfe2",
       "transformed": false
     },
     {
@@ -15943,6 +16223,34 @@
       "bytes": 12697,
       "sha256": "300a6922299692c84aa8d857ffbfaa3a0e4fc8154f842fdd954803f964cc5b66",
       "original_sha256": "300a6922299692c84aa8d857ffbfaa3a0e4fc8154f842fdd954803f964cc5b66",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/survey_calib/__init__.py",
+      "bytes": 768,
+      "sha256": "4826d60f84cdb1c3c8f08668745adde30e6b788ed779ccf2d8cd4be4b0e77d4f",
+      "original_sha256": "4826d60f84cdb1c3c8f08668745adde30e6b788ed779ccf2d8cd4be4b0e77d4f",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/survey_calib/calibration.py",
+      "bytes": 35754,
+      "sha256": "e77a3d5ab9379b8489daf29eb72e46654da1048bad69e1dc51518516db2a4f79",
+      "original_sha256": "e77a3d5ab9379b8489daf29eb72e46654da1048bad69e1dc51518516db2a4f79",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/survey_calib/estimation.py",
+      "bytes": 20786,
+      "sha256": "3f3f486f0f2712a7af34c85e59f47c3c94b673b1cffaba8706d8eb38cda23f88",
+      "original_sha256": "3f3f486f0f2712a7af34c85e59f47c3c94b673b1cffaba8706d8eb38cda23f88",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/survey_calib/pps.py",
+      "bytes": 24197,
+      "sha256": "fc508fbbad397e975c50c4da3d8a84d929bcac42530e8f3eeb4a0857143712b5",
+      "original_sha256": "fc508fbbad397e975c50c4da3d8a84d929bcac42530e8f3eeb4a0857143712b5",
       "transformed": false
     },
     {
@@ -17703,10 +18011,52 @@
       "transformed": false
     },
     {
+      "path": "tests/reference/rdlocrand_reference.R",
+      "bytes": 12095,
+      "sha256": "97f35093086e60f4fbb3832d7059b41307a278ae7c34c0567aeb58350e2e9409",
+      "original_sha256": "97f35093086e60f4fbb3832d7059b41307a278ae7c34c0567aeb58350e2e9409",
+      "transformed": false
+    },
+    {
+      "path": "tests/reference/rdlocrand_review.R",
+      "bytes": 14906,
+      "sha256": "2fb1a27db6768f3794ad50a09db9736bfdd599144fec919e1326c519dfa61e04",
+      "original_sha256": "2fb1a27db6768f3794ad50a09db9736bfdd599144fec919e1326c519dfa61e04",
+      "transformed": false
+    },
+    {
       "path": "tests/reference/supervised_cart_fixed_inputs.py",
       "bytes": 7070,
       "sha256": "f61862182bed0693fd3b00b9581a1d70996dfe8002fbc72753ebd78540b1f077",
       "original_sha256": "f61862182bed0693fd3b00b9581a1d70996dfe8002fbc72753ebd78540b1f077",
+      "transformed": false
+    },
+    {
+      "path": "tests/reference/survey_calib_calibrate.R",
+      "bytes": 3470,
+      "sha256": "c96f833e8fe6a11913649ebb9658f6ce1ec8d7afc9d4896d651a2d68091605e7",
+      "original_sha256": "c96f833e8fe6a11913649ebb9658f6ce1ec8d7afc9d4896d651a2d68091605e7",
+      "transformed": false
+    },
+    {
+      "path": "tests/reference/survey_calib_pps.R",
+      "bytes": 3937,
+      "sha256": "7b00c7d10be34f7f5068f0c8e356c7ecfbdc78c5daaed2525e45691164d40795",
+      "original_sha256": "7b00c7d10be34f7f5068f0c8e356c7ecfbdc78c5daaed2525e45691164d40795",
+      "transformed": false
+    },
+    {
+      "path": "tests/reference/survey_calib_review.R",
+      "bytes": 10362,
+      "sha256": "f3d54e6d9c394e216363cad0aa3fd8cefd7363ff57aef561ea885394979db3ec",
+      "original_sha256": "f3d54e6d9c394e216363cad0aa3fd8cefd7363ff57aef561ea885394979db3ec",
+      "transformed": false
+    },
+    {
+      "path": "tests/reference/survey_calib_samplics.py",
+      "bytes": 2012,
+      "sha256": "5bcfa263a0f803bbdaf47ad4ee1fd7436ba6f040c5dbff625f8500f702c297ec",
+      "original_sha256": "5bcfa263a0f803bbdaf47ad4ee1fd7436ba6f040c5dbff625f8500f702c297ec",
       "transformed": false
     },
     {
@@ -18334,9 +18684,9 @@
     },
     {
       "path": "tests/test_deploy_build_metadata.py",
-      "bytes": 7474,
-      "sha256": "91d06e6e388b8ad5f940b41048f1f677dbdf6c861201ad192cfb214ccf02f972",
-      "original_sha256": "91d06e6e388b8ad5f940b41048f1f677dbdf6c861201ad192cfb214ccf02f972",
+      "bytes": 8602,
+      "sha256": "1d00ef9268f80791f83b8eb9147958c3eedf9831631008f317fa591f0b126f9d",
+      "original_sha256": "1d00ef9268f80791f83b8eb9147958c3eedf9831631008f317fa591f0b126f9d",
       "transformed": false
     },
     {
@@ -20378,9 +20728,9 @@
     },
     {
       "path": "tests/test_editor_api_catalog.py",
-      "bytes": 206597,
-      "sha256": "fc6de0c4c0b8605736bf88c2ca9eb28576bc8c21d9a750dd056fb5c718f204d6",
-      "original_sha256": "fc6de0c4c0b8605736bf88c2ca9eb28576bc8c21d9a750dd056fb5c718f204d6",
+      "bytes": 214441,
+      "sha256": "c05f1a2ca0cf2ebde81aed6a7c1396cc5ead12b03c1d87cc18623a9766316cf5",
+      "original_sha256": "c05f1a2ca0cf2ebde81aed6a7c1396cc5ead12b03c1d87cc18623a9766316cf5",
       "transformed": false
     },
     {
@@ -20609,9 +20959,9 @@
     },
     {
       "path": "tests/test_interval_weibull_publication.py",
-      "bytes": 7978,
-      "sha256": "7dcc2c1016aeff97fe3db5757c3155938f2b61d9ffdc440fdadc586c323e0d40",
-      "original_sha256": "7dcc2c1016aeff97fe3db5757c3155938f2b61d9ffdc440fdadc586c323e0d40",
+      "bytes": 9523,
+      "sha256": "c59682bda60d8302604a84c9089755ff87cb8f4749911c9bea99a45fb7bec5a7",
+      "original_sha256": "c59682bda60d8302604a84c9089755ff87cb8f4749911c9bea99a45fb7bec5a7",
       "transformed": false
     },
     {
@@ -20784,9 +21134,9 @@
     },
     {
       "path": "tests/test_merge_gate.py",
-      "bytes": 121947,
-      "sha256": "ab24aa7c2f3c279c502f97756c577b8ec80a0e6b8554943427c580aa08d4303e",
-      "original_sha256": "ab24aa7c2f3c279c502f97756c577b8ec80a0e6b8554943427c580aa08d4303e",
+      "bytes": 126315,
+      "sha256": "a30a4a46709f5977655a7e6ce3f6a68f587e1c15710abf76a8de1c0fa0e0c51f",
+      "original_sha256": "a30a4a46709f5977655a7e6ce3f6a68f587e1c15710abf76a8de1c0fa0e0c51f",
       "transformed": false
     },
     {
@@ -20909,6 +21259,13 @@
       "transformed": false
     },
     {
+      "path": "tests/test_multivariate_complete_oblique_target.py",
+      "bytes": 7205,
+      "sha256": "cc6dd27bf3850081e029acb1b44af68502805e3d933772852f3617b1c011c2a7",
+      "original_sha256": "cc6dd27bf3850081e029acb1b44af68502805e3d933772852f3617b1c011c2a7",
+      "transformed": false
+    },
+    {
       "path": "tests/test_multivariate_discrim_options.py",
       "bytes": 26842,
       "sha256": "755d371367083772e12aed4613067b0ebd7f6d8c564827c2e4851495e8ca9bcd",
@@ -20930,10 +21287,24 @@
       "transformed": false
     },
     {
+      "path": "tests/test_multivariate_extraction_additional.py",
+      "bytes": 19990,
+      "sha256": "38d6819ac247f8b2e2c880766a8f36a5162bf68a44f4e9303300556ba31784ec",
+      "original_sha256": "38d6819ac247f8b2e2c880766a8f36a5162bf68a44f4e9303300556ba31784ec",
+      "transformed": false
+    },
+    {
       "path": "tests/test_multivariate_extraction_extensions.py",
       "bytes": 10288,
       "sha256": "4876662d77e353312cc454356196c182f19412e01762d3b30515429db1182545",
       "original_sha256": "4876662d77e353312cc454356196c182f19412e01762d3b30515429db1182545",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_multivariate_extraction_uncertainty.py",
+      "bytes": 21284,
+      "sha256": "02cfb1e668d6853a84b6d8a3e79052d925d4d39854fe779b58113a1002175f1c",
+      "original_sha256": "02cfb1e668d6853a84b6d8a3e79052d925d4d39854fe779b58113a1002175f1c",
       "transformed": false
     },
     {
@@ -20994,9 +21365,9 @@
     },
     {
       "path": "tests/test_multivariate_uncertainty.py",
-      "bytes": 13215,
-      "sha256": "43a71712e9c26e6b70b5053e629c7e7c539e2c92a92eee31975adafe255e8398",
-      "original_sha256": "43a71712e9c26e6b70b5053e629c7e7c539e2c92a92eee31975adafe255e8398",
+      "bytes": 13197,
+      "sha256": "80a7810e32584440babe2810780ce3ab15496b4bc10182a2970b61192ac5e11d",
+      "original_sha256": "80a7810e32584440babe2810780ce3ab15496b4bc10182a2970b61192ac5e11d",
       "transformed": false
     },
     {
@@ -21596,16 +21967,16 @@
     },
     {
       "path": "tests/test_parallel_merge_gate.py",
-      "bytes": 123931,
-      "sha256": "7eeb90d487dadd53e2b79aaefa84bfff2f8ed5a1b73cf7313f5f46baf86daf8f",
-      "original_sha256": "7eeb90d487dadd53e2b79aaefa84bfff2f8ed5a1b73cf7313f5f46baf86daf8f",
+      "bytes": 129978,
+      "sha256": "c0eeb0390cc7ea01d717e1322d181bf821d133a80e29c4a871507a2441d03177",
+      "original_sha256": "c0eeb0390cc7ea01d717e1322d181bf821d133a80e29c4a871507a2441d03177",
       "transformed": false
     },
     {
       "path": "tests/test_parallel_sdk_groups.py",
-      "bytes": 147867,
-      "sha256": "11b8a2cc499e786035e2dd5662e2f20c242459c4fb8c798a3cb77e0450f12c50",
-      "original_sha256": "11b8a2cc499e786035e2dd5662e2f20c242459c4fb8c798a3cb77e0450f12c50",
+      "bytes": 150174,
+      "sha256": "a12c213e649eb593260379147b11bed516393d7e482e0c96130decdf7f4981cb",
+      "original_sha256": "a12c213e649eb593260379147b11bed516393d7e482e0c96130decdf7f4981cb",
       "transformed": false
     },
     {
@@ -21743,9 +22114,9 @@
     },
     {
       "path": "tests/test_pytest_gate_timings.py",
-      "bytes": 24161,
-      "sha256": "2a037b3454cd90b161d2cd320343e1c775c87b16755110a4f5647f2894ffd014",
-      "original_sha256": "2a037b3454cd90b161d2cd320343e1c775c87b16755110a4f5647f2894ffd014",
+      "bytes": 28015,
+      "sha256": "56e19965e75597422980b40ccc10691213ae12f94a3cd917cea0f7f9f2879fd4",
+      "original_sha256": "56e19965e75597422980b40ccc10691213ae12f94a3cd917cea0f7f9f2879fd4",
       "transformed": false
     },
     {
@@ -21802,6 +22173,34 @@
       "bytes": 13222,
       "sha256": "bc4931827faa4ad339972adf0f9cae79f91cdadfa7a27aa6e7f2c6b80984a717",
       "original_sha256": "bc4931827faa4ad339972adf0f9cae79f91cdadfa7a27aa6e7f2c6b80984a717",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_rdlocrand_kernels.py",
+      "bytes": 16583,
+      "sha256": "35f92ffc0c7f8314234b5b998a316cad3304b0a24c4c9281242e9bf124a11e96",
+      "original_sha256": "35f92ffc0c7f8314234b5b998a316cad3304b0a24c4c9281242e9bf124a11e96",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_rdlocrand_procedures.py",
+      "bytes": 16760,
+      "sha256": "efde707246892c75d74a698de5c7c8c84bbb5baef99da48ebf049e2dd9387f16",
+      "original_sha256": "efde707246892c75d74a698de5c7c8c84bbb5baef99da48ebf049e2dd9387f16",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_rdlocrand_reference.py",
+      "bytes": 26827,
+      "sha256": "10b6f974195886d4e46f099a5a22190a9b5b4a2cb98149aad1898b544c4ab532",
+      "original_sha256": "10b6f974195886d4e46f099a5a22190a9b5b4a2cb98149aad1898b544c4ab532",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_rdlocrand_review.py",
+      "bytes": 39751,
+      "sha256": "15ce683910a37ef7607fda6ce9faff1d49260423d426a96ab18c70999ee4a8fe",
+      "original_sha256": "15ce683910a37ef7607fda6ce9faff1d49260423d426a96ab18c70999ee4a8fe",
       "transformed": false
     },
     {
@@ -22285,6 +22684,34 @@
       "bytes": 1685,
       "sha256": "4d2479325328670c2db563e267d101499ff2315341758cd175d23a86590d96bd",
       "original_sha256": "4d2479325328670c2db563e267d101499ff2315341758cd175d23a86590d96bd",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_survey_calib_calibration.py",
+      "bytes": 25219,
+      "sha256": "9cb67115d29164a64e97b37389dd71fff563c874a9c4bbfec56bf3b2b9015d82",
+      "original_sha256": "9cb67115d29164a64e97b37389dd71fff563c874a9c4bbfec56bf3b2b9015d82",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_survey_calib_estimation.py",
+      "bytes": 16544,
+      "sha256": "f16733913eab4ecac46a2319d6fda8021ee1083c5c4fc0a3007e53976f3faf43",
+      "original_sha256": "f16733913eab4ecac46a2319d6fda8021ee1083c5c4fc0a3007e53976f3faf43",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_survey_calib_pps.py",
+      "bytes": 22469,
+      "sha256": "690c4f05214e1d24110f3bf51563d39c465178087a856cc430dd3fb2f4d4bbf9",
+      "original_sha256": "690c4f05214e1d24110f3bf51563d39c465178087a856cc430dd3fb2f4d4bbf9",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_survey_calib_review.py",
+      "bytes": 30847,
+      "sha256": "df7df58a05d4182eb2c184c8a3ffa128381d9d8ede0c5a28ed026a79cfb715e3",
+      "original_sha256": "df7df58a05d4182eb2c184c8a3ffa128381d9d8ede0c5a28ed026a79cfb715e3",
       "transformed": false
     },
     {
@@ -22877,9 +23304,9 @@
     },
     {
       "path": "web/src/App.tsx",
-      "bytes": 87119,
-      "sha256": "aaf63dbc2636e60ca580a7b67001b842ac05abd2cfc1c2e1c0b2babb42f8b16c",
-      "original_sha256": "aaf63dbc2636e60ca580a7b67001b842ac05abd2cfc1c2e1c0b2babb42f8b16c",
+      "bytes": 87222,
+      "sha256": "6c9c2e85a3c62261f94657561b0782f78bac3acb72e4f511c25b2fcffbb673ba",
+      "original_sha256": "6c9c2e85a3c62261f94657561b0782f78bac3acb72e4f511c25b2fcffbb673ba",
       "transformed": false
     },
     {
@@ -22975,9 +23402,9 @@
     },
     {
       "path": "web/src/ProjectTransfers.tsx",
-      "bytes": 3501,
-      "sha256": "83151e69183ccc8654217101a1e8909ebba4f603395f7c9b6cd4ab13568894df",
-      "original_sha256": "83151e69183ccc8654217101a1e8909ebba4f603395f7c9b6cd4ab13568894df",
+      "bytes": 4475,
+      "sha256": "98e0f913258bd58af2316b0b91e795ff22b64f8dd9c4cb88620ddab2bc7d9b65",
+      "original_sha256": "98e0f913258bd58af2316b0b91e795ff22b64f8dd9c4cb88620ddab2bc7d9b65",
       "transformed": false
     },
     {
@@ -23052,9 +23479,9 @@
     },
     {
       "path": "web/src/desktop-sync.ts",
-      "bytes": 48358,
-      "sha256": "13b9737a72e92ed144cd5a6bd2a21c3e2ec9f21d575f9a16df310819f517bdfb",
-      "original_sha256": "13b9737a72e92ed144cd5a6bd2a21c3e2ec9f21d575f9a16df310819f517bdfb",
+      "bytes": 49075,
+      "sha256": "928ea05b8c34b146e8046fae6f6efa9cbfb4188d13944f5a2df3281189c90715",
+      "original_sha256": "928ea05b8c34b146e8046fae6f6efa9cbfb4188d13944f5a2df3281189c90715",
       "transformed": false
     },
     {
@@ -23066,9 +23493,9 @@
     },
     {
       "path": "web/src/editor-api.json",
-      "bytes": 526771,
-      "sha256": "1a1b89fad2053aafbd370b54b3ce6c9fab53d11064648baaf8048e61949380ab",
-      "original_sha256": "1a1b89fad2053aafbd370b54b3ce6c9fab53d11064648baaf8048e61949380ab",
+      "bytes": 538161,
+      "sha256": "e5531bd14692d05e72b55f8496a4b494ee868ce27b2a3844224dfa3470a635c6",
+      "original_sha256": "e5531bd14692d05e72b55f8496a4b494ee868ce27b2a3844224dfa3470a635c6",
       "transformed": false
     },
     {
@@ -23080,9 +23507,9 @@
     },
     {
       "path": "web/src/editor-api.wire.ts",
-      "bytes": 561567,
-      "sha256": "be92a94e139b6cf37dbf9a5d678313aee429b10e6578bdb2eb3e75995a98e213",
-      "original_sha256": "be92a94e139b6cf37dbf9a5d678313aee429b10e6578bdb2eb3e75995a98e213",
+      "bytes": 573811,
+      "sha256": "d1b495675653233f65c761179fadeaa41590e8f7be2afbffbf6cc0f4e2b095e8",
+      "original_sha256": "d1b495675653233f65c761179fadeaa41590e8f7be2afbffbf6cc0f4e2b095e8",
       "transformed": false
     },
     {
@@ -23304,9 +23731,9 @@
     },
     {
       "path": "web/src/project-transfers.ts",
-      "bytes": 13243,
-      "sha256": "ef8a581926c08e56e4e14f41c24c7dab753cf1538bdec038de2c50bb7d5452ca",
-      "original_sha256": "ef8a581926c08e56e4e14f41c24c7dab753cf1538bdec038de2c50bb7d5452ca",
+      "bytes": 13639,
+      "sha256": "0d68101325a62eefb6b9b1685ef5878ee2961b7434f44fa21ca6af048205da86",
+      "original_sha256": "0d68101325a62eefb6b9b1685ef5878ee2961b7434f44fa21ca6af048205da86",
       "transformed": false
     },
     {
@@ -23402,9 +23829,9 @@
     },
     {
       "path": "web/tests/desktop-bridge.test.ts",
-      "bytes": 1502,
-      "sha256": "20bfab52d0d7fe14dd6f595badefefd2b5cdacee7d41857cc3cc2ebeb99c09a3",
-      "original_sha256": "20bfab52d0d7fe14dd6f595badefefd2b5cdacee7d41857cc3cc2ebeb99c09a3",
+      "bytes": 3122,
+      "sha256": "e3c5e32da524979142993402f7d1080d71a0a1402b37b03707fae4e67c636ed8",
+      "original_sha256": "e3c5e32da524979142993402f7d1080d71a0a1402b37b03707fae4e67c636ed8",
       "transformed": false
     },
     {
@@ -23416,9 +23843,9 @@
     },
     {
       "path": "web/tests/desktop-sync.test.ts",
-      "bytes": 24123,
-      "sha256": "4927f12c39f1c20695e601ed96ca84869816e919dcc1415c6399136123796c1f",
-      "original_sha256": "4927f12c39f1c20695e601ed96ca84869816e919dcc1415c6399136123796c1f",
+      "bytes": 25201,
+      "sha256": "bbd848fd309edbd0c1974651103cec15f5b4b35517e7c01d69a410b449c23076",
+      "original_sha256": "bbd848fd309edbd0c1974651103cec15f5b4b35517e7c01d69a410b449c23076",
       "transformed": false
     },
     {
@@ -23444,9 +23871,9 @@
     },
     {
       "path": "web/tests/editor-catalog-shapes.test.ts",
-      "bytes": 23459,
-      "sha256": "ad8715143f9c167e1ee09bf8b71cd2f6f36f25502259e44c2794658acbdd5688",
-      "original_sha256": "ad8715143f9c167e1ee09bf8b71cd2f6f36f25502259e44c2794658acbdd5688",
+      "bytes": 30595,
+      "sha256": "1f18a4b34298a15ba582b5fcd3f56f020fce069a2e7f818c9fae89708cdac399",
+      "original_sha256": "1f18a4b34298a15ba582b5fcd3f56f020fce069a2e7f818c9fae89708cdac399",
       "transformed": false
     },
     {
@@ -23745,9 +24172,9 @@
     },
     {
       "path": "web/tests/project-transfers-ui.test.ts",
-      "bytes": 9855,
-      "sha256": "68d7bce1bde0d1590283fe3d41c73cd67141e7ae96d60d48bd1d5bac58f97466",
-      "original_sha256": "68d7bce1bde0d1590283fe3d41c73cd67141e7ae96d60d48bd1d5bac58f97466",
+      "bytes": 12491,
+      "sha256": "29fad4d42dcdbaafe2e112d3f287e92624ec8682ca5bc0d72aa250509436021c",
+      "original_sha256": "29fad4d42dcdbaafe2e112d3f287e92624ec8682ca5bc0d72aa250509436021c",
       "transformed": false
     },
     {
@@ -24112,6 +24539,11 @@
       "document": "docs/econometrics/causal-sensitivity.md",
       "target": "docs/evidence/causal-sensitivity-eight-2026-10-07/README.md",
       "label": "delivery evidence"
+    },
+    {
+      "document": "docs/econometrics/comparison-status-2026-10-11.md",
+      "target": "docs/evidence/interval-weibull-covariate-2026-10-10/README.md",
+      "label": "its dated evidence"
     },
     {
       "document": "docs/econometrics/dataset_stages.md",
@@ -24632,6 +25064,7 @@
     ".github/workflows/openecon-desktop.yml",
     ".github/workflows/survey-deff-windows.yml",
     ".github/workflows/windows-cloud-qa-guards.yml",
+    ".github/workflows/windows-email-cloud.yml",
     ".github/workflows/windows-ui-diagnostic.yml",
     "Dockerfile",
     "deploy/cloudbuild-control.yaml",
@@ -28455,6 +28888,610 @@
     "docs/evidence/multivariate-extension-eight-2026-10-07/source-reopen.log",
     "docs/evidence/multivariate-extension-eight-2026-10-07/source-scientific.log",
     "docs/evidence/multivariate-extension-eight-2026-10-07/source-scientific.xml",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/README.md",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/ambient-device-tests-first.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/ambient-device-tests-first.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/ambient-grad-review-first.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/capability-check-final.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/capability-preservation-final.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/capability-preservation-final.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/catalogue-gate-tests-repaired.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/catalogue-gate-tests-repaired.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/catalogue-gate-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/catalogue-gate-tests.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/catalogue-selector-tests-final.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/catalogue-selector-tests-final.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/cleanup-execution.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/cleanup-plan.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/cleanup.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/complete-results.json.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/current-base-capability-check.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/current-base-comparison-check.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/current-base-editor-check.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/current-base-generated-and-scope-checks.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/current171-integration-bridge.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/deployment-metadata-merge-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/deployment-metadata-merge-tests.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/deployment-metadata-review-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/deployment-metadata-review-tests.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/editor-check-final.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/editor-preservation.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/environment.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/evidence-assembly-final.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/evidence-assembly.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/evidence-copy-index.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/extraction-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/extraction-tests.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/final-cleanup-and-source-readback.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/frozen-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/frozen-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/frozen-verification.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-first-failure/aggregate-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-first-failure/aggregate.zip",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-first-failure/first-failure-log-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-first-failure/job-114501028338-failure-excerpt.log",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-first-failure/job-114501028338.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-first-failure/provider-aggregate-failure-check.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-first-failure/provider-artifacts.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-first-failure/provider-jobs-final.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-first-failure/provider-jobs.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-first-failure/provider-run-latest.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-first-failure/provider-run.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/aggregate-provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/aggregate-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/all-sdk-cohort-diagnostics.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/cohort-diagnosis.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/fourth-failure-summary.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/preflight-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/provider-aggregate-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/provider-aggregate-failure-check.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/provider-artifacts-final.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/provider-checks-final.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/provider-jobs-final.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/provider-run-final.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/pytest-3.11-timings.jsonl.report-terminal.json.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/pytest-3.11.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/pytest-3.13-timings.jsonl.report-terminal.json.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/pytest-3.13.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/receipt-packages.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/receipt-pytest-3.11.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/receipt-sdk-3.11-groups-group-0-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/receipt-sdk-3.11-groups-group-0-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/receipt-sdk-3.11-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/receipt-sdk-3.11.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-0/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/receipt-packages.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/receipt-pytest-3.11.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/receipt-sdk-3.11-groups-group-1-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/receipt-sdk-3.11-groups-group-1-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/receipt-sdk-3.11-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/receipt-sdk-3.11.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-1/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/receipt-packages.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/receipt-pytest-3.11.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/receipt-sdk-3.11-groups-group-2-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/receipt-sdk-3.11-groups-group-2-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/receipt-sdk-3.11-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/receipt-sdk-3.11.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-2/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/receipt-packages.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/receipt-pytest-3.11.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/receipt-sdk-3.11-groups-group-3-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/receipt-sdk-3.11-groups-group-3-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/receipt-sdk-3.11-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/receipt-sdk-3.11.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.11-shard-3/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/receipt-packages.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/receipt-pytest-3.13.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/receipt-sdk-3.13-groups-group-0-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/receipt-sdk-3.13-groups-group-0-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/receipt-sdk-3.13-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/receipt-sdk-3.13.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-0/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/receipt-packages.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/receipt-pytest-3.13.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/receipt-sdk-3.13-groups-group-1-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/receipt-sdk-3.13-groups-group-1-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/receipt-sdk-3.13-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/receipt-sdk-3.13.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-1/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/receipt-packages.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/receipt-pytest-3.13.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/receipt-sdk-3.13-groups-group-2-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/receipt-sdk-3.13-groups-group-2-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/receipt-sdk-3.13-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/receipt-sdk-3.13.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-2/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/receipt-packages.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/receipt-pytest-3.13.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/receipt-sdk-3.13-groups-group-3-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/receipt-sdk-3.13-groups-group-3-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/receipt-sdk-3.13-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/receipt-sdk-3.13.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/python-3.13-shard-3/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/sdk-clock-summary.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/teaching-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-fourth-failure/union-phase-costs.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/aggregate-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/all-failed-sdk-diagnostics.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/merge-gate-38150674078-1-aggregate.zip",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/provider-aggregate-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/provider-aggregate-failure-check.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/provider-artifacts-final.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/provider-jobs-final.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/provider-run-final.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-0/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-0/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-0/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-0/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-0/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-0/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-0/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-0/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-0/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-0/receipt-sdk-3.11-groups-group-0-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-0/receipt-sdk-3.11-groups-group-0-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-0/receipt-sdk-3.11-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-0/receipt-sdk-3.11.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-0/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-0/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-0/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-1/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-1/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-1/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-1/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-1/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-1/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-1/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-1/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-1/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-1/receipt-sdk-3.11-groups-group-1-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-1/receipt-sdk-3.11-groups-group-1-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-1/receipt-sdk-3.11-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-1/receipt-sdk-3.11.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-1/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-1/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-1/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-2/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-2/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-2/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-2/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-2/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-2/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-2/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-2/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-2/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-2/receipt-sdk-3.11-groups-group-2-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-2/receipt-sdk-3.11-groups-group-2-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-2/receipt-sdk-3.11-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-2/receipt-sdk-3.11.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-2/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-2/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-2/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-3/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-3/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-3/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-3/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-3/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-3/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-3/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-3/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-3/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-3/receipt-sdk-3.11-groups-group-3-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-3/receipt-sdk-3.11-groups-group-3-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-3/receipt-sdk-3.11-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-3/receipt-sdk-3.11.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-3/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-3/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.11-shard-3/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-0/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-0/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-0/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-0/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-0/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-0/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-0/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-0/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-0/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-0/receipt-sdk-3.13-groups-group-0-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-0/receipt-sdk-3.13-groups-group-0-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-0/receipt-sdk-3.13-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-0/receipt-sdk-3.13.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-0/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-0/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-0/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-1/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-1/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-1/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-1/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-1/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-1/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-1/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-1/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-1/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-1/receipt-sdk-3.13-groups-group-1-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-1/receipt-sdk-3.13-groups-group-1-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-1/receipt-sdk-3.13-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-1/receipt-sdk-3.13.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-1/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-1/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-1/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-2/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-2/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-2/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-2/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-2/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-2/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-2/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-2/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-2/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-2/receipt-sdk-3.13-groups-group-2-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-2/receipt-sdk-3.13-groups-group-2-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-2/receipt-sdk-3.13-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-2/receipt-sdk-3.13.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-2/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-2/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-2/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-3/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-3/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-3/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-3/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-3/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-3/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-3/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-3/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-3/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-3/receipt-sdk-3.13-groups-group-3-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-3/receipt-sdk-3.13-groups-group-3-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-3/receipt-sdk-3.13-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-3/receipt-sdk-3.13.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-3/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-3/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/python-3.13-shard-3/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-second-failure/second-failure-summary.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-source-frozen-bridge.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/aggregate-provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/aggregate-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/all-sdk-cohort-diagnostics.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/cohort-diagnosis.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/preflight-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/provider-aggregate-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/provider-aggregate-failure-check.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/provider-artifacts-final.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/provider-checks-final.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/provider-jobs-final.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/provider-run-final.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/pytest-3.11-timings.jsonl.report-terminal.json.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/pytest-3.11.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/pytest-3.13-timings.jsonl.report-terminal.json.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/pytest-3.13.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/receipt-packages.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/receipt-pytest-3.11.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/receipt-sdk-3.11-groups-group-0-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/receipt-sdk-3.11-groups-group-0-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/receipt-sdk-3.11-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/receipt-sdk-3.11.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-0/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/receipt-packages.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/receipt-pytest-3.11.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/receipt-sdk-3.11-groups-group-1-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/receipt-sdk-3.11-groups-group-1-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/receipt-sdk-3.11-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/receipt-sdk-3.11.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-1/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/receipt-packages.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/receipt-pytest-3.11.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/receipt-sdk-3.11-groups-group-2-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/receipt-sdk-3.11-groups-group-2-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/receipt-sdk-3.11-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/receipt-sdk-3.11.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-2/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/receipt-packages.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/receipt-pytest-3.11.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/receipt-sdk-3.11-groups-group-3-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/receipt-sdk-3.11-groups-group-3-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/receipt-sdk-3.11-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/receipt-sdk-3.11.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.11-shard-3/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/receipt-packages.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/receipt-pytest-3.13.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/receipt-sdk-3.13-groups-group-0-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/receipt-sdk-3.13-groups-group-0-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/receipt-sdk-3.13-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/receipt-sdk-3.13.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-0/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/receipt-packages.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/receipt-pytest-3.13.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/receipt-sdk-3.13-groups-group-1-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/receipt-sdk-3.13-groups-group-1-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/receipt-sdk-3.13-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/receipt-sdk-3.13.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-1/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/receipt-packages.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/receipt-pytest-3.13.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/receipt-sdk-3.13-groups-group-2-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/receipt-sdk-3.13-groups-group-2-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/receipt-sdk-3.13-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/receipt-sdk-3.13.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-2/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/diagnostic-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/failures.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/provider-artifact.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/provider-job.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/provider-job.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/receipt-capabilities.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/receipt-editor.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/receipt-packages.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/receipt-pytest-3.13.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/receipt-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/receipt-ruff.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/receipt-sdk-3.13-groups-group-3-pytest.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/receipt-sdk-3.13-groups-group-3-pytest.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/receipt-sdk-3.13-groups-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/receipt-sdk-3.13.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/receipt-web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/receipt-web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/python-3.13-shard-3/receipt-web-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/sdk-clock-summary.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/teaching-report.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/third-failure-summary.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/union-phase-costs.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/validator-io-microprofile.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/full-third-failure/validator-phase-parser-microprofile.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/host-reference-invocation-failure.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/hosted-failure-diagnosis.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/incoming171-gate-fixtures.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/incoming171-gate-fixtures.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/incoming171-sdk-fixtures.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/incoming171-sdk-fixtures.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/initial-kernel-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/initial-kernel-tests.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/issues-created.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/latest-main-capability-check.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/latest-main-comparison-check.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/latest-main-desktop-node-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/latest-main-editor-check.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/latest-main-generated-checks.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/latest-main-integration-bridge.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/latest-main-scheduling.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/latest-main-scheduling.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/lint-final.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/merged171-catalogue-preservation.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/merged171-catalogue-publication-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/merged171-catalogue-publication-tests.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/merged171-catalogue-validation-summary.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/merged171-reachable-capability-check.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/merged171-reachable-comparison-check.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/merged171-reachable-editor-check.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/merged171-web-catalogue-history-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/negative-cases.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/ownership-before.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/pre-final-stale-base-quick-verification.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/primary-reference.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/protocol-length-shortcut-tests-final.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/protocol-length-shortcut-tests-final.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/quick-first-failure.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/quick-second-failure.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/rotation-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/rotation-tests.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/runtime-manifest.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/scientific-module-hashes.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/selector-migration-tests-final.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/selector-migration-tests-final.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/sha256.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/source-bridge.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/source-example-final.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/source-initial-results-failures.json.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/source-initial-results-inputs.json.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/source-initial-results-results.json.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/source-integration-final.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/source-integration-final.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/source-integration.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/source-integration.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/source-reference-receipt-final.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/source-reference-receipt.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/source-reference.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/source-test-summary-final.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/source-test-summary.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/source.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/stale-base-38157149087-stale-base-rejection.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/stale-base-38157149087-verification-execution.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/stale-base-38157149087-verification.stderr",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/stale-base-38157149087-verification.stdout",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/synthetic-inputs.json.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/test-attempt-index.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/text-reference-equivalence-microbenchmark.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/tiny-scale-review-first.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/uncertainty-review-tests-final.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/uncertainty-review-tests-final.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/uncertainty-review-tests-first.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/uncertainty-review-tests-first.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/uncertainty-rotation-tests-final.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/uncertainty-rotation-tests-final.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/uncertainty-rotation-tests-first.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/uncertainty-rotation-tests-first.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/uncertainty-rotation-tests-typed.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/uncertainty-rotation-tests-typed.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/uncertainty-rotation-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/uncertainty-rotation-tests.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/validation-summary.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/validator-stream-reuse-tests.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/validator-stream-reuse-tests.xml.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/verification-context.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/web-build.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/web-catalogue-history-tests-final.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/web-dependency-ci.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/web-dependency-recheck-cleanup.json",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/web-install.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/web-tests-final.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/web-tests-without-dependencies.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/weibull-merged-binding.log.gz",
+    "docs/evidence/multivariate-extraction-eight-2026-10-11/weibull-merged-binding.xml.gz",
     "docs/evidence/multivariate-score-contrasts-eight-2026-10-10/README.md",
     "docs/evidence/multivariate-score-contrasts-eight-2026-10-10/boundaries-preservation.log",
     "docs/evidence/multivariate-score-contrasts-eight-2026-10-10/boundaries-preservation.xml",
@@ -31389,6 +32426,7 @@
     "tests/fixtures/editor-catalog-current1329-whole-logical.json",
     "tests/fixtures/editor-catalog-current6f2-BVAR1365-bindings.json",
     "tests/fixtures/editor-catalog-current6f2-before-BVAR1251-compact.json",
+    "tests/fixtures/editor-catalog-extraction-eight-approved-changes.json",
     "tests/fixtures/editor-catalog-intern-original-v1-negative-fixtures.json",
     "tests/fixtures/editor-catalog-intern-v2-pair-order.json",
     "tests/fixtures/editor-catalog-intern-whole-source-bindings.json",
@@ -31404,6 +32442,7 @@
     "tests/fixtures/editor-catalog-methods-wave2-approved-changes.json",
     "tests/fixtures/editor-catalog-ngperron136-approved-changes.json",
     "tests/fixtures/editor-catalog-score-contrasts1395-bindings.json",
+    "tests/fixtures/editor-catalog-selected-methods-approved-changes.json",
     "tests/fixtures/editor-catalog-shapes-full-bindings.json",
     "tests/fixtures/editor-catalog-shapes-v1.json",
     "tests/fixtures/extended_mixed/README.md",
@@ -31489,13 +32528,25 @@
     "tests/fixtures/unitroot_hegy/simulated_critical_values.json",
     "tests/fixtures/unitroot_hegy/uroot_reference.json"
   ],
-  "source_files_sha256": "96c1f89b4a3c2eea51e919adc055aef37bb256a7f380e95db9d5b9cb377b0bf3",
+  "source_files_sha256": "a9c7fcfb9c3f780eef212b2bde169a7c7870f17beda866bc6a883ee93662ab28",
   "publication_documentation_transforms": [
     {
       "path": "README.md",
-      "snapshot_sha256": "d1f75f524629dc752471f81e26cf89394a4389a0052afe206338a610d2ae60ba",
-      "published_sha256": "5ecdd72b89d658552c134adb51e0fb5677af5d5905b795bbecb24f183284e3e3",
-      "reason": "Retain previously verified published registry pair; the new pair remains a prepared candidate until publication is verified."
+      "snapshot_sha256": "b0e33f0eb35c3d03d0a8167054fb7fa8646483863bc73a7a88f63ef09f080922",
+      "published_sha256": "f53214151110f0c3e32ed4e584c94d73de832f1cedc0b60996df7c7c6fde9693",
+      "reason": "Correct frozen alpha package versions and select explicit GitHub artifacts; retain the separately verified immutable PyPI pair. Production code and Python examples are unchanged."
+    },
+    {
+      "path": "PYPI-README.md",
+      "snapshot_sha256": "2f24d1f0d8607de915c3ddbc9a91563e465b25a53df08c2a1bfbae9bed7f3003",
+      "published_sha256": "a23ef49293444071d304dbccafc94825533a79458712ac552c7cd3c82f0e67fb",
+      "reason": "Correct frozen alpha package versions and select explicit GitHub artifacts; retain the separately verified immutable PyPI pair. Production code and Python examples are unchanged."
+    },
+    {
+      "path": "packages/openecon-charts/PYPI-README.md",
+      "snapshot_sha256": "422642eaf629d2e5471b9e5e229cb8a79358942872806d33ea7773c8e4ef5598",
+      "published_sha256": "a707263b3813760659c3db0405d026ed5cf05bfc3b6694b6d3a1d57c9efff729",
+      "reason": "Correct frozen alpha package versions and select explicit GitHub artifacts; retain the separately verified immutable PyPI pair. Production code and Python examples are unchanged."
     }
   ]
 }

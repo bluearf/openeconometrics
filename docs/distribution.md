@@ -6,32 +6,40 @@ without installing the web server, CLI, MCP or additional file readers.
 ## Published PyPI alpha
 
 The published public package pair is
-[openecon 0.3.18a4](https://pypi.org/project/openecon/0.3.18a4/) and
-[openecon-charts 0.3.0a2](https://pypi.org/project/openecon-charts/0.3.0a2/).
-It follows the reviewed public snapshot and its `SOURCE-MANIFEST.json`.
+[openecon 0.3.19a1](https://pypi.org/project/openecon/0.3.19a1/) and
+[openecon-charts 0.3.1a1](https://pypi.org/project/openecon-charts/0.3.1a1/),
+published on 9 October 2026. It follows the
+[reviewed Python release](https://github.com/bluearf/openeconometrics/releases/tag/python-v0.3.19a1)
+and its `SOURCE-MANIFEST.json`, rather than the newer development checkout.
 Use an explicit prerelease version pin on Python 3.11–3.14:
 
 ```sh
-python -m pip install 'openecon==0.3.18a4'
+python -m pip install 'openecon==0.3.19a1'
 ```
 
-The SDK requires exactly `openecon-charts==0.3.0a2`. For charts alone, run
-`python -m pip install 'openecon-charts==0.3.0a2'`; it has no required Python dependencies.
+The SDK requires exactly `openecon-charts==0.3.1a1`. For charts alone, run
+`python -m pip install 'openecon-charts==0.3.1a1'`; it has no required Python dependencies.
 
 | Installation | Included application layer |
 | --- | --- |
-| `python -m pip install 'openecon==0.3.18a4'` | Scientific library and openecon-charts |
-| `python -m pip install 'openecon[files]==0.3.18a4'` | Excel and Stata readers |
-| `python -m pip install 'openecon[cli]==0.3.18a4'` | Command-line interface |
-| `python -m pip install 'openecon[server]==0.3.18a4'` | Local HTTP workspace service |
-| `python -m pip install 'openecon[agent]==0.3.18a4'` | MCP service |
-| `python -m pip install 'openecon[app]==0.3.18a4'` | Files, CLI, server and agent together |
-| `python -m pip install 'openecon[desktop]==0.3.18a4'` | Application plus bundled pip/uv tooling |
-| `python -m pip install 'openecon[cloud]==0.3.18a4'` | Application plus authentication/storage services |
+| `python -m pip install 'openecon==0.3.19a1'` | Scientific library and openecon-charts |
+| `python -m pip install 'openecon[files]==0.3.19a1'` | Excel and Stata readers |
+| `python -m pip install 'openecon[cli]==0.3.19a1'` | Command-line interface |
+| `python -m pip install 'openecon[server]==0.3.19a1'` | Local HTTP workspace service |
+| `python -m pip install 'openecon[agent]==0.3.19a1'` | MCP service |
+| `python -m pip install 'openecon[app]==0.3.19a1'` | Files, CLI, server and agent together |
+| `python -m pip install 'openecon[desktop]==0.3.19a1'` | Application plus bundled pip/uv tooling |
+| `python -m pip install 'openecon[cloud]==0.3.19a1'` | Application plus authentication/storage services |
 
 The table describes optional Python layers for the published version. Native
-Mac installers are available through the
-[public GitHub releases](https://github.com/bluearf/openeconometrics/releases).
+Mac and Windows installers have separate source pins and acceptance. The public
+Mac **0.3.43** bundles SDK **0.3.18a1** / charts **0.3.0a1**. Windows **0.3.45**
+bundles SDK **0.3.19a1** / charts **0.3.1a1**, but its newer build source differs
+from the PyPI pair despite equal package version strings. Read each
+[public release's provenance](https://github.com/bluearf/openeconometrics/releases)
+before installation. The [dated distribution ledger](validation/distribution-status-2026-10-11.md)
+records source/build/tag pins, artifact hashes, producer runs, acceptance layers
+and the anonymous download readback.
 
 ## Current source and release acceptance
 
@@ -45,10 +53,21 @@ locked runtime exporter select their extras explicitly.
 
 Desktop candidate **0.3.46** retains its own installed-app and public-release
 acceptance. Mac installers require Apple Silicon and macOS 15 or later;
-Developer ID signing and notarization remain pending. Method-specific device
+Developer ID signing and notarization are deferred until Apple Developer Program
+enrollment; internal ad-hoc signed Mac alpha acceptance is permitted. Method-specific device
 contracts retain their documented scope: supported Mac Metal factors use float32
 preconditioning with CPU float64 refinement, MPS float64 inference is unsupported,
-and physical NVIDIA/CUDA acceptance remains open.
+and physical NVIDIA/CUDA acceptance is deferred and is not a prerequisite for
+this CPU alpha. GitHub-hosted Windows acceptance is sufficient; a physical
+Windows PC is not required. Licensed Stata/SPSS/EViews executables are not
+required for scientific validation, which retains independent analytical,
+development-reference and synthetic-fixture evidence without a vendor-parity claim.
+
+The [11 October ledger](validation/distribution-status-2026-10-11.md) separates
+quick checks, the scheduled daily full gate, manual release validation and the
+Windows installer workflow by exact tested source. A failed full run remains
+failed even when another source's quick check passes. New source methods are not
+automatically present in the older published installers or PyPI packages.
 
 Missing extras produce an install hint naming the required extra. CSV/Parquet
 readers remain in the scientific layer; Excel/Stata reads require `files`.

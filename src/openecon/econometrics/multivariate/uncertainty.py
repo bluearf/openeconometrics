@@ -112,22 +112,29 @@ def factor_bootstrap(data: Any, columns: list[str], *, method: str = "pf",
                      replications: int = 199, confidence: float = .95,
                      seed: int = 0, anchor: str | None = None,
                      missing: str = "drop") -> TableSet:
-    """Marginal iid bootstrap intervals for fixed one-factor principal factoring.
+    """Marginal iid bootstrap intervals for a fixed one-factor functional.
+
+    ``method`` is pf (the historical default), ml, minres, alpha,
+    image_covariance or generalized_image. Non-PF methods additionally require
+    method-specific strict local extraction regularity in the point and every
+    refit. ML intervals concern the fitted estimator functional, not posterior
+    latent scores. Iterative methods use their fixed documented starts and
+    require interior local solutions; no global optimizer claim is made.
 
     Every replicate resamples complete raw rows, recalculates their moments and
-    refits ``factor(..., method='pf', factors=1, rotate=None)``. A single recorded
+    refits ``factor(..., method=method, factors=1, rotate=None)``. A single recorded
     loading anchor fixes the otherwise arbitrary sign. Complete replicate
     loading/uniqueness vectors give joint sample covariance (divisor B-1), SEs
     and marginal percentile intervals with linear quantile interpolation.
 
-    The inferential target is the principal-factor estimator functional under
+    For pf, the inferential target is the principal-factor estimator functional under
     iid complete-case sampling, fixed p, finite fourth moments, nonsingular
     population correlation away from its boundary, separated leading
     eigenvalues, an anchor away from zero and interior positive uniqueness.
     These population assumptions are not verified by a finite observed sample.
     These are first-order bootstrap intervals; neither a familywise region nor
     finite-sample coverage is claimed. P-values and inference df are unavailable.
-    Factor selection, rotations, ML, weights, clusters and summary/Dataset input
+    Factor selection, rotations, weights, clusters and summary/Dataset input
     are unsupported. Any failed replicate refuses the whole result; none are
     silently removed. Raw complete sample and every replicate parameter persist.
 
@@ -142,6 +149,10 @@ def factor_bootstrap(data: Any, columns: list[str], *, method: str = "pf",
     >>> result.attrs['successful_replications']
     39
     """
+    if method != "pf":
+        from .extraction_uncertainty import extraction_bootstrap
+        return extraction_bootstrap(data, columns, method=method, replications=replications,
+                                    confidence=confidence, seed=seed, anchor=anchor, missing=missing)
     names = c.name_list(columns, "columns", minimum=3)
     c.check_choice(method, "method", ("pf",))
     replications = c.check_count(replications, "replications", minimum=19, maximum=MAX_REPLICATIONS)

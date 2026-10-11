@@ -855,3 +855,46 @@ so that a discrepancy can be traced:
 - Rao, C. R. (1973). *Linear Statistical Inference and Its Applications*, 2nd ed.
 - Torgerson, W. S. (1952). Multidimensional scaling: I. Theory and method.
   *Psychometrika* 17.
+
+
+## Additional fixed extraction and local target domains
+
+`factor(..., method="gls", factors=m)` minimizes the uniqueness-scaled
+concentrated half squared tail-root discrepancy. It keeps optimized uniquenesses
+above the declared .005 bound and requires an interior strict local minimum,
+stationarity and separated retained generalized roots. Three deterministic
+starts and all attempt diagnostics persist. No model chi-square or loading SE
+is inferred from its optimization curvature. This is distinct from fixed-R
+inverse weighted-residual GLS. CPU float64, at most 32 variables, three-start
+iteration/curvature work guards, and explicit factor count are required.
+
+`method="generalized_image"` uses `D=diag(1/diag(R^-1))`, eigenpairs `(V,gamma)`
+of `D^-1/2 R D^-1/2`, and `L=sqrt(D) V (gamma-1)/sqrt(gamma)`. All retained roots
+must exceed one and be separated from the discarded subspace. Full conditional,
+image/anti-image and generalized matrices persist. This is distinct from
+existing `image_covariance` PCA. Both methods support resident/summary/bounded
+Dataset point inputs and existing literal integer-frequency moments.
+
+`rotate="target", target_oblique=True` fits an all-cell full-rank finite target,
+with unit factor variances and caller axis order/signs. The gradient and full
+local tangent identify a stationary solution. Global optimality or globally
+unique oblique orientation is not claimed; orthogonal full targets keep their
+existing exact Procrustes route.
+
+`factor_bootstrap(..., method=...)` additionally supports **ml, minres, alpha,
+image_covariance and generalized_image** for a fixed unrotated one-factor
+estimator functional. Every complete-case IID draw refits its moments and
+method; full joint loading/uniqueness covariance, SE, bias, marginal linear
+percentile intervals and every row index/parameter/diagnostic persist. ML and
+minres require at least four variables and strict interior local curvature;
+alpha requires a regular fixed-point chart; image methods require the relevant
+spectral gap. Every draw must pass, otherwise the whole uncertainty result is
+refused with full failure denominator and successful vectors. The observed
+checks do not establish population regularity or finite-sample coverage.
+No p/df, latent posterior, selected counts/rotations, weights/clusters or
+summary/Dataset bootstrap is provided. Bounds: 10000 physical rows, 16 variables,
+19–1999 draws, 250M method-aware work, 32 MiB complete portable result.
+
+The exact convention and independent formulas come from
+[IBM FACTOR Algorithms](https://public.dhe.ibm.com/software/analytics/spss/support/Stats/Docs/Statistics/Algorithms/14.0/factor.pdf),
+pp.3–6/8–9. This is a method-level contract, not vendor execution parity.

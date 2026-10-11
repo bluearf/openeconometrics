@@ -1,6 +1,19 @@
 # Exhaustive proper Gaussian Bayesian model averaging
 
-MARKET-690 is a bounded part of MARKET-362. This family averages a **declared finite set of all optional subsets**. Public lazy exports, capability metadata and offline editor help expose the fit, prediction, independent draws and typed replay APIs. Installed application execution and merge/tracker acceptance remain separate gates. It does not complete the Bayesian parent.
+MARKET-690 is a completed bounded part of the open MARKET-362 parent, integrated
+by [PR #229](https://github.com/bluearf/openecon/pull/229) at
+`2f2548ed6489acca2519d9cca7e967bc60fdae89`. This family averages a **declared finite
+set of all optional subsets**. Public lazy exports, capability metadata and
+offline editor help expose the fit, prediction, independent draws and typed
+replay APIs. It does not complete the Bayesian parent.
+
+**Status update, 11 October 2026:** the old integration/native-pending wording
+predated that child delivery. Its scientific and application evidence remains
+bound to the source/runtime identified in the delivery record; completion does
+not certify a later whole application or public release. The
+[current comparison matrix](comparison-status-2026-10-11.md) separates those
+layers and the remaining Bayesian scope. HMC (MARKET-685) is still an open
+integration and acceptance stage, not an existing merged sampler.
 
 ## Model and sample contract
 
@@ -59,13 +72,22 @@ Before allocation or expensive parent replay, guards validate complete schemas, 
 
 Capacity limits are implementation resource contracts: at most 10,000 source/query rows, 256 models, 10,000 draws, and 2,000,000 planned complete array values. The default work bound is 100,000,000 conservative units and declared workspace bound 256 MiB, both additionally limited by the current global workspace. Query matrices and output can exhaust capacity long before the row ceiling. The exact expanded metadata geometry of recursive labels/names and all unused index levels/categories is streamed with O(depth) temporary storage before descriptor construction. Shared tuple objects are counted per portable occurrence; compact RangeIndex descriptors remain compact.
 
-## Verification and outstanding gates
+## Verification and remaining family scope
 
 The source tests cover an independent observation-space NIG law, full model/inclusion/parameter/query covariance, exact atom quantiles, high-shape 100-digit evidence, stable heavy-tail moments, sample/index/dtype binding, strict structural-zero forgery, ambient RNG/defaults and measured parser/copy/indent admission. The standalone oracle reads actual exported state using NumPy/SciPy observation covariance and complete finite-mixture laws without importing a production estimator or replay.
 
 `bayesian-bma-calibration-plan.json` prospectively fixes all 256 replications, priors, model odds, physical design, seeds, six randomized PIT targets, three inclusion residuals, failure denominator and wrong-law controls. Overall family-error upper bound .05 is allocated .025 to the six-target DKW family and .025 to the three-target bounded Hoeffding family. Initial pre-run draft and the prospective allocation correction are retained; no thresholds/targets/seeds change after results. Calibration is not a claim about all priors, sample sizes or model spaces.
 
-The production model uses proper per-model priors, distinct from many packages' default g-prior/Occam-window/MC3 implementations. Original-author BMA package equivalence is not claimed. Installed native acceptance has its own source-pinned execution and persistence gate. Hierarchical hyperpriors, shrinkage mixtures, nonlinear/non-Gaussian BMA, BVAR, MC3/search and general Bayesian predictive scoring remain separate parent gates. Existing HMC and exact conditional hypothesis stages remain unchanged.
+The production model uses proper per-model priors, distinct from many packages'
+default g-prior/Occam-window/MC3 implementations. Original-author BMA package
+equivalence is not claimed. Installed native evidence has its own source-pinned
+execution and persistence receipt. Hierarchical hyperpriors, shrinkage mixtures,
+nonlinear/non-Gaussian BMA, MC3/search and general Bayesian predictive scoring
+remain separate parent stages. The delivered
+[conjugate BVAR](../bayesian_var_conjugate.md) and
+[exact conditional point-null comparison](bayesian-hypothesis.md) have their own
+bounded contracts; HMC remains pending. Licensed vendor execution is not required
+by [current acceptance policy](../../AGENTS.md).
 
 ## Primary references
 

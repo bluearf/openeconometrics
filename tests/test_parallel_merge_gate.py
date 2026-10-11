@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import ast
 import copy
+from contextlib import contextmanager
 from datetime import datetime, timezone
 import hashlib
 import importlib.util
@@ -27,6 +29,46 @@ SPEC = importlib.util.spec_from_file_location(
 validator = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(validator)
 SELECTORS = ['tests/test_econ_saved_prediction_linear.py', 'tests/test_control_function_common_prediction.py', 'tests/test_streaming_control_function_engine.py', 'tests/test_control_stream_acceptance.py', 'tests/test_nested_logit_independent.py', 'tests/test_control_function_stream_state.py', 'packages/openecon-charts/tests', 'tests/test_parallel_sdk_groups.py', 'tests/test_bayesian_hypothesis_oracles.py', 'tests/test_bayesian_hypothesis_state.py', 'tests/test_latent_sem_lifecycle.py', 'tests/test_latent_sem_math.py', 'tests/test_latent_sem_state.py', 'tests/test_dynamic_factor.py', 'tests/test_finite_mixture.py', 'tests/test_weakiv_clr_math.py', 'tests/test_weakiv_clr_state.py', 'tests/test_supervised.py', 'tests/test_supervised_integration_lifecycle.py', 'tests/test_five_model_public_integration.py', 'tests/test_bayesian_var_conjugate.py', 'tests/test_bayesian_var_sbc_protocol.py', 'tests/test_bayesian_var_public_integration.py', 'tests/test_bayesian_var_public_admission_v2.py', 'tests/test_editor_catalog_intern_v2.py']
+
+
+def _assert_extraction_selector_extension(selectors, partition):
+    plan = json.loads((ROOT / "docs/econometrics/merge-gate-extraction163-2026-10-11.json").read_text())
+    assert plan["historical_prefix_source"] == "ba011676f4c254745e8edde1dcd03a7692fe5a2a"
+    before = subprocess.check_output([
+        "git", "show", plan["historical_prefix_source"] + ":scripts/verify_merge_candidate.py",
+    ], cwd=ROOT)
+    historical = ast.literal_eval(next(node.value for node in ast.parse(before).body
+        if isinstance(node, ast.Assign) and any(isinstance(target, ast.Name)
+            and target.id == "TESTS" for target in node.targets)))
+    added = ["tests/test_multivariate_extraction_additional.py",
+             "tests/test_multivariate_complete_oblique_target.py",
+             "tests/test_multivariate_extraction_uncertainty.py"]
+    assert historical == plan["historical_prefix"]
+    assert len(historical) == len(set(historical)) == plan["historical_prefix_count"] == 160
+    assert added == plan["added_selectors"]
+    historical_complete = historical + added
+    assert len(historical_complete) == len(set(historical_complete)) == plan["final_count"] == 163
+    incoming_plan = json.loads((ROOT / "docs/econometrics/merge-gate-selected-methods168-2026-10-11.json").read_text())
+    incoming_raw = subprocess.check_output([
+        "git", "show", "7182533f7f7f4b819e149b7ebd0688bad4b9471a:scripts/verify_merge_candidate.py",
+    ], cwd=ROOT)
+    incoming = ast.literal_eval(next(node.value for node in ast.parse(incoming_raw).body
+        if isinstance(node, ast.Assign) and any(isinstance(target, ast.Name)
+            and target.id == "TESTS" for target in node.targets)))
+    assert incoming == incoming_plan["complete_selectors"]
+    assert incoming[:160] == historical
+    assert len(incoming) == len(set(incoming)) == 168
+    assert selectors == incoming + added
+    assert len(selectors) == len(set(selectors)) == 171
+    fixed = [item for group in validator.SDK_FIXED_GROUPS for item in group]
+    historical_partition = [[item for item in historical if item in group]
+                            for group in validator.SDK_FIXED_GROUPS]
+    historical_partition.append([item for item in historical if item not in fixed])
+    assert list(map(len, historical_partition)) == [1, 23, 136]
+    assert partition[:2] == historical_partition[:2]
+    assert len(historical_partition[2] + added) == 139
+    assert partition[2] == historical_partition[2] + incoming[160:] + added
+    assert list(map(len, partition)) == [1, 23, 147]
 
 
 def write_json(path, value):
@@ -395,7 +437,7 @@ def test_preregistered_three_groups_are_complete_disjoint_and_in_source_order():
     assert source[145:146] == ["tests/test_multivariate_score_uncertainty.py"]
     assert source[138:142] == ["tests/test_weighted_binary.py", "tests/test_econ_glm.py", "tests/test_econ_glm_oracle.py", "tests/test_econ_saved_prediction_categories.py"]
     assert plan["effective_groups"] == [[item for item in baseline if item in group] for group in partition]
-    assert list(map(len, partition)) == [1, 23, 136]
+    _assert_extraction_selector_extension(source, partition)
     assert plan["environment"] == validator.GATE_ENVIRONMENT
     assert plan["selected_test_scope_sha256"] == hashlib.sha256(
         json.dumps(baseline, separators=(",", ":")).encode()).hexdigest()
@@ -419,7 +461,7 @@ def test_production_four_file_partition_is_complete_disjoint_and_in_source_order
     fixed = [item for group in validator.SDK_FIXED_GROUPS for item in group]
     partition = [[item for item in source if item in group] for group in validator.SDK_FIXED_GROUPS]
     partition.append([item for item in source if item not in fixed])
-    assert len(source) == 160 and list(map(len, partition)) == [1, 23, 136]
+    _assert_extraction_selector_extension(source, partition)
     plan = json.loads((ROOT / "docs/econometrics/merge-gate-sdk-groups-plan.json").read_text())
     assert source[:138] == plan["selected_tests"]
     assert source[145:146] == ["tests/test_multivariate_score_uncertainty.py"]
@@ -1650,6 +1692,82 @@ def test_four_real_partial_shards_complete_actual_union_once_and_reassemble(dist
         assert len(validator.phase_cases(phases, validator.junit_cases(xml), SELECTORS, ordered=True)) == 26
     assert all(0 < cohort["seconds"] <= 900 for cohort in result["sdk_cohorts"])
     assert result["aggregate_clock_mode"] == "recorded-completed-job-replay"
+
+
+@pytest.mark.parametrize("fail_at", [None, "partial", "complete"])
+def test_distributed_phase_stream_reuse_preserves_bytes_and_closes_on_read_failure(
+    distributed_copy, tmp_path, monkeypatch, fail_at,
+):
+    expected_bytes, source_paths = {}, set()
+    for version in validator.VERSIONS:
+        by_node, full = {}, None
+        for component in distributed_copy[1]:
+            directory = component / f"receipt/sdk-{version}-groups"
+            if not directory.exists():
+                continue
+            manifest = json.loads((directory / "report.json").read_text())
+            for group in manifest["groups"]:
+                path = directory / group["phase_timings"]
+                source_paths.add(path)
+                for line in path.read_bytes().splitlines(keepends=True):
+                    by_node.setdefault(json.loads(line)["nodeid"], bytearray()).extend(line)
+                full = [json.loads(line)["nodeid"] for line in
+                        (directory / group["full_collection"]).read_bytes().splitlines()]
+        expected_bytes[version] = b"".join(by_node[node] for node in full)
+
+    opened, sources, scopes, outputs = {}, [], [], []
+    original_open, original_sources = Path.open, validator.phase_source_streams
+    output = tmp_path / "complete-streams"
+
+    def tracking_open(path, mode="r", *args, **kwargs):
+        stream = original_open(path, mode, *args, **kwargs)
+        if path in source_paths and mode == "rb":
+            opened[path] = opened.get(path, 0) + 1
+        if path.parent == output and mode == "wb":
+            outputs.append(stream)
+        return stream
+
+    class FailedRead:
+        def __init__(self, stream):
+            self.stream = stream
+
+        def seek(self, offset):
+            return self.stream.seek(offset)
+
+        def read(self, size):
+            raise OSError("injected phase source read failure")
+
+    @contextmanager
+    def observed_sources(rows):
+        before = dict(opened)
+        with original_sources(rows) as streams:
+            assert len(rows) > len(streams)  # Every source serves multiple case ranges.
+            assert all(opened[path] == before.get(path, 0) + 1 for path in streams)
+            sources.extend(streams.values())
+            kind = "complete" if len(rows) == 26 else "partial"
+            scopes.append(kind)
+            if kind == fail_at:
+                path = next(iter(streams))
+                streams = {**streams, path: FailedRead(streams[path])}
+            yield streams
+
+    monkeypatch.setattr(Path, "open", tracking_open)
+    monkeypatch.setattr(validator, "phase_source_streams", observed_sources)
+    if fail_at is None:
+        result = validate_distributed(distributed_copy, output_directory=output)
+        assert scopes.count("partial") == 4 and scopes.count("complete") == 2
+        for union in result["complete_sdk_unions"]:
+            raw = expected_bytes[union["version"]]
+            assert (output / f"pytest-{union['version']}-timings.jsonl").read_bytes() == raw
+            assert union["phase_sha256"] == hashlib.sha256(raw).hexdigest()
+    else:
+        with pytest.raises(OSError, match="injected phase source read failure"):
+            validate_distributed(distributed_copy, output_directory=output)
+        assert scopes[-1] == fail_at
+    assert sources and all(stream.closed for stream in sources)
+    assert all(stream.closed for stream in outputs)
+    if fail_at == "complete":
+        assert outputs
 
 
 def test_daily_aggregate_cannot_use_the_quick_merge_check_name(distributed_copy):

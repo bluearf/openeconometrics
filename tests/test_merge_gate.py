@@ -22,6 +22,48 @@ gate = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(gate)
 
 
+def _extraction_selector_scope():
+    """Bind the append-only extraction extension to the exact historical scope."""
+    plan = json.loads((ROOT / "docs/econometrics/merge-gate-extraction163-2026-10-11.json").read_text())
+    before = subprocess.check_output([
+        "git", "show", plan["historical_prefix_source"] + ":scripts/verify_merge_candidate.py",
+    ], cwd=ROOT)
+    def literal_scope(source):
+        return ast.literal_eval(next(node.value for node in ast.parse(source).body
+            if isinstance(node, ast.Assign) and any(isinstance(target, ast.Name)
+                and target.id == "TESTS" for target in node.targets)))
+    historical = literal_scope(before)
+    added = [
+        "tests/test_multivariate_extraction_additional.py",
+        "tests/test_multivariate_complete_oblique_target.py",
+        "tests/test_multivariate_extraction_uncertainty.py",
+    ]
+    source = (ROOT / "scripts/verify_merge_candidate.py").read_text()
+    assert historical == plan["historical_prefix"]
+    assert len(historical) == len(set(historical)) == plan["historical_prefix_count"] == 160
+    extensions = [node for node in ast.parse(source).body if isinstance(node, ast.AugAssign)
+                  and isinstance(node.target, ast.Name) and node.target.id == "TESTS"]
+    assert not extensions
+    assert added == plan["added_selectors"]
+    historical_complete = historical + added
+    assert len(historical_complete) == len(set(historical_complete)) == plan["final_count"] == 163
+    incoming_plan = json.loads((ROOT / "docs/econometrics/merge-gate-selected-methods168-2026-10-11.json").read_text())
+    incoming = literal_scope(subprocess.check_output([
+        "git", "show", "7182533f7f7f4b819e149b7ebd0688bad4b9471a:scripts/verify_merge_candidate.py",
+    ], cwd=ROOT))
+    assert incoming == incoming_plan["complete_selectors"]
+    assert incoming[:160] == historical
+    assert len(incoming) == len(set(incoming)) == 168
+    complete = incoming + added
+    assert literal_scope(source) == gate.TESTS == complete
+    assert len(complete) == len(set(complete)) == 171
+    return complete
+
+
+def test_extraction_extension_binds_exact_historical160_prefix_and_three_new_selectors():
+    _extraction_selector_scope()
+
+
 def test_weighted_binary_gate_extension_preserves_the_entire_base_scope():
     extension = json.loads((ROOT / "docs/econometrics/weighted-binary-gate-extension-2026-10-10.json").read_text())
     raw = subprocess.check_output(
@@ -1424,6 +1466,7 @@ def test_invalid_or_unscoped_ci_shard_is_refused_before_work(tmp_path, component
 
 @pytest.mark.parametrize("component,shard", [("3.11", 0), ("3.11", 1), ("3.13", 0), ("3.13", 1)])
 def test_every_distributed_shard_keeps_all_common_checks_and_cannot_be_required_gate(monkeypatch, tmp_path, component, shard):
+    expected_scope = _extraction_selector_scope()
     calls = _mock_gate_execution(monkeypatch)
     args = _distributed_args(tmp_path, component, shard)
     assert gate.run(args) == 0
@@ -1431,7 +1474,7 @@ def test_every_distributed_shard_keeps_all_common_checks_and_cannot_be_required_
     assert report["component_mode"] is True and report["status_context"] is None
     assert report["component_sdk_version"] == component and report["component_sdk_shard"] == shard
     assert report["python_versions_provisioned"] == ["3.11", "3.13"]
-    assert report["selected_tests"] == gate.TESTS and len(gate.TESTS) == 160
+    assert report["selected_tests"] == gate.TESTS == expected_scope
     assert gate.TESTS[117:119] == ["tests/test_verify_team_cleanup.py",
                               "tests/test_verify_windows_cloud_ui_fixture.py"]
     assert gate.TESTS[119:124] == ["tests/test_twostep_kernel.py", "tests/test_twostep_reference.py",
@@ -1802,12 +1845,41 @@ def test_conjoint_bootstrap_extension_preserves_every_current159_selector_and_fi
     old = literal(before, "TESTS")
     assert old == plan["previous_selectors"] and len(old) == len(set(old)) == 159
     assert gate.TESTS[:159] == old
-    assert gate.TESTS == old + ["tests/test_econ_conjoint_bootstrap.py"] == plan["complete_selectors"]
-    assert len(gate.TESTS) == len(set(gate.TESTS)) == 160
-    for selectors, key in ((old, "previous_scope_sha256"), (gate.TESTS, "complete_scope_sha256")):
+    current160 = gate.TESTS[:160]
+    assert current160 == old + ["tests/test_econ_conjoint_bootstrap.py"] == plan["complete_selectors"]
+    assert len(current160) == len(set(current160)) == 160
+    assert gate.TESTS == _extraction_selector_scope()
+    for selectors, key in ((old, "previous_scope_sha256"), (current160, "complete_scope_sha256")):
         assert hashlib.sha256(json.dumps(selectors, separators=(",", ":")).encode()).hexdigest() == plan[key]
     assert plan["timeout_seconds"] == 900 and plan["fixed_groups_unchanged"]
     for path, constant in (("scripts/run_parallel_sdk_groups.py", "FIXED_GROUPS"),
                            ("scripts/verify_parallel_merge_gate.py", "SDK_FIXED_GROUPS")):
         old_source = subprocess.check_output(["git", "show", plan["source_parent_commit"] + ":" + path], cwd=ROOT)
         assert literal(old_source, constant) == literal((ROOT / path).read_text(), constant)
+
+
+def test_selected_rd_survey_extension_preserves_current_main_scope_and_budgets():
+    plan = json.loads((ROOT / "docs/econometrics/merge-gate-selected-methods168-2026-10-11.json").read_text())
+
+    def literal(source, name):
+        return ast.literal_eval(next(node.value for node in ast.parse(source).body
+            if isinstance(node, ast.Assign) and any(isinstance(target, ast.Name) and target.id == name for target in node.targets)))
+
+    previous = literal(subprocess.check_output(["git", "show", plan["source_parent_commit"] + ":scripts/verify_merge_candidate.py"], cwd=ROOT), "TESTS")
+    assert previous == plan["previous_selectors"] and len(previous) == 160
+    historical_selectors = gate.TESTS[:168]
+    assert historical_selectors == previous + plan["appended_selectors"] == plan["complete_selectors"]
+    assert len(historical_selectors) == len(set(historical_selectors)) == 168
+    assert gate.TESTS == _extraction_selector_scope()
+    assert len(plan["appended_selectors"]) == 8 and not set(previous) & set(plan["appended_selectors"])
+    assert all((ROOT / name).is_file() for name in plan["appended_selectors"])
+    for scope, key in ((previous, "previous_scope_sha256"), (historical_selectors, "complete_scope_sha256")):
+        assert hashlib.sha256(json.dumps(scope, separators=(",", ":")).encode()).hexdigest() == plan[key]
+    assert plan["timeout_seconds"] == 900 and plan["fixed_groups_unchanged"] and plan["acceptance"] is False
+    for path, name in (("scripts/run_parallel_sdk_groups.py", "FIXED_GROUPS"),
+                       ("scripts/verify_parallel_merge_gate.py", "SDK_FIXED_GROUPS")):
+        before = subprocess.check_output(["git", "show", plan["source_parent_commit"] + ":" + path], cwd=ROOT)
+        assert literal(before, name) == literal((ROOT / path).read_text(), name)
+    for path, pin in plan["source_pins"].items():
+        source = (ROOT / path).read_bytes()
+        assert len(source) == pin["bytes"] and hashlib.sha256(source).hexdigest() == pin["sha256"]

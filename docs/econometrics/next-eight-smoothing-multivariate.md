@@ -8,6 +8,15 @@ implemented numerical domains,
 remaining stages and retained evidence separately. A method-family heading is
 not evidence that every Stata/SPSS option exists.
 
+**Status update, 11 October 2026:** this guide retains its dated audit and
+source/runtime receipts. The option rows below also account for the later
+MARKET-521–528 [discriminant selection and saved multivariate hypotheses](multivariate-selection-contrasts.md).
+Gaussian GAM, MARS and spline fitting were already delivered; those family
+names are not current absence claims. The
+[current comparison matrix](comparison-status-2026-10-11.md) tracks remaining
+option domains and evidence layers. Licensed Stata/SPSS/EViews execution is not
+required by [current repository policy](../../AGENTS.md).
+
 ## Smoothing (#44)
 
 | Requested domain | Public implementation and saved state | Inference and remaining domain |
@@ -66,11 +75,11 @@ fixed-query averaging must not be relisted as missing work.
 | Score methods | Regression, Bartlett and Anderson–Rubin; AR score covariance is identity under the sample correlation matrix, with orthogonal factors/positive uniqueness/full score rank. Full weights persist. | Oblique AR scores refuse; summary scoring without necessary real moments refuses. |
 | Rotation | Existing varimax/quartimax/equamax, promax, oblimin; complete orthogonal target; orthogonal/oblique geomin; orthogonal/oblique Crawford–Ferguson; identified partial orthogonal/oblique targets. Transformations and factor correlations persist. | CF/partial-target admit 2–16 full-rank factors with bounded iterations/tolerance. Partial masks need a nonzero specified anchor per axis and full masked tangent rank. Near-singular transformations refuse; iterative routines certify a local stationary solution, not a minimum/global/multistart optimum. |
 | Loading uncertainty | `factor_bootstrap`: fixed unrotated one-factor principal-factor estimator functional; IID complete raw-row resampling, refitted moments/SMCs/eigenvectors and fixed sign anchor. Every planned loading/uniqueness vector, joint covariance, SE, bias and marginal percentile CI persist. | Resident CPU float64, 3–16 variables, <=10000 rows, 19–1999 replicates and explicit work/tail bounds. Every replicate must pass. No selected/multifactor/rotated loading inference, weighted/dependent/Dataset/summary bootstrap, p/df or familywise/exact coverage. |
-| Discriminant | Direct LDA/QDA, saved scoring/prediction, supported covariance/rank and prior conventions in the method document. | Stepwise Wilks/Mahalanobis/MAXMINF/MINRESID/RAO selection and extra weighting domains remain unsupported. |
-| Correspondence | Simple active two-variable correspondence analysis, optional count weights; `ca_project` reorders labelled nonnegative supplementary profiles and uses saved active standard coordinates without refit. | Multiple/joint correspondence analysis and supplementary refitting remain unsupported. Zero-total/unseen profiles refuse; unidentified near-zero axes have undefined coordinates. |
-| Repeated measures | `rm_anova`: complete subject×within-cell long design; multiple within factors and their interactions; optional between factors/all interactions, unequal between-group sizes; Type III SSCP; Mauchly, GG, HF and lower-bound correction conventions explicit. Resident and replayable Dataset routes. | No multivariate repeated-measures approach, incomplete-cell mixed-model substitution, covariance weights or within-cell replication. Dropping a missing row does not make an incomplete design valid. |
-| Saved scalar repeated-measures contrast | `rm_contrast`: one original-cell weight vector × one between-design weight vector. Original-cell coefficients, full between-design bread, residual cell covariance, typed cell order and exact coding persist from resident or Dataset fit; no new estimation. | Exact scalar t inference assumes independent Gaussian subjects and one common unrestricted cell covariance. No sphericity assumption. Joint L/M hypotheses, heterogeneous cell covariances and weighted/incomplete designs remain unsupported. |
-| MANOVA | `manova`: native Type III SSCP with Pillai/Wilks/Hotelling/Roy and declared F approximations; resident and replayable Dataset reductions. | User-supplied general L/M hypothesis contrasts and additional weighting domains remain stages. |
+| Discriminant | Direct LDA/QDA with saved scoring/prediction. Later `discrim_stepwise` adds forward/backward/stepwise singleton screening, protected predictors and optional integer frequencies; `discrim_stepwise_predict` replays the selected model. | Selection uses one declared conditional F screening law and a fixed complete-case sample. Separate Mahalanobis/MAXMINF/MINRESID/RAO criteria, predictor blocks, nested LOO, calibrated post-selection inference and analytic/probability weights remain outside it. |
+| Correspondence | Simple active two-variable correspondence analysis, optional count weights; `ca_project` reorders labelled nonnegative supplementary profiles and uses saved active standard coordinates without refit. Separate [categorical procedures](categorical.md) provide bounded MCA and projection. | The simple CA route does not fit general joint correspondence models or refit supplementary profiles. Zero-total/unseen profiles refuse; unidentified near-zero axes have undefined coordinates. |
+| Repeated measures | `rm_anova`: complete subject×within-cell long design; multiple within factors/interactions, optional between factors/all interactions, unequal between-group sizes and Type III SSCP. Mauchly/GG/HF/lower-bound conventions remain explicit. Later `rm_mtest` adds saved separable multivariate hypotheses without sphericity under its common unrestricted cell-covariance law. | Incomplete-cell substitution, heterogeneous subject covariance, sampling/covariance weights and within-cell replication remain outside this design. Dropping a missing row does not make an incomplete design valid. |
+| Saved repeated-measures contrasts | `rm_contrast` supplies scalar original-cell × between-design targets. `rm_mtest` additionally tests full-rank separable `L B M = C` hypotheses using saved original-cell coefficients, full bread and residual cell covariance; resident/Dataset replay does not refit. | Scalar t and multivariate reference laws assume independent Gaussian subjects and one common unrestricted cell covariance. Arbitrary nonseparable vector hypotheses, selected contrasts, heterogeneous cell covariance and weighted/incomplete designs remain unsupported. |
+| MANOVA | `manova`: native Type III SSCP with Pillai/Wilks/Hotelling/Roy and declared F approximations; resident/Dataset reductions. Later `manova_contrast` supplies declared separable `L B M = C` hypotheses and complete target covariance; `manova_oneway`/`manova_summary` add bounded integer-frequency and explicit-summary inputs. | General nonseparable vector hypotheses, selected-contrast inference, multifactor weighted models and survey designs remain outside these routes. |
 
 The main factor option path is descriptive. The separate fixed one-factor PF
 bootstrap supplies joint loading/uniqueness covariance, SE and marginal percentile
@@ -89,12 +98,16 @@ Before claiming completion of the broader option surface, focused work must
 remain visible for (1) SPSS Kaiser generalized image/exact image-component scores
 and GLS extraction, (2) multifactor/rotated/selected loading uncertainty and
 weighted/dependent/Dataset bootstrap beyond fixed one-factor IID PF,
-(3) broader valid weighted multivariate and stepwise discriminant procedures,
-and (4) general joint MANOVA/repeated-measures contrasts/designs. Alpha, integer
-frequency-weight EFA, CF and identified partial orthogonal/oblique targets are
-implemented and must not be relisted as missing work. These are substantive implementation
-stages, not merely documentation tasks. GitHub #28 retains licensed reference
-validation as separate work.
+(3) broader valid weighted multivariate procedures and distinct discriminant
+selection criteria beyond the delivered conditional-F paths, and (4) general
+nonseparable, dependent, heterogeneous or incomplete MANOVA/repeated-measures
+designs beyond the delivered saved separable hypotheses. Alpha, integer
+frequency-weight EFA, CF, identified partial orthogonal/oblique targets,
+conditional-F discriminant selection and separable L/M contrasts are implemented
+and must not be relisted as missing work. These are substantive implementation
+stages, not merely documentation tasks. Historical GitHub #28 licensed-reference
+wording is superseded by the human-approved policy; independent analytical and
+supported development references remain the applicable scientific evidence.
 
 ## Evidence identity and reproduction
 
@@ -160,8 +173,9 @@ with complete file readback are in
 [smoothing_multivariate_targets.py](../examples/smoothing_multivariate_targets.py).
 
 Source correctness, numerical references, JSON replay, historical frozen/native
-receipts, a new wheel run and licensed vendor comparison are separate evidence
-layers. No licensed Stata/SPSS/EViews run or blanket parity flag is asserted.
+receipts, a new wheel run and public release are separate evidence layers.
+No licensed Stata/SPSS/EViews run or blanket parity flag is asserted or required
+for these bounded method deliveries.
 
 ## Added target formulas and saved-state limits
 

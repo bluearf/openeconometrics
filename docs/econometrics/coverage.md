@@ -1,5 +1,11 @@
 # Coverage matrix: Stata, SPSS and EViews procedures in OpenEconometrics
 
+For the dated vendor-source reconciliation, implemented domains, canonical
+remaining issues and separate evidence layers, use the
+[11 October comparison review](comparison-status-2026-10-11.md) and
+[row review index](comparison-rows.md). The family overview below is not a
+row-by-row vendor-option acceptance matrix.
+
 <!-- BEGIN source-generated capability scope -->
 Current source: **171 registered fit names**, **92 Dataset fit routes**, **74 common saved predict/margins adapters**. The [generated method/option inventory](../capabilities.md) states conditions, exclusions and devices.
 
@@ -19,6 +25,11 @@ result has been compared with real Stata/SPSS/EViews output. Conventions
 (small-sample factors, degrees of freedom, default covariance) follow the
 documented Methods and formulas of the named command; deviations are listed in
 each family guide.
+
+That provenance field is not a required acceptance gate: licensed vendor
+executables are explicitly not required under [AGENTS.md](../../AGENTS.md).
+Independent analytical, author/package and synthetic references establish only
+their documented method/option domains.
 
 ## Wave 1 — linear, panel, instrumental variables, GLM
 
@@ -138,6 +149,13 @@ each family guide.
 | `oe.margins` (AME, MEM, at values), `oe.predict` — [current saved adapters and target restrictions](../capabilities.md), including scalar means, ordered/multinomial probabilities and heteroskedastic-probit scale/effects; native OLS behavior retained | `margins`, `predict` | implemented for documented adapters; remaining common adapters listed in the generated inventory |
 | `oe.lrtest`, `oe.estat_ic`, `oe.bootstrap`, `oe.jackknife`; `oe.suest` restricted to its implemented score providers (ols, logit, probit, poisson, ologit, oprobit, mlogit, glm, nbreg, tobit, intreg, truncreg, cloglog, fracreg logit/probit) | `lrtest`, `estat ic`, `bootstrap`, `jackknife`, `suest` | done for supported inputs; broader `suest` planned |
 | `oe.fcast_eval` (RMSE, MAE, MAPE, sMAPE, Theil U1/U2, MSE decomposition, MASE), `oe.dm_test` (Diebold–Mariano with HLN correction); `oe.forecast` for arima, arch, var, vec, ucm | — (EViews Forecast evaluation) | done |
+
+## Survey calibration and RD local randomization
+
+| OpenEconometrics | Scope | Evidence boundary |
+| --- | --- | --- |
+| `oe.svycal`, `oe.survey_calibrated_total/mean/ratio`, `oe.survey_pps_total/mean/ratio` — [guide](survey-calibration.md) | Calibration equations and single-stage design covariance; PPS HT/SYG and declared approximations; explicit domain/missing handling | Independent analytical/enumeration fixtures and recorded R survey/sampling references; source validation, no vendor parity or installed acceptance claim |
+| `oe.rdrandinf`, `oe.rdwinselect`, `oe.rdsensitivity`, `oe.rdrbounds` — [guide](rd-local-randomization.md) | Sharp/fuzzy RD, exact or seeded assignment laws, window selection and Rosenbaum sensitivity within documented work limits | Independent enumeration/statistical fixtures and recorded rdlocrand references; source validation, no vendor parity or installed acceptance claim |
 
 ## Meta-analysis extensions
 

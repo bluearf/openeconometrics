@@ -332,6 +332,74 @@ def test_protocol2_zero_nested_counter_cannot_be_boolean_false(tmp_path):
         fixture.reports.terminal(raw, nodes, root=ROOT)
 
 
+def _original_encoded_length_text_reference(value, node):
+    """Compare complete original array bytes, independently of the shortcut."""
+    from scripts import pytest_gate_report_protocol as reports
+    if value == node:
+        return [0]
+    if value == node.split("::", 1)[0]:
+        return [1]
+    common = next((index for index, (left, right) in
+                   enumerate(zip(reversed(value), reversed(node))) if left != right),
+                  min(len(value), len(node)))
+    literal = [3, value]
+    reference = [2, value[:len(value) - common], common]
+    return reference if common and len(reports.encode(reference)) < len(reports.encode(literal)) else literal
+
+
+@pytest.mark.parametrize("suffix", ["", "a", "ab", "abc", "a::b", '\\quoted"',
+                                    "\b\f\n\r\t", "\x00\x01\x1f\x7f", "éİı漢字", "😀",
+                                    "\ud800", "\udfff", "\ud800\udfff"],
+                         ids=["empty", "ascii-one", "ascii-two", "ascii-three", "parameter-separator",
+                              "quote-backslash", "short-control-escapes", "unicode-control-escapes",
+                              "unicode", "astral", "high-surrogate", "low-surrogate", "surrogate-pair"])
+def test_reference_wire_length_shortcut_matches_original_escaped_array_choice(suffix):
+    from scripts import pytest_gate_report_protocol as reports
+    for prefix in ("", "prefix", "Class.", "prefix::", 'é\\"'):
+        value = prefix + suffix
+        for node in ("tests/test_x.py::test_x[param::" + suffix,
+                     "tests/test_x.py::ExactClass::" + value,
+                     value, value + "-different"):
+            expected = _original_encoded_length_text_reference(value, node)
+            assert reports._text_reference(value, node) == expected
+            assert reports.encode(reports._text_reference(value, node)) == reports.encode(expected)
+    node = "tests/test_x.py::test_x[" + suffix + "]"
+    assert reports._text_reference(node, node) == [0]
+    assert reports._text_reference(node.split("::", 1)[0], node) == [1]
+
+
+@pytest.mark.parametrize("common", [1, 2, 3, 9, 10, 99, 100, 999, 1000, 9999, 10000])
+def test_reference_wire_length_shortcut_keeps_decimal_boundaries_and_strict_ties(common):
+    from scripts import pytest_gate_report_protocol as reports
+    for character in ("a", "é", "😀", "\n", "\ud800"):
+        value = "prefix" + character * common
+        node = "tests/test_x.py::different" + character * common
+        expected = _original_encoded_length_text_reference(value, node)
+        assert reports._text_reference(value, node) == expected
+        if character == "a":
+            assert expected == ([3, value] if common <= 2 else [2, "prefix", common])
+    if common == 2:
+        value, node = "prefixab", "differentab"
+        literal, reference = [3, value], [2, "prefix", 2]
+        assert len(reports.encode(literal)) == len(reports.encode(reference))
+        assert reports._text_reference(value, node) == literal
+
+
+def test_reference_wire_length_shortcut_still_rejects_equal_length_or_longer_aliases():
+    from scripts import pytest_gate_report_protocol as reports
+    for suffix in ("ab", "\\", "\n", '"', "é", "abc"):
+        value, node = "prefix" + suffix, "different" + suffix
+        literal, reference = [3, value], [2, "prefix", len(suffix)]
+        canonical = _original_encoded_length_text_reference(value, node)
+        alternative = reference if canonical == literal else literal
+        if suffix in ("ab", "\\", "\n", '"'):
+            assert len(reports.encode(literal)) == len(reports.encode(reference))
+            assert canonical == literal
+        assert reports._read_text_reference(canonical, node) == value
+        with pytest.raises(ValueError, match="Noncanonical"):
+            reports._read_text_reference(alternative, node)
+
+
 @pytest.mark.parametrize("name", ["plain", "class", "unicode"], ids=["plain", "class", "unicode"])
 @pytest.mark.parametrize("derived", [False, True], ids=["native", "derived"])
 def test_reference_wire_preserves_every_logical_field_and_exact_raw_bytes(name, derived):

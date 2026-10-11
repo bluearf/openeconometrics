@@ -14,12 +14,26 @@ import { API_CATALOG, decodeApiEntry, type StoredApiEntry } from "../src/editor-
 // Historical binding fixtures keep their recorded caps for their own baselines.
 const CURRENT_WIRE_CAP_BYTES = 2_000_000;
 
+const selectedBindings = JSON.parse(readFileSync(new URL("../../tests/fixtures/editor-catalog-selected-methods-approved-changes.json", import.meta.url), "utf8"));
+const selectedAdded = new Set<string>(selectedBindings.added_names);
+const selectedGeneratorDeclarations = "        **{name: \"openecon.TableSet\" for name in (\n            \"rdrandinf\", \"rdwinselect\", \"rdsensitivity\", \"rdrbounds\", \"svycal\")},\n        **{name: \"openecon.DataFrame\" for name in (\n            \"survey_calibrated_total\", \"survey_calibrated_mean\", \"survey_calibrated_ratio\",\n            \"survey_pps_total\", \"survey_pps_mean\", \"survey_pps_ratio\")},\n";
+function beforeSelected(entries: unknown[]): unknown[] {
+  return entries.filter(entry => {
+    const logical = decodeApiEntry(entry as StoredApiEntry);
+    if (!selectedAdded.has(logical.name)) return true;
+    const expected = selectedBindings.added_entries[logical.name];
+    assert.deepEqual(JSON.parse(JSON.stringify(entry)), expected.compact);
+    assert.deepEqual(logical, expected.logical);
+    return false;
+  });
+}
+
 // Undo approved method wave 2 so each earlier binding below still compares
 // exactly against its own baseline.
 const wave2Bindings = JSON.parse(readFileSync(new URL("../../tests/fixtures/editor-catalog-methods-wave2-approved-changes.json", import.meta.url), "utf8"));
 const wave2Added = new Set<string>(wave2Bindings.added_names);
 function beforeWave2(entries: unknown[]): unknown[] {
-  entries = beforeNgPerronHelp(entries);
+  entries = beforeNgPerronHelp(beforeExtractionHelp(beforeSelected(entries)));
   return entries.filter(entry => !wave2Added.has(decodeApiEntry(entry as StoredApiEntry).name)).map(entry => {
     const changed = wave2Bindings.changed_entries[decodeApiEntry(entry as StoredApiEntry).name];
     if (!changed) return entry;
@@ -29,7 +43,7 @@ function beforeWave2(entries: unknown[]): unknown[] {
   });
 }
 function beforeWave2Logical<T extends { name: string }>(entries: T[]): T[] {
-  entries = entries.map(beforeNgPerronLogical);
+  entries = entries.filter(entry => !selectedAdded.has(entry.name)).map(beforeExtractionLogical).map(beforeNgPerronLogical);
   return entries.filter(entry => !wave2Added.has(entry.name)).map(entry => wave2Bindings.changed_entries[entry.name]?.before_logical ?? entry);
 }
 
@@ -55,6 +69,29 @@ const historicalWeibullBindings = JSON.parse(readFileSync(new URL("../../tests/f
 const currentWeibullBindings = JSON.parse(readFileSync(new URL("../../tests/fixtures/editor-catalog-main369d84-Weibull1420-bindings.json", import.meta.url), "utf8"));
 const weibullNames = new Set<string>(weibullBindings.complete_added_Weibull_names_in_order);
 const bootstrapNames = new Set(["openecon.conjoint_bootstrap_fit", "openecon.conjoint_bootstrap_importance", "openecon.conjoint_bootstrap_shares"]);
+const extractionBindings = JSON.parse(readFileSync(new URL("../../tests/fixtures/editor-catalog-extraction-eight-approved-changes.json", import.meta.url), "utf8"));
+function beforeExtractionHelp(entries: unknown[]): unknown[] {
+  return entries.map(entry => {
+    const logical = decodeApiEntry(entry as StoredApiEntry);
+    const changed = extractionBindings.changed_entries[logical.name];
+    if (!changed) return entry;
+    const compact = JSON.parse(JSON.stringify(entry));
+    // Nested historical filters may pass the exact already-restored object.
+    if (isDeepStrictEqual(compact, changed.before_compact)) {
+      assert.deepEqual(logical, changed.before_logical);
+      return entry;
+    }
+    assert.deepEqual(compact, changed.after_compact);
+    assert.deepEqual(logical, changed.after_logical);
+    return changed.before_compact;
+  });
+}
+function beforeExtractionLogical<T extends { name: string }>(entry: T): T {
+  const changed = extractionBindings.changed_entries[entry.name];
+  if (!changed || isDeepStrictEqual(entry, changed.before_logical)) return entry;
+  assert.deepEqual(entry, changed.after_logical);
+  return changed.before_logical;
+}
 const ngperronBindings = JSON.parse(readFileSync(new URL("../../tests/fixtures/editor-catalog-ngperron136-approved-changes.json", import.meta.url), "utf8"));
 function beforeNgPerronHelp(entries: unknown[]): unknown[] {
   return entries.map(entry => {
@@ -311,7 +348,7 @@ test("method wave 1 adds 38 targets, changes 3 help entries and retains every ma
 
 
 test("method wave 2 adds 20 targets, changes 0 help entries and retains every main1461 object", () => {
-  const actual = decodeEditorWire(rawEditorWire);
+  const actual = beforeSelected(decodeEditorWire(rawEditorWire));
   const prior = beforeWave2(actual);
   assert.equal(actual.length, wave2Bindings.current_count);
   assert.equal(prior.length, wave2Bindings.before_count);
@@ -319,5 +356,82 @@ test("method wave 2 adds 20 targets, changes 0 help entries and retains every ma
   assert.deepEqual(actual.map(entry => decodeApiEntry(entry as StoredApiEntry).name).filter(name => wave2Added.has(name)), wave2Bindings.added_names);
   assert.deepEqual(Object.keys(wave2Bindings.changed_entries).sort(), []);
   assert.equal(new TextEncoder().encode(rawEditorWire).length <= CURRENT_WIRE_CAP_BYTES, true);
+  assert.deepEqual(Object.values(API_CATALOG).filter(entry => !selectedAdded.has(entry.name)), actual.map(entry => decodeApiEntry(entry as StoredApiEntry)));
+});
+
+
+test("extraction help changes only two exact current objects and binds their public source", () => {
+  assert.equal(extractionBindings.source_parent_commit, "6c34fc293ac7016a529bcc1fd2c489ed9819569c");
+  assert.deepEqual(extractionBindings.added_names, []);
+  assert.deepEqual(Object.keys(extractionBindings.changed_entries), ["openecon.factor", "openecon.factor_bootstrap"]);
+  const parent = decodeEditorWire(execFileSync("git", ["show", `${extractionBindings.source_parent_commit}:web/src/editor-api.json`], { encoding: "utf8" }));
+  const current = beforeSelected(decodeEditorWire(rawEditorWire));
+  const oldLogical = parent.map(entry => decodeApiEntry(entry as StoredApiEntry));
+  const newLogical = current.map(entry => decodeApiEntry(entry as StoredApiEntry));
+  assert.equal(parent.length, 1481);
+  assert.equal(current.length, 1481);
+  assert.equal(parent.length, extractionBindings.before_count);
+  assert.equal(current.length, extractionBindings.current_count);
+  assert.deepEqual(oldLogical.map(entry => entry.name), newLogical.map(entry => entry.name));
+  assert.deepEqual(oldLogical.filter((entry, index) => !isDeepStrictEqual(entry, newLogical[index])).map(entry => entry.name),
+    ["openecon.factor", "openecon.factor_bootstrap"]);
+  for (let index = 0; index < current.length; index++) {
+    const changed = extractionBindings.changed_entries[oldLogical[index].name];
+    if (!changed) {
+      assert.deepEqual(current[index], parent[index]);
+      assert.deepEqual(newLogical[index], oldLogical[index]);
+      continue;
+    }
+    assert.deepEqual(JSON.parse(JSON.stringify(parent[index])), changed.before_compact);
+    assert.deepEqual(JSON.parse(JSON.stringify(current[index])), changed.after_compact);
+    assert.deepEqual(oldLogical[index], changed.before_logical);
+    assert.deepEqual(newLogical[index], changed.after_logical);
+  }
+  const restored = beforeExtractionHelp(current);
+  assert.deepEqual(JSON.parse(JSON.stringify(restored)), JSON.parse(JSON.stringify(parent)));
+  assert.deepEqual(beforeExtractionHelp(restored), restored);
+  assert.deepEqual(newLogical.map(beforeExtractionLogical), oldLogical);
+  assert.deepEqual(Object.values(API_CATALOG).filter(entry => !selectedAdded.has(entry.name)), newLogical);
+  assert.deepEqual(Object.keys(extractionBindings.source_bindings), [
+    "scripts/generate_editor_api.py",
+    "src/openecon/econometrics/multivariate/factor.py",
+    "src/openecon/econometrics/multivariate/uncertainty.py",
+  ]);
+  for (const [path, expected] of Object.entries(extractionBindings.source_bindings) as [string, { bytes: number; sha256: string }][]) {
+    const source = execFileSync("git", ["show", `${extractionBindings.source_commit}:${path}`]);
+    assert.equal(source.length, expected.bytes);
+    assert.equal(createHash("sha256").update(source).digest("hex"), expected.sha256);
+    const currentSource = readFileSync(new URL("../../" + path, import.meta.url));
+    if (path === "scripts/generate_editor_api.py") {
+      const text = currentSource.toString("utf8");
+      assert.equal(text.split(selectedGeneratorDeclarations).length, 2);
+      assert.deepEqual(Buffer.from(text.replace(selectedGeneratorDeclarations, "")), source);
+    } else {
+      assert.deepEqual(currentSource, source);
+    }
+  }
+});
+
+
+test("extraction history restoration refuses every unapproved help or signature change", () => {
+  for (const changed of Object.values(extractionBindings.changed_entries) as { after_compact: Record<string, unknown>; after_logical: { name: string; description: string } }[]) {
+    const compact = structuredClone(changed.after_compact);
+    compact.S = String(compact.S) + " unapproved";
+    assert.throws(() => beforeExtractionHelp([compact]));
+    const logical = structuredClone(changed.after_logical);
+    logical.description += " Unapproved revision.";
+    assert.throws(() => beforeExtractionLogical(logical));
+  }
+});
+
+
+test("selected RD and survey additions preserve every prior object with approved extraction help", () => {
+  const actual = decodeEditorWire(rawEditorWire);
+  const prior = beforeExtractionHelp(beforeSelected(actual));
+  assert.equal(actual.length, selectedBindings.current_count);
+  assert.equal(prior.length, selectedBindings.before_count);
+  assert.equal(createHash("sha256").update(JSON.stringify(prior)).digest("hex"), selectedBindings.before_compact_objects_sha256);
+  assert.deepEqual(actual.map(entry => decodeApiEntry(entry as StoredApiEntry).name).filter(name => selectedAdded.has(name)), selectedBindings.added_names);
+  assert.deepEqual(Object.keys(selectedBindings.changed_entries), []);
   assert.deepEqual(Object.values(API_CATALOG), actual.map(entry => decodeApiEntry(entry as StoredApiEntry)));
 });

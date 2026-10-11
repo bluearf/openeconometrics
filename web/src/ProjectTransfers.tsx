@@ -6,11 +6,13 @@ export default function ProjectTransfers({
   actions,
   readOnly,
   disabled,
+  uploading = false,
   onReady,
 }: {
   actions: ProjectTransferActions;
   readOnly: boolean;
   disabled: boolean;
+  uploading?: boolean;
   onReady: (file: DatasetProfile) => void | Promise<void>;
 }) {
   const [snapshot, setSnapshot] = useState(() => actions.getSnapshot());
@@ -31,6 +33,36 @@ export default function ProjectTransfers({
       window.removeEventListener("online", refresh);
     };
   }, [actions]);
+  useEffect(() => {
+    if (!uploading) return;
+    let stopped = false;
+    let reading = false;
+    const refresh = async () => {
+      if (reading || stopped) return;
+      reading = true;
+      try {
+        // The native picker creates its journal after opening. Discover it
+        // while the original upload promise is still pending so Cancel is usable.
+        await actions.refresh();
+        if (!stopped)
+          await Promise.allSettled(
+            actions.getSnapshot().transfers.map((item) =>
+              actions.status(item.request_id),
+            ),
+          );
+      } catch {
+        /* The controller already exposes sanitized transfer errors. */
+      } finally {
+        reading = false;
+      }
+    };
+    void refresh();
+    const timer = window.setInterval(() => void refresh(), 1000);
+    return () => {
+      stopped = true;
+      window.clearInterval(timer);
+    };
+  }, [actions, uploading]);
   useEffect(() => {
     const id = snapshot.busyRequestId;
     if (!id || !snapshot.transfers.some((item) => item.request_id === id))

@@ -237,6 +237,7 @@ mod tests {
         assert_eq!(r.sha256.as_deref(), Some(hash.as_str()));
         assert!(crate::broker::cache_matches(&dir, "sonuç.parquet", size, &hash).unwrap());
         assert_eq!(std::fs::read_dir(&p).unwrap().count(), 2);
+        drop(dir); // Windows holds the directory open until the capability is released.
         std::fs::remove_dir_all(p).unwrap();
     }
     #[test]
@@ -256,6 +257,7 @@ mod tests {
             assert_eq!(std::fs::read_to_string(&target).unwrap(), "keep");
             assert_eq!(std::fs::read_dir(&p).unwrap().count(), 2);
         }
+        drop(dir); // Windows holds the directory open until the capability is released.
         std::fs::remove_dir_all(p).unwrap();
     }
     #[cfg(unix)]

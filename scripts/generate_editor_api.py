@@ -279,8 +279,8 @@ DESCRIPTIONS = {
     "openecon.pca": "Descriptive correlation/covariance PCA; optional nonnegative integer frequency weights on resident or replayable inputs. Save training moments and eigenvectors for scores. No loading standard errors or sampling-weight support.",
     "openecon.pca_matrix": "PCA of a declared symmetric PSD summary covariance/correlation matrix with explicit n. No PSD repair or invented observations. Supply actual means and scales for centred/standardized scores.",
     "openecon.factor_matrix": "Factor analysis from declared summary covariance/correlation input with explicit n. Reuses extraction/rotation; actual training means and scales are required for saved scores. No fabricated loading uncertainty.",
-    "openecon.factor": "EFA with integer frequency weights, PF/IPF/PCF/ML/minres/alpha/SAS image-covariance extraction and persisted scores. CF and partial-target rotations retain transformation and factor covariance; partial targets require an identified binary mask. Fixed counts required for minres/alpha/image. No vendor parity.",
-    "openecon.factor_bootstrap": "Marginal IID percentile intervals and full joint covariance for fixed unrotated one-factor principal factoring. Resident rows, fixed sign anchor, regular sampling, all replicate refits required. Saves full sample/vectors; no p/df, rotated or selected-factor inference.",
+    "openecon.factor": "EFA with integer frequency weights, PF/IPF/PCF/ML/minres/alpha/image-covariance/GLS/generalized-image extraction and saved scores. GLS uses strict interior local minima; additional methods need fixed counts. Full oblique target, CF and identified partial-target rotations preserve factor covariance and caller axes. CPU only; no vendor parity.",
+    "openecon.factor_bootstrap": "Fixed unrotated one-factor PF/ML/minres/alpha/image-covariance/generalized-image IID bootstrap. Full loading/uniqueness covariance and marginal percentile intervals, fixed sign anchor and strict observed local-chart checks. Every draw must refit successfully; complete sample, indices, vectors and diagnostics persist. Bounded resident CPU; no p/df, selected-count, rotated or exact-coverage inference.",
     "openecon.pca_bootstrap": "Fixed covariance or restandardized correlation PCA IID bootstrap. Saves full eigenpair/loading covariance, marginal percentile intervals and every draw. Simple roots and fixed signs; no selected count, p/df or exact coverage.",
     "openecon.pca_subspace_bootstrap": "IID bootstrap of a fixed leading PCA projector and captured/residual trace. Internal ties allowed; retained boundary must separate. Full joint covariance and all draws; marginal percentiles, no simultaneous region.",
     "openecon.canon_bootstrap": "Fixed positive simple interior CCA roots, or signed coefficients and loadings. Every IID draw refits joint moments; full covariance and marginal percentiles. Fixed anchors/chart; no zero-root test or selected count.",
@@ -1459,6 +1459,11 @@ def generate(ref: str = "HEAD", pandas_root: Path | None = None) -> list[dict[st
             "stinterval_exponential", "stinterval_weibull", "stinterval_lognormal", "stinterval_loglogistic",
             "interval_survival_predict", "turnbull", "cumulative_incidence", "cause_specific_hazard", "cif_compare")},
         **{name: "openecon.TableSet" for name in ("mixed_satterthwaite", "trajectory_bands", "ols_cusum", "rm_contrast", "proxy_svar", "irt_fit_diagnostics", "irt_mh_dif", "irt_diagnostics_restore")},
+        **{name: "openecon.TableSet" for name in (
+            "rdrandinf", "rdwinselect", "rdsensitivity", "rdrbounds", "svycal")},
+        **{name: "openecon.DataFrame" for name in (
+            "survey_calibrated_total", "survey_calibrated_mean", "survey_calibrated_ratio",
+            "survey_pps_total", "survey_pps_mean", "survey_pps_ratio")},
         **{name: "openecon.DataFrame" for name in ("local_derivatives", "local_average_derivatives", "proxy_svar_irf")},
         **{name: "openecon.TableSet" for name in (
             "meta_dependent", "meta_dependent_robust", "meta_dependent_contrast",

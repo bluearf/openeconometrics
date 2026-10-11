@@ -1508,7 +1508,7 @@ function App({
     if (!client.projectId) return;
     try {
       const path = workspaceDownloadPath(artifact.url, client.projectId);
-      const inputFile = /^\/files\/([a-f0-9]{32})\/download$/.exec(path);
+      const inputFile = /^\/files\/([a-f0-9]{32}|[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})\/download$/.exec(path);
       if (client.desktop && inputFile) {
         if (!client.saveInputFile) throw new Error("Native file saving is unavailable.");
         await client.saveInputFile(inputFile[1]);
@@ -1992,6 +1992,7 @@ function App({
                 {ready && client.transferActions && (
                   <ProjectTransfers
                     actions={client.transferActions}
+                    uploading={uploading}
                     readOnly={cannotEdit}
                     disabled={!ready || fileBusy || layoutBusy || uploading || running}
                     onReady={async (file) => {

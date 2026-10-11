@@ -242,7 +242,16 @@ def decoded_catalog(entries):
     return entries
 
 
-APPROVED_CATALOG_WAVES = ("tests/fixtures/editor-catalog-methods-wave1-approved-changes.json","tests/fixtures/editor-catalog-methods-wave2-approved-changes.json", "tests/fixtures/editor-catalog-ngperron136-approved-changes.json", )
+SELECTED_CATALOG_RECEIPT = "tests/fixtures/editor-catalog-selected-methods-approved-changes.json"
+SELECTED_GENERATOR_DECLARATIONS = '        **{name: "openecon.TableSet" for name in (\n            "rdrandinf", "rdwinselect", "rdsensitivity", "rdrbounds", "svycal")},\n        **{name: "openecon.DataFrame" for name in (\n            "survey_calibrated_total", "survey_calibrated_mean", "survey_calibrated_ratio",\n            "survey_pps_total", "survey_pps_mean", "survey_pps_ratio")},\n'
+EXTRACTION_CATALOG_RECEIPT = "tests/fixtures/editor-catalog-extraction-eight-approved-changes.json"
+APPROVED_CATALOG_WAVES = (
+    "tests/fixtures/editor-catalog-methods-wave1-approved-changes.json",
+    "tests/fixtures/editor-catalog-methods-wave2-approved-changes.json",
+    "tests/fixtures/editor-catalog-ngperron136-approved-changes.json",
+    EXTRACTION_CATALOG_RECEIPT,
+    SELECTED_CATALOG_RECEIPT,
+)
 
 
 def _undo_approved_waves(pairs, since=None):
@@ -250,6 +259,15 @@ def _undo_approved_waves(pairs, since=None):
     for path in reversed(waves):
         approved = json.loads((ROOT / path).read_text())
         added, changed = set(approved["added_names"]), approved["changed_entries"]
+        if path == EXTRACTION_CATALOG_RECEIPT:
+            # Only these precise approved help objects may be restored. Reject
+            # unrelated edits rather than hiding them in historical comparisons.
+            for raw, logical in pairs:
+                if logical["name"] in changed:
+                    expected = changed[logical["name"]]
+                    assert logical == expected["after_logical"]
+                    if raw is not None:
+                        assert raw == expected["after_compact"]
         pairs = [(changed[logical["name"]]["before_compact"], changed[logical["name"]]["before_logical"])
                  if logical["name"] in changed else (raw, logical)
                  for raw, logical in pairs if logical["name"] not in added]
@@ -2650,6 +2668,8 @@ def test_ngperron136_help_revision_is_bound_to_parent_and_source():
     old = generator.decode_catalog(deepcopy(parent))
     new = generator.decode_catalog(deepcopy(current))
     assert new == generator.generate("HEAD")
+    current = before_approved_waves(current, since=EXTRACTION_CATALOG_RECEIPT)
+    new = generator.decode_catalog(deepcopy(current))
     changed = NGPERRON136["changed_entries"]
     assert [entry["name"] for entry in old] == [entry["name"] for entry in new]
     assert [entry["name"] for entry, after in zip(old, new, strict=True) if entry != after] == list(changed)
@@ -2661,5 +2681,113 @@ def test_ngperron136_help_revision_is_bound_to_parent_and_source():
     before, after = changed["openecon.ngperron"]["before_logical"], changed["openecon.ngperron"]["after_logical"]
     assert {**before, "description": None} == {**after, "description": None}
     assert "trend='constant' only" in after["description"]
+
+
+def test_extraction_help_changes_bind_exact_parent_catalog_and_current_public_source():
+    import hashlib
+    approved = json.loads((ROOT / EXTRACTION_CATALOG_RECEIPT).read_text())
+    assert approved["source_parent_commit"] == "6c34fc293ac7016a529bcc1fd2c489ed9819569c"
+    assert approved["added_names"] == []
+    changed = approved["changed_entries"]
+    assert list(changed) == ["openecon.factor", "openecon.factor_bootstrap"]
+    before_raw = generator.read_catalog_wire(subprocess.check_output([
+        "git", "show", approved["source_parent_commit"] + ":web/src/editor-api.json",
+    ], cwd=ROOT))
+    after_raw = generator.read_catalog_wire((ROOT / "web/src/editor-api.json").read_bytes())
+    before_logical = generator.decode_catalog(deepcopy(before_raw))
+    assert generator.decode_catalog(deepcopy(after_raw)) == generator.generate("HEAD")
+    after_raw = before_approved_waves(after_raw, since=SELECTED_CATALOG_RECEIPT)
+    after_logical = generator.decode_catalog(deepcopy(after_raw))
+    assert len(before_raw) == len(after_raw) == approved["before_count"] == approved["current_count"] == 1481
+    assert [row["name"] for row in before_logical] == [row["name"] for row in after_logical]
+    assert [old["name"] for old, new in zip(before_logical, after_logical, strict=True)
+            if old != new] == list(changed)
+    for old_raw, new_raw, old, new in zip(before_raw, after_raw, before_logical, after_logical, strict=True):
+        if old["name"] in changed:
+            expected = changed[old["name"]]
+            assert (old_raw, old) == (expected["before_compact"], expected["before_logical"])
+            assert (new_raw, new) == (expected["after_compact"], expected["after_logical"])
+            assert {key: value for key, value in old.items() if key not in ("description", "parameters")} == {
+                key: value for key, value in new.items() if key not in ("description", "parameters")}
+            assert [{key: value for key, value in parameter.items() if key != "description"}
+                    for parameter in old["parameters"]] == [
+                {key: value for key, value in parameter.items() if key != "description"}
+                for parameter in new["parameters"]]
+        else:
+            assert (old_raw, old) == (new_raw, new)
+    assert before_approved_waves(after_raw, since=EXTRACTION_CATALOG_RECEIPT) == before_raw
+    assert list(approved["source_bindings"]) == [
+        "scripts/generate_editor_api.py",
+        "src/openecon/econometrics/multivariate/factor.py",
+        "src/openecon/econometrics/multivariate/uncertainty.py",
+    ]
+    for path, binding in approved["source_bindings"].items():
+        source = subprocess.check_output([
+            "git", "show", approved["source_commit"] + ":" + path,
+        ], cwd=ROOT)
+        assert len(source) == binding["bytes"]
+        assert hashlib.sha256(source).hexdigest() == binding["sha256"]
+        current_source = (ROOT / path).read_bytes()
+        if path == "scripts/generate_editor_api.py":
+            declarations = SELECTED_GENERATOR_DECLARATIONS.encode()
+            assert current_source.count(declarations) == 1
+            assert current_source.replace(declarations, b"", 1) == source
+        else:
+            assert current_source == source
+
+
+def test_extraction_history_restoration_rejects_unapproved_help_or_parameter_changes():
+    approved = json.loads((ROOT / EXTRACTION_CATALOG_RECEIPT).read_text())
+    for expected in approved["changed_entries"].values():
+        raw, logical = deepcopy(expected["after_compact"]), deepcopy(expected["after_logical"])
+        logical["description"] += " Unapproved revision."
+        with pytest.raises(AssertionError):
+            _undo_approved_waves([(raw, logical)], since=EXTRACTION_CATALOG_RECEIPT)
+        logical = deepcopy(expected["after_logical"])
+        raw["S"] += " unapproved"
+        with pytest.raises(AssertionError):
+            _undo_approved_waves([(raw, logical)], since=EXTRACTION_CATALOG_RECEIPT)
+
+
+
+
+def test_selected_rd_survey_helpers_preserve_all_main_objects_and_complete_source_help():
+    approved = json.loads((ROOT / "tests/fixtures/editor-catalog-selected-methods-approved-changes.json").read_text())
+    parent = generator.read_catalog_wire(subprocess.check_output(
+        ["git", "show", approved["source_parent_commit"] + ":web/src/editor-api.json"], cwd=ROOT,
+    ))
+    current = generator.read_catalog_wire((ROOT / "web/src/editor-api.json").read_bytes())
+    logical = generator.decode_catalog(deepcopy(current))
+    assert logical == generator.generate("HEAD")
+    old = {row["name"]: (raw, row) for raw, row in zip(parent, generator.decode_catalog(deepcopy(parent)), strict=True)}
+    new = {row["name"]: (raw, row) for raw, row in zip(current, logical, strict=True)}
+    assert len(old) == approved["before_count"] == 1481
+    assert len(new) == approved["current_count"] == 1492
+    extraction = json.loads((ROOT / EXTRACTION_CATALOG_RECEIPT).read_text())
+    for name, change in extraction["changed_entries"].items():
+        assert old[name] == (change["before_compact"], change["before_logical"])
+        old[name] = (change["after_compact"], change["after_logical"])
+    assert all(new[name] == value for name, value in old.items())
+    assert [name for name in new if name not in old] == approved["added_names"]
+    assert not approved["changed_entries"]
+    for name in approved["added_names"]:
+        assert new[name] == (approved["added_entries"][name]["compact"], approved["added_entries"][name]["logical"])
+        row = new[name][1]
+        assert row["returns"] == ("openecon.DataFrame" if name.startswith("openecon.survey_") else "openecon.TableSet")
+        assert row["parameters"] and len(row["description"]) > 50
+    code = f"import sys; sys.path.insert(0, {str(ROOT / 'src')!r})\n" + """
+import openecon as oe
+from openecon.econometrics.registry import public_exports
+exports = public_exports()
+assert len(exports) == len(set(exports))
+assert {'jive', 'stl', 'x11', 'meta_multilevel', 'rdrandinf', 'svycal'} <= set(exports)
+assert 'torch' not in sys.modules and 'pandas' not in sys.modules
+# Registry functions are advertised by __dir__; __all__ lists explicit core exports.
+assert set(exports) <= set(dir(oe))
+for name in ('rdrandinf', 'rdwinselect', 'rdsensitivity', 'rdrbounds', 'svycal',
+             'survey_calibrated_mean', 'survey_pps_total'):
+    assert callable(getattr(oe, name))
+"""
+    subprocess.run([sys.executable, "-I", "-c", code], cwd=ROOT, check=True, timeout=30)
 
 
