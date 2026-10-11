@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "source_commit": "3249ef576fa288e8921f0860c11b258e7cbe44d0",
+  "source_commit": "fd12cc1310b9e68a6bc0370989ba5adc5091c2e9",
   "publication_state": "prepared source snapshot; public access requires separate verification",
   "history": "new snapshot only; private Git history, branches, PRs and issues excluded",
   "research_data": "external fixture bytes excluded; obtain separately from original providers under their terms",
@@ -11,21 +11,37 @@
     "tests/test_cleanup_releases.py",
     "tests/test_desktop_sharing_e2e.py",
     "tests/test_dynamic_factor.py",
+    "tests/test_econ_arch_extensions.py",
+    "tests/test_econ_causality_extensions.py",
+    "tests/test_econ_cointegration_breaks.py",
     "tests/test_econ_common_factors.py",
     "tests/test_econ_conjoint_robust.py",
     "tests/test_econ_decomposition.py",
     "tests/test_econ_extended_mixed.py",
+    "tests/test_econ_forecast_extensions.py",
     "tests/test_econ_glm.py",
     "tests/test_econ_glm_oracle.py",
     "tests/test_econ_glm_verify.py",
+    "tests/test_econ_iv_extensions.py",
+    "tests/test_econ_iv_wild_bootstrap.py",
     "tests/test_econ_linear.py",
     "tests/test_econ_longrun.py",
     "tests/test_econ_measurement.py",
+    "tests/test_econ_meta_extensions.py",
+    "tests/test_econ_mgarch_extensions.py",
+    "tests/test_econ_mixed_extensions.py",
     "tests/test_econ_modern_did.py",
     "tests/test_econ_panel_cointegration.py",
     "tests/test_econ_postest_prediction.py",
     "tests/test_econ_saved_prediction_categories_adversarial.py",
+    "tests/test_econ_seasonal_adjustment.py",
     "tests/test_econ_structural.py",
+    "tests/test_econ_survival_frailty.py",
+    "tests/test_econ_survival_recurrent.py",
+    "tests/test_econ_unitroot_breaks.py",
+    "tests/test_econ_unitroot_ers.py",
+    "tests/test_econ_unitroot_fourier.py",
+    "tests/test_econ_unitroot_hegy.py",
     "tests/test_editor_api_catalog.py",
     "tests/test_editor_catalog_intern_v2.py",
     "tests/test_engine_equivalence.py",
@@ -111,16 +127,16 @@
     },
     {
       "path": "PYPI-README.md",
-      "bytes": 3637,
-      "sha256": "a23ef49293444071d304dbccafc94825533a79458712ac552c7cd3c82f0e67fb",
-      "original_sha256": "f3cf30c587ed9bdc7fe10eeac944ffbfc88f4c91b25e6f1a329a39ac95d36763",
-      "transformed": true
+      "bytes": 3059,
+      "sha256": "2f24d1f0d8607de915c3ddbc9a91563e465b25a53df08c2a1bfbae9bed7f3003",
+      "original_sha256": "2f24d1f0d8607de915c3ddbc9a91563e465b25a53df08c2a1bfbae9bed7f3003",
+      "transformed": false
     },
     {
       "path": "README.md",
-      "bytes": 23040,
-      "sha256": "b07e50ea99d697a8f526e79ee4c06257b8dd761f37b4b9e9339f4f1673666229",
-      "original_sha256": "dcb26e20a9b33d62c21cbd6a82d1c3a26d906a77ec088058daf44fa51d46725c",
+      "bytes": 22885,
+      "sha256": "4d09495765d408f9e4485d2211a7a4b375df1e68858ee74c7a2bf416bf1faf1e",
+      "original_sha256": "a6423db4ea7bc7b152cce9b517369b7be5b08b5ba42570735cdc7e36d86c614f",
       "transformed": true
     },
     {
@@ -132,9 +148,9 @@
     },
     {
       "path": "THIRD_PARTY.md",
-      "bytes": 2493,
-      "sha256": "9b5274004e7007d445c1b002cbb3ddd9579e71e4d7b03b117d54d598061bcf94",
-      "original_sha256": "9b5274004e7007d445c1b002cbb3ddd9579e71e4d7b03b117d54d598061bcf94",
+      "bytes": 2748,
+      "sha256": "1d1731cfbad3cd0319dee9482d97f70c48cc41ebb7f645afd65d7097a95d96cf",
+      "original_sha256": "1d1731cfbad3cd0319dee9482d97f70c48cc41ebb7f645afd65d7097a95d96cf",
       "transformed": false
     },
     {
@@ -518,8 +534,8 @@
     {
       "path": "desktop/README.md",
       "bytes": 15821,
-      "sha256": "5052aaa80329587360746fb0db1caf81385f2df77745cca26c5182c94e113698",
-      "original_sha256": "7c73aa0a342e64c4cb5202a33e1513cb1d8098627788b5fd4627997f569e691f",
+      "sha256": "4b68a0874a9bdc24326e76d8308da59f203ccd8e25bfe8fb29286e8cd7e6942f",
+      "original_sha256": "4924b884486747271e001c2d4d571c610361b52453357cde6855c5a9c0e3cf18",
       "transformed": true
     },
     {
@@ -657,9 +673,9 @@
     },
     {
       "path": "desktop/scripts/verify_windows_runtime.py",
-      "bytes": 35532,
-      "sha256": "ee3c0fca0c2f341d2566e42c04d4fb801a2c182772292905321114d11388c2b3",
-      "original_sha256": "ee3c0fca0c2f341d2566e42c04d4fb801a2c182772292905321114d11388c2b3",
+      "bytes": 37201,
+      "sha256": "01028218277458655ef6e4875f311809157366963d63d73d561adee0e17e4403",
+      "original_sha256": "01028218277458655ef6e4875f311809157366963d63d73d561adee0e17e4403",
       "transformed": false
     },
     {
@@ -853,9 +869,9 @@
     },
     {
       "path": "desktop/src-tauri/src/broker.rs",
-      "bytes": 54595,
-      "sha256": "53da0f95f462e979f63dd63fa96c88a7f7887e8b5d87353726795d553b3ec6ba",
-      "original_sha256": "53da0f95f462e979f63dd63fa96c88a7f7887e8b5d87353726795d553b3ec6ba",
+      "bytes": 57910,
+      "sha256": "16ac57f61413ab390796f486af41c7126e86d5b896f810e6c83c76cef2599cdb",
+      "original_sha256": "16ac57f61413ab390796f486af41c7126e86d5b896f810e6c83c76cef2599cdb",
       "transformed": false
     },
     {
@@ -944,23 +960,23 @@
     },
     {
       "path": "docs/account-linking.md",
-      "bytes": 7707,
-      "sha256": "ab9b472d848575b5a01523eebf8de384befc4c9b63ea6b739edd7bfa7d666649",
-      "original_sha256": "12f2757964841ea6741df1cec9c0e2d0b6ab6992f6d5272c0b676d341decb945",
+      "bytes": 8157,
+      "sha256": "b0bd04b4c0714cabe70edc00239ca45cecd081120ba12a750105d7e1746f94bf",
+      "original_sha256": "6d5c2520479d7b60dfbefdcdb89f5a0968fe65127bfd3a983a6ef232ef49b5e6",
       "transformed": true
     },
     {
       "path": "docs/agent-integration.md",
       "bytes": 15874,
-      "sha256": "a7e632118c99d7b1ec326bc11ed1e2ec12da59a13180024fa2c0b668fcd28a67",
-      "original_sha256": "a7e632118c99d7b1ec326bc11ed1e2ec12da59a13180024fa2c0b668fcd28a67",
+      "sha256": "f32a36ad66155b8cdcd55d9f8b8c78c1866e8dedd06222790ebe2fa865c28553",
+      "original_sha256": "f32a36ad66155b8cdcd55d9f8b8c78c1866e8dedd06222790ebe2fa865c28553",
       "transformed": false
     },
     {
       "path": "docs/architecture.md",
       "bytes": 9061,
-      "sha256": "97ae874b099c7b403912650939ad19a869ea93acab17f0b716e8810bd02ebc1f",
-      "original_sha256": "97ae874b099c7b403912650939ad19a869ea93acab17f0b716e8810bd02ebc1f",
+      "sha256": "f3eb49d327493629be323989d0bc9d7b918e1c1ba30f8e1b771b5479b1795ba9",
+      "original_sha256": "f3eb49d327493629be323989d0bc9d7b918e1c1ba30f8e1b771b5479b1795ba9",
       "transformed": false
     },
     {
@@ -993,9 +1009,9 @@
     },
     {
       "path": "docs/capabilities.md",
-      "bytes": 83935,
-      "sha256": "1a07e29f61d8cdf26c0bae2195a02dfbc45fc5446709452b092440adc2acacdf",
-      "original_sha256": "1a07e29f61d8cdf26c0bae2195a02dfbc45fc5446709452b092440adc2acacdf",
+      "bytes": 85992,
+      "sha256": "e6ad2885a4cfc98441cdadf24713147b17209413802d61865e043da738a1efd6",
+      "original_sha256": "e6ad2885a4cfc98441cdadf24713147b17209413802d61865e043da738a1efd6",
       "transformed": false
     },
     {
@@ -1036,15 +1052,15 @@
     {
       "path": "docs/distribution.md",
       "bytes": 4634,
-      "sha256": "7602c2905cd541947fa8167cec09566de980fe6b7e14f3766508fbd9ddb7c236",
-      "original_sha256": "47ab8bd70e85692a1edcd0f02c881e3df7af42ed64dda8e51d639ccc763e113a",
+      "sha256": "2ff17c141ed2185c2d1c4276b9542d6f717a69c830c4e3af64a53356fad0f9e0",
+      "original_sha256": "a23eb68860e5e4fb8492e672ca3370e6a2110ae5dd5fdadf735fd3a04d02add9",
       "transformed": true
     },
     {
       "path": "docs/econometrics/README.md",
-      "bytes": 8042,
-      "sha256": "ca58371d47d34dfaf9fa4bdbdaa81d17532f488ac3ae0e785256590033bcba32",
-      "original_sha256": "ca58371d47d34dfaf9fa4bdbdaa81d17532f488ac3ae0e785256590033bcba32",
+      "bytes": 8689,
+      "sha256": "dd214688722384462dbb6c2c35b32e392e315105e7f1972a444354d9ff20ada4",
+      "original_sha256": "dd214688722384462dbb6c2c35b32e392e315105e7f1972a444354d9ff20ada4",
       "transformed": false
     },
     {
@@ -1052,6 +1068,20 @@
       "bytes": 4999,
       "sha256": "ede114157a7fab79d0626a05b3bd7cf6a6abf60c90ae3207ae707d5436d4f779",
       "original_sha256": "ede114157a7fab79d0626a05b3bd7cf6a6abf60c90ae3207ae707d5436d4f779",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/advanced-unitroot-breaks.md",
+      "bytes": 23960,
+      "sha256": "6bfd2171600e9b60b31bf27693c4a88feef4bed6e07ab873097ff8057d4209f4",
+      "original_sha256": "6bfd2171600e9b60b31bf27693c4a88feef4bed6e07ab873097ff8057d4209f4",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/advanced-unitroot-fourier.md",
+      "bytes": 14463,
+      "sha256": "a353262781e51dc7bd0d99e727b1b27cd06a52f6cdc50026c80727a843c5793c",
+      "original_sha256": "a353262781e51dc7bd0d99e727b1b27cd06a52f6cdc50026c80727a843c5793c",
       "transformed": false
     },
     {
@@ -1063,9 +1093,9 @@
     },
     {
       "path": "docs/econometrics/advanced_unitroot.md",
-      "bytes": 7716,
-      "sha256": "d23e472ac3d9f5a33e54f1ee76a540fef587d97a41e41cf207870df5d2f0d7d3",
-      "original_sha256": "9ed3ce159012956c27012e1ce27ea9c65c7e075c3be536173ba29139e9041484",
+      "bytes": 8521,
+      "sha256": "8ce9dbf886e51ece4630e87b99b476aade8f708b6616f98cb1ca348227e9869d",
+      "original_sha256": "f4da74a1d5155ca342ab2b7d2bc134e7447c38ea4a1d45226f2df028aa496dc1",
       "transformed": true
     },
     {
@@ -1077,9 +1107,9 @@
     },
     {
       "path": "docs/econometrics/arch.md",
-      "bytes": 39818,
-      "sha256": "a784e82598c4e51aa12528ab1693822b718182c71583076badfef9db8e449f28",
-      "original_sha256": "a784e82598c4e51aa12528ab1693822b718182c71583076badfef9db8e449f28",
+      "bytes": 41391,
+      "sha256": "2d7e9fba3f0fa5dd72360426234ff423dfc4674a4e047c1b3e011fec7a5ab771",
+      "original_sha256": "2d7e9fba3f0fa5dd72360426234ff423dfc4674a4e047c1b3e011fec7a5ab771",
       "transformed": false
     },
     {
@@ -1112,9 +1142,9 @@
     },
     {
       "path": "docs/econometrics/bai-perron.md",
-      "bytes": 4762,
-      "sha256": "141274442dbc74e204064bf91a8a782c78c154f6718b322149e1e5f9ea5e3c88",
-      "original_sha256": "141274442dbc74e204064bf91a8a782c78c154f6718b322149e1e5f9ea5e3c88",
+      "bytes": 5223,
+      "sha256": "b62e54b2cf69b1840cbf8aced6c35d6d235994ebe9e466151a2e98245a0ffd79",
+      "original_sha256": "b62e54b2cf69b1840cbf8aced6c35d6d235994ebe9e466151a2e98245a0ffd79",
       "transformed": false
     },
     {
@@ -1161,9 +1191,9 @@
     },
     {
       "path": "docs/econometrics/capabilities.generated.json",
-      "bytes": 734991,
-      "sha256": "949d3a923053b4c6b0ae0234dc7a70be4d03da9340cec6d1fcc9163dd9df37df",
-      "original_sha256": "88c6ba1c2e216e49e7639f95a54c240d41d4c7dedb71cc25b5906c65d28459f4",
+      "bytes": 783463,
+      "sha256": "73553f3e8c028af54a4ab4512af08ea0d4cb841ae82e1a1d893370858690da13",
+      "original_sha256": "79f7079e0f25f18e53364a07b2593ed8ef78adda895e43d2264f993f19eabc28",
       "transformed": true
     },
     {
@@ -1377,6 +1407,13 @@
       "transformed": true
     },
     {
+      "path": "docs/econometrics/causality-extensions.md",
+      "bytes": 20213,
+      "sha256": "5def17f38513fc0c7161c58ac864fca9a94b1f58bceee29484909e269babcad3",
+      "original_sha256": "5def17f38513fc0c7161c58ac864fca9a94b1f58bceee29484909e269babcad3",
+      "transformed": false
+    },
+    {
       "path": "docs/econometrics/censored_count.md",
       "bytes": 10687,
       "sha256": "35c3d90fd101f5a33782f22340f354249eb14bfabce1836f1e94f929eae254a6",
@@ -1395,6 +1432,13 @@
       "bytes": 4213,
       "sha256": "b3679256d5d026d95963b64a767db50d7c00b4a5e17e0b39bfa6b3dfcb6fb500",
       "original_sha256": "b3679256d5d026d95963b64a767db50d7c00b4a5e17e0b39bfa6b3dfcb6fb500",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/cointegration-breaks.md",
+      "bytes": 15030,
+      "sha256": "11ba9c0c5cc170275220354ed66465cdb4f0954801b45f21f4058c27ef84fe17",
+      "original_sha256": "11ba9c0c5cc170275220354ed66465cdb4f0954801b45f21f4058c27ef84fe17",
       "transformed": false
     },
     {
@@ -1448,23 +1492,23 @@
     },
     {
       "path": "docs/econometrics/coverage.md",
-      "bytes": 17062,
-      "sha256": "a3ef893e19025f8cd622e995451a2863eff4e9501fda10bf4f16daa1d59e2f29",
-      "original_sha256": "a3ef893e19025f8cd622e995451a2863eff4e9501fda10bf4f16daa1d59e2f29",
+      "bytes": 24095,
+      "sha256": "d9666c633da03231477403dc5f29b7f02a5756f9b8bc19791181c8fe1f8e2c63",
+      "original_sha256": "d9666c633da03231477403dc5f29b7f02a5756f9b8bc19791181c8fe1f8e2c63",
       "transformed": false
     },
     {
       "path": "docs/econometrics/dataset_stages.md",
-      "bytes": 10843,
-      "sha256": "ee21b81838657d8bd2297c523cccc0b302013c3f43abb9c285f62ea969b73f11",
-      "original_sha256": "6030864603b7272df574fa63089e5e1630f78effc03e91aa49d5069c565fff5b",
+      "bytes": 11289,
+      "sha256": "12cc4c6b5fae818ce5ea3c450f8dab1d94acac0f12289c05a818f66bcc42c9ae",
+      "original_sha256": "24553a344bff646d1994e77d64d3e3a8e4e254f5c1be16d4f6401f01abd6f507",
       "transformed": true
     },
     {
       "path": "docs/econometrics/dependent-meta.md",
-      "bytes": 6901,
-      "sha256": "30e05be258d69faffe84d96643245baf1f786712d13c962ae27a2b9314c9ae37",
-      "original_sha256": "30e05be258d69faffe84d96643245baf1f786712d13c962ae27a2b9314c9ae37",
+      "bytes": 7053,
+      "sha256": "7e8d862ccff2d60eef2b3caa15006d1549fc425610ebfb821491b05c4fb80dfb",
+      "original_sha256": "7e8d862ccff2d60eef2b3caa15006d1549fc425610ebfb821491b05c4fb80dfb",
       "transformed": false
     },
     {
@@ -1545,6 +1589,13 @@
       "transformed": true
     },
     {
+      "path": "docs/econometrics/forecasting-extensions.md",
+      "bytes": 11750,
+      "sha256": "a21e0706048b51187503c56326782a212d6a098ce1a02cef7c2958ed8a6b0bf7",
+      "original_sha256": "a21e0706048b51187503c56326782a212d6a098ce1a02cef7c2958ed8a6b0bf7",
+      "transformed": false
+    },
+    {
       "path": "docs/econometrics/fractional-memory.md",
       "bytes": 7807,
       "sha256": "5a3e0f4cc2f4d7caccad40d52e3066179b40bd4710c6b6f3cae0ee1c3d93db07",
@@ -1570,6 +1621,13 @@
       "bytes": 1326,
       "sha256": "aaef14c5770dcd6971e87e1306a271019da248fb3a7135d51f697f61373f213f",
       "original_sha256": "aaef14c5770dcd6971e87e1306a271019da248fb3a7135d51f697f61373f213f",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/garch-extensions.md",
+      "bytes": 31348,
+      "sha256": "b73691e01efcaf79c9bab5ca5962123297d39bb9b9410ab2a1c05aa8ead29910",
+      "original_sha256": "b73691e01efcaf79c9bab5ca5962123297d39bb9b9410ab2a1c05aa8ead29910",
       "transformed": false
     },
     {
@@ -1650,10 +1708,24 @@
       "transformed": true
     },
     {
+      "path": "docs/econometrics/iv-extensions.md",
+      "bytes": 17090,
+      "sha256": "c363f2a881195b177796a06b6314bde6d06e2b8312db8aebedb52a9f02d8fb67",
+      "original_sha256": "c363f2a881195b177796a06b6314bde6d06e2b8312db8aebedb52a9f02d8fb67",
+      "transformed": false
+    },
+    {
+      "path": "docs/econometrics/iv-wild-bootstrap.md",
+      "bytes": 11850,
+      "sha256": "cada98183cd3747925dfa5912fb9d00da43059ee94b1706bdc980da79300be7a",
+      "original_sha256": "cada98183cd3747925dfa5912fb9d00da43059ee94b1706bdc980da79300be7a",
+      "transformed": false
+    },
+    {
       "path": "docs/econometrics/iv.md",
-      "bytes": 30875,
-      "sha256": "bb1bdb1ac1806d5accace24512175348b15ed0c1ccef79631900f67bc8140bb8",
-      "original_sha256": "bb1bdb1ac1806d5accace24512175348b15ed0c1ccef79631900f67bc8140bb8",
+      "bytes": 31063,
+      "sha256": "61a2bc0cf4fe9ee55c8bd7d3638a082351332f79189fe5d791390bae64906974",
+      "original_sha256": "61a2bc0cf4fe9ee55c8bd7d3638a082351332f79189fe5d791390bae64906974",
       "transformed": false
     },
     {
@@ -1755,10 +1827,17 @@
       "transformed": false
     },
     {
+      "path": "docs/econometrics/meta-extensions.md",
+      "bytes": 12070,
+      "sha256": "bffc46f4e15fdaa7c7f8cb52e6bb58a8e32d5054486388171b676c0e51cebd2b",
+      "original_sha256": "bffc46f4e15fdaa7c7f8cb52e6bb58a8e32d5054486388171b676c0e51cebd2b",
+      "transformed": false
+    },
+    {
       "path": "docs/econometrics/mgarch.md",
-      "bytes": 10592,
-      "sha256": "cb55c90bc20e768dd34391726808ee09c14a8b2cb0f964a29b613708c9732052",
-      "original_sha256": "de36f04801d38027ec7876d87a2a27c8c6fa640e07d438a244b398e2024358c9",
+      "bytes": 11331,
+      "sha256": "f0e5cd2386a72b4cc1f8351a9d6e752dc5b7a6f727b4b79815262d49d3f322a1",
+      "original_sha256": "68fc93019a5e206f4259f981a7dd0ab0d26a135fe4dcb0130ba7f2b1dec911f3",
       "transformed": true
     },
     {
@@ -1818,10 +1897,17 @@
       "transformed": false
     },
     {
+      "path": "docs/econometrics/mixed-extensions.md",
+      "bytes": 16795,
+      "sha256": "f377cdaf4db549d9577ad451409c862bf4d00fe7d98a9c5e12e96e8844712d9f",
+      "original_sha256": "f377cdaf4db549d9577ad451409c862bf4d00fe7d98a9c5e12e96e8844712d9f",
+      "transformed": false
+    },
+    {
       "path": "docs/econometrics/mixed.md",
-      "bytes": 30725,
-      "sha256": "dd00aa55e6f1ad85643f5d2a7aedee73cbab66ceec0cedb79bff4c821f437c1e",
-      "original_sha256": "dd00aa55e6f1ad85643f5d2a7aedee73cbab66ceec0cedb79bff4c821f437c1e",
+      "bytes": 30846,
+      "sha256": "b72b210ef6dc2d5a6086a5c65f7017763b35f6eb3aa7433cb16abf8164296c11",
+      "original_sha256": "b72b210ef6dc2d5a6086a5c65f7017763b35f6eb3aa7433cb16abf8164296c11",
       "transformed": false
     },
     {
@@ -2203,6 +2289,13 @@
       "transformed": true
     },
     {
+      "path": "docs/econometrics/seasonal-adjustment.md",
+      "bytes": 14360,
+      "sha256": "adf2f13c332693ec45ead2afadadbde8d1c334c268c041ca5a10cf6247bac785",
+      "original_sha256": "adf2f13c332693ec45ead2afadadbde8d1c334c268c041ca5a10cf6247bac785",
+      "transformed": false
+    },
+    {
       "path": "docs/econometrics/selection.md",
       "bytes": 33490,
       "sha256": "b2102c3519fea972ed755d0d4e7b8d1de4eede29bb76fef6e7de77fdaa225afc",
@@ -2441,10 +2534,17 @@
       "transformed": false
     },
     {
+      "path": "docs/econometrics/survival-frailty.md",
+      "bytes": 19996,
+      "sha256": "34a47f852dd97eb9d92029352c49ffae59c2fbc21759d96a7215054ff7c9fc8f",
+      "original_sha256": "34a47f852dd97eb9d92029352c49ffae59c2fbc21759d96a7215054ff7c9fc8f",
+      "transformed": false
+    },
+    {
       "path": "docs/econometrics/survival.md",
-      "bytes": 33089,
-      "sha256": "ea25819cd9a562336e46e6ec3b5ff8dcfdcf2d266a11957cc359237c188ab052",
-      "original_sha256": "ea25819cd9a562336e46e6ec3b5ff8dcfdcf2d266a11957cc359237c188ab052",
+      "bytes": 33250,
+      "sha256": "7aade6a23a6ec92c028ed2ac76c95de67a1fff3c8bccc3f7fa85c71fccd641fa",
+      "original_sha256": "7aade6a23a6ec92c028ed2ac76c95de67a1fff3c8bccc3f7fa85c71fccd641fa",
       "transformed": false
     },
     {
@@ -2484,9 +2584,9 @@
     },
     {
       "path": "docs/econometrics/tsworkflows.md",
-      "bytes": 8755,
-      "sha256": "7a2ab34a5aed1bbfae38bcf96cf598ee1b7a9f90e75dda2a1723ee35188cd038",
-      "original_sha256": "7a2ab34a5aed1bbfae38bcf96cf598ee1b7a9f90e75dda2a1723ee35188cd038",
+      "bytes": 9253,
+      "sha256": "32da40807dd099f6eaef1e5a5f474f7d54d93cdf7c569cc945e3da5f32b26ce2",
+      "original_sha256": "32da40807dd099f6eaef1e5a5f474f7d54d93cdf7c569cc945e3da5f32b26ce2",
       "transformed": false
     },
     {
@@ -2536,6 +2636,13 @@
       "bytes": 4392,
       "sha256": "552c3ce3519beaf47cd851fbc177acf3c01f7946dcceabcbb56c0ff0fe53f49e",
       "original_sha256": "552c3ce3519beaf47cd851fbc177acf3c01f7946dcceabcbb56c0ff0fe53f49e",
+      "transformed": false
+    },
+    {
+      "path": "docs/email-code-signin.md",
+      "bytes": 5970,
+      "sha256": "fce9c8891c12d5b9d1bf78257f8e8e229413d8fdd263b4c34fc62c8364a9a499",
+      "original_sha256": "fce9c8891c12d5b9d1bf78257f8e8e229413d8fdd263b4c34fc62c8364a9a499",
       "transformed": false
     },
     {
@@ -2739,6 +2846,13 @@
       "bytes": 4397,
       "sha256": "0c26731969d981f80b9f76f16ec34af0fa6e1d6d9f21c88c022c62672a42fb0d",
       "original_sha256": "0c26731969d981f80b9f76f16ec34af0fa6e1d6d9f21c88c022c62672a42fb0d",
+      "transformed": false
+    },
+    {
+      "path": "docs/examples/meta_runtime_eight.py",
+      "bytes": 10358,
+      "sha256": "e238aa431104c429d888d88ad09c713b706f62ab09085d5a84b109bebf5f2596",
+      "original_sha256": "e238aa431104c429d888d88ad09c713b706f62ab09085d5a84b109bebf5f2596",
       "transformed": false
     },
     {
@@ -3247,9 +3361,9 @@
     },
     {
       "path": "docs/examples/unitroot_methods.py",
-      "bytes": 2266,
-      "sha256": "fbd2d6ab7c9914d64e33487533cc68fb6ea6c16aeccdf10ddbaa758c8cb89b7e",
-      "original_sha256": "fbd2d6ab7c9914d64e33487533cc68fb6ea6c16aeccdf10ddbaa758c8cb89b7e",
+      "bytes": 3054,
+      "sha256": "f40e52755db2da18ff23a776ebcc1419bad8e08d6effdc2a607d595b1c0df868",
+      "original_sha256": "f40e52755db2da18ff23a776ebcc1419bad8e08d6effdc2a607d595b1c0df868",
       "transformed": false
     },
     {
@@ -3435,6 +3549,13 @@
       "transformed": false
     },
     {
+      "path": "docs/reference-licenses/combcoint-MIT.txt",
+      "bytes": 1779,
+      "sha256": "b8539bc092a3854da2c8f8495b047128297312bea7ecf9ad166f055bdcf5cab2",
+      "original_sha256": "b8539bc092a3854da2c8f8495b047128297312bea7ecf9ad166f055bdcf5cab2",
+      "transformed": false
+    },
+    {
       "path": "docs/research/README.md",
       "bytes": 3867,
       "sha256": "4839f45478e7f375dce19fa69c3c67dc72000c3388960daef9391ff8f68b235a",
@@ -3486,15 +3607,15 @@
     {
       "path": "docs/streaming.md",
       "bytes": 19284,
-      "sha256": "5172422179a67cb26734964b5b3b39aeaa76e1becad7ee2efd89ed81610a4d7e",
-      "original_sha256": "fc976315dbf34b43d416c74479b1f2d9ce5c7b0de061464cea3aa962e96a3d4e",
+      "sha256": "3b60787bcb6b22091d8fa29b610da475289cf6735f0d09b5dcbf218880abe191",
+      "original_sha256": "2373817deceac403e0b2322b68433c962deeef25093ee5bc5b4def8926b97d6b",
       "transformed": true
     },
     {
       "path": "docs/sync-backend-deployment.md",
-      "bytes": 7743,
-      "sha256": "aae7a632d748c2627774063dcca183dca4aaafb8dfac5e34a480e2e08dfebc6b",
-      "original_sha256": "aae7a632d748c2627774063dcca183dca4aaafb8dfac5e34a480e2e08dfebc6b",
+      "bytes": 9738,
+      "sha256": "18ead1c2a23269e0c9beaffec55b16628bee673ed4ad0652bafcadf08ead95a6",
+      "original_sha256": "18ead1c2a23269e0c9beaffec55b16628bee673ed4ad0652bafcadf08ead95a6",
       "transformed": false
     },
     {
@@ -8658,9 +8779,9 @@
     },
     {
       "path": "docs/team-deployment.md",
-      "bytes": 8440,
-      "sha256": "68a2c19c900aa37e64b6b3bfde5ee87157ee2dc0dc145bf702822a85c11326cc",
-      "original_sha256": "68a2c19c900aa37e64b6b3bfde5ee87157ee2dc0dc145bf702822a85c11326cc",
+      "bytes": 7787,
+      "sha256": "5e027868cb757bdcbdc2b883a3d9681ab38eaa7be3f9c358d1c00bd8ea678ad5",
+      "original_sha256": "5e027868cb757bdcbdc2b883a3d9681ab38eaa7be3f9c358d1c00bd8ea678ad5",
       "transformed": false
     },
     {
@@ -8686,9 +8807,9 @@
     },
     {
       "path": "docs/validation/ci-cadence.md",
-      "bytes": 2655,
-      "sha256": "5dcf7f9642a120ff543803ab25a9bb2ec3887522117d384639ff1f01c7d3b9d0",
-      "original_sha256": "5dcf7f9642a120ff543803ab25a9bb2ec3887522117d384639ff1f01c7d3b9d0",
+      "bytes": 2700,
+      "sha256": "5aed24c0ced612694b88d5f1c5ef1a6ecab5ab83066c9c73f522daa443d71f6e",
+      "original_sha256": "5aed24c0ced612694b88d5f1c5ef1a6ecab5ab83066c9c73f522daa443d71f6e",
       "transformed": false
     },
     {
@@ -8762,6 +8883,20 @@
       "transformed": false
     },
     {
+      "path": "docs/validation/meta-runtime-eight-2026-10-11.md",
+      "bytes": 2523,
+      "sha256": "4bcfe976332ebdcb6d94ff743463a11d33a2b3972d77333351a58f49989e551d",
+      "original_sha256": "4bcfe976332ebdcb6d94ff743463a11d33a2b3972d77333351a58f49989e551d",
+      "transformed": false
+    },
+    {
+      "path": "docs/validation/sdk-scheduling-38120796245.json",
+      "bytes": 768,
+      "sha256": "1a6ff6880e273a3e5f17afae64ce25b8286571ba71a803ed81445e50f5512ed1",
+      "original_sha256": "1a6ff6880e273a3e5f17afae64ce25b8286571ba71a803ed81445e50f5512ed1",
+      "transformed": false
+    },
+    {
       "path": "docs/verification.md",
       "bytes": 47690,
       "sha256": "0b656abbb0096b27ff92a29b25a02f7b873c09c5300f15b914c56d34c57d4f44",
@@ -8798,10 +8933,10 @@
     },
     {
       "path": "packages/openecon-charts/PYPI-README.md",
-      "bytes": 2831,
-      "sha256": "a707263b3813760659c3db0405d026ed5cf05bfc3b6694b6d3a1d57c9efff729",
-      "original_sha256": "9441ec309e081b5d5eb5028623bd178a788a9ebfcfde96b4653da3482f1e1a0a",
-      "transformed": true
+      "bytes": 2546,
+      "sha256": "422642eaf629d2e5471b9e5e229cb8a79358942872806d33ea7773c8e4ef5598",
+      "original_sha256": "422642eaf629d2e5471b9e5e229cb8a79358942872806d33ea7773c8e4ef5598",
+      "transformed": false
     },
     {
       "path": "packages/openecon-charts/README.md",
@@ -9428,16 +9563,16 @@
     },
     {
       "path": "scripts/deploy_team_control.py",
-      "bytes": 10471,
-      "sha256": "8b54c37680a7f1b32308ab7a0fefe314d903b21f9874f26d3069e86e192e9f3b",
-      "original_sha256": "8b54c37680a7f1b32308ab7a0fefe314d903b21f9874f26d3069e86e192e9f3b",
+      "bytes": 12299,
+      "sha256": "d7a7ae88a7c010403200ebbec3f306a3f274930c0fc52206d829a63b55e18d39",
+      "original_sha256": "d7a7ae88a7c010403200ebbec3f306a3f274930c0fc52206d829a63b55e18d39",
       "transformed": false
     },
     {
       "path": "scripts/editor_catalog_intern.py",
-      "bytes": 10230,
-      "sha256": "fd00f1cee6f9b21380545d6425ae292ff1d3dc43524e762038d5700e69cc64db",
-      "original_sha256": "fd00f1cee6f9b21380545d6425ae292ff1d3dc43524e762038d5700e69cc64db",
+      "bytes": 10225,
+      "sha256": "2908eb377166b58976b319ccddaca312a5363eb87dd2e005c59d517bc3bc4b8b",
+      "original_sha256": "2908eb377166b58976b319ccddaca312a5363eb87dd2e005c59d517bc3bc4b8b",
       "transformed": false
     },
     {
@@ -9455,10 +9590,31 @@
       "transformed": false
     },
     {
+      "path": "scripts/generate_causality_extensions_oracles.py",
+      "bytes": 7837,
+      "sha256": "72bffe6f1ba38ea573594ee0c6f6de914560eb5c9b948cbc6e9677a86715e333",
+      "original_sha256": "72bffe6f1ba38ea573594ee0c6f6de914560eb5c9b948cbc6e9677a86715e333",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_cointegration_breaks_oracles.R",
+      "bytes": 8445,
+      "sha256": "7c19ffd3579c2bf58128def70cccd69d58be75f00a61c9b2ef4d1cb5f34fa966",
+      "original_sha256": "7c19ffd3579c2bf58128def70cccd69d58be75f00a61c9b2ef4d1cb5f34fa966",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_cointegration_breaks_oracles.py",
+      "bytes": 17633,
+      "sha256": "913705412796aea40b21b13d0e9738a3f17452a0774040e1c2fd680b76a7361f",
+      "original_sha256": "913705412796aea40b21b13d0e9738a3f17452a0774040e1c2fd680b76a7361f",
+      "transformed": false
+    },
+    {
       "path": "scripts/generate_editor_api.py",
-      "bytes": 248116,
-      "sha256": "651c0647a5b9716b4fe3ef2508616f87827e2f0d3a8b34f3f9b3950636b08e45",
-      "original_sha256": "651c0647a5b9716b4fe3ef2508616f87827e2f0d3a8b34f3f9b3950636b08e45",
+      "bytes": 248156,
+      "sha256": "922138c7387c6ade5597861ba2616d31f84eabcadf73210d1cf7d62f3a51adb2",
+      "original_sha256": "922138c7387c6ade5597861ba2616d31f84eabcadf73210d1cf7d62f3a51adb2",
       "transformed": false
     },
     {
@@ -9469,6 +9625,20 @@
       "transformed": false
     },
     {
+      "path": "scripts/generate_garch_extension_oracles.R",
+      "bytes": 12198,
+      "sha256": "a935c584be8ba84a670cf80bca7c2675991c76ff207f20acf5b9faad2d762e5f",
+      "original_sha256": "a935c584be8ba84a670cf80bca7c2675991c76ff207f20acf5b9faad2d762e5f",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_garch_extension_oracles.py",
+      "bytes": 10164,
+      "sha256": "1f60e526eaa7b139005d3d7c5481267ed87ec6b192dc67e9df8b9ca49a678411",
+      "original_sha256": "1f60e526eaa7b139005d3d7c5481267ed87ec6b192dc67e9df8b9ca49a678411",
+      "transformed": false
+    },
+    {
       "path": "scripts/generate_inference_reference.py",
       "bytes": 7100,
       "sha256": "d63a573084fa029f8c7a2e6274af9be2894ec43f8db99796212adf90816d189f",
@@ -9476,10 +9646,129 @@
       "transformed": false
     },
     {
+      "path": "scripts/generate_iv_extension_oracles.R",
+      "bytes": 1477,
+      "sha256": "752ddef53c865977cbe69439c073e6a327b1405ff31e6ed740972338ed26a3b4",
+      "original_sha256": "752ddef53c865977cbe69439c073e6a327b1405ff31e6ed740972338ed26a3b4",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_iv_extension_oracles.py",
+      "bytes": 5242,
+      "sha256": "8922d11d5aedbb8d88c0782f447e011ed0a660cf1063ff9590c9f159e6215b14",
+      "original_sha256": "8922d11d5aedbb8d88c0782f447e011ed0a660cf1063ff9590c9f159e6215b14",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_iv_wild_bootstrap_oracles.py",
+      "bytes": 6237,
+      "sha256": "3d59fed0c945d9bd7cc14f7213fc692f07adfb1a07590a3d749124f782c36332",
+      "original_sha256": "3d59fed0c945d9bd7cc14f7213fc692f07adfb1a07590a3d749124f782c36332",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_meta_extension_oracles.R",
+      "bytes": 11846,
+      "sha256": "86e6c6ca3467311d05f9e510fbf08a9ceaad44f39ece906a77d78d378d32c3b4",
+      "original_sha256": "86e6c6ca3467311d05f9e510fbf08a9ceaad44f39ece906a77d78d378d32c3b4",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_meta_extension_oracles.py",
+      "bytes": 7409,
+      "sha256": "81497d42ec3b3f0bee1c9090d55b8b1b908f28fa706e1c91ea676c60026b59d3",
+      "original_sha256": "81497d42ec3b3f0bee1c9090d55b8b1b908f28fa706e1c91ea676c60026b59d3",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_mixed_extension_oracles.R",
+      "bytes": 7089,
+      "sha256": "704b03408b626489c21f22a157ac2af7ab38b947bf7cc8611e37a333070a068b",
+      "original_sha256": "704b03408b626489c21f22a157ac2af7ab38b947bf7cc8611e37a333070a068b",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_mixed_extension_oracles.py",
+      "bytes": 12096,
+      "sha256": "00a862dba6080417fff1dffaa79a505edd9f39d4fc1896a3ad155e62c8a9b60f",
+      "original_sha256": "00a862dba6080417fff1dffaa79a505edd9f39d4fc1896a3ad155e62c8a9b60f",
+      "transformed": false
+    },
+    {
       "path": "scripts/generate_repeated_gls_oracles.py",
       "bytes": 6818,
       "sha256": "09f25981f61fc15070e851887c45ff7e8abea3acfc7954d599c372eca1281afd",
       "original_sha256": "09f25981f61fc15070e851887c45ff7e8abea3acfc7954d599c372eca1281afd",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_seasonal_oracles.R",
+      "bytes": 5230,
+      "sha256": "85e4cd803a9c6eed6ac78796314da81ef6f4e2b4751771daa975eb9b614e8801",
+      "original_sha256": "85e4cd803a9c6eed6ac78796314da81ef6f4e2b4751771daa975eb9b614e8801",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_seasonal_oracles.py",
+      "bytes": 15511,
+      "sha256": "9890c87f164b18e2cb3b39fa0d553544a8207416a613d87094fe0004fe915b76",
+      "original_sha256": "9890c87f164b18e2cb3b39fa0d553544a8207416a613d87094fe0004fe915b76",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_survival_frailty_oracles.R",
+      "bytes": 8210,
+      "sha256": "d6c6003a719d70f766823435395f318b3a0d3748a84a75324b6ab2666fc39952",
+      "original_sha256": "d6c6003a719d70f766823435395f318b3a0d3748a84a75324b6ab2666fc39952",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_survival_frailty_oracles.py",
+      "bytes": 21606,
+      "sha256": "ed1fee807ec3d63766f33d51242de9dc71d50452f2089c2d99f0cb8631ed3a7c",
+      "original_sha256": "ed1fee807ec3d63766f33d51242de9dc71d50452f2089c2d99f0cb8631ed3a7c",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_unitroot_breaks_oracles.R",
+      "bytes": 7128,
+      "sha256": "5e7a19115040d9f7809100aa01f7a1761f0a5eb30e847aa5032198a0eb71504a",
+      "original_sha256": "5e7a19115040d9f7809100aa01f7a1761f0a5eb30e847aa5032198a0eb71504a",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_unitroot_breaks_oracles.py",
+      "bytes": 17327,
+      "sha256": "43c0735ac5060cacc0267fdf759ea1134eba57f9bc4c53b8776caab30a4924bc",
+      "original_sha256": "43c0735ac5060cacc0267fdf759ea1134eba57f9bc4c53b8776caab30a4924bc",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_unitroot_fourier_oracles.R",
+      "bytes": 2116,
+      "sha256": "bac5c02c0613b3b0500cd4f5f89f35b02b057b80185710a8002271f57e8b3c52",
+      "original_sha256": "bac5c02c0613b3b0500cd4f5f89f35b02b057b80185710a8002271f57e8b3c52",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_unitroot_fourier_oracles.py",
+      "bytes": 10537,
+      "sha256": "6384dbccee3988fc512bad40876bead3373917984bc70c2ee2be27d395563237",
+      "original_sha256": "6384dbccee3988fc512bad40876bead3373917984bc70c2ee2be27d395563237",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_unitroot_hegy_oracles.R",
+      "bytes": 7834,
+      "sha256": "d3ee06e6334c87b04cc1d60f6518dee861d83c98c041b4590b42b9ce8ef546af",
+      "original_sha256": "d3ee06e6334c87b04cc1d60f6518dee861d83c98c041b4590b42b9ce8ef546af",
+      "transformed": false
+    },
+    {
+      "path": "scripts/generate_unitroot_hegy_oracles.py",
+      "bytes": 10272,
+      "sha256": "45354e8b8f20363b436d1c9f78529b9eb69c92e6ba8e1321de5c78475639ea59",
+      "original_sha256": "45354e8b8f20363b436d1c9f78529b9eb69c92e6ba8e1321de5c78475639ea59",
       "transformed": false
     },
     {
@@ -9501,6 +9790,13 @@
       "bytes": 10686,
       "sha256": "fc2bf554d479b960aeeb0401cf1b0be5d77c1c65db5792797cce40d863e139cc",
       "original_sha256": "fc2bf554d479b960aeeb0401cf1b0be5d77c1c65db5792797cce40d863e139cc",
+      "transformed": false
+    },
+    {
+      "path": "scripts/ngperron_exact_limit.py",
+      "bytes": 6017,
+      "sha256": "56c8c19970301eddde8230586039a817e3814565d2649da5fe5e5bb95145f8a5",
+      "original_sha256": "56c8c19970301eddde8230586039a817e3814565d2649da5fe5e5bb95145f8a5",
       "transformed": false
     },
     {
@@ -9596,16 +9892,16 @@
     },
     {
       "path": "scripts/run_bvar_original_author_OS600_once.py",
-      "bytes": 8243,
-      "sha256": "a224f42503824f56decdded437063cbf11181a16706282ea3c57579bbee52336",
-      "original_sha256": "a224f42503824f56decdded437063cbf11181a16706282ea3c57579bbee52336",
+      "bytes": 10468,
+      "sha256": "42ac93f1c77d5d390d74789c20ec2a707cdc34fc85c0c994a821fe04824f2aae",
+      "original_sha256": "42ac93f1c77d5d390d74789c20ec2a707cdc34fc85c0c994a821fe04824f2aae",
       "transformed": false
     },
     {
       "path": "scripts/run_parallel_sdk_groups.py",
-      "bytes": 890126,
-      "sha256": "d382ef7b01e3ab681f2c9b94d6a8124097563c8872bfe3a987a35d4dc873f79e",
-      "original_sha256": "d382ef7b01e3ab681f2c9b94d6a8124097563c8872bfe3a987a35d4dc873f79e",
+      "bytes": 866012,
+      "sha256": "12869fd3fefeeccc0feff0ac2180a92219ffc5dcbb48560c79ee826100e1c5ff",
+      "original_sha256": "12869fd3fefeeccc0feff0ac2180a92219ffc5dcbb48560c79ee826100e1c5ff",
       "transformed": false
     },
     {
@@ -9904,9 +10200,9 @@
     },
     {
       "path": "scripts/validate_unitroot_methods.py",
-      "bytes": 11925,
-      "sha256": "2576ac7c5d6820195a43a3c385bfaf6bce9b86e13633b55ae4b94e92a5fa4858",
-      "original_sha256": "2576ac7c5d6820195a43a3c385bfaf6bce9b86e13633b55ae4b94e92a5fa4858",
+      "bytes": 13694,
+      "sha256": "3293283fc9939594771a533285ba0b1c04b7aed803057f263945066e3d306891",
+      "original_sha256": "3293283fc9939594771a533285ba0b1c04b7aed803057f263945066e3d306891",
       "transformed": false
     },
     {
@@ -10526,6 +10822,13 @@
       "transformed": false
     },
     {
+      "path": "scripts/verify_meta_runtime_eight.py",
+      "bytes": 13792,
+      "sha256": "773a1665588ba04034a0c70a96038531e58f3e445f2913cdd88d90ebbf6684f7",
+      "original_sha256": "773a1665588ba04034a0c70a96038531e58f3e445f2913cdd88d90ebbf6684f7",
+      "transformed": false
+    },
+    {
       "path": "scripts/verify_mi_extensions_integrated.py",
       "bytes": 4859,
       "sha256": "7f2bc586017f4913b203ca895bf462bb7f19e92c34074b09545a0fdef0977b9d",
@@ -10653,9 +10956,9 @@
     },
     {
       "path": "scripts/verify_native_matrix_desktop.py",
-      "bytes": 17128,
-      "sha256": "78f9acaf3ef8543e98cc0c906c4a75894ab8159f19f2e447b13618cc05a25690",
-      "original_sha256": "78f9acaf3ef8543e98cc0c906c4a75894ab8159f19f2e447b13618cc05a25690",
+      "bytes": 17253,
+      "sha256": "f8d94b44f9781b6f80dc7084d58e7ae32a5700c2a5987523cd0887810302e9d5",
+      "original_sha256": "f8d94b44f9781b6f80dc7084d58e7ae32a5700c2a5987523cd0887810302e9d5",
       "transformed": false
     },
     {
@@ -11290,9 +11593,9 @@
     },
     {
       "path": "scripts/verify_team_live.py",
-      "bytes": 17723,
-      "sha256": "a132c417ff31692eb58a64688d8c157612984b1a3cf073cea4bebc993440be74",
-      "original_sha256": "a132c417ff31692eb58a64688d8c157612984b1a3cf073cea4bebc993440be74",
+      "bytes": 35160,
+      "sha256": "d96a6e01343296b84b694540017b2d36c0013acc309b66274e3bf7aad5af219d",
+      "original_sha256": "d96a6e01343296b84b694540017b2d36c0013acc309b66274e3bf7aad5af219d",
       "transformed": false
     },
     {
@@ -11668,9 +11971,9 @@
     },
     {
       "path": "src/openecon/analysis_contracts.py",
-      "bytes": 151454,
-      "sha256": "69cca9181eb2e6ccd6d5866e9a4554ec902b7d12cd69f2647ba9172fcd9398b9",
-      "original_sha256": "69cca9181eb2e6ccd6d5866e9a4554ec902b7d12cd69f2647ba9172fcd9398b9",
+      "bytes": 153310,
+      "sha256": "36406b1c879c3a5f6d369f8f7ba8c5c45bd991b958e4721ed884f67f1923369c",
+      "original_sha256": "36406b1c879c3a5f6d369f8f7ba8c5c45bd991b958e4721ed884f67f1923369c",
       "transformed": false
     },
     {
@@ -11724,9 +12027,9 @@
     },
     {
       "path": "src/openecon/desktop_cloud.py",
-      "bytes": 14409,
-      "sha256": "89deccdf4fa3da9f22910c528f30c9fe16fff920558ef52712b88f2a8a7bd4eb",
-      "original_sha256": "89deccdf4fa3da9f22910c528f30c9fe16fff920558ef52712b88f2a8a7bd4eb",
+      "bytes": 15519,
+      "sha256": "db21ce2c33ea0e3ffd6ea9a6c44a288aafe0063215c0f3fb8b8782e3393ea352",
+      "original_sha256": "db21ce2c33ea0e3ffd6ea9a6c44a288aafe0063215c0f3fb8b8782e3393ea352",
       "transformed": false
     },
     {
@@ -11766,37 +12069,44 @@
     },
     {
       "path": "src/openecon/econometrics/arch/__init__.py",
-      "bytes": 4670,
-      "sha256": "c0e958ed097858bf2773248f4d3bd6bfc3396da6a423e0bb72c9d9ddfa27639f",
-      "original_sha256": "c0e958ed097858bf2773248f4d3bd6bfc3396da6a423e0bb72c9d9ddfa27639f",
+      "bytes": 8243,
+      "sha256": "c63ecbe3cd37e2e15a25064fc1206bd68744893ac100e6e5dc433445ee8c753f",
+      "original_sha256": "c63ecbe3cd37e2e15a25064fc1206bd68744893ac100e6e5dc433445ee8c753f",
       "transformed": false
     },
     {
       "path": "src/openecon/econometrics/arch/densities.py",
-      "bytes": 6591,
-      "sha256": "b3d721396df9101cc6bbf5f236e3d5335618c3711309358c34e30dc6cef5933e",
-      "original_sha256": "b3d721396df9101cc6bbf5f236e3d5335618c3711309358c34e30dc6cef5933e",
+      "bytes": 8466,
+      "sha256": "b600cf503e7e0a9c9c6ed52cb0870d6416845e05a53f20555e4669c527688c9d",
+      "original_sha256": "b600cf503e7e0a9c9c6ed52cb0870d6416845e05a53f20555e4669c527688c9d",
       "transformed": false
     },
     {
       "path": "src/openecon/econometrics/arch/estimators.py",
-      "bytes": 24488,
-      "sha256": "bcff002b7d878c65c3c9d5dcc770ec824ef3cbd2996593dc9b0cd2be4edb3a30",
-      "original_sha256": "bcff002b7d878c65c3c9d5dcc770ec824ef3cbd2996593dc9b0cd2be4edb3a30",
+      "bytes": 27794,
+      "sha256": "2b601e9f424ff66f02333ce2451af1f17fc2b30e11866766c2de8e93b508ab57",
+      "original_sha256": "2b601e9f424ff66f02333ce2451af1f17fc2b30e11866766c2de8e93b508ab57",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/arch/extended.py",
+      "bytes": 14449,
+      "sha256": "e00b1f7b4b1810ad772fcb7c205166bbd55db9d43583a2ffe4a5f47daaaf8422",
+      "original_sha256": "e00b1f7b4b1810ad772fcb7c205166bbd55db9d43583a2ffe4a5f47daaaf8422",
       "transformed": false
     },
     {
       "path": "src/openecon/econometrics/arch/forecast.py",
-      "bytes": 17461,
-      "sha256": "e4a05295340156d9612ee0706f0d6ca22342cb3c34ee59d4d356f4c26fcdf328",
-      "original_sha256": "e4a05295340156d9612ee0706f0d6ca22342cb3c34ee59d4d356f4c26fcdf328",
+      "bytes": 21644,
+      "sha256": "60a3f8ab56ee88ce7c04279f6407b3165645de5a05486afb6f9c98109d922dbf",
+      "original_sha256": "60a3f8ab56ee88ce7c04279f6407b3165645de5a05486afb6f9c98109d922dbf",
       "transformed": false
     },
     {
       "path": "src/openecon/econometrics/arch/kernels.py",
-      "bytes": 26544,
-      "sha256": "be134d29e799465f22084d917a4ec7f80783cb2202094d837c8ec223e0115b8f",
-      "original_sha256": "be134d29e799465f22084d917a4ec7f80783cb2202094d837c8ec223e0115b8f",
+      "bytes": 26985,
+      "sha256": "6cbe2e891c21e54735cf410810e469e00666e9edf57e9c02a141f92391619550",
+      "original_sha256": "6cbe2e891c21e54735cf410810e469e00666e9edf57e9c02a141f92391619550",
       "transformed": false
     },
     {
@@ -11808,23 +12118,30 @@
     },
     {
       "path": "src/openecon/econometrics/arch/layout.py",
-      "bytes": 10295,
-      "sha256": "40eb3402e9f182c4bc40aeb933c9cb9f6406682d6622155fa55ae513ebe79233",
-      "original_sha256": "40eb3402e9f182c4bc40aeb933c9cb9f6406682d6622155fa55ae513ebe79233",
+      "bytes": 13844,
+      "sha256": "c424d2e6676ef4aa754d69f6e3278762d1db9ab85d5096da292333cba96af801",
+      "original_sha256": "c424d2e6676ef4aa754d69f6e3278762d1db9ab85d5096da292333cba96af801",
       "transformed": false
     },
     {
       "path": "src/openecon/econometrics/arch/maximize.py",
-      "bytes": 23939,
-      "sha256": "ed9107a1ea4cfdb8368fa531d9059447eb2af4a712f3fb46c831b6d2a5525898",
-      "original_sha256": "ed9107a1ea4cfdb8368fa531d9059447eb2af4a712f3fb46c831b6d2a5525898",
+      "bytes": 26135,
+      "sha256": "e7473aa5f5699b088293b1e3d4143e08716273760c85ba68e00ab22bb9af3ddd",
+      "original_sha256": "e7473aa5f5699b088293b1e3d4143e08716273760c85ba68e00ab22bb9af3ddd",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/arch/midas.py",
+      "bytes": 30622,
+      "sha256": "d119e96d0dd2662a8ae3454ecaceaec7e434924e87382088e27c49540bd9852e",
+      "original_sha256": "d119e96d0dd2662a8ae3454ecaceaec7e434924e87382088e27c49540bd9852e",
       "transformed": false
     },
     {
       "path": "src/openecon/econometrics/arch/postfit.py",
-      "bytes": 6182,
-      "sha256": "4c31f5bb2735a28963d3726e4e763cb26519a590c4c8727735b102d997844d2d",
-      "original_sha256": "4c31f5bb2735a28963d3726e4e763cb26519a590c4c8727735b102d997844d2d",
+      "bytes": 8242,
+      "sha256": "e77a50c90e3ccc364c1aaa727c220ce5c1275f0e49d7436d45722d0a955a78d4",
+      "original_sha256": "e77a50c90e3ccc364c1aaa727c220ce5c1275f0e49d7436d45722d0a955a78d4",
       "transformed": false
     },
     {
@@ -11832,6 +12149,13 @@
       "bytes": 12372,
       "sha256": "25d453989e38f18c3afdd2c1e393141e152fd3d487b7afaceccb1fa05776e384",
       "original_sha256": "25d453989e38f18c3afdd2c1e393141e152fd3d487b7afaceccb1fa05776e384",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/arch/skewed.py",
+      "bytes": 13384,
+      "sha256": "5f38994ab903448512150c1ed16bc61632eaf587c038bfa293839ed209716a04",
+      "original_sha256": "5f38994ab903448512150c1ed16bc61632eaf587c038bfa293839ed209716a04",
       "transformed": false
     },
     {
@@ -12928,9 +13252,9 @@
     },
     {
       "path": "src/openecon/econometrics/iv/__init__.py",
-      "bytes": 8539,
-      "sha256": "b4f186e6659db958042ee21c07903ac75b67f694e9667fc857c6cdc9de0236a4",
-      "original_sha256": "b4f186e6659db958042ee21c07903ac75b67f694e9667fc857c6cdc9de0236a4",
+      "bytes": 11963,
+      "sha256": "1eeeae04d1b64afe1bea43cc2100541da29277d5b2089e9e95d4d63da89c7d8c",
+      "original_sha256": "1eeeae04d1b64afe1bea43cc2100541da29277d5b2089e9e95d4d63da89c7d8c",
       "transformed": false
     },
     {
@@ -12969,10 +13293,31 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/econometrics/iv/jive.py",
+      "bytes": 14916,
+      "sha256": "4388a2679a386ed929dba206cb66293458a80861d201fdda3026d1b5f04d996c",
+      "original_sha256": "4388a2679a386ed929dba206cb66293458a80861d201fdda3026d1b5f04d996c",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/econometrics/iv/kernels.py",
       "bytes": 13288,
       "sha256": "713f49f6e3f8cd9bebb144b5489087ca8b4b720749b2fafe64d0e3cf840c26ce",
       "original_sha256": "713f49f6e3f8cd9bebb144b5489087ca8b4b720749b2fafe64d0e3cf840c26ce",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/iv/lewbel.py",
+      "bytes": 17691,
+      "sha256": "98a550ce3333e1592c36a9a985ceb1c4ae61875637e77bbe048e045c4377cfb3",
+      "original_sha256": "98a550ce3333e1592c36a9a985ceb1c4ae61875637e77bbe048e045c4377cfb3",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/iv/mop.py",
+      "bytes": 13656,
+      "sha256": "f76a05e7215e01701f32ae78812171822c7403359838b2b53441a60be7810fa9",
+      "original_sha256": "f76a05e7215e01701f32ae78812171822c7403359838b2b53441a60be7810fa9",
       "transformed": false
     },
     {
@@ -12983,10 +13328,24 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/econometrics/iv/shift_share.py",
+      "bytes": 19612,
+      "sha256": "d44accf6934add8320b8896b3fff72df4883f6fe3fe7065359bde9b1bdcc60cf",
+      "original_sha256": "d44accf6934add8320b8896b3fff72df4883f6fe3fe7065359bde9b1bdcc60cf",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/econometrics/iv/weak_inference.py",
       "bytes": 16062,
       "sha256": "03d1ff4e8b46f7db07eb9c519b683b556de1da0f6480ba3a154976709dcc2698",
       "original_sha256": "03d1ff4e8b46f7db07eb9c519b683b556de1da0f6480ba3a154976709dcc2698",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/iv/wild_bootstrap.py",
+      "bytes": 26273,
+      "sha256": "d28a3dff0b631f3447a5647b510cc7da2b2beff3ac17f08db7e806d2e00c1df0",
+      "original_sha256": "d28a3dff0b631f3447a5647b510cc7da2b2beff3ac17f08db7e806d2e00c1df0",
       "transformed": false
     },
     {
@@ -13215,9 +13574,16 @@
     },
     {
       "path": "src/openecon/econometrics/meta/__init__.py",
-      "bytes": 1128,
-      "sha256": "aae53bd3be33db4b5225efdde29036f87bf41b703680c223b00b1c382f00587f",
-      "original_sha256": "aae53bd3be33db4b5225efdde29036f87bf41b703680c223b00b1c382f00587f",
+      "bytes": 1611,
+      "sha256": "f44eb022062325d415eaccccb6b0125ee7fa9a44f662957693ee46db2316e872",
+      "original_sha256": "f44eb022062325d415eaccccb6b0125ee7fa9a44f662957693ee46db2316e872",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/meta/bias.py",
+      "bytes": 13164,
+      "sha256": "ad82b038c4060fce4e0adaa27ff8e65ca1c120ba5798ff08acc29f14aae3aff9",
+      "original_sha256": "ad82b038c4060fce4e0adaa27ff8e65ca1c120ba5798ff08acc29f14aae3aff9",
       "transformed": false
     },
     {
@@ -13229,9 +13595,9 @@
     },
     {
       "path": "src/openecon/econometrics/meta/dependent.py",
-      "bytes": 24847,
-      "sha256": "1afd1168615cb5f32b3cee448ce074c0250dccd9b40fba4a8588b10fc7802b6a",
-      "original_sha256": "1afd1168615cb5f32b3cee448ce074c0250dccd9b40fba4a8588b10fc7802b6a",
+      "bytes": 24881,
+      "sha256": "3d81eeb8877a8200a7f5b895b9da21a189fe5c17b96a9124b269921b7d0ddc5b",
+      "original_sha256": "3d81eeb8877a8200a7f5b895b9da21a189fe5c17b96a9124b269921b7d0ddc5b",
       "transformed": false
     },
     {
@@ -13277,24 +13643,52 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/econometrics/meta/multilevel.py",
+      "bytes": 31955,
+      "sha256": "842f50dfa12b7700c5c5c614b22679a33b92f78ab879d447fd11ca032c2c3f5f",
+      "original_sha256": "842f50dfa12b7700c5c5c614b22679a33b92f78ab879d447fd11ca032c2c3f5f",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/meta/multilevel_kernels.py",
+      "bytes": 18473,
+      "sha256": "5ea0269cf9279152a3bd5c62f937815fcb03d41f35e174ffc13b194d529040e3",
+      "original_sha256": "5ea0269cf9279152a3bd5c62f937815fcb03d41f35e174ffc13b194d529040e3",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/meta/selection.py",
+      "bytes": 17626,
+      "sha256": "6c446e6d082876dc82932428fd8d36b1c56396e5b268485add33c2910ec9c6bb",
+      "original_sha256": "6c446e6d082876dc82932428fd8d36b1c56396e5b268485add33c2910ec9c6bb",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/meta/small_sample.py",
+      "bytes": 12264,
+      "sha256": "d28a82d49548b58a6ed64aaed1adb0c9a00c203447c0613d1bbbe015c2ea881f",
+      "original_sha256": "d28a82d49548b58a6ed64aaed1adb0c9a00c203447c0613d1bbbe015c2ea881f",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/econometrics/mgarch/__init__.py",
-      "bytes": 1884,
-      "sha256": "459a325499282bf55c65097b62fb62f4cd12abfbc03fbb11649d0303ac50866f",
-      "original_sha256": "459a325499282bf55c65097b62fb62f4cd12abfbc03fbb11649d0303ac50866f",
+      "bytes": 3202,
+      "sha256": "50598ab23f84c363b0bcb4064b830277d66aa2f2c40931ef1125d0f36502dcc7",
+      "original_sha256": "50598ab23f84c363b0bcb4064b830277d66aa2f2c40931ef1125d0f36502dcc7",
       "transformed": false
     },
     {
       "path": "src/openecon/econometrics/mgarch/estimators.py",
-      "bytes": 13751,
-      "sha256": "e8fe10915adf15f641833be26d9be54c32675dae9c068b7645814bdd564a2ede",
-      "original_sha256": "e8fe10915adf15f641833be26d9be54c32675dae9c068b7645814bdd564a2ede",
+      "bytes": 18350,
+      "sha256": "7a0a4d7494bd380d94579da875152896e76c1b285eafbd17e556033d88afcd67",
+      "original_sha256": "7a0a4d7494bd380d94579da875152896e76c1b285eafbd17e556033d88afcd67",
       "transformed": false
     },
     {
       "path": "src/openecon/econometrics/mgarch/kernels.py",
-      "bytes": 18253,
-      "sha256": "05d9812d680bfcc2bff9e42b426aab23e1dcea9894d88d40341e9227ee94a579",
-      "original_sha256": "05d9812d680bfcc2bff9e42b426aab23e1dcea9894d88d40341e9227ee94a579",
+      "bytes": 32702,
+      "sha256": "93f7f99c35ef1f97c19b6cd4b7eb27fdb4dc9b87e0d7ca32ebcf3e75d537cd65",
+      "original_sha256": "93f7f99c35ef1f97c19b6cd4b7eb27fdb4dc9b87e0d7ca32ebcf3e75d537cd65",
       "transformed": false
     },
     {
@@ -13376,9 +13770,23 @@
     },
     {
       "path": "src/openecon/econometrics/mixed/__init__.py",
-      "bytes": 12828,
-      "sha256": "31fc049e783a01bfdfa60622801720aad9b65067e91c00294f908b0a95e1f51b",
-      "original_sha256": "31fc049e783a01bfdfa60622801720aad9b65067e91c00294f908b0a95e1f51b",
+      "bytes": 17353,
+      "sha256": "e9944e1d7b6071d9d7874217cdcd37473a05a1dda315a61a99ef609efea2ca87",
+      "original_sha256": "e9944e1d7b6071d9d7874217cdcd37473a05a1dda315a61a99ef609efea2ca87",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/mixed/agq.py",
+      "bytes": 6406,
+      "sha256": "d19d376c6bfebb60def3b328fc8bf3b0d2a983a950e92f77b0ff7dbd85261ff0",
+      "original_sha256": "d19d376c6bfebb60def3b328fc8bf3b0d2a983a950e92f77b0ff7dbd85261ff0",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/mixed/censored_glmm.py",
+      "bytes": 11577,
+      "sha256": "9ee8c6d6d9666aaf272ad413e25f028f8dceabf1de08b6ac6d9714a0fd2f04cf",
+      "original_sha256": "9ee8c6d6d9666aaf272ad413e25f028f8dceabf1de08b6ac6d9714a0fd2f04cf",
       "transformed": false
     },
     {
@@ -13459,6 +13867,13 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/econometrics/mixed/ordinal_glmm.py",
+      "bytes": 12933,
+      "sha256": "7bcc454124c6a522e576b184a6dcd7611e180fa875542d004ed0fc111fa686cb",
+      "original_sha256": "7bcc454124c6a522e576b184a6dcd7611e180fa875542d004ed0fc111fa686cb",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/econometrics/mixed/panel_likelihoods.py",
       "bytes": 14422,
       "sha256": "b9dc81710947b52a64e206360b61fdc9b0f109a1f73e4a519d971983ae5c65b2",
@@ -13484,6 +13899,20 @@
       "bytes": 20302,
       "sha256": "3ac922fb174c7e46a5cf15d1546363171be504cea16db2a5c4e9083b2ce26636",
       "original_sha256": "3ac922fb174c7e46a5cf15d1546363171be504cea16db2a5c4e9083b2ce26636",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/mixed/residual_lmm.py",
+      "bytes": 26916,
+      "sha256": "b903f07fe3b3014c2f100562da37cb83de65b6af73a19ad3d7032d2f693e0886",
+      "original_sha256": "b903f07fe3b3014c2f100562da37cb83de65b6af73a19ad3d7032d2f693e0886",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/mixed/small_sample.py",
+      "bytes": 25329,
+      "sha256": "118d2dcb58ae55a6abe522e2b6b894159437b1089750048f1c30707b5870651b",
+      "original_sha256": "118d2dcb58ae55a6abe522e2b6b894159437b1089750048f1c30707b5870651b",
       "transformed": false
     },
     {
@@ -13957,9 +14386,9 @@
     },
     {
       "path": "src/openecon/econometrics/postest/__init__.py",
-      "bytes": 4408,
-      "sha256": "b2bccb3c1c4a67cd7eb752d8dfbc45831ec948663de2abc56b98526d5d8d5b64",
-      "original_sha256": "b2bccb3c1c4a67cd7eb752d8dfbc45831ec948663de2abc56b98526d5d8d5b64",
+      "bytes": 4598,
+      "sha256": "6d756ad0c587638b49e8fe92e5493495c7130b350038bfdc9f0da7fd40826c9d",
+      "original_sha256": "6d756ad0c587638b49e8fe92e5493495c7130b350038bfdc9f0da7fd40826c9d",
       "transformed": false
     },
     {
@@ -14159,6 +14588,13 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/econometrics/postest/score_bootstrap.py",
+      "bytes": 15348,
+      "sha256": "75b900f1040037905de8f6581b44313be1c1a3e1f65e47b6502f726fc6ac452a",
+      "original_sha256": "75b900f1040037905de8f6581b44313be1c1a3e1f65e47b6502f726fc6ac452a",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/econometrics/postest/scores.py",
       "bytes": 29470,
       "sha256": "34ddef44353dd45159c660334c050f8f6013fce16bf96f63ca35d395f6491b78",
@@ -14187,10 +14623,24 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/econometrics/postest/wild_multipliers.py",
+      "bytes": 4259,
+      "sha256": "ce3831cb1b1114fcb9e1f681239250eafbe73f1291ae8f665c56e9adeb18f04e",
+      "original_sha256": "ce3831cb1b1114fcb9e1f681239250eafbe73f1291ae8f665c56e9adeb18f04e",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/postest/wild_multiway.py",
+      "bytes": 13608,
+      "sha256": "eafae6edab258189eb72cb2735a8716f2fdebbd1b1589c0dee2f98a287422188",
+      "original_sha256": "eafae6edab258189eb72cb2735a8716f2fdebbd1b1589c0dee2f98a287422188",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/econometrics/postest/wild_restricted.py",
-      "bytes": 16636,
-      "sha256": "bd9dbac43f47ba627a137afd806e2ccb30b80d7cee82d71139a30ef8c39f150a",
-      "original_sha256": "bd9dbac43f47ba627a137afd806e2ccb30b80d7cee82d71139a30ef8c39f150a",
+      "bytes": 16803,
+      "sha256": "45fddf046d7de6431cd36cd68e913b3b28a8f1ae2948c5d7c38e257f51d14079",
+      "original_sha256": "45fddf046d7de6431cd36cd68e913b3b28a8f1ae2948c5d7c38e257f51d14079",
       "transformed": false
     },
     {
@@ -14790,9 +15240,9 @@
     },
     {
       "path": "src/openecon/econometrics/streaming_arch.py",
-      "bytes": 10677,
-      "sha256": "aa5c7f2568900fe70fe04e27ab83ac38d9e3b3dc97d9f432fa915faa84a29d9e",
-      "original_sha256": "aa5c7f2568900fe70fe04e27ab83ac38d9e3b3dc97d9f432fa915faa84a29d9e",
+      "bytes": 11173,
+      "sha256": "6292ce96fae4bf17bddbcde12061ddac12bdc147bdc34280c65546842b8c0888",
+      "original_sha256": "6292ce96fae4bf17bddbcde12061ddac12bdc147bdc34280c65546842b8c0888",
       "transformed": false
     },
     {
@@ -15084,9 +15534,9 @@
     },
     {
       "path": "src/openecon/econometrics/streaming_registry.py",
-      "bytes": 22299,
-      "sha256": "7fc8ada1a93aa4a5557cf1d05c01c76a210b7cf600c22f83f4748ef567a06eed",
-      "original_sha256": "7fc8ada1a93aa4a5557cf1d05c01c76a210b7cf600c22f83f4748ef567a06eed",
+      "bytes": 22554,
+      "sha256": "852261886680d96807c1df7c2089af3b922897fdbc8237259e2bdf6949808763",
+      "original_sha256": "852261886680d96807c1df7c2089af3b922897fdbc8237259e2bdf6949808763",
       "transformed": false
     },
     {
@@ -15483,9 +15933,9 @@
     },
     {
       "path": "src/openecon/econometrics/survival/__init__.py",
-      "bytes": 4829,
-      "sha256": "c4063b72111f7adb4ff538ab09724ee6c6e68935942508440f51ef6e4e92a494",
-      "original_sha256": "c4063b72111f7adb4ff538ab09724ee6c6e68935942508440f51ef6e4e92a494",
+      "bytes": 11683,
+      "sha256": "430a82b336612c2ad588ba2a9e046be346a8694e373f84bcdcd9bd091f362466",
+      "original_sha256": "430a82b336612c2ad588ba2a9e046be346a8694e373f84bcdcd9bd091f362466",
       "transformed": false
     },
     {
@@ -15524,6 +15974,20 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/econometrics/survival/frailty.py",
+      "bytes": 18503,
+      "sha256": "9187183b05f8cf6ac6a0b5d36cac1de25e28b36806c71e64d8db7271f2e7a397",
+      "original_sha256": "9187183b05f8cf6ac6a0b5d36cac1de25e28b36806c71e64d8db7271f2e7a397",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/survival/frailty_kernels.py",
+      "bytes": 19881,
+      "sha256": "e5ea65ca12db811e804c846cfd3d6d814a48340316125cc107686ed0abdb068c",
+      "original_sha256": "e5ea65ca12db811e804c846cfd3d6d814a48340316125cc107686ed0abdb068c",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/econometrics/survival/ggamma.py",
       "bytes": 7720,
       "sha256": "207e1f0bb0ef99e94f7b370c8732cbc38af58206de3b0343e53b1d6efc21c94f",
@@ -15552,6 +16016,20 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/econometrics/survival/parametric_frailty.py",
+      "bytes": 19902,
+      "sha256": "5d74e31d3a976a469cd9ca271943a2b20b90e4d56eac2d93400f6c4b7e2e5066",
+      "original_sha256": "5d74e31d3a976a469cd9ca271943a2b20b90e4d56eac2d93400f6c4b7e2e5066",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/survival/recurrent.py",
+      "bytes": 16334,
+      "sha256": "c233590892ef4d8846de3deb4dc2c4ddf2729e32a9d5b21cdc56dcffee49a209",
+      "original_sha256": "c233590892ef4d8846de3deb4dc2c4ddf2729e32a9d5b21cdc56dcffee49a209",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/econometrics/survival/saved_prediction.py",
       "bytes": 27922,
       "sha256": "89347180a9de4a81816f7b6b556c57ec989b696e5c0799e65ff214b21046aacd",
@@ -15570,6 +16048,13 @@
       "bytes": 21716,
       "sha256": "7b6f8ebbd4777e453a1f1770c522fdd40384db571cefa3d17afa4a1ae5c9272c",
       "original_sha256": "7b6f8ebbd4777e453a1f1770c522fdd40384db571cefa3d17afa4a1ae5c9272c",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/survival/stteffects.py",
+      "bytes": 19882,
+      "sha256": "26a728e1b7becbc7d8e082710a18e3da108067ad98ea6205f7d1182f9113b153",
+      "original_sha256": "26a728e1b7becbc7d8e082710a18e3da108067ad98ea6205f7d1182f9113b153",
       "transformed": false
     },
     {
@@ -15966,9 +16451,30 @@
     },
     {
       "path": "src/openecon/econometrics/tsworkflows/__init__.py",
-      "bytes": 5397,
-      "sha256": "bdf1dba1ddbb8590905e5b6dea753d989fb62865e5bb8ce1ea28d77344d21442",
-      "original_sha256": "bdf1dba1ddbb8590905e5b6dea753d989fb62865e5bb8ce1ea28d77344d21442",
+      "bytes": 6193,
+      "sha256": "cbb7c94c3483924ad46c49561cb9eb6169059b40d9668ac7e772b0ed99b47be1",
+      "original_sha256": "cbb7c94c3483924ad46c49561cb9eb6169059b40d9668ac7e772b0ed99b47be1",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/tsworkflows/backtest.py",
+      "bytes": 8866,
+      "sha256": "9b52e9890bcf42176badc1285007bec7c46c199b4dfd709daeaad9f3fe3ed37e",
+      "original_sha256": "9b52e9890bcf42176badc1285007bec7c46c199b4dfd709daeaad9f3fe3ed37e",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/tsworkflows/calendar.py",
+      "bytes": 19291,
+      "sha256": "40039199088ababa884e265a431c36920a2ce85ef7e5a624159a927f5b78c0ee",
+      "original_sha256": "40039199088ababa884e265a431c36920a2ce85ef7e5a624159a927f5b78c0ee",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/tsworkflows/combination.py",
+      "bytes": 9450,
+      "sha256": "835ebf9d167c8a4f173c03f51cbb8520e207cdc22023aed518c87db1bfb26756",
+      "original_sha256": "835ebf9d167c8a4f173c03f51cbb8520e207cdc22023aed518c87db1bfb26756",
       "transformed": false
     },
     {
@@ -15993,6 +16499,13 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/econometrics/tsworkflows/intermittent.py",
+      "bytes": 14695,
+      "sha256": "ad80319c6594d1afd618e659b282aefd6cade9df436ebab83b8bd9774d25642e",
+      "original_sha256": "ad80319c6594d1afd618e659b282aefd6cade9df436ebab83b8bd9774d25642e",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/econometrics/tsworkflows/midas.py",
       "bytes": 17450,
       "sha256": "015db694583179994153475cc9a101d270e52a31814c4af148fb463d07284964",
@@ -16011,6 +16524,13 @@
       "bytes": 6239,
       "sha256": "6d5e782cee7dc1a14d8f640f18990158146d2874c6dc77f57055fc0fee332693",
       "original_sha256": "6d5e782cee7dc1a14d8f640f18990158146d2874c6dc77f57055fc0fee332693",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/tsworkflows/seasonal_common.py",
+      "bytes": 11256,
+      "sha256": "ddbdefacad3deff0a9397ba4f3765325b751e35035288a6bd8fd9eb0976b17a6",
+      "original_sha256": "ddbdefacad3deff0a9397ba4f3765325b751e35035288a6bd8fd9eb0976b17a6",
       "transformed": false
     },
     {
@@ -16049,6 +16569,13 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/econometrics/tsworkflows/stl.py",
+      "bytes": 31999,
+      "sha256": "825d08896bb91e1b7a04ede10399b419bc33a46c6b0c5da1a6e2474e63948829",
+      "original_sha256": "825d08896bb91e1b7a04ede10399b419bc33a46c6b0c5da1a6e2474e63948829",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/econometrics/tsworkflows/umidas.py",
       "bytes": 16216,
       "sha256": "4773625095b10c8bb34bcd019785f4d285e25194b1a1ab893d68c443e4b5a2c3",
@@ -16067,6 +16594,13 @@
       "bytes": 20934,
       "sha256": "9d8adafbe0e6c91820fc3a0e1dd11726b2c68370dd302b55c53dbaf48d377029",
       "original_sha256": "9d8adafbe0e6c91820fc3a0e1dd11726b2c68370dd302b55c53dbaf48d377029",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/tsworkflows/x11.py",
+      "bytes": 30732,
+      "sha256": "02807d4f5c560981996a00e67cb7d7aa659b355df08ac57e3bde2763d58b86ba",
+      "original_sha256": "02807d4f5c560981996a00e67cb7d7aa659b355df08ac57e3bde2763d58b86ba",
       "transformed": false
     },
     {
@@ -16113,23 +16647,86 @@
     },
     {
       "path": "src/openecon/econometrics/unitroot/__init__.py",
-      "bytes": 2979,
-      "sha256": "a3f99ecd17d9c94991e14679b5c1496748c1f498dca9144f3fd394a5b4cfb870",
-      "original_sha256": "a3f99ecd17d9c94991e14679b5c1496748c1f498dca9144f3fd394a5b4cfb870",
+      "bytes": 4541,
+      "sha256": "60a17d2f466b606ab21e559e2ea9785a6271755f0b8eeb1cda5b427c862d8a73",
+      "original_sha256": "60a17d2f466b606ab21e559e2ea9785a6271755f0b8eeb1cda5b427c862d8a73",
       "transformed": false
     },
     {
       "path": "src/openecon/econometrics/unitroot/advanced_series.py",
-      "bytes": 14679,
-      "sha256": "1fc36080dad04f548234a352558fd693b308024fc039feec062c91f347406fcc",
-      "original_sha256": "1fc36080dad04f548234a352558fd693b308024fc039feec062c91f347406fcc",
+      "bytes": 16363,
+      "sha256": "f65bb8708347e810ef565601241e76400f597bdd0af95b78c8fa031082b58115",
+      "original_sha256": "f65bb8708347e810ef565601241e76400f597bdd0af95b78c8fa031082b58115",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/augmented.py",
+      "bytes": 8852,
+      "sha256": "ad7fb4391f495302811e08591a3238b9e59fc876901f4f47bff9545961262877",
+      "original_sha256": "ad7fb4391f495302811e08591a3238b9e59fc876901f4f47bff9545961262877",
       "transformed": false
     },
     {
       "path": "src/openecon/econometrics/unitroot/bai_perron.py",
-      "bytes": 16425,
-      "sha256": "b49964aa2b4689183b73549d9df5480110cbc3ce56f20d704d357ffb59da0925",
-      "original_sha256": "b49964aa2b4689183b73549d9df5480110cbc3ce56f20d704d357ffb59da0925",
+      "bytes": 27014,
+      "sha256": "c2cfebeb80c60db93a441bb0ae051ca8fd139ba40479fcacbad74c926fc34462",
+      "original_sha256": "c2cfebeb80c60db93a441bb0ae051ca8fd139ba40479fcacbad74c926fc34462",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/bai_perron_robust.py",
+      "bytes": 15994,
+      "sha256": "32e688ca6c1c44e61904872dd22e3f06f211ee43171398cc76bda97b95f496fb",
+      "original_sha256": "32e688ca6c1c44e61904872dd22e3f06f211ee43171398cc76bda97b95f496fb",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/bayer_hanck.py",
+      "bytes": 12292,
+      "sha256": "732c83d2d0675156270e265232f9a4c17c93a7699b1d13aa3614643ca0e9b08c",
+      "original_sha256": "732c83d2d0675156270e265232f9a4c17c93a7699b1d13aa3614643ca0e9b08c",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/bayer_hanck_null.LICENSE.txt",
+      "bytes": 1779,
+      "sha256": "b8539bc092a3854da2c8f8495b047128297312bea7ecf9ad166f055bdcf5cab2",
+      "original_sha256": "b8539bc092a3854da2c8f8495b047128297312bea7ecf9ad166f055bdcf5cab2",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/bayer_hanck_null.py",
+      "bytes": 3617,
+      "sha256": "dbe4683479e73ce62bb2396dec975ef01b2a5523444c91fb4d5ae10bc9650c07",
+      "original_sha256": "dbe4683479e73ce62bb2396dec975ef01b2a5523444c91fb4d5ae10bc9650c07",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/bayer_hanck_null.xz",
+      "bytes": 717056,
+      "sha256": "88ef42acf30d7696a4c39c6bcd694ab5da2f2bc3d4a168a1a1f2efb28206815d",
+      "original_sha256": "88ef42acf30d7696a4c39c6bcd694ab5da2f2bc3d4a168a1a1f2efb28206815d",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/break_search.py",
+      "bytes": 4917,
+      "sha256": "1710fc1718cac49ffaa2eeffffd9f80285d27338295d7c1cf7ae1dce7ef70626",
+      "original_sha256": "1710fc1718cac49ffaa2eeffffd9f80285d27338295d7c1cf7ae1dce7ef70626",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/break_tables.py",
+      "bytes": 31550,
+      "sha256": "a5717db680dd83920b1e65915d661852ad828e7d76a3526f242d406b75e47f96",
+      "original_sha256": "a5717db680dd83920b1e65915d661852ad828e7d76a3526f242d406b75e47f96",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/bubbles.py",
+      "bytes": 23872,
+      "sha256": "539bb6c7a3fb997973c8ccdc04e41ca03e8967111d57e0c56d84d48a18c09a02",
+      "original_sha256": "539bb6c7a3fb997973c8ccdc04e41ca03e8967111d57e0c56d84d48a18c09a02",
       "transformed": false
     },
     {
@@ -16144,6 +16741,34 @@
       "bytes": 26700,
       "sha256": "696ac2afc896e6e404a9b0658f916d5ce5f317295d1340822c091a74a2e06b56",
       "original_sha256": "696ac2afc896e6e404a9b0658f916d5ce5f317295d1340822c091a74a2e06b56",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/clemente.py",
+      "bytes": 19963,
+      "sha256": "4a97f2f7b48e051f1834cd26db4c484471fbb833535773ff8f6796fe3dfadb70",
+      "original_sha256": "4a97f2f7b48e051f1834cd26db4c484471fbb833535773ff8f6796fe3dfadb70",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/coint_breaks.py",
+      "bytes": 27813,
+      "sha256": "6123e32694368bf471f871e2fa4d0b0afd3909747323f737a357f67e61452ce9",
+      "original_sha256": "6123e32694368bf471f871e2fa4d0b0afd3909747323f737a357f67e61452ce9",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/coint_breaks_tables.py",
+      "bytes": 11507,
+      "sha256": "274db22f23f3d49ae399b4e395502efc8f66b4c238b6d1a43a868139b436a5f3",
+      "original_sha256": "274db22f23f3d49ae399b4e395502efc8f66b4c238b6d1a43a868139b436a5f3",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/coint_kernels.py",
+      "bytes": 8881,
+      "sha256": "a6e87da69b0870de06fac9ec88ab5cedbba0ed4145565f73af5850980d3cfc1d",
+      "original_sha256": "a6e87da69b0870de06fac9ec88ab5cedbba0ed4145565f73af5850980d3cfc1d",
       "transformed": false
     },
     {
@@ -16168,10 +16793,59 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/econometrics/unitroot/ers.py",
+      "bytes": 11673,
+      "sha256": "318f5a0a47793c26a06500ee88c6e883b4501ae7c3d2a91098ca4f3a26866c94",
+      "original_sha256": "318f5a0a47793c26a06500ee88c6e883b4501ae7c3d2a91098ca4f3a26866c94",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/econometrics/unitroot/fisher_johansen.py",
       "bytes": 4109,
       "sha256": "e1cf66d801d240e4b896c999dfaa254c188f1244d6dcf50afc455beb3c8de896",
       "original_sha256": "e1cf66d801d240e4b896c999dfaa254c188f1244d6dcf50afc455beb3c8de896",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/fourier.py",
+      "bytes": 30683,
+      "sha256": "d8846d28be89afdea81eba6884154547267f9514aa01068fdcb4acb02fbcd9a4",
+      "original_sha256": "d8846d28be89afdea81eba6884154547267f9514aa01068fdcb4acb02fbcd9a4",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/fourier_coint.py",
+      "bytes": 21024,
+      "sha256": "8efac9378f5bf5296734ca9d6ec5a59aa41a884e443e7633a2407fe23ac503c9",
+      "original_sha256": "8efac9378f5bf5296734ca9d6ec5a59aa41a884e443e7633a2407fe23ac503c9",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/fourier_tables.py",
+      "bytes": 8563,
+      "sha256": "fd9cf4e1cacbb706561e7ba855a18e7516359925dd0ca69f959b0bfe8e0d5ee7",
+      "original_sha256": "fd9cf4e1cacbb706561e7ba855a18e7516359925dd0ca69f959b0bfe8e0d5ee7",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/hegy.py",
+      "bytes": 13313,
+      "sha256": "3751f5c7aa19b18412629c3164d311e321544f774ce5710c20434e19aaa73e55",
+      "original_sha256": "3751f5c7aa19b18412629c3164d311e321544f774ce5710c20434e19aaa73e55",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/hegy_tables.py",
+      "bytes": 11963,
+      "sha256": "304ff8e4f42e230a9032c0fe7233b6f7c0c305d437c243ba6317cce199770bf3",
+      "original_sha256": "304ff8e4f42e230a9032c0fe7233b6f7c0c305d437c243ba6317cce199770bf3",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/unitroot/lee_strazicich.py",
+      "bytes": 17584,
+      "sha256": "f041516b8fcbce21d0f5bd6dba1e29d4e5d76bfc9597672db6aa7323a9cf39ef",
+      "original_sha256": "f041516b8fcbce21d0f5bd6dba1e29d4e5d76bfc9597672db6aa7323a9cf39ef",
       "transformed": false
     },
     {
@@ -16252,6 +16926,13 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/econometrics/unitroot/threshold_coint.py",
+      "bytes": 12100,
+      "sha256": "b70f84615e97c0f18217bf072ee2355a0ed2a21d2050c8279c78cc7afd4931df",
+      "original_sha256": "b70f84615e97c0f18217bf072ee2355a0ed2a21d2050c8279c78cc7afd4931df",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/econometrics/unitroot/westerlund_moments.py",
       "bytes": 1273,
       "sha256": "921383d9b9dbe84996a9bfc541571d63fe91d08ee3facbf62a5f5237816c49b7",
@@ -16281,16 +16962,23 @@
     },
     {
       "path": "src/openecon/econometrics/var/__init__.py",
-      "bytes": 6852,
-      "sha256": "3ec7488f053344927900a4dd6898fdd7ea7cdc0b4933c007582e8de73eadbd6e",
-      "original_sha256": "3ec7488f053344927900a4dd6898fdd7ea7cdc0b4933c007582e8de73eadbd6e",
+      "bytes": 7472,
+      "sha256": "2383668cc7b9145ec7414455acf6210fbb5a740d861f9b628586b490cfbd3172",
+      "original_sha256": "2383668cc7b9145ec7414455acf6210fbb5a740d861f9b628586b490cfbd3172",
       "transformed": false
     },
     {
       "path": "src/openecon/econometrics/var/asymmetric.py",
-      "bytes": 9132,
-      "sha256": "f0fa01571545b2652203a3c39c5e30e550ba5f36ee8b40ba04589e6baf4e68c9",
-      "original_sha256": "f0fa01571545b2652203a3c39c5e30e550ba5f36ee8b40ba04589e6baf4e68c9",
+      "bytes": 21158,
+      "sha256": "607404b422541c4f873cea87f934451356e9470141de7d3f62277337401e24e7",
+      "original_sha256": "607404b422541c4f873cea87f934451356e9470141de7d3f62277337401e24e7",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/var/bootstrap_kernels.py",
+      "bytes": 14192,
+      "sha256": "b70df3f233585b5bf718a5c78286c364efb5d68e203e3fd03a51df97bf2184d7",
+      "original_sha256": "b70df3f233585b5bf718a5c78286c364efb5d68e203e3fd03a51df97bf2184d7",
       "transformed": false
     },
     {
@@ -16312,6 +17000,13 @@
       "bytes": 31201,
       "sha256": "f4b0a365b973f1539aa853f2401377b97fd7651d090ae0a1fb2010d189ab7898",
       "original_sha256": "f4b0a365b973f1539aa853f2401377b97fd7651d090ae0a1fb2010d189ab7898",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/var/fourier_causality.py",
+      "bytes": 16853,
+      "sha256": "357f67caf98482578fa0e782a471b73ebaeaf2995a2cfbeec0c0f746471eac2c",
+      "original_sha256": "357f67caf98482578fa0e782a471b73ebaeaf2995a2cfbeec0c0f746471eac2c",
       "transformed": false
     },
     {
@@ -16343,10 +17038,17 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/econometrics/var/panel_bootstrap_causality.py",
+      "bytes": 39554,
+      "sha256": "25140c49908554b0fae82bebb6db97adf4215419fe4dbca32a864cfcfd3e2fc0",
+      "original_sha256": "25140c49908554b0fae82bebb6db97adf4215419fe4dbca32a864cfcfd3e2fc0",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/econometrics/var/panel_causality.py",
-      "bytes": 14238,
-      "sha256": "23d8e2905943a89dba932a9bb014a823983c3ddb191de84a22bc7ab880f0c7d5",
-      "original_sha256": "23d8e2905943a89dba932a9bb014a823983c3ddb191de84a22bc7ab880f0c7d5",
+      "bytes": 14660,
+      "sha256": "cd74f3a23252339fcaac548c377f4f0823e4e77cee2846b84857a03a5fecb3b5",
+      "original_sha256": "cd74f3a23252339fcaac548c377f4f0823e4e77cee2846b84857a03a5fecb3b5",
       "transformed": false
     },
     {
@@ -16354,6 +17056,13 @@
       "bytes": 19834,
       "sha256": "98c3b79e165023455e4cee90a27fac80092320ad4d6288d5c7bb11484cd41eab",
       "original_sha256": "98c3b79e165023455e4cee90a27fac80092320ad4d6288d5c7bb11484cd41eab",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/econometrics/var/rolling_causality.py",
+      "bytes": 13780,
+      "sha256": "5decc3aa6dadb74e0cb5b2c68eeed211b8b7fd9d817641686fc517082f9d398c",
+      "original_sha256": "5decc3aa6dadb74e0cb5b2c68eeed211b8b7fd9d817641686fc517082f9d398c",
       "transformed": false
     },
     {
@@ -16403,6 +17112,13 @@
       "bytes": 5558,
       "sha256": "ab184015312a7bbb47fb822e6e46d33f3fe6faefb683559fc849c7bbd660b03e",
       "original_sha256": "ab184015312a7bbb47fb822e6e46d33f3fe6faefb683559fc849c7bbd660b03e",
+      "transformed": false
+    },
+    {
+      "path": "src/openecon/email_code.py",
+      "bytes": 10904,
+      "sha256": "e56f8168a3d17109870e3f92203d1d66dd29cd06f07a9e856a4830e0b1ed7357",
+      "original_sha256": "e56f8168a3d17109870e3f92203d1d66dd29cd06f07a9e856a4830e0b1ed7357",
       "transformed": false
     },
     {
@@ -16743,9 +17459,9 @@
     },
     {
       "path": "src/openecon/project_packages.py",
-      "bytes": 39082,
-      "sha256": "c01f6998c7d8f5ab6a744631bd71dd18ac4d4ed6cc802732d4c5bc3b6df644ee",
-      "original_sha256": "c01f6998c7d8f5ab6a744631bd71dd18ac4d4ed6cc802732d4c5bc3b6df644ee",
+      "bytes": 39128,
+      "sha256": "a926de051099d84240bf07879a937afacf166d7cca001a68badf15aca0ef111f",
+      "original_sha256": "a926de051099d84240bf07879a937afacf166d7cca001a68badf15aca0ef111f",
       "transformed": false
     },
     {
@@ -16862,16 +17578,16 @@
     },
     {
       "path": "src/openecon/team_auth.py",
-      "bytes": 6379,
-      "sha256": "7efb4bf8f91adc5b4d12fa6c7793cc087596082999686c50105162ca24979aa0",
-      "original_sha256": "7efb4bf8f91adc5b4d12fa6c7793cc087596082999686c50105162ca24979aa0",
+      "bytes": 6974,
+      "sha256": "b048606b5c4bcdeda9d6258f4fbed89d51c0f7646256a82af13920a951e6d7a4",
+      "original_sha256": "b048606b5c4bcdeda9d6258f4fbed89d51c0f7646256a82af13920a951e6d7a4",
       "transformed": false
     },
     {
       "path": "src/openecon/team_cloud.py",
-      "bytes": 1877,
-      "sha256": "2a9888398fe76248d04856f6f86861e2b5a68d9b2e5b0301e10bac515f35188d",
-      "original_sha256": "2a9888398fe76248d04856f6f86861e2b5a68d9b2e5b0301e10bac515f35188d",
+      "bytes": 2053,
+      "sha256": "4140dc9ff7965d76c666930cdcc1facbaeba407bb25745a5d4d271c87feb2749",
+      "original_sha256": "4140dc9ff7965d76c666930cdcc1facbaeba407bb25745a5d4d271c87feb2749",
       "transformed": false
     },
     {
@@ -16889,6 +17605,13 @@
       "transformed": false
     },
     {
+      "path": "src/openecon/team_quiescence.py",
+      "bytes": 2233,
+      "sha256": "9a8377a97fe75d9077e765cb1e2efa785ecf54d0e40e9c5edb3c133bc658f877",
+      "original_sha256": "9a8377a97fe75d9077e765cb1e2efa785ecf54d0e40e9c5edb3c133bc658f877",
+      "transformed": false
+    },
+    {
       "path": "src/openecon/team_recovery.py",
       "bytes": 27903,
       "sha256": "214f389db520c0272939819a3fb170d36feaae92a9871b9a50135bd716a219ba",
@@ -16897,23 +17620,23 @@
     },
     {
       "path": "src/openecon/team_server.py",
-      "bytes": 33944,
-      "sha256": "fd68b831aa48264b14c440656210be7d388d126aeb34d48861e80cebea83a004",
-      "original_sha256": "fd68b831aa48264b14c440656210be7d388d126aeb34d48861e80cebea83a004",
+      "bytes": 35023,
+      "sha256": "808a15aad1e2f5b50aa04217f65f9c13cf1ed94d8f08537e0927d8aa1b3d6f60",
+      "original_sha256": "808a15aad1e2f5b50aa04217f65f9c13cf1ed94d8f08537e0927d8aa1b3d6f60",
       "transformed": false
     },
     {
       "path": "src/openecon/team_storage.py",
-      "bytes": 4197,
-      "sha256": "eab7580ba7e5ccb5ec18312d36f83e9b6621657bd7cfe6bee1889eeb4af370c1",
-      "original_sha256": "eab7580ba7e5ccb5ec18312d36f83e9b6621657bd7cfe6bee1889eeb4af370c1",
+      "bytes": 4317,
+      "sha256": "fd6bd7591266f81321dacd63185506173f908c1aa161683d3af56cff687f467e",
+      "original_sha256": "fd6bd7591266f81321dacd63185506173f908c1aa161683d3af56cff687f467e",
       "transformed": false
     },
     {
       "path": "src/openecon/team_store.py",
-      "bytes": 39748,
-      "sha256": "66687b09fdfd7c2f78ad67a0ac02328d4eb3718cf89d86880bc35217a1198907",
-      "original_sha256": "66687b09fdfd7c2f78ad67a0ac02328d4eb3718cf89d86880bc35217a1198907",
+      "bytes": 39959,
+      "sha256": "982aa5c7585b9982d135256d944363960768502043c5aa26b2291d42522e3b3b",
+      "original_sha256": "982aa5c7585b9982d135256d944363960768502043c5aa26b2291d42522e3b3b",
       "transformed": false
     },
     {
@@ -16974,9 +17697,9 @@
     },
     {
       "path": "tests/test_account_linking.py",
-      "bytes": 5839,
-      "sha256": "cb65d6e0c52c2e564a7465e7b2cb80e5604cfbc152638e08d32efb254d42ef02",
-      "original_sha256": "cb65d6e0c52c2e564a7465e7b2cb80e5604cfbc152638e08d32efb254d42ef02",
+      "bytes": 8363,
+      "sha256": "1416b6fcc72585b8ce9eb54de33d18146e4a49e059901dd4e915d518b78af91f",
+      "original_sha256": "1416b6fcc72585b8ce9eb54de33d18146e4a49e059901dd4e915d518b78af91f",
       "transformed": false
     },
     {
@@ -17131,6 +17854,13 @@
       "bytes": 19781,
       "sha256": "cfbd7ecacd7f15bac79533099faf2c89ea0051dd8e925cedd575fae2892a4223",
       "original_sha256": "cfbd7ecacd7f15bac79533099faf2c89ea0051dd8e925cedd575fae2892a4223",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_bvar_original_author_lifecycle_pin.py",
+      "bytes": 4592,
+      "sha256": "0e83cc618e19f1741bd1a090ea8c1ed5d43fff0d9c24f3facfb3b972015374d2",
+      "original_sha256": "0e83cc618e19f1741bd1a090ea8c1ed5d43fff0d9c24f3facfb3b972015374d2",
       "transformed": false
     },
     {
@@ -17597,16 +18327,16 @@
     },
     {
       "path": "tests/test_deploy_team_control.py",
-      "bytes": 10877,
-      "sha256": "3c9a2b678019391380868a2f04a413818adbd5a26aa250bece0f95a71da320c8",
-      "original_sha256": "3c9a2b678019391380868a2f04a413818adbd5a26aa250bece0f95a71da320c8",
+      "bytes": 15014,
+      "sha256": "b14d598be305ac1136bd869be616a940fa82626cf50da27ecefd7d47e0ca21ce",
+      "original_sha256": "b14d598be305ac1136bd869be616a940fa82626cf50da27ecefd7d47e0ca21ce",
       "transformed": false
     },
     {
       "path": "tests/test_desktop_cloud.py",
-      "bytes": 12023,
-      "sha256": "bc2baaf2bd8f1c9fd85d8ffc509778f96f7fec31697d17a39cf9aa5a0854a560",
-      "original_sha256": "bc2baaf2bd8f1c9fd85d8ffc509778f96f7fec31697d17a39cf9aa5a0854a560",
+      "bytes": 12034,
+      "sha256": "7c312c5490db7bb93e2cff69a8887b95992128b75aee641c8449bbd8571b7b42",
+      "original_sha256": "7c312c5490db7bb93e2cff69a8887b95992128b75aee641c8449bbd8571b7b42",
       "transformed": false
     },
     {
@@ -17625,9 +18355,9 @@
     },
     {
       "path": "tests/test_desktop_econometrics_packaging.py",
-      "bytes": 19849,
-      "sha256": "e10bf171d536b5a9b2604b822ae5f1c33bbb973437dcfb9aa1e7a20d346dfc1b",
-      "original_sha256": "e10bf171d536b5a9b2604b822ae5f1c33bbb973437dcfb9aa1e7a20d346dfc1b",
+      "bytes": 21906,
+      "sha256": "9e71061cd10457de0f75fe914d52614f7fd9513ba72c4070fc8e435d2c0e1952",
+      "original_sha256": "9e71061cd10457de0f75fe914d52614f7fd9513ba72c4070fc8e435d2c0e1952",
       "transformed": false
     },
     {
@@ -17681,16 +18411,30 @@
     },
     {
       "path": "tests/test_econ_arch.py",
-      "bytes": 23460,
-      "sha256": "6951e8fc7ce2ebb2e2f807ccfb1b8ac3bcd92bb56a0dc64f2e0492c932d70e44",
-      "original_sha256": "6951e8fc7ce2ebb2e2f807ccfb1b8ac3bcd92bb56a0dc64f2e0492c932d70e44",
+      "bytes": 23458,
+      "sha256": "cf317314c1350dfda6b7e6cbce16d3053efc4db55ea33ce9613a7f232640cf27",
+      "original_sha256": "cf317314c1350dfda6b7e6cbce16d3053efc4db55ea33ce9613a7f232640cf27",
       "transformed": false
     },
     {
       "path": "tests/test_econ_arch_adversarial.py",
-      "bytes": 20546,
-      "sha256": "46fa6aee76ce85d6662681f2e04d2cb50e905ebe3be96031b2c8aac175be6cfb",
-      "original_sha256": "46fa6aee76ce85d6662681f2e04d2cb50e905ebe3be96031b2c8aac175be6cfb",
+      "bytes": 20560,
+      "sha256": "bcdf8b67c97dcbf87a106b63a2270bc7370fa9127255456284b8727500412eec",
+      "original_sha256": "bcdf8b67c97dcbf87a106b63a2270bc7370fa9127255456284b8727500412eec",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_econ_arch_extensions.py",
+      "bytes": 47268,
+      "sha256": "36885cee6cfb5632ef6f0a557684a1b4881c73a8a405a1d19695ead55abff1c7",
+      "original_sha256": "36885cee6cfb5632ef6f0a557684a1b4881c73a8a405a1d19695ead55abff1c7",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_econ_arch_extensions_midas.py",
+      "bytes": 16505,
+      "sha256": "66333d10041933c7a1a2669e917faa8849613f31121336f88644fb57993d8b8e",
+      "original_sha256": "66333d10041933c7a1a2669e917faa8849613f31121336f88644fb57993d8b8e",
       "transformed": false
     },
     {
@@ -17772,9 +18516,16 @@
     },
     {
       "path": "tests/test_econ_bai_perron.py",
-      "bytes": 10184,
-      "sha256": "ae64907ded4a44d705b4417944831d6c1541c0040e50bb91e5e500eecab4ecf9",
-      "original_sha256": "ae64907ded4a44d705b4417944831d6c1541c0040e50bb91e5e500eecab4ecf9",
+      "bytes": 10377,
+      "sha256": "efdc87d3edababae8ce6f484867d263f89c28bd0e11f7d92c5cad529656108d4",
+      "original_sha256": "efdc87d3edababae8ce6f484867d263f89c28bd0e11f7d92c5cad529656108d4",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_econ_bubble_tests.py",
+      "bytes": 10495,
+      "sha256": "2f40fe35fae068698e46527bafe5f08feaf79ce77add5d9869afffb8d320e3ed",
+      "original_sha256": "2f40fe35fae068698e46527bafe5f08feaf79ce77add5d9869afffb8d320e3ed",
       "transformed": false
     },
     {
@@ -17792,6 +18543,13 @@
       "transformed": false
     },
     {
+      "path": "tests/test_econ_causality_extensions.py",
+      "bytes": 37259,
+      "sha256": "af8f8d539c081afc05a814a4a900560ab4aa901896cc64138fa09ec9da7bcb6c",
+      "original_sha256": "af8f8d539c081afc05a814a4a900560ab4aa901896cc64138fa09ec9da7bcb6c",
+      "transformed": false
+    },
+    {
       "path": "tests/test_econ_cips.py",
       "bytes": 11743,
       "sha256": "b94adf1c9c94a6e011e57b662a5764272fb270cf861ddffb6dcbbb570c3c3539",
@@ -17803,6 +18561,13 @@
       "bytes": 9090,
       "sha256": "b64090b8f7f194e2469d6d269d5903ab8f70fd001fb36d87fdcf967cb9035c67",
       "original_sha256": "b64090b8f7f194e2469d6d269d5903ab8f70fd001fb36d87fdcf967cb9035c67",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_econ_cointegration_breaks.py",
+      "bytes": 34317,
+      "sha256": "e0a3be8f39a30cd5cdf4f0d825952cbb9cd097f94a5f2b56bf0c8398412f0263",
+      "original_sha256": "e0a3be8f39a30cd5cdf4f0d825952cbb9cd097f94a5f2b56bf0c8398412f0263",
       "transformed": false
     },
     {
@@ -17933,9 +18698,9 @@
     },
     {
       "path": "tests/test_econ_discrete.py",
-      "bytes": 37535,
-      "sha256": "0c8d09c39c65f93bef5110d5d587c940317f1387f9db80a4a042d366fb51c864",
-      "original_sha256": "0c8d09c39c65f93bef5110d5d587c940317f1387f9db80a4a042d366fb51c864",
+      "bytes": 37781,
+      "sha256": "0996be543b7dffa7e77c4a6f62a51e23686f0ee018aea4ab0a1669a3b4ffaf83",
+      "original_sha256": "0996be543b7dffa7e77c4a6f62a51e23686f0ee018aea4ab0a1669a3b4ffaf83",
       "transformed": false
     },
     {
@@ -18044,6 +18809,13 @@
       "transformed": false
     },
     {
+      "path": "tests/test_econ_forecast_extensions.py",
+      "bytes": 29209,
+      "sha256": "c05a7ea61487f8f1ff46d4ec559269d6688b94bd42debb89e09182c567539a88",
+      "original_sha256": "c05a7ea61487f8f1ff46d4ec559269d6688b94bd42debb89e09182c567539a88",
+      "transformed": false
+    },
+    {
       "path": "tests/test_econ_frequency_panel_causality.py",
       "bytes": 11313,
       "sha256": "fe8154d64c2d6b4645492c66ad1d2c7ee79d040894520b24eccc9a39ba676a44",
@@ -18101,9 +18873,16 @@
     },
     {
       "path": "tests/test_econ_iv.py",
-      "bytes": 50590,
-      "sha256": "3386a3b1b9054f119447002404fa68e044abea4b30127abbe4c1bddac9d96f35",
-      "original_sha256": "3386a3b1b9054f119447002404fa68e044abea4b30127abbe4c1bddac9d96f35",
+      "bytes": 50836,
+      "sha256": "ba0cbd1f67a27cf981e07238728ba6443950fa599c177dc1bbdd84ad9d7a4dfb",
+      "original_sha256": "ba0cbd1f67a27cf981e07238728ba6443950fa599c177dc1bbdd84ad9d7a4dfb",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_econ_iv_extensions.py",
+      "bytes": 36713,
+      "sha256": "646677d7541ce942099c7c0cbbe3e406774eff65568e14737c06b8efa7c73735",
+      "original_sha256": "646677d7541ce942099c7c0cbbe3e406774eff65568e14737c06b8efa7c73735",
       "transformed": false
     },
     {
@@ -18118,6 +18897,13 @@
       "bytes": 32898,
       "sha256": "9aab360d850b8fc3e90044ab5fe8f09af60b2537635661fdd88b43a4495d324a",
       "original_sha256": "9aab360d850b8fc3e90044ab5fe8f09af60b2537635661fdd88b43a4495d324a",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_econ_iv_wild_bootstrap.py",
+      "bytes": 26654,
+      "sha256": "d992e5baa955ca69fa76cdeb37122f7599518c33c4bd1ff0bd5615cc2736829b",
+      "original_sha256": "d992e5baa955ca69fa76cdeb37122f7599518c33c4bd1ff0bd5615cc2736829b",
       "transformed": false
     },
     {
@@ -18219,6 +19005,20 @@
       "transformed": false
     },
     {
+      "path": "tests/test_econ_meta_extensions.py",
+      "bytes": 33579,
+      "sha256": "30b583c797c70c8bb84b9a8de6e590400fd23309000e92696e4a3caeb84f629d",
+      "original_sha256": "30b583c797c70c8bb84b9a8de6e590400fd23309000e92696e4a3caeb84f629d",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_econ_mgarch_extensions.py",
+      "bytes": 21511,
+      "sha256": "8cbcbb2d5f89f5fce1f0224ffb374274930f89ae30c9484b02a5045c1e0872ca",
+      "original_sha256": "8cbcbb2d5f89f5fce1f0224ffb374274930f89ae30c9484b02a5045c1e0872ca",
+      "transformed": false
+    },
+    {
       "path": "tests/test_econ_mixed.py",
       "bytes": 21653,
       "sha256": "61dd11fbf9d9b4d51fd1d3c635c770b1a7ea9fe99c9ba8bce36466b462a458e1",
@@ -18230,6 +19030,13 @@
       "bytes": 13064,
       "sha256": "1c284a55354a6b6320307e6784e799cf80fc60402b8b5451a2e2f6e02fe68f45",
       "original_sha256": "1c284a55354a6b6320307e6784e799cf80fc60402b8b5451a2e2f6e02fe68f45",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_econ_mixed_extensions.py",
+      "bytes": 37735,
+      "sha256": "6b6a28501fe0aa583f48fd223f6f3bc0829ecd8f544a4712967e8324d7202757",
+      "original_sha256": "6b6a28501fe0aa583f48fd223f6f3bc0829ecd8f544a4712967e8324d7202757",
       "transformed": false
     },
     {
@@ -18667,6 +19474,13 @@
       "transformed": false
     },
     {
+      "path": "tests/test_econ_seasonal_adjustment.py",
+      "bytes": 27108,
+      "sha256": "9d2e8c57d3f61d9fd9115598f631b82fdc3940454d0b6d39b55f29b4da476780",
+      "original_sha256": "9d2e8c57d3f61d9fd9115598f631b82fdc3940454d0b6d39b55f29b4da476780",
+      "transformed": false
+    },
+    {
       "path": "tests/test_econ_selection.py",
       "bytes": 29490,
       "sha256": "5c3f5374cf220a02d0bb7405afdaa1fc881af175a1ace254d6a0422abc3e52f1",
@@ -18724,9 +19538,9 @@
     },
     {
       "path": "tests/test_econ_stats_adversarial.py",
-      "bytes": 14647,
-      "sha256": "cb16c21fbd8e5da1865941b06e5678968cf7e807ed9a1f4eb047ea4d55ced9ca",
-      "original_sha256": "cb16c21fbd8e5da1865941b06e5678968cf7e807ed9a1f4eb047ea4d55ced9ca",
+      "bytes": 15499,
+      "sha256": "61277c10b2b8fa7ab08271695a9a2281177961c5479f77cc3912e32db533f947",
+      "original_sha256": "61277c10b2b8fa7ab08271695a9a2281177961c5479f77cc3912e32db533f947",
       "transformed": false
     },
     {
@@ -19171,6 +19985,13 @@
       "transformed": false
     },
     {
+      "path": "tests/test_econ_survival_frailty.py",
+      "bytes": 24140,
+      "sha256": "e9947cc870ebd4129978028066d261e3f2855d0b437114e9d25feb77b389ebca",
+      "original_sha256": "e9947cc870ebd4129978028066d261e3f2855d0b437114e9d25feb77b389ebca",
+      "transformed": false
+    },
+    {
       "path": "tests/test_econ_survival_interval_ml.py",
       "bytes": 19897,
       "sha256": "bbf098f2d380c0160fb938dea5e3bfdfb0be817a2f2e8e3ecc1e5aa40f28270a",
@@ -19189,6 +20010,13 @@
       "bytes": 56773,
       "sha256": "050ed4b0321df5398a382d4b24c8fc0801caf261c2f41319a3a1909f7eae9caf",
       "original_sha256": "050ed4b0321df5398a382d4b24c8fc0801caf261c2f41319a3a1909f7eae9caf",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_econ_survival_recurrent.py",
+      "bytes": 8077,
+      "sha256": "c969702d16233a1cfbd3cbd7d820360a232df7f7b6d58cab3314029b3594df76",
+      "original_sha256": "c969702d16233a1cfbd3cbd7d820360a232df7f7b6d58cab3314029b3594df76",
       "transformed": false
     },
     {
@@ -19424,9 +20252,9 @@
     },
     {
       "path": "tests/test_econ_unitroot_advanced_series.py",
-      "bytes": 7896,
-      "sha256": "d387d7330a3c6b5ac9df401bdcd6eeaaa6cccb2b753ac03ee16a4f2d87fddd52",
-      "original_sha256": "d387d7330a3c6b5ac9df401bdcd6eeaaa6cccb2b753ac03ee16a4f2d87fddd52",
+      "bytes": 10656,
+      "sha256": "b53fc094af0e185e8410791ba334e4d6bb63ca6b19e1f15cdaa07650f501c67c",
+      "original_sha256": "b53fc094af0e185e8410791ba334e4d6bb63ca6b19e1f15cdaa07650f501c67c",
       "transformed": false
     },
     {
@@ -19438,9 +20266,30 @@
     },
     {
       "path": "tests/test_econ_unitroot_breaks.py",
-      "bytes": 27796,
-      "sha256": "75e7852f59a1323de2accc80880b4c4798733e377e4042071bfe37eecf1c1c72",
-      "original_sha256": "75e7852f59a1323de2accc80880b4c4798733e377e4042071bfe37eecf1c1c72",
+      "bytes": 49359,
+      "sha256": "7768ba321d7c0a063b54eac438f66d7e6a54c544bc219e94a9a0e57d89fc5807",
+      "original_sha256": "7768ba321d7c0a063b54eac438f66d7e6a54c544bc219e94a9a0e57d89fc5807",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_econ_unitroot_ers.py",
+      "bytes": 8763,
+      "sha256": "9ffd5891f8e0ef7b0982857501513b5f2df9563ba54570df95039737c0c8e451",
+      "original_sha256": "9ffd5891f8e0ef7b0982857501513b5f2df9563ba54570df95039737c0c8e451",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_econ_unitroot_fourier.py",
+      "bytes": 25606,
+      "sha256": "2cb1018c13e893a9f309a117f6b0df5e16c47be7be7dedc1561c59f551ba411c",
+      "original_sha256": "2cb1018c13e893a9f309a117f6b0df5e16c47be7be7dedc1561c59f551ba411c",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_econ_unitroot_hegy.py",
+      "bytes": 14989,
+      "sha256": "3706255dd961592ba5933f602a1d5f75637cc60f1e76b2707e08018cd495dfaf",
+      "original_sha256": "3706255dd961592ba5933f602a1d5f75637cc60f1e76b2707e08018cd495dfaf",
       "transformed": false
     },
     {
@@ -19515,9 +20364,9 @@
     },
     {
       "path": "tests/test_editor_api_catalog.py",
-      "bytes": 199303,
-      "sha256": "2db31d54a4dd2ff5fd7f88db6a2074ac094999e0ceb366f1b0d00572a618e1bc",
-      "original_sha256": "2db31d54a4dd2ff5fd7f88db6a2074ac094999e0ceb366f1b0d00572a618e1bc",
+      "bytes": 206597,
+      "sha256": "fc6de0c4c0b8605736bf88c2ca9eb28576bc8c21d9a750dd056fb5c718f204d6",
+      "original_sha256": "fc6de0c4c0b8605736bf88c2ca9eb28576bc8c21d9a750dd056fb5c718f204d6",
       "transformed": false
     },
     {
@@ -19546,6 +20395,13 @@
       "bytes": 21755,
       "sha256": "219b00d1d1386d7bef7498dd217b894ff6244c267d0e6bd0d3fe52e789e0d280",
       "original_sha256": "219b00d1d1386d7bef7498dd217b894ff6244c267d0e6bd0d3fe52e789e0d280",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_email_code.py",
+      "bytes": 14757,
+      "sha256": "23d45d46cd952802371783e94467f8cb4df1abaeef0753f2b3c828953c6ad1c9",
+      "original_sha256": "23d45d46cd952802371783e94467f8cb4df1abaeef0753f2b3c828953c6ad1c9",
       "transformed": false
     },
     {
@@ -19739,9 +20595,9 @@
     },
     {
       "path": "tests/test_interval_weibull_publication.py",
-      "bytes": 7004,
-      "sha256": "cc89c6fb9a6ee5395182a5f5237df1445fba12e883b9dd5db2e7269b6e630592",
-      "original_sha256": "cc89c6fb9a6ee5395182a5f5237df1445fba12e883b9dd5db2e7269b6e630592",
+      "bytes": 7564,
+      "sha256": "d7822233817f6804f81e386b7e6130d3dff66bfcb7767774515ebbe5eff650b4",
+      "original_sha256": "d7822233817f6804f81e386b7e6130d3dff66bfcb7767774515ebbe5eff650b4",
       "transformed": false
     },
     {
@@ -19914,9 +20770,9 @@
     },
     {
       "path": "tests/test_merge_gate.py",
-      "bytes": 121593,
-      "sha256": "e164b2d3d7a5e2723d833ecd078303f19bc3abaab30cd9470c655409281e06c4",
-      "original_sha256": "e164b2d3d7a5e2723d833ecd078303f19bc3abaab30cd9470c655409281e06c4",
+      "bytes": 121947,
+      "sha256": "ab24aa7c2f3c279c502f97756c577b8ec80a0e6b8554943427c580aa08d4303e",
+      "original_sha256": "ab24aa7c2f3c279c502f97756c577b8ec80a0e6b8554943427c580aa08d4303e",
       "transformed": false
     },
     {
@@ -20838,9 +21694,9 @@
     },
     {
       "path": "tests/test_priority_release_verifier.py",
-      "bytes": 3891,
-      "sha256": "d1874fe02d6bcc0b39e646a8016f8564b25e48496a8d1774c154391cca815846",
-      "original_sha256": "d1874fe02d6bcc0b39e646a8016f8564b25e48496a8d1774c154391cca815846",
+      "bytes": 5268,
+      "sha256": "85806bc7536ee19ce3ea93c74baed3f7370b1cd985e484ca1d2e180c92c08939",
+      "original_sha256": "85806bc7536ee19ce3ea93c74baed3f7370b1cd985e484ca1d2e180c92c08939",
       "transformed": false
     },
     {
@@ -21692,9 +22548,9 @@
     },
     {
       "path": "tests/test_team_cloud.py",
-      "bytes": 4329,
-      "sha256": "de8eb5fd1f536992b7c66ccbdaf6417fb15f0828d9ad65f577bb5e0eb74501bd",
-      "original_sha256": "de8eb5fd1f536992b7c66ccbdaf6417fb15f0828d9ad65f577bb5e0eb74501bd",
+      "bytes": 4453,
+      "sha256": "f81a14c28f52e35e9c8c76e05c9196af64b808bdb3122c693f1ffcc1a90287e1",
+      "original_sha256": "f81a14c28f52e35e9c8c76e05c9196af64b808bdb3122c693f1ffcc1a90287e1",
       "transformed": false
     },
     {
@@ -21702,6 +22558,20 @@
       "bytes": 14604,
       "sha256": "f0c359e824915a56160c8abf4b78074c60cd4a8a9a0c1a9bc5566f9ab4f2dd9c",
       "original_sha256": "f0c359e824915a56160c8abf4b78074c60cd4a8a9a0c1a9bc5566f9ab4f2dd9c",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_team_qa_session_cleanup.py",
+      "bytes": 21909,
+      "sha256": "2d7d28784f0e37faf38513d2bd0aff922b51cb6c71dc192e950aad82c040fcbe",
+      "original_sha256": "2d7d28784f0e37faf38513d2bd0aff922b51cb6c71dc192e950aad82c040fcbe",
+      "transformed": false
+    },
+    {
+      "path": "tests/test_team_quiescence.py",
+      "bytes": 7583,
+      "sha256": "56a2510b54562c25b5226ace9c22e376c3a4791460903621c09b93703f542c77",
+      "original_sha256": "56a2510b54562c25b5226ace9c22e376c3a4791460903621c09b93703f542c77",
       "transformed": false
     },
     {
@@ -21853,9 +22723,9 @@
     },
     {
       "path": "tests/test_uv_script_packages.py",
-      "bytes": 10085,
-      "sha256": "254ddbabf3fd3eb31fb513465203bb3f472367836f2e500f47ed788a357a805e",
-      "original_sha256": "254ddbabf3fd3eb31fb513465203bb3f472367836f2e500f47ed788a357a805e",
+      "bytes": 10243,
+      "sha256": "f53886740a45c1713ae0679dbc1727472e430e91230a4b34f8768403b6d42782",
+      "original_sha256": "f53886740a45c1713ae0679dbc1727472e430e91230a4b34f8768403b6d42782",
       "transformed": false
     },
     {
@@ -21986,9 +22856,9 @@
     },
     {
       "path": "web/src/AccountLinking.tsx",
-      "bytes": 11370,
-      "sha256": "f132008b186575f9e7efb2fc774bc39cc6b1641c82312c6735fca21fc3215982",
-      "original_sha256": "f132008b186575f9e7efb2fc774bc39cc6b1641c82312c6735fca21fc3215982",
+      "bytes": 12485,
+      "sha256": "5438daab19da416b9e077ea7e65b86c56c3e9d407d2b72ca39dfe8f95def50c0",
+      "original_sha256": "5438daab19da416b9e077ea7e65b86c56c3e9d407d2b72ca39dfe8f95def50c0",
       "transformed": false
     },
     {
@@ -22003,6 +22873,13 @@
       "bytes": 13827,
       "sha256": "ecee28945ccff781c4cfff10dca4c55744f83a6386019d14db912a54dd45bbc5",
       "original_sha256": "ecee28945ccff781c4cfff10dca4c55744f83a6386019d14db912a54dd45bbc5",
+      "transformed": false
+    },
+    {
+      "path": "web/src/EmailCodeForm.tsx",
+      "bytes": 4703,
+      "sha256": "df1e66db1fa58b779ca2571e19e0d0da6a2f273d0d34ac82d868e9a22e41920c",
+      "original_sha256": "df1e66db1fa58b779ca2571e19e0d0da6a2f273d0d34ac82d868e9a22e41920c",
       "transformed": false
     },
     {
@@ -22105,9 +22982,9 @@
     },
     {
       "path": "web/src/TeamApp.tsx",
-      "bytes": 51858,
-      "sha256": "0abe039a8c53536cd79be7989286ccabe4992a6f5bd09f89ed99c9a9bb00c840",
-      "original_sha256": "0abe039a8c53536cd79be7989286ccabe4992a6f5bd09f89ed99c9a9bb00c840",
+      "bytes": 38257,
+      "sha256": "244158eae9c127f6b6c8298230aaeb4c34d75538e10eeda4e33d5b5b97900592",
+      "original_sha256": "244158eae9c127f6b6c8298230aaeb4c34d75538e10eeda4e33d5b5b97900592",
       "transformed": false
     },
     {
@@ -22133,9 +23010,9 @@
     },
     {
       "path": "web/src/account-linking.ts",
-      "bytes": 7387,
-      "sha256": "de3116fb7a026cb6fae2a75506b3dc3f10ee8660f12a887bd0c626b7a50616f1",
-      "original_sha256": "de3116fb7a026cb6fae2a75506b3dc3f10ee8660f12a887bd0c626b7a50616f1",
+      "bytes": 7825,
+      "sha256": "567c8fae8431aa7f9298783aadfe7de830d2a62ff8b7e46f6994b79f3db6de2e",
+      "original_sha256": "567c8fae8431aa7f9298783aadfe7de830d2a62ff8b7e46f6994b79f3db6de2e",
       "transformed": false
     },
     {
@@ -22175,9 +23052,9 @@
     },
     {
       "path": "web/src/editor-api.json",
-      "bytes": 490628,
-      "sha256": "46b4e3c4d738d8da694dcc35d6e052b362704fe25d5d21afe73cdc9b960e3700",
-      "original_sha256": "46b4e3c4d738d8da694dcc35d6e052b362704fe25d5d21afe73cdc9b960e3700",
+      "bytes": 526771,
+      "sha256": "1a1b89fad2053aafbd370b54b3ce6c9fab53d11064648baaf8048e61949380ab",
+      "original_sha256": "1a1b89fad2053aafbd370b54b3ce6c9fab53d11064648baaf8048e61949380ab",
       "transformed": false
     },
     {
@@ -22189,23 +23066,23 @@
     },
     {
       "path": "web/src/editor-api.wire.ts",
-      "bytes": 523024,
-      "sha256": "7ca53d7bda24ca81002632b710992a99b5582dca5b09539dbd6bcec798e7932d",
-      "original_sha256": "7ca53d7bda24ca81002632b710992a99b5582dca5b09539dbd6bcec798e7932d",
+      "bytes": 561567,
+      "sha256": "be92a94e139b6cf37dbf9a5d678313aee429b10e6578bdb2eb3e75995a98e213",
+      "original_sha256": "be92a94e139b6cf37dbf9a5d678313aee429b10e6578bdb2eb3e75995a98e213",
       "transformed": false
     },
     {
       "path": "web/src/editor-catalog-intern.ts",
-      "bytes": 11158,
-      "sha256": "7774db918fa0f67d70d78350f5b06436a6275b59a12d8250e5395ed1aadf9f0a",
-      "original_sha256": "7774db918fa0f67d70d78350f5b06436a6275b59a12d8250e5395ed1aadf9f0a",
+      "bytes": 11160,
+      "sha256": "173bc5fde6e688ab71f59d2d687eed8a8191b80ba9ea5ed4281a5b217ca32202",
+      "original_sha256": "173bc5fde6e688ab71f59d2d687eed8a8191b80ba9ea5ed4281a5b217ca32202",
       "transformed": false
     },
     {
       "path": "web/src/editor-catalog-shapes.ts",
-      "bytes": 13365,
-      "sha256": "a567ef60a8f76aa957daab962800ac904a577aa44d7029364db1a1573aa79dd3",
-      "original_sha256": "a567ef60a8f76aa957daab962800ac904a577aa44d7029364db1a1573aa79dd3",
+      "bytes": 13367,
+      "sha256": "64d5922e018c261f567437f1cb6543a309f2fccf5fcd4335127da4b1c90dce6f",
+      "original_sha256": "64d5922e018c261f567437f1cb6543a309f2fccf5fcd4335127da4b1c90dce6f",
       "transformed": false
     },
     {
@@ -22220,6 +23097,13 @@
       "bytes": 12250,
       "sha256": "bdd73dbb2a70667891e8803bb4c4d0908440ca825cda8edfa203a0084c195578",
       "original_sha256": "bdd73dbb2a70667891e8803bb4c4d0908440ca825cda8edfa203a0084c195578",
+      "transformed": false
+    },
+    {
+      "path": "web/src/email-code.ts",
+      "bytes": 3777,
+      "sha256": "6dba15f0415638b730078776ac64db3377bf9f8bdb241076d78d07a28b606009",
+      "original_sha256": "6dba15f0415638b730078776ac64db3377bf9f8bdb241076d78d07a28b606009",
       "transformed": false
     },
     {
@@ -22308,9 +23192,9 @@
     },
     {
       "path": "web/src/native-account-link.ts",
-      "bytes": 5432,
-      "sha256": "aa6661d0c2412da978d941afc7ff83a4e3a64802dbbc926419219a1715f36e10",
-      "original_sha256": "aa6661d0c2412da978d941afc7ff83a4e3a64802dbbc926419219a1715f36e10",
+      "bytes": 6248,
+      "sha256": "5477dba3e58805b3c66fb3b4ad436ff2056d5c5f1178164cd840884d21b8151d",
+      "original_sha256": "5477dba3e58805b3c66fb3b4ad436ff2056d5c5f1178164cd840884d21b8151d",
       "transformed": false
     },
     {
@@ -22448,9 +23332,9 @@
     },
     {
       "path": "web/src/team-api.ts",
-      "bytes": 4969,
-      "sha256": "c440c7510831c0a2e035ff235d04470b0debbb5fcfde76509e93c84f0843f187",
-      "original_sha256": "c440c7510831c0a2e035ff235d04470b0debbb5fcfde76509e93c84f0843f187",
+      "bytes": 5041,
+      "sha256": "faef3ff9b2c27834051a91fa10c1bf8400e9d734a7b45cb7f610064720a130ce",
+      "original_sha256": "faef3ff9b2c27834051a91fa10c1bf8400e9d734a7b45cb7f610064720a130ce",
       "transformed": false
     },
     {
@@ -22483,16 +23367,16 @@
     },
     {
       "path": "web/tests/account-linking-ui.test.ts",
-      "bytes": 8953,
-      "sha256": "35691bf26345254d5ffd2f77c474694b8a7f2acad1d456fa96587864e2e322f3",
-      "original_sha256": "35691bf26345254d5ffd2f77c474694b8a7f2acad1d456fa96587864e2e322f3",
+      "bytes": 10203,
+      "sha256": "099b31277d616814e9b551d765304a2e9f95b1e6840715ee17e0ae2c6c7cf00a",
+      "original_sha256": "099b31277d616814e9b551d765304a2e9f95b1e6840715ee17e0ae2c6c7cf00a",
       "transformed": false
     },
     {
       "path": "web/tests/account-linking.test.ts",
-      "bytes": 8744,
-      "sha256": "089bc014bcdca15c898db19be6309a0d7187300070efcab1de4f23990d1215f9",
-      "original_sha256": "089bc014bcdca15c898db19be6309a0d7187300070efcab1de4f23990d1215f9",
+      "bytes": 9962,
+      "sha256": "b21722d5a38ae76ac96f7fa9d24bd23be964f5be7ecacad5de2d50defbad376b",
+      "original_sha256": "b21722d5a38ae76ac96f7fa9d24bd23be964f5be7ecacad5de2d50defbad376b",
       "transformed": false
     },
     {
@@ -22546,9 +23430,9 @@
     },
     {
       "path": "web/tests/editor-catalog-shapes.test.ts",
-      "bytes": 17857,
-      "sha256": "d1e2d193fbf43a4337cac468234f207f54deb2fc83e0670f2235f73bf520dce4",
-      "original_sha256": "d1e2d193fbf43a4337cac468234f207f54deb2fc83e0670f2235f73bf520dce4",
+      "bytes": 23459,
+      "sha256": "ad8715143f9c167e1ee09bf8b71cd2f6f36f25502259e44c2794658acbdd5688",
+      "original_sha256": "ad8715143f9c167e1ee09bf8b71cd2f6f36f25502259e44c2794658acbdd5688",
       "transformed": false
     },
     {
@@ -22563,6 +23447,20 @@
       "bytes": 16754,
       "sha256": "ec310a71b29834a086551bb940ebbd4ece9e610bd516fc6149ec5a492abf001c",
       "original_sha256": "ec310a71b29834a086551bb940ebbd4ece9e610bd516fc6149ec5a492abf001c",
+      "transformed": false
+    },
+    {
+      "path": "web/tests/email-code-ui.test.ts",
+      "bytes": 6013,
+      "sha256": "e2e9f10f15af23b696b301218bfdc8c9696d6488268df7b19c273337738bee64",
+      "original_sha256": "e2e9f10f15af23b696b301218bfdc8c9696d6488268df7b19c273337738bee64",
+      "transformed": false
+    },
+    {
+      "path": "web/tests/email-code.test.ts",
+      "bytes": 4134,
+      "sha256": "5907674ca927855509ee00980d63db26c0584efd29565a37a1a4f975100efe04",
+      "original_sha256": "5907674ca927855509ee00980d63db26c0584efd29565a37a1a4f975100efe04",
       "transformed": false
     },
     {
@@ -22707,9 +23605,9 @@
     },
     {
       "path": "web/tests/native-account-link.test.ts",
-      "bytes": 5454,
-      "sha256": "16122f53e909dd19aec737b23f9b23116c4176a4283fb2e450490fab9d4fc38a",
-      "original_sha256": "16122f53e909dd19aec737b23f9b23116c4176a4283fb2e450490fab9d4fc38a",
+      "bytes": 7006,
+      "sha256": "0608d3803954cf45dc2849b79a855229415d13484017c5a579d01333e633e601",
+      "original_sha256": "0608d3803954cf45dc2849b79a855229415d13484017c5a579d01333e633e601",
       "transformed": false
     },
     {
@@ -22721,9 +23619,9 @@
     },
     {
       "path": "web/tests/native-google-screen.test.ts",
-      "bytes": 5633,
-      "sha256": "fb7f75c6c694d6025f46d1d8eb0430a32c1c8d968244ae306ed583016c9a03e9",
-      "original_sha256": "fb7f75c6c694d6025f46d1d8eb0430a32c1c8d968244ae306ed583016c9a03e9",
+      "bytes": 5831,
+      "sha256": "17683f5c876a3b8a2d22cda5eb2757d890871e01bd4c4c4c53b379df2bf69e93",
+      "original_sha256": "17683f5c876a3b8a2d22cda5eb2757d890871e01bd4c4c4c53b379df2bf69e93",
       "transformed": false
     },
     {
@@ -23058,8 +23956,18 @@
     },
     {
       "document": "docs/econometrics/advanced_unitroot.md",
+      "target": "docs/evidence/ngperron-constant-2026-10-10/README.md",
+      "label": "preregistered replication"
+    },
+    {
+      "document": "docs/econometrics/advanced_unitroot.md",
       "target": "docs/evidence/unitroot-methods-2026-10-07/README.md",
       "label": "the acceptance evidence"
+    },
+    {
+      "document": "docs/econometrics/advanced_unitroot.md",
+      "target": "docs/evidence/ngperron-constant-2026-10-10/README.md",
+      "label": "the constant-case Ng\u2013Perron evidence"
     },
     {
       "document": "docs/econometrics/audited-eight-categorical-causal-2026-10-07.md",
@@ -27242,6 +28150,29 @@
     "docs/evidence/market-99-resident-charts/frozen-desktop.json",
     "docs/evidence/market-99-resident-charts/resident-memory.json",
     "docs/evidence/market-99-resident-charts/source-tests.json",
+    "docs/evidence/meta-runtime-eight-2026-10-11/README.md",
+    "docs/evidence/meta-runtime-eight-2026-10-11/application-before.json",
+    "docs/evidence/meta-runtime-eight-2026-10-11/branch-rules.json",
+    "docs/evidence/meta-runtime-eight-2026-10-11/cleanup.json",
+    "docs/evidence/meta-runtime-eight-2026-10-11/complete-results.json.gz",
+    "docs/evidence/meta-runtime-eight-2026-10-11/current-main-bridge.json",
+    "docs/evidence/meta-runtime-eight-2026-10-11/environment.json",
+    "docs/evidence/meta-runtime-eight-2026-10-11/frozen-build.log.gz",
+    "docs/evidence/meta-runtime-eight-2026-10-11/frozen-receipt.json",
+    "docs/evidence/meta-runtime-eight-2026-10-11/frozen-verification.log",
+    "docs/evidence/meta-runtime-eight-2026-10-11/initial-example-failure.log.gz",
+    "docs/evidence/meta-runtime-eight-2026-10-11/initial-frozen-relative-path.log.gz",
+    "docs/evidence/meta-runtime-eight-2026-10-11/initial-frozen-script-syntax.log.gz",
+    "docs/evidence/meta-runtime-eight-2026-10-11/initial-frozen-script422.log.gz",
+    "docs/evidence/meta-runtime-eight-2026-10-11/negative-cases.json",
+    "docs/evidence/meta-runtime-eight-2026-10-11/preexisting-daily-failure.log.gz",
+    "docs/evidence/meta-runtime-eight-2026-10-11/runtime-manifest.json",
+    "docs/evidence/meta-runtime-eight-2026-10-11/sha256.json",
+    "docs/evidence/meta-runtime-eight-2026-10-11/source-example.log",
+    "docs/evidence/meta-runtime-eight-2026-10-11/source-tests.log.gz",
+    "docs/evidence/meta-runtime-eight-2026-10-11/source-tests.xml.gz",
+    "docs/evidence/meta-runtime-eight-2026-10-11/verification-context.json",
+    "docs/evidence/meta-runtime-eight-2026-10-11/web-build.log",
     "docs/evidence/mi-extensions-eight-2026-10-07/README.md",
     "docs/evidence/mi-extensions-eight-2026-10-07/independent-native-oracles.json",
     "docs/evidence/mi-extensions-eight-2026-10-07/integration-tests.log.gz",
@@ -28053,6 +28984,18 @@
     "docs/evidence/next-eight-proxy-2026-10-07/README.md",
     "docs/evidence/next-eight-proxy-2026-10-07/source-native.json",
     "docs/evidence/next-eight-proxy-2026-10-07/source-tests.xml",
+    "docs/evidence/ngperron-constant-2026-10-10/PROTOCOL.md",
+    "docs/evidence/ngperron-constant-2026-10-10/README.md",
+    "docs/evidence/ngperron-constant-2026-10-10/browser-catalog-20261011.log",
+    "docs/evidence/ngperron-constant-2026-10-10/catalog-recheck-20261011.log",
+    "docs/evidence/ngperron-constant-2026-10-10/current-focused-20261011.log",
+    "docs/evidence/ngperron-constant-2026-10-10/exact-limit.json",
+    "docs/evidence/ngperron-constant-2026-10-10/frozen-published-20261011.json",
+    "docs/evidence/ngperron-constant-2026-10-10/native-published-20261011.json",
+    "docs/evidence/ngperron-constant-2026-10-10/native-saved-run-20261011.json.gz",
+    "docs/evidence/ngperron-constant-2026-10-10/run.log",
+    "docs/evidence/ngperron-constant-2026-10-10/scientific.json",
+    "docs/evidence/ngperron-constant-2026-10-10/source-validation-20261011.json",
     "docs/evidence/nonlinear-sur-eight-2026-10-08/README.md",
     "docs/evidence/nonlinear-sur-eight-2026-10-08/cold-after.log",
     "docs/evidence/nonlinear-sur-eight-2026-10-08/cold-baseline.log",
@@ -30403,6 +31346,11 @@
     "tests/fixtures/categorical/people.csv",
     "tests/fixtures/categorical_frequency/people.csv",
     "tests/fixtures/categorical_spline/people.csv",
+    "tests/fixtures/causality_extensions/size_power.json",
+    "tests/fixtures/cointegration_breaks/critical_values.json",
+    "tests/fixtures/cointegration_breaks/fourier_simulation.json",
+    "tests/fixtures/cointegration_breaks/oracles.json",
+    "tests/fixtures/cointegration_breaks/size_power.json",
     "tests/fixtures/common_factors/README.md",
     "tests/fixtures/common_factors/manu_prod_model.csv",
     "tests/fixtures/conjoint-legacy-v1.json",
@@ -30426,6 +31374,9 @@
     "tests/fixtures/editor-catalog-main4634-before-BMA1365-shaped.json",
     "tests/fixtures/editor-catalog-mainc41b4f-Weibull1417-bindings.json",
     "tests/fixtures/editor-catalog-mainc41b4f-before-Weibull1392-shaped.json",
+    "tests/fixtures/editor-catalog-methods-wave1-approved-changes.json",
+    "tests/fixtures/editor-catalog-methods-wave2-approved-changes.json",
+    "tests/fixtures/editor-catalog-ngperron136-approved-changes.json",
     "tests/fixtures/editor-catalog-score-contrasts1395-bindings.json",
     "tests/fixtures/editor-catalog-shapes-full-bindings.json",
     "tests/fixtures/editor-catalog-shapes-v1.json",
@@ -30436,6 +31387,11 @@
     "tests/fixtures/extended_mixed/transport.csv",
     "tests/fixtures/extended_mixed/xtfrontier1.csv",
     "tests/fixtures/finite-mixture-native-reference.json",
+    "tests/fixtures/garch_extensions/arch_figarch.json",
+    "tests/fixtures/garch_extensions/arch_skewt.json",
+    "tests/fixtures/garch_extensions/rmgarch_adcc.json",
+    "tests/fixtures/garch_extensions/rugarch_csgarch.json",
+    "tests/fixtures/garch_extensions/rugarch_sged.json",
     "tests/fixtures/group_sequential/compare_oracles.py",
     "tests/fixtures/group_sequential/generate_gsdesign.R",
     "tests/fixtures/group_sequential/gsdesign-r64-diagnostic.json",
@@ -30447,10 +31403,27 @@
     "tests/fixtures/irt-calibrated/responses.csv",
     "tests/fixtures/irt/binary.csv",
     "tests/fixtures/irt/ordinal.csv",
+    "tests/fixtures/iv_extensions/lewbel.json",
+    "tests/fixtures/iv_wild_bootstrap/size_power.json",
     "tests/fixtures/longrun-crude.csv",
     "tests/fixtures/mediation-framing.csv",
     "tests/fixtures/meta/README.md",
     "tests/fixtures/meta/bcg.csv",
+    "tests/fixtures/meta_extensions/README.md",
+    "tests/fixtures/meta_extensions/asymmetric.csv",
+    "tests/fixtures/meta_extensions/boundary.csv",
+    "tests/fixtures/meta_extensions/che.csv",
+    "tests/fixtures/meta_extensions/che_covariance.csv",
+    "tests/fixtures/meta_extensions/dependent.csv",
+    "tests/fixtures/meta_extensions/dependent_covariance.csv",
+    "tests/fixtures/meta_extensions/hackshaw1998.csv",
+    "tests/fixtures/meta_extensions/konst_z.csv",
+    "tests/fixtures/meta_extensions/konstantopoulos2011.csv",
+    "tests/fixtures/meta_extensions/oracles.json",
+    "tests/fixtures/meta_extensions/selection_moderator.csv",
+    "tests/fixtures/mixed_extensions/clmm.json",
+    "tests/fixtures/mixed_extensions/kr.json",
+    "tests/fixtures/mixed_extensions/lme.json",
     "tests/fixtures/modern_did/README.md",
     "tests/fixtures/modern_did/california_prop99.csv",
     "tests/fixtures/modern_did/reference.json",
@@ -30468,33 +31441,37 @@
     "tests/fixtures/repeated_gls/nlme.json",
     "tests/fixtures/robust/nlswork-mmqr-reference.json",
     "tests/fixtures/robust/nlswork-mmqr.csv",
+    "tests/fixtures/seasonal/numpy_x11.json",
+    "tests/fixtures/seasonal/r_croston.json",
+    "tests/fixtures/seasonal/r_stl.json",
     "tests/fixtures/stata/auto-numeric.csv",
     "tests/fixtures/stata/auto-source.json",
     "tests/fixtures/stata/published-auto-reference.json",
     "tests/fixtures/stata/reproduce-auto-reference.do",
     "tests/fixtures/structural-macro.csv",
     "tests/fixtures/supervised-cart-native-reference.json",
-    "tests/fixtures/supervised-cart-native-source-inputs.json"
+    "tests/fixtures/supervised-cart-native-source-inputs.json",
+    "tests/fixtures/survival_frailty/data_cox.json",
+    "tests/fixtures/survival_frailty/data_parametric.json",
+    "tests/fixtures/survival_frailty/data_recurrent.json",
+    "tests/fixtures/survival_frailty/data_stteffects.json",
+    "tests/fixtures/survival_frailty/numpy_reference.json",
+    "tests/fixtures/survival_frailty/r_reference.json",
+    "tests/fixtures/unitroot_breaks/bai_perron_r_oracles.json",
+    "tests/fixtures/unitroot_fourier/ers_urca.json",
+    "tests/fixtures/unitroot_fourier/simulated_quantiles.json",
+    "tests/fixtures/unitroot_hegy/simulated_critical_values.json",
+    "tests/fixtures/unitroot_hegy/uroot_reference.json"
   ],
-  "source_files_sha256": "ad42799d2c41386cc12ced961ab22f1b1af5a2a16b764eba322d3d214b0c8ea0",
-  "publication_documentation_transforms": [
+  "source_files_sha256": "52cbbc279c077433915342f117d576b677ab7081fada95b62febef056d6975ba",
+  "public_documentation_updates": [
     {
       "path": "README.md",
-      "snapshot_sha256": "dcb26e20a9b33d62c21cbd6a82d1c3a26d906a77ec088058daf44fa51d46725c",
-      "published_sha256": "b07e50ea99d697a8f526e79ee4c06257b8dd761f37b4b9e9339f4f1673666229",
-      "reason": "Correct frozen alpha package versions and select explicit GitHub artifacts; retain the separately verified immutable PyPI pair. Production code and Python examples are unchanged."
+      "scope": "Current published PyPI pair 0.3.19a1/0.3.1a1 read back from registry on 2026-10-11; candidate 0.3.20a1/0.3.2a1 remains explicitly unpublished."
     },
     {
-      "path": "PYPI-README.md",
-      "snapshot_sha256": "f3cf30c587ed9bdc7fe10eeac944ffbfc88f4c91b25e6f1a329a39ac95d36763",
-      "published_sha256": "a23ef49293444071d304dbccafc94825533a79458712ac552c7cd3c82f0e67fb",
-      "reason": "Correct frozen alpha package versions and select explicit GitHub artifacts; retain the separately verified immutable PyPI pair. Production code and Python examples are unchanged."
-    },
-    {
-      "path": "packages/openecon-charts/PYPI-README.md",
-      "snapshot_sha256": "9441ec309e081b5d5eb5028623bd178a788a9ebfcfde96b4653da3482f1e1a0a",
-      "published_sha256": "a707263b3813760659c3db0405d026ed5cf05bfc3b6694b6d3a1d57c9efff729",
-      "reason": "Correct frozen alpha package versions and select explicit GitHub artifacts; retain the separately verified immutable PyPI pair. Production code and Python examples are unchanged."
+      "path": "docs/distribution.md",
+      "scope": "Current published PyPI pair 0.3.19a1/0.3.1a1 read back from registry on 2026-10-11; candidate 0.3.20a1/0.3.2a1 remains explicitly unpublished."
     }
   ]
 }

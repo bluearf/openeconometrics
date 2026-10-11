@@ -266,3 +266,36 @@ test("a resolved SDK promise without the target provider is not reported as succ
   assert.equal(f.auth.currentUser, f.user);
   assert.deepEqual(accountMethods(f.user), ["password"]);
 });
+
+test("native Google verification unlocks only one local password link for the retained UID", async () => {
+  const f = fixture("google.com");
+  const session = f.session();
+  await session.reauthenticateNative(async () => {});
+  await session.link("password", "new-secret");
+  assert.deepEqual(f.calls, ["link-password"]);
+  assert.equal(f.auth.currentUser, f.user);
+  assert.throws(
+    () => session.link("password"),
+    code("account/reauth-required"),
+  );
+});
+test("cancelled, failed or changed-account native verification cannot authorize a local password", async () => {
+  for (const outcome of ["cancel", "fail", "change"] as const) {
+    const f = fixture("google.com");
+    const session = f.session();
+    await assert.rejects(
+      session.reauthenticateNative(async () => {
+        if (outcome === "cancel") session.cancel();
+        if (outcome === "fail") throw new Error("verification failed");
+        if (outcome === "change")
+          f.auth.currentUser = { ...f.user, uid: "another-uid" } as User;
+      }),
+    );
+    f.auth.currentUser = f.user;
+    assert.throws(
+      () => session.link("password"),
+      code("account/reauth-required"),
+    );
+    assert.deepEqual(f.calls, []);
+  }
+});

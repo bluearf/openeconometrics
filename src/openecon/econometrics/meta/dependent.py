@@ -276,7 +276,7 @@ def make_result(state, *, procedure="meta_dependent", title=None):
                     notes=["Known sampling covariance and independent study blocks are supplied assumptions.",
                            "Random-effect GLS uncertainty plugs in the estimated variance; it excludes variance-estimation uncertainty.",
                            "The finite profile grid is not a global optimizer proof for arbitrary pathological data.",
-                           "Cluster CR0/CR1 t/F inference is approximate; CR2/Satterthwaite is unavailable."])
+                           "Cluster CR0/CR1 t/F inference is approximate; CR2/Satterthwaite/HTZ inference is provided separately by meta_cr2."])
 
 
 @resident_cpu

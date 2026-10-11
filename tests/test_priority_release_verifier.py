@@ -106,3 +106,30 @@ def test_failure_is_persisted_before_any_runtime_can_start(monkeypatch, tmp_path
     assert receipt["status"] == "failed" and receipt["active_stage"] == "identity"
     assert receipt["completed_stages"] == [] and receipt["temporary_project_removed"]
     assert json.loads((directory / "failure.json").read_text())["type"] == "ValueError"
+
+
+@pytest.mark.parametrize("damage", [None, "missing-analysis", "changed-analysis"])
+def test_frozen_inventory_excludes_only_service_modules_and_keeps_analysis(tmp_path, damage):
+    import types
+
+    matrix = sys.modules["verify_native_matrix_desktop"]
+    package = tmp_path / "openecon"
+    package.mkdir()
+    sources = {"analysis.py": "VALUE = 1\n", "email_code.py": "SERVER_ONLY = True\n",
+               "team_quiescence.py": "SERVER_ONLY = True\n",
+               "desktop_runtime.py": "LOCAL = True\n"}
+    for name, content in sources.items():
+        (package / name).write_text(content)
+    compiled = {"openecon." + name[:-3]: compile(content, "different-build-path", "exec")
+                for name, content in sources.items() if name not in {"email_code.py", "team_quiescence.py"}}
+    if damage == "missing-analysis":
+        del compiled["openecon.analysis"]
+    elif damage == "changed-analysis":
+        compiled["openecon.analysis"] = compile("VALUE = 2\n", "different-build-path", "exec")
+    archive = types.SimpleNamespace(extract=lambda name: compiled[name])
+    if damage is None:
+        assert set(matrix.bundled_module_hashes(archive, package)) == {
+            "src/openecon/analysis.py", "src/openecon/desktop_runtime.py"}
+    else:
+        with pytest.raises((KeyError, RuntimeError)):
+            matrix.bundled_module_hashes(archive, package)

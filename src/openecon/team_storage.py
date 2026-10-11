@@ -4,6 +4,7 @@ No execution capabilities are issued: analyses run in the desktop app.
 """
 from __future__ import annotations
 
+from openecon.team_quiescence import require_write_window
 from openecon.team_store import TeamError
 
 MAX_TRANSFER_BYTES = 24 * 1024**2
@@ -25,6 +26,7 @@ class TeamStorage:
             'https://oauth2.googleapis.com/token')
 
     def put(self, key, payload, content_type='application/octet-stream'):
+        require_write_window()
         if len(payload) > MAX_TRANSFER_BYTES:
             raise TeamError('FILE_LIMIT', 'The file exceeds the size limit.', 413)
         blob = self.bucket.blob(key)
@@ -71,6 +73,7 @@ class MemoryStorage:
         self.objects = {}
 
     def put(self, key, payload, content_type='application/octet-stream'):
+        require_write_window()
         if key in self.objects:
             raise ValueError('Immutable object already exists')
         self.objects[key] = payload

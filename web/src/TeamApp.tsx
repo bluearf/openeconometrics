@@ -6,13 +6,11 @@ import {
   useMemo,
   useRef,
   useState,
-  useSyncExternalStore,
   type FormEvent,
   type ReactNode,
 } from "react";
 import { getApps, initializeApp } from "firebase/app";
 import {
-  createUserWithEmailAndPassword,
   getAuth,
   initializeAuth,
   indexedDBLocalPersistence,
@@ -20,12 +18,7 @@ import {
   browserSessionPersistence,
   getIdToken,
   onIdTokenChanged,
-  reload,
-  sendEmailVerification,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
   signOut,
-  updateProfile,
   type Auth,
   type User,
 } from "firebase/auth";
@@ -55,16 +48,10 @@ import ProjectNameEditor from "./ProjectNameEditor";
 import ProjectCreateForm from "./ProjectCreateForm";
 import type { ProjectCreateInput } from "./project-create";
 import { ProjectNames } from "./project-name";
-import {
-  VerificationDelivery,
-  VerificationCheckGate,
-  verificationErrorMessage,
-  finishSignupVerification,
-} from "./email-verification";
 import "./team-styles.css";
 import LocalProjects from "./LocalProjects";
-import AccountLinking, { refreshLinkedUser } from "./AccountLinking";
-import type { AccountMethod } from "./account-linking";
+import { EmailCodeSession } from "./email-code";
+import EmailCodeForm from "./EmailCodeForm";
 
 const App = lazy(() => import("./App"));
 
@@ -82,19 +69,10 @@ const roleNames = {
   viewer: "Viewer",
 };
 const authErrors: Record<string, string> = {
-  "auth/invalid-credential": "The email or password is incorrect.",
   "auth/invalid-email": "Enter a valid email address.",
-  "auth/email-already-in-use":
-    "An account already exists with this email. Sign in or reset your password.",
-  "auth/weak-password":
-    "Your password must be 12–128 characters and include uppercase and lowercase letters and a number.",
-  "auth/password-does-not-meet-requirements":
-    "Your password must be 12–128 characters and include uppercase and lowercase letters and a number.",
   "auth/too-many-requests": "Too many attempts. Wait a moment and try again.",
   "auth/network-request-failed":
     "Could not connect. Check your internet connection.",
-  "auth/operation-not-allowed":
-    "This sign-in method is not enabled yet. Contact your workspace administrator.",
 };
 function message(error: unknown) {
   const code =
@@ -225,23 +203,23 @@ function ConnectedApplicationRoot({ onLocal }: { onLocal?: () => void }) {
 export function AuthScreen({
   auth,
   invitation,
-  onSignup,
+  emailCodeAvailable = false,
   onLocal,
 }: {
   auth: Auth;
   invitation: boolean;
-  onSignup: (email: string, password: string, name: string) => Promise<void>;
+  emailCodeAvailable?: boolean;
   onLocal?: () => void;
 }) {
-  const [mode, setMode] = useState<"signin" | "signup" | "reset">("signin");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
   const [googleBusy, setGoogleBusy] = useState(false);
+  const [emailBusy, setEmailBusy] = useState(false);
   const pending = useRef(false);
   const googleAttempt = useRef<AbortController | null>(null);
   const googleCommitting = useRef(false);
+  const emailSession = useMemo(() => new EmailCodeSession(auth), [auth]);
+  const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   function cancelGoogleSignIn() {
     const attempt = googleAttempt.current;
     if (!attempt || googleCommitting.current) return;
@@ -255,58 +233,19 @@ export function AuthScreen({
     );
   }
   useEffect(() => {
-    const leaving = () => googleAttempt.current?.abort();
+    const leaving = () => {
+      googleAttempt.current?.abort();
+      emailSession.cancel();
+    };
     window.addEventListener("pagehide", leaving);
     window.addEventListener("beforeunload", leaving);
     return () => {
-      googleAttempt.current?.abort();
+      leaving();
       googleAttempt.current = null;
       window.removeEventListener("pagehide", leaving);
       window.removeEventListener("beforeunload", leaving);
     };
-  }, []);
-  const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
-  function switchMode(next: typeof mode) {
-    if (googleBusy && isDesktop()) cancelGoogleSignIn();
-    if (pending.current) return;
-    setMode(next);
-    setError("");
-    setNotice("");
-  }
-  async function submit(event: FormEvent) {
-    event.preventDefault();
-    if (pending.current) return;
-    pending.current = true;
-    setBusy(true);
-    setError("");
-    setNotice("");
-    try {
-      if (mode === "reset") {
-        await sendPasswordResetEmail(auth, email.trim());
-        setNotice(
-          "If an account exists for this email, a password reset link has been sent. Check your inbox.",
-        );
-      } else if (mode === "signup") {
-        if (
-          password.length < 12 ||
-          password.length > 128 ||
-          !/[A-Z]/.test(password) ||
-          !/[a-z]/.test(password) ||
-          !/[0-9]/.test(password)
-        )
-          throw new Error(
-            "Your password must be 12–128 characters and include uppercase and lowercase letters and a number.",
-          );
-        await onSignup(email.trim(), password, name.trim());
-      } else await signInWithEmailAndPassword(auth, email.trim(), password);
-    } catch (failure) {
-      setError(message(failure));
-    } finally {
-      pending.current = false;
-      setBusy(false);
-    }
-  }
+  }, [emailSession]);
   async function googleSignIn() {
     if (pending.current) return;
     const attempt = new AbortController();
@@ -358,131 +297,41 @@ export function AuthScreen({
       <section className="team-auth-panel">
         <div className="team-auth-card">
           <Brand />
-          <h1>
-            {mode === "signup"
-              ? "Create account"
-              : mode === "reset"
-                ? "Reset password"
-                : "Sign in"}
-          </h1>
-          {(invitation || mode === "signup") && (
-            <p>
-              {invitation
-                ? "Sign in with the invited email address."
-                : "An invitation is required to access projects."}
-            </p>
-          )}
+          <h1>Sign in</h1>
+          {invitation && <p>Sign in with the invited email address.</p>}
           <Notice error>{error}</Notice>
           <Notice>{notice}</Notice>
-          {mode !== "reset" && (
-            <>
-              <button
-                type="button"
-                className="team-google-button"
-                disabled={busy}
-                aria-busy={googleBusy}
-                onClick={() => void googleSignIn()}
-              >
-                <span>
-                  {googleBusy
-                    ? "Waiting for Google sign-in…"
-                    : "Continue with Google"}
-                </span>
-              </button>
-              {googleBusy && isDesktop() && (
-                <button type="button" onClick={cancelGoogleSignIn}>
-                  Cancel Google sign-in
-                </button>
-              )}
-              <div className="team-auth-divider">
-                <span>or</span>
-              </div>
-            </>
-          )}
-          <form onSubmit={(event) => void submit(event)}>
-            {mode === "signup" && (
-              <label>
-                Your name
-                <input
-                  disabled={busy}
-                  autoComplete="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  maxLength={120}
-                  required
-                />
-              </label>
-            )}
-            <label>
-              Email
-              <input
-                disabled={busy}
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                maxLength={254}
-              />
-            </label>
-            {mode !== "reset" && (
-              <label>
-                Password
-                <input
-                  disabled={busy}
-                  type="password"
-                  autoComplete={
-                    mode === "signup" ? "new-password" : "current-password"
-                  }
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  minLength={mode === "signup" ? 12 : 1}
-                  maxLength={128}
-                  required
-                />
-                {mode === "signup" && (
-                  <small className="team-password-help">
-                    12–128 characters, with uppercase and lowercase letters and
-                    a number.
-                  </small>
-                )}
-              </label>
-            )}
-            <button className="team-primary" disabled={busy}>
-              {busy
-                ? "Please wait…"
-                : mode === "signup"
-                  ? "Create account"
-                  : mode === "reset"
-                    ? "Send reset link"
-                    : "Sign in"}
+          <button
+            type="button"
+            className="team-google-button"
+            disabled={busy}
+            aria-busy={googleBusy}
+            onClick={() => void googleSignIn()}
+          >
+            <span>
+              {googleBusy
+                ? "Waiting for Google sign-in…"
+                : "Continue with Google"}
+            </span>
+          </button>
+          {googleBusy && isDesktop() && (
+            <button type="button" onClick={cancelGoogleSignIn}>
+              Cancel Google sign-in
             </button>
-          </form>
-          <div className="team-auth-links">
-            {mode === "signin" ? (
-              <>
-                <button
-                  disabled={busy && !(googleBusy && isDesktop())}
-                  onClick={() => switchMode("reset")}
-                >
-                  Forgot password
-                </button>
-                <button
-                  disabled={busy && !(googleBusy && isDesktop())}
-                  onClick={() => switchMode("signup")}
-                >
-                  Create account
-                </button>
-              </>
-            ) : (
-              <button
-                disabled={busy && !(googleBusy && isDesktop())}
-                onClick={() => switchMode("signin")}
-              >
-                ← Back to sign-in
-              </button>
-            )}
+          )}
+          <div className="team-auth-divider">
+            <span>or</span>
           </div>
+          <EmailCodeForm
+            session={emailSession}
+            available={emailCodeAvailable}
+            disabled={busy && !emailBusy}
+            onBusy={(value) => {
+              setEmailBusy(value);
+              pending.current = value;
+              setBusy(value);
+            }}
+          />
         </div>
       </section>
     </main>
@@ -512,26 +361,6 @@ function TeamShell({
     value.languageCode = "tr";
     return value;
   }, [config]);
-  const delivery = useMemo(
-    () => new VerificationDelivery(sendEmailVerification),
-    [],
-  );
-  const [signupWarning, setSignupWarning] = useState<{
-    uid: string;
-    message: string;
-  } | null>(null);
-  const [verificationCheck, setVerificationCheck] = useState({
-    uid: "",
-    busy: false,
-    error: "",
-    notice: "",
-  });
-  const verificationGate = useRef(new VerificationCheckGate());
-  const [signupPhase, setSignupPhase] = useState<{
-    uid: string | null;
-    operation: number;
-  } | null>(null);
-  const signupSequence = useRef(0);
   const [user, setUser] = useState<User | null>(null);
   const [authReady, setAuthReady] = useState(false);
   const [revision, setRevision] = useState(0);
@@ -547,8 +376,6 @@ function TeamShell({
   const [notice, setNotice] = useState("");
   const [createOpen, setCreateOpen] = useState(false);
   const [membersOpen, setMembersOpen] = useState(false);
-  const [accountOpen, setAccountOpen] = useState(false);
-  const [accountBusy, setAccountBusy] = useState(false);
   const [projectName, setProjectName] = useState("");
   const [description, setDescription] = useState("");
   const [leaveFailure, setLeaveFailure] = useState<{
@@ -585,69 +412,6 @@ function TeamShell({
     projectNames.current.select(uid || null);
     return () => projectNames.current.select(null);
   }, [uid]);
-  useEffect(() => {
-    verificationGate.current.select(uid);
-    setVerificationCheck({
-      uid: uid || "",
-      busy: false,
-      error: "",
-      notice: "",
-    });
-  }, [uid]);
-  const signupInFlight =
-    signupPhase !== null &&
-    (signupPhase.uid === null || signupPhase.uid === uid);
-
-  const mail = useSyncExternalStore(delivery.subscribe, () =>
-    delivery.getSnapshot(uid),
-  );
-  const [, refreshCountdown] = useState(0);
-  useEffect(() => {
-    if (mail.retryAt <= Date.now()) return;
-    const timer = window.setInterval(() => {
-      refreshCountdown((value) => value + 1);
-      if (Date.now() >= mail.retryAt) window.clearInterval(timer);
-    }, 1000);
-    return () => window.clearInterval(timer);
-  }, [mail.retryAt]);
-  const retrySeconds = Math.max(
-    0,
-    Math.ceil((mail.retryAt - Date.now()) / 1000),
-  );
-  const currentCheck = verificationCheck.uid === uid ? verificationCheck : null;
-  async function signup(email: string, password: string, name: string) {
-    const operation = ++signupSequence.current;
-    setSignupPhase({ uid: null, operation });
-    try {
-      // TeamShell survives the auth event; the gate cannot resend before this continuation starts.
-      const credential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password,
-      );
-      setSignupPhase((current) =>
-        current?.operation === operation
-          ? { uid: credential.user.uid, operation }
-          : current,
-      );
-      const result = await finishSignupVerification(
-        credential.user,
-        name,
-        delivery,
-        (account, displayName) => updateProfile(account, { displayName }),
-      );
-      if (result.profileError && auth.currentUser?.uid === credential.user.uid)
-        setSignupWarning({
-          uid: credential.user.uid,
-          message:
-            "Your account was created, but your profile name could not be saved. See the email delivery status below.",
-        });
-    } finally {
-      setSignupPhase((current) =>
-        current?.operation === operation ? null : current,
-      );
-    }
-  }
   const getToken = useCallback(
     async (refresh = false) => {
       const current = auth.currentUser;
@@ -779,54 +543,6 @@ function TeamShell({
   async function logout() {
     await leave(() => signOut(auth));
   }
-  async function verify(resend: boolean) {
-    if (!user || auth.currentUser?.uid !== user.uid) return;
-    if (resend) {
-      if (signupInFlight && mail.status === "idle") return;
-      await delivery.send(user);
-      return;
-    }
-    const account = user;
-    const ticket = verificationGate.current.begin(account.uid);
-    if (ticket === null) return;
-    setVerificationCheck({
-      uid: account.uid,
-      busy: true,
-      error: "",
-      notice: "",
-    });
-    try {
-      await reload(account);
-      await getIdToken(account, true);
-      if (
-        !verificationGate.current.current(ticket) ||
-        auth.currentUser?.uid !== account.uid
-      )
-        return;
-      setRevision((value) => value + 1);
-      setVerificationCheck({
-        uid: account.uid,
-        busy: false,
-        error: "",
-        notice: account.emailVerified
-          ? ""
-          : "Your email is not verified yet. Open the verification link, then check again.",
-      });
-    } catch (failure) {
-      if (
-        verificationGate.current.current(ticket) &&
-        auth.currentUser?.uid === account.uid
-      )
-        setVerificationCheck({
-          uid: account.uid,
-          busy: false,
-          error: `Could not check verification status. ${verificationErrorMessage(failure)}`,
-          notice: "",
-        });
-    } finally {
-      verificationGate.current.finish(ticket);
-    }
-  }
   async function accept(invitationId: string) {
     setBusy(true);
     setError("");
@@ -909,12 +625,12 @@ function TeamShell({
         <p>Checking session…</p>
       </div>
     );
-  if (!user)
+  if (!user || !user.emailVerified)
     return (
       <AuthScreen
         auth={auth}
         invitation={Boolean(route.invitationId)}
-        onSignup={signup}
+        emailCodeAvailable={config.email_code_available === true}
         onLocal={onLocal}
       />
     );
@@ -984,14 +700,6 @@ function TeamShell({
           <span className="team-user-email" title={user.email || ""}>
             {user.displayName || user.email}
           </span>
-          {verified && (
-            <button
-              className="team-secondary"
-              onClick={() => setAccountOpen(true)}
-            >
-              Account
-            </button>
-          )}
           <button className="team-logout" onClick={() => void logout()}>
             Sign out
           </button>
@@ -1000,55 +708,10 @@ function TeamShell({
       {!verified ? (
         <main className="team-gate">
           <h1>Verify your email</h1>
-          <p>
-            Open the verification link sent to <strong>{user.email}</strong>.
-          </p>
+          <p>Sign in with Google or request an email sign-in code.</p>
           <Notice error>{error}</Notice>
-          {signupWarning && signupWarning.uid === uid && (
-            <Notice error>{signupWarning.message}</Notice>
-          )}
-          <Notice error={mail.status === "error"}>{mail.message}</Notice>
-          <Notice error>{currentCheck?.error}</Notice>
-          <Notice>{currentCheck?.notice}</Notice>
-          {mail.sentAt && (
-            <p className="verification-send-time">
-              Last send request:{" "}
-              {new Date(mail.sentAt).toLocaleTimeString("en-US", {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </p>
-          )}
-          {mail.status === "idle" && (
-            <p className="verification-help">
-              If the email has not arrived, check your spam folder too.
-            </p>
-          )}
-          <button
-            className="team-primary"
-            disabled={Boolean(currentCheck?.busy)}
-            onClick={() => void verify(false)}
-          >
-            {currentCheck?.busy
-              ? "Checking verification…"
-              : "I verified my email — continue"}{" "}
-          </button>
-          <button
-            className="team-text-button"
-            disabled={
-              (signupInFlight && mail.status === "idle") ||
-              mail.status === "sending" ||
-              retrySeconds > 0 ||
-              Boolean(currentCheck?.busy)
-            }
-            onClick={() => void verify(true)}
-          >
-            {(signupInFlight && mail.status === "idle") ||
-            mail.status === "sending"
-              ? "Sending verification email…"
-              : retrySeconds > 0
-                ? `Resend in ${retrySeconds}s`
-                : "Resend verification email"}
+          <button className="team-primary" onClick={() => void logout()}>
+            Continue to sign in
           </button>
         </main>
       ) : selected && client ? (
@@ -1212,37 +875,6 @@ function TeamShell({
           close={() => setMembersOpen(false)}
         />
       )}
-      {accountOpen && verified && (
-        <Modal
-          title="Sign-in methods"
-          close={() => {
-            if (!accountBusy) setAccountOpen(false);
-          }}
-        >
-          <AccountLinking
-            key={user.uid}
-            auth={auth}
-            user={user}
-            nativeAvailable={config.account_link_available === true}
-            onBusy={setAccountBusy}
-            onLinked={async () => {
-              await refreshLinkedUser(auth, user);
-              const next = await api<TeamProfile>("/me");
-              if (
-                next.user.uid !== user.uid ||
-                auth.currentUser?.uid !== user.uid
-              )
-                throw new Error("The signed-in account changed.");
-              // Provider linking makes no membership writes. Reconcile the
-              // live UID-scoped profile without remounting the workbench.
-              const canonical = projectNames.current.reconcile(next);
-              profileSnapshot.current = canonical;
-              setProfile(canonical);
-              if (isDesktop()) cacheDesktopProfile(canonical);
-            }}
-          />
-        </Modal>
-      )}
       {leaveFailure && (
         <Modal title="Keep your draft" close={() => setLeaveFailure(null)}>
           <div className="team-modal-body">
@@ -1291,30 +923,18 @@ function DesktopLoginApproval({
 }) {
   const [busy, setBusy] = useState(false);
   const [approved, setApproved] = useState(false);
+  const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
-  const [grant, setGrant] = useState<{
-    kind: "login" | "account-link";
-    target?: AccountMethod;
-    uid?: string;
-  } | null>(null);
   useEffect(() => {
     let current = true;
-    setGrant(null);
-    setError("");
-    void api<{
-      kind: "login" | "account-link";
-      target?: AccountMethod;
-      uid?: string;
-    }>(`/desktop/login/${requestId}`)
+    void api<{ kind: string }>(`/desktop/login/${requestId}`)
       .then((value) => {
         if (!current) return;
-        if (
-          value.kind === "account-link" &&
-          (value.uid !== user.uid ||
-            !["password", "google.com"].includes(value.target || ""))
-        )
-          throw new Error("Sign in to the same account shown in the app.");
-        setGrant(value);
+        if (value.kind !== "login")
+          throw new Error(
+            "Return to the app and choose Google or an email sign-in code. No password is needed.",
+          );
+        setReady(true);
       })
       .catch((failure) => {
         if (current) setError(message(failure));
@@ -1342,12 +962,8 @@ function DesktopLoginApproval({
           <Brand />
           <h1>
             {approved
-              ? grant?.kind === "account-link"
-                ? "Account method added"
-                : "Sign-in complete"
-              : grant?.kind === "account-link"
-                ? "Add a sign-in method to your app account"
-                : "Sign in to the OpenEconometrics app"}
+              ? "Sign-in complete"
+              : "Sign in to the OpenEconometrics app"}
           </h1>
           {approved ? (
             <p>You can return to the app.</p>
@@ -1358,30 +974,13 @@ function DesktopLoginApproval({
                 This must match the code shown in the app:{" "}
                 <strong>{requestId.slice(0, 8).toUpperCase()}</strong>
               </p>
-              {grant?.kind === "account-link" ? (
-                <AccountLinking
-                  auth={auth}
-                  user={user}
-                  target={grant.target}
-                  onBusy={setBusy}
-                  refreshFailureMessage="The method was added, but the app could not confirm the handoff. Return to the app and reopen Account to check."
-                  onLinked={async () => {
-                    await refreshLinkedUser(auth, user);
-                    await api(`/desktop/account-link/${requestId}/complete`, {
-                      method: "POST",
-                    });
-                    setApproved(true);
-                  }}
-                />
-              ) : (
-                <button
-                  className="team-primary"
-                  disabled={busy || !grant}
-                  onClick={() => void approve()}
-                >
-                  {busy ? "Signing in…" : "Approve sign-in"}
-                </button>
-              )}
+              <button
+                className="team-primary"
+                disabled={busy || !ready}
+                onClick={() => void approve()}
+              >
+                {busy ? "Signing in…" : "Approve sign-in"}
+              </button>
             </>
           )}
           <Notice error>{error}</Notice>

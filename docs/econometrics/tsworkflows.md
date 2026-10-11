@@ -123,6 +123,16 @@ Multiplicative components are rejected. Interior/nonidentified/boundary failures
 are reported rather than manufacturing SEs. Conditional forecasts propagate
 future innovations and explicitly exclude estimated-parameter uncertainty.
 
+## Seasonal adjustment and forecasting extensions
+
+Native STL (`oe.stl`, `oe.stl_forecast`) and the X-11 method (`oe.x11`), both with a
+sealed saved state (`oe.seasonal_restore`), are documented in
+[seasonal-adjustment.md](seasonal-adjustment.md). Calendar and intervention
+regressors for the regression part of `oe.arima`, intermittent-demand methods and
+forecast combinations are documented in
+[forecasting-extensions.md](forecasting-extensions.md). None of them runs an
+X-13ARIMA-SEATS binary.
+
 ## Independent evidence and references
 
 `tests/test_tsworkflows_oracle.py`, `test_tsworkflows_review.py` and

@@ -2,6 +2,9 @@
 
 Continuously updated IV GMM and effective-F diagnostics have separate
 [supported-domain documentation](capability-closures-2026-10-07.md#cue-and-effective-f).
+Jackknife IV (JIVE1/JIVE2/UJIVE), Lewbel generated instruments, shift-share
+AKM inference and Montiel Olea–Pflueger effective-F critical values are in
+[IV extensions](iv-extensions.md).
 
 Linear models with endogenous regressors,
 

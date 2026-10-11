@@ -29,6 +29,7 @@ from starlette.middleware.trustedhost import TrustedHostMiddleware
 
 from openecon import __version__
 from openecon.output_events import validate_output_events
+from openecon import team_quiescence as quiescence
 from openecon.team_auth import TeamAuthError
 from openecon.team_storage import MAX_TRANSFER_BYTES
 from openecon.team_store import (MAX_PROJECT_DESCRIPTION_LENGTH, MAX_PROJECT_NAME_LENGTH,
@@ -300,7 +301,7 @@ def validate_worker_result(payload, run):
 
 
 def create_team_app(*, store, storage, auth, public_origin, firebase_config, desktop_token_issuer=None,
-                    source_commit_id=None):
+                    source_commit_id=None, email_codes=None, passwordless_only=False):
     validate_public_origin(public_origin)
     commit = source_commit(source_commit_id)
     # The web configuration may not expand our script/frame trust boundary.
@@ -332,7 +333,8 @@ def create_team_app(*, store, storage, auth, public_origin, firebase_config, des
 
     @app.exception_handler(RequestValidationError)
     async def invalid_fields(request, exc):
-        if request.method == 'POST' and request.url.path == '/api/projects':
+        if request.method == 'POST' and (request.url.path == '/api/projects'
+                                       or request.url.path.startswith('/api/auth/email-code')):
             # Field errors must survive malformed Unicode without echoing drafts
             # or serializing validator exception objects from Pydantic's context.
             errors = [{key: error[key] for key in ('loc', 'msg', 'type')} for error in exc.errors()]
@@ -345,6 +347,8 @@ def create_team_app(*, store, storage, auth, public_origin, firebase_config, des
         path = request.url.path
         if path == '/healthz' and request.method in {'GET', 'HEAD'}:
             return JSONResponse({'status': 'ok'})
+        # Admission precedes authentication; see openecon.team_quiescence.
+        admission = quiescence.admit()
         try:
             # No ambient cookies are used: authorization always needs an explicit
             # bearer token, and writes must originate from this interface.
@@ -358,7 +362,12 @@ def create_team_app(*, store, storage, auth, public_origin, firebase_config, des
                 if length and (not length.isdigit() or int(length) > request_body_limit(path)):
                     raise TeamError('FILE_LIMIT', 'The request exceeds the size limit.', 413)
                 from openecon.desktop_cloud import public_desktop_login
-                if path != '/api/auth/config' and not public_desktop_login(path, request.method):
+                from openecon.email_code import public_email_code
+                if (passwordless_only and path.startswith('/api/desktop/account-link')):
+                    raise TeamError('ACCOUNT_LINK_RETIRED',
+                                    'Choose Google or an email sign-in code. No password is needed.', 410)
+                if (path != '/api/auth/config' and not public_desktop_login(path, request.method)
+                        and not public_email_code(path, request.method)):
                     authorization = request.headers.get('authorization', '')
                     token = authorization[7:] if authorization.startswith('Bearer ') else ''
                     request.state.user = await run_in_threadpool(
@@ -372,6 +381,8 @@ def create_team_app(*, store, storage, auth, public_origin, firebase_config, des
             logging.getLogger('openecon.teams').error('Control request failed: %s', type(exc).__name__)
             response = JSONResponse({'detail': {'code': 'SERVICE_UNAVAILABLE',
                 'message': 'The operation could not be completed right now. Your saved files are preserved.'}}, status_code=503)
+        finally:
+            quiescence.release(admission)
         response.headers.update({
             'X-Content-Type-Options': 'nosniff', 'Referrer-Policy': 'no-referrer',
             'X-Frame-Options': 'DENY', 'Cross-Origin-Opener-Policy': 'same-origin-allow-popups',
@@ -386,11 +397,16 @@ def create_team_app(*, store, storage, auth, public_origin, firebase_config, des
     @app.get('/api/auth/config')
     def config():
         return {'mode': 'teams', 'firebase': firebase_config, 'desktop_login_available': True,
-                'account_link_available': True, 'dataset_transfer_available': True,
-                'cloud_execution_available': False, 'source_commit': commit}
+                'account_link_available': not passwordless_only, 'desktop_reauth_available': not passwordless_only,
+                'email_code_available': email_codes is not None,
+                'dataset_transfer_available': True,
+                'cloud_execution_available': False, 'source_commit': commit,
+                'write_quiescence': dict(quiescence.CONTRACT)}
 
     from openecon.desktop_cloud import attach_desktop_cloud_routes
     attach_desktop_cloud_routes(app, store=store, storage=storage, token_issuer=desktop_token_issuer)
+    from openecon.email_code import attach_email_code_routes
+    attach_email_code_routes(app, email_codes)
     from openecon.team_transfer import attach_transfer_routes
     attach_transfer_routes(app, store=store, storage=storage)
 

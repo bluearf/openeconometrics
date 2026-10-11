@@ -10,7 +10,7 @@ from torch import Tensor
 
 from openecon.analysis_contracts import AnalysisError
 from openecon.econometrics.arch import densities
-from openecon.econometrics.arch.kernels import Evaluation
+from openecon.econometrics.arch.kernels import Evaluation, distribution_parameters
 from openecon.econometrics.arch.layout import Layout
 from openecon.econometrics.arima.diagnostics import (
     archlm_test, default_lags, jarque_bera_test, ljung_box_test,
@@ -24,22 +24,35 @@ def persistence(layout: Layout, theta: Tensor) -> float | None:
     """How strongly a shock to the variance carries over to the next period.
 
     - garch / arch / igarch: ``sum a_i + sum b_j`` (exactly 1 for IGARCH);
-    - gjr: ``sum a_i + sum g_i / 2 + sum b_j`` (a negative shock has probability 1/2);
+    - gjr: ``sum a_i + E[z^2 1(z<0)] sum g_i + sum b_j`` (the share is 1/2 for the
+      symmetric densities and computed from the fitted skewed density otherwise);
     - egarch: ``sum b_j``, the autoregressive coefficient of ln h;
     - parch: ``E|z|^phi sum a_i + sum b_j``, with the absolute moment of the fitted
-      innovation distribution (``None`` when that moment does not exist).
+      innovation distribution (``None`` when that moment does not exist);
+    - cgarch: the larger of the two roots of the forecast recursion, ``rho`` (permanent
+      component) and ``alpha + beta`` (transitory component);
+    - figarch: ``sum lambda_i`` over the truncated ARCH(infinity) weights (1 for the
+      untruncated model whenever d > 0).
     """
     ix = layout.index
+    if layout.kind == "figarch":
+        from openecon.econometrics.arch.extended import figarch_weights
+        phi = float(theta[ix.a[0]]) if ix.a else 0.0
+        beta = float(theta[ix.b[0]]) if ix.b else 0.0
+        weights, _ = figarch_weights(phi, float(theta[ix.r[0]]), beta, layout.truncation)
+        return float(weights.sum())
+    if layout.kind == "cgarch":
+        return max(abs(float(theta[ix.r[0]])), abs(float(theta[ix.a[0]] + theta[ix.b[0]])))
     a, b = float(theta[ix.a].sum()), float(theta[ix.b].sum())
     if layout.restricted:
         return 1.0
     if layout.kind == "garch":
         return a + b
+    tau = distribution_parameters(theta, ix)
     if layout.kind == "gjr":
-        return a + 0.5 * float(theta[ix.g].sum()) + b
+        return a + densities.negative_share(layout.dist, tau) * float(theta[ix.g].sum()) + b
     if layout.kind == "egarch":
         return b
-    tau = float(theta[ix.d[0]]) if ix.d else 0.0
     moment = densities.abs_moment(layout.dist, float(theta[ix.p[0]]), tau)
     return a * moment + b if math.isfinite(moment) else None
 
@@ -50,6 +63,11 @@ def unconditional_variance(layout: Layout, theta: Tensor, persist: float | None)
     ``None`` for the other models (EGARCH and power ARCH have no closed form in the
     reported parameters), with variance regressors, and when it does not exist.
     """
+    if layout.kind == "cgarch":
+        # E[h] = E[q] = omega / (1 - rho) when both components are stationary.
+        omega, rho = float(theta[layout.index.c]), float(theta[layout.index.r[0]])
+        return omega / (1.0 - rho) if persist is not None and persist < 1.0 and omega > 0.0 \
+            else None
     if layout.kind not in {"garch", "gjr"} or layout.restricted or layout.k_z or persist is None:
         return None
     omega = float(theta[layout.index.c])
@@ -63,13 +81,15 @@ def state_record(layout: Layout, evaluation: Evaluation, last_period: int | None
     variances h_t (oldest first), plus the presample variance h_0 used in the fit.
     """
     keep = min(layout.max_lag, evaluation.residual.shape[0])
-    return {
+    record = {
         "residuals": evaluation.residual[-keep:].tolist(),
         "disturbances": evaluation.disturbance[-keep:].tolist(),
         "variances": evaluation.variance[-keep:].tolist(),
         "presample_variance": evaluation.presample_variance,
         "last_period": last_period,
     }
+    record.update(evaluation.extra_state or {})
+    return record
 
 
 def diagnostics(evaluation: Evaluation, layout: Layout, test_lags: int | None) -> dict[str, Any]:
@@ -116,26 +136,38 @@ def distribution_record(layout: Layout, theta: Tensor, covariance: Tensor,
                         critical: float) -> dict[str, Any]:
     """The fitted innovation distribution with its natural parameter and interval.
 
-    Student t: ``df = 2 + exp(/lndfm2)``; GED: ``shape = exp(/lnshape)``. The interval
-    transforms the end points of the normal interval of the reported log parameter, as
-    Stata does.
+    Student t: ``df = 2 + exp(/lndfm2)``; GED: ``shape = exp(/lnshape)``; skewed t also
+    ``lambda = tanh(/atlambda)``; skewed GED also ``xi = exp(/lnxi)``. The interval
+    transforms the end points of the normal interval of the reported parameter, as Stata
+    does.
     """
     record: dict[str, Any] = {"name": layout.dist}
     ix = layout.index
     if not ix.d:
         return record
-    position = ix.d[0]
-    tau = float(theta[position])
-    half = critical * math.sqrt(max(float(covariance[position, position]), 0.0))
-    name = "df" if layout.dist == "t" else "shape"
+    names = {"t": ("df",), "ged": ("shape",), "skewt": ("df", "lambda"),
+             "sged": ("shape", "xi")}[layout.dist]
+    maps = {"df": lambda value: 2.0 + math.exp(value), "shape": math.exp,
+            "lambda": math.tanh, "xi": math.exp}
+    for name, position in zip(names, ix.d, strict=True):
+        tau = float(theta[position])
+        half = critical * math.sqrt(max(float(covariance[position, position]), 0.0))
 
-    def natural(value: float) -> float | None:
-        try:
-            return densities.shape_value(layout.dist, value)
-        except OverflowError:
-            return None
+        def natural(value: float, transform=maps[name]) -> float | None:
+            try:
+                return transform(value)
+            except OverflowError:
+                return None
 
-    record.update({name: natural(tau), f"{name}_ci": [natural(tau - half), natural(tau + half)]})
+        record.update({name: natural(tau),
+                       f"{name}_ci": [natural(tau - half), natural(tau + half)]})
+    if layout.dist in densities.SKEWED:
+        tau = distribution_parameters(theta, ix)
+        record["negative_share"] = densities.negative_share(layout.dist, tau)
+        record["parameterization"] = (
+            "Hansen (1994) skewed t, as Python arch's SkewStudent" if layout.dist == "skewt"
+            else "Fernandez-Steel (1998) skewed GED standardized to unit variance, as "
+                 "fGarch's dsged and rugarch's 'sged'")
     return record
 
 

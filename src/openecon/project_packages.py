@@ -287,10 +287,10 @@ class ProjectPackages:
                 raise PackageError("INVALID_PACKAGE_STATE", "The active package generation is invalid.")
             saved = validate_manifest(value["manifest"], python=self._python)
             if saved["core"] != self._core:
-                # Only the application version and bundled installer may change
+                # Only the application/charts versions and bundled installer may change
                 # without replacing a project's already installed libraries.
-                stable = {name: version for name, version in self._core.items() if name not in {"openecon", "uv"}}
-                previous = {name: version for name, version in saved["core"].items() if name not in {"openecon", "uv"}}
+                stable = {name: version for name, version in self._core.items() if name not in {"openecon", "openecon-charts", "uv"}}
+                previous = {name: version for name, version in saved["core"].items() if name not in {"openecon", "openecon-charts", "uv"}}
                 if stable != previous or any(row["name"] in self._core for row in saved["locked"]):
                     raise PackageError("INCOMPATIBLE_CORE", "This package manifest belongs to a different OpenEconometrics core.")
                 overlay = self.root / ("generation-" + value["generation"]) / "site-packages"

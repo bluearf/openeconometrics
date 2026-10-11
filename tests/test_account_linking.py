@@ -5,7 +5,55 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from test_desktop_cloud import CHALLENGE, VERIFIER, api as api, begin, headers
+from test_desktop_cloud import CHALLENGE, VERIFIER, api as api, begin, claims, headers
+
+
+@pytest.mark.parametrize("provider,age,accepted", [
+    ("google.com", 0, True), ("google.com", 600, False),
+    ("google.com", None, False), ("google.com", -60, False),
+    ("password", 0, False), ("custom", 0, False),
+])
+def test_native_verification_requires_fresh_same_provider_and_one_use_proof(
+    api, provider, age, accepted,
+):
+    before = deepcopy(api.store.db.get(f"oe_projects/{api.pid}"))
+    response = api.client.post('/api/desktop/account-link', headers=headers(), json={
+        'challenge': CHALLENGE, 'target': 'google.com', 'action': 'verify',
+    })
+    assert response.status_code == 201
+    request_id = response.json()['request_id']
+    path = f'/api/desktop/account-link/{request_id}'
+    assert api.client.get(f'/api/desktop/login/{request_id}', headers=headers()).json() == {
+        'kind': 'account-link', 'uid': 'owner', 'target': 'google.com', 'action': 'verify',
+    }
+    assert api.client.post(path+'/complete', headers=headers('outsider')).status_code == 403
+    timestamp = None if age is None else int(datetime.now(timezone.utc).timestamp()) - age
+    api.auth._verifier = lambda uid: {
+        **claims(uid, provider, True if provider == 'custom' else None),
+        'auth_time': timestamp,
+    }
+    done = api.client.post(path+'/complete', headers=headers())
+    assert done.status_code == (200 if accepted else 403)
+    assert api.client.post(path+'/exchange', headers=headers(),
+                           json={'verifier': 'b'*64}).status_code == 403
+    result = api.client.post(path+'/exchange', headers=headers(), json={'verifier': VERIFIER})
+    if accepted:
+        assert result.json() == {'verified': True, 'uid': 'owner', 'target': 'google.com'}
+        assert api.client.post(path+'/exchange', headers=headers(),
+                               json={'verifier': VERIFIER}).status_code == 410
+    else:
+        assert result.status_code == 202
+        assert api.store.db.get(f'oe_desktop_logins/{request_id}')['completed'] is False
+    api.issuer.assert_not_called()
+    assert api.store.db.get(f'oe_projects/{api.pid}') == before
+
+
+@pytest.mark.parametrize("value", [True, '123', 123.5, None])
+def test_reauthentication_time_is_never_coerced_from_untrusted_claim_types(value):
+    identity = __import__('openecon.team_auth', fromlist=['TeamAuth']).TeamAuth(
+        'openecon-desktop-test', verifier=lambda token: {**claims('owner'), 'auth_time': value},
+    ).verify('signed-token')
+    assert identity.auth_time is None and identity.provider == 'google.com'
 
 
 def begin_link(api, target="password", uid="owner"):

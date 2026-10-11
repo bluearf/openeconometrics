@@ -140,7 +140,10 @@ def brute_force(loglik_obs, start, weights=None):
 
 def test_manifest_registers_the_family_and_public_functions():
     names = ["ologit", "oprobit", "mlogit", "clogit", "hetprobit", "biprobit"]
-    assert [info.name for info in ESTIMATORS] == names and EXPORTS == {}
+    # Choice-model procedures merged after this family test (mprobit, nlogit, rologit).
+    choice = {f"{model}{suffix}" for model in ("mprobit", "nlogit", "rologit")
+              for suffix in ("", "_margins", "_predict", "_restore")}
+    assert [info.name for info in ESTIMATORS] == names and set(EXPORTS) == choice
     assert all(info.family == "discrete" and info.inference == "z" for info in ESTIMATORS)
     for name in names:
         assert callable(getattr(oe, name)) and name in dir(oe)

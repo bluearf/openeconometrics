@@ -65,6 +65,8 @@ async function harness(
     refreshError?: boolean;
     target?: AccountMethod;
     nativeAvailable?: boolean;
+    nativePasswordAvailable?: boolean;
+    verificationOnly?: boolean;
   } = {},
 ) {
   const user = {
@@ -103,6 +105,11 @@ async function harness(
         user,
         target: opts.target,
         nativeAvailable: opts.nativeAvailable,
+        nativePasswordAvailable: opts.nativePasswordAvailable,
+        verificationOnly: opts.verificationOnly,
+        onVerified: async () => {
+          calls.push("verified");
+        },
         session,
         onLinked: async () => {
           calls.push("refresh");
@@ -271,6 +278,36 @@ test("native server capability opens only the explicit browser handoff control",
         .textContent!.includes("Add password in browser"),
     );
     assert.deepEqual(h.calls, []);
+  } finally {
+    await h.close();
+    delete window.__TAURI_INTERNALS__;
+  }
+});
+
+test("browser verification for the app never presents a new password form", async () => {
+  const h = await harness("google.com", {
+    target: "google.com",
+    verificationOnly: true,
+  });
+  try {
+    await h.click("Verify with Google");
+    assert.deepEqual(h.calls, ["verify:google.com", "verified"]);
+    assert.equal(h.holder.querySelector("input"), null);
+    assert.ok(!h.holder.textContent!.includes("Add password"));
+  } finally {
+    await h.close();
+  }
+});
+test("updated native service keeps the password flow in the app", async () => {
+  window.__TAURI_INTERNALS__ = {};
+  const h = await harness("google.com", {
+    nativeAvailable: true,
+    nativePasswordAvailable: true,
+  });
+  try {
+    assert.ok(h.holder.textContent!.includes("Verify with Google"));
+    assert.ok(!h.holder.textContent!.includes("Add password in browser"));
+    assert.equal(h.holder.querySelector("input"), null);
   } finally {
     await h.close();
     delete window.__TAURI_INTERNALS__;

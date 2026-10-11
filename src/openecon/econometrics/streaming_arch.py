@@ -37,6 +37,10 @@ class _Replay:
         self.zdesign = self.sample.add_design("variance", variance, intercept=True) if variance else None
         self.sample.prepare()
         self.layout = read_layout(self.spec, len(self.design.terms), len(self.zdesign.terms)-1 if self.zdesign else 0)
+        from .arch import STREAMING_DISTRIBUTIONS, STREAMING_MODELS
+        if self.layout.model not in STREAMING_MODELS or self.layout.dist not in STREAMING_DISTRIBUTIONS:
+            raise AnalysisError("streaming_unsupported", f"The Dataset route of arch supports models {', '.join(STREAMING_MODELS)} and distributions {', '.join(STREAMING_DISTRIBUTIONS)}; "
+                                f"model='{self.layout.model}', dist='{self.layout.dist}' needs a resident table (pandas DataFrame).")
         layout, ix = self.layout, self.layout.index
         if self.n<layout.k_free+layout.max_lag+5:
             raise AnalysisError("insufficient_observations", "ARCH needs more periods than parameters and lag state.")

@@ -111,13 +111,46 @@ curl -s https://openecon-291739190496.us-central1.run.app/api/auth/config
 ```
 
 The public response contains `source_commit`, `cloud_execution_available`,
-`desktop_login_available`, `account_link_available` and
-`dataset_transfer_available`. A missing or malformed build commit is reported as
+`desktop_login_available`, `account_link_available`,
+`dataset_transfer_available` and `write_quiescence`. A missing or malformed build commit is reported as
 `null`. For disposable end-to-end checks, `scripts/verify_team_live.py verify
 --url URL --expect-commit COMMIT` uses prepared QA identities to check sign-in,
 roles, drafts, uploads, the execution refusal and membership changes, and
 `scripts/verify_desktop_cloud_live.py --url URL` checks desktop login and
 result archiving. Neither starts a computation.
+
+## Disposable QA cleanup
+
+`prepare` labels each QA identity in Firebase Auth with a random session and
+prints it. `cleanup --confirm-session SESSION` removes that session only:
+
+1. **Ownership.** Every manifest identity must carry the session label and its
+   recorded email. A project belongs to the session only if its owner, all
+   members and every invitation it issued are session identities. Anything
+   shared with another account, another QA session or a human refuses before
+   any change.
+2. **Admission stop.** The identities are disabled and their refresh tokens
+   revoked. The service verifies tokens with revocation and disabled-user checks
+   on every request, so no new request is admitted for them.
+3. **Quiescence.** The service must advertise exactly the reviewed
+   `write_quiescence` contract (`openecon.team_quiescence`). A request may start
+   Firestore transactions or Cloud Storage uploads only within 360 seconds of
+   admission, the Cloud Run request timeout. Firestore ends transactions after
+   270 seconds. Cleanup therefore waits 690 seconds, including a 60-second
+   margin, then reads the complete inventory again.
+4. **Deletion.** Blobs under `projects/<id>/`, each project tree,
+   invitations, recovery receipts, desktop grants, the identities'
+   account-link quotas, profiles and finally the Auth identities. The global
+   desktop sign-in quota and every other account's documents are not touched.
+5. **Readback.** Every category must read back empty.
+
+The private state journals each phase. After an interruption, rerun the same
+command: work is idempotent and the wait is never shortened. A re-enabled
+identity restarts the admission stop and the full wait. A completed cleanup
+moves the manifest, without passwords, to `qa-state.cleaned-SESSION.json`.
+Manifests from before session labels need one reviewed `label-session` run.
+Cleanup refuses older services that do not advertise the contract, so deploy
+the current backend first.
 
 ## Production configuration
 

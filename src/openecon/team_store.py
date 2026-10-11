@@ -16,6 +16,7 @@ from uuid import uuid4
 
 from openecon import script_contracts as scripts
 from openecon import file_layout
+from openecon.team_quiescence import require_write_window
 
 
 MAX_PROJECT_NAME_VERSION = 2**53 - 1
@@ -177,6 +178,7 @@ class MemoryDocuments:
             return rows[:limit]
 
     def atomic(self, fn):
+        require_write_window()
         with self.lock:
             before = deepcopy(self.data)
             try:
@@ -239,6 +241,9 @@ class FirestoreDocuments:
 
         @firestore.transactional
         def apply(transaction):
+            # Each retry begins a new transaction, so every attempt needs the window.
+            require_write_window()
+
             class Batch:
                 def __init__(self):
                     self.writes = {}

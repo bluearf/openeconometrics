@@ -92,10 +92,20 @@ class Evaluation:
     variance: Tensor                 # h_t
     presample_variance: float        # h_0
     d_standardized: Tensor | None = None   # [m, K]: d z_t / d theta at the ``active`` periods
+    extra_state: dict | None = None        # end-of-sample state of the extended models
 
 
 def _finite(tensor: Tensor) -> bool:
     return bool(torch.isfinite(tensor).all())
+
+
+def distribution_parameters(theta: Tensor, ix) -> float | tuple[float, ...]:
+    """The reported distribution parameter(s): a float for t / GED, a pair when skewed."""
+    if not ix.d:
+        return 0.0
+    if len(ix.d) == 1:
+        return float(theta[ix.d[0]])
+    return tuple(float(theta[i]) for i in ix.d)
 
 
 class ArchLikelihood:
@@ -188,7 +198,7 @@ class ArchLikelihood:
         kind = layout.kind
         if not _finite(theta):
             return None
-        tau = float(theta[ix.d[0]]) if ix.d else 0.0
+        tau = distribution_parameters(theta, ix)
         if not densities.feasible(layout.dist, tau):
             return None
         phi = float(theta[ix.p[0]]) if ix.p else 2.0
@@ -372,7 +382,7 @@ class ArchLikelihood:
         if e_rows:
             score[e_rows] += d_e_rows * d_e
         if ix.d:
-            score[ix.d[0]] = d_tau
+            score[ix.d] = d_tau.reshape(len(ix.d), n)
         gradient = score.sum(dim=1)
         if not _finite(gradient):
             return None
@@ -466,7 +476,7 @@ class ArchLikelihood:
             gradient[mean_ix] = self._pull(theta, m, e,
                                            through_news + d_e + (2.0 * from_h0 / n) * e)
         if ix.d:
-            gradient[ix.d[0]] = d_tau.sum()
+            gradient[ix.d] = d_tau.reshape(len(ix.d), n).sum(dim=1)
         return gradient
 
     def _scan(self, theta: Tensor, direct: Tensor, slopes: list[Tensor], e: Tensor, u: Tensor,

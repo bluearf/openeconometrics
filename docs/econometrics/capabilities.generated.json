@@ -100,6 +100,10 @@
       "entry": "openecon.econometrics.causal_design.balance:balance",
       "family": "causal_design"
     },
+    "bayer_hanck": {
+      "entry": "openecon.econometrics.unitroot.bayer_hanck:bayer_hanck",
+      "family": "unitroot"
+    },
     "bayes_bma": {
       "entry": "openecon.econometrics.bayesian.bma:bayes_bma",
       "family": "bayesian"
@@ -259,6 +263,10 @@
     "ca_project": {
       "entry": "openecon.econometrics.multivariate.supplementary:ca_project",
       "family": "multivariate"
+    },
+    "calendar_regressors": {
+      "entry": "openecon.econometrics.tsworkflows.calendar:calendar_regressors",
+      "family": "tsworkflows"
     },
     "canon": {
       "entry": "openecon.econometrics.multivariate.canon:canon",
@@ -492,6 +500,10 @@
       "entry": "openecon.econometrics.survival_ext.competing:cif_compare",
       "family": "survival_ext"
     },
+    "clemente": {
+      "entry": "openecon.econometrics.unitroot.clemente:clemente",
+      "family": "unitroot"
+    },
     "cluster_assign": {
       "entry": "openecon.econometrics.multivariate.kmeans:cluster_assign",
       "family": "multivariate"
@@ -624,6 +636,10 @@
       "entry": "openecon.econometrics.nonparametric.crosstab:crosstab",
       "family": "nonparametric"
     },
+    "croston": {
+      "entry": "openecon.econometrics.tsworkflows.intermittent:croston",
+      "family": "tsworkflows"
+    },
     "cumulative_incidence": {
       "entry": "openecon.econometrics.survival_ext.competing:cumulative_incidence",
       "family": "survival_ext"
@@ -728,6 +744,10 @@
       "entry": "openecon.econometrics.causal_design.balance:ebalance",
       "family": "causal_design"
     },
+    "ecm_cointegration": {
+      "entry": "openecon.econometrics.unitroot.bayer_hanck:ecm_cointegration",
+      "family": "unitroot"
+    },
     "effective_f": {
       "entry": "openecon.econometrics.iv.cue:effective_f",
       "family": "iv"
@@ -736,9 +756,21 @@
       "entry": "openecon.econometrics.unitroot.cointegration:egranger",
       "family": "unitroot"
     },
+    "ekcausality": {
+      "entry": "openecon.econometrics.var.panel_bootstrap_causality:ekcausality",
+      "family": "var"
+    },
     "empirical_bernstein_mean_ci": {
       "entry": "openecon.econometrics.postest.bounded_joint:empirical_bernstein_mean_ci",
       "family": "postest"
+    },
+    "enders_siklos": {
+      "entry": "openecon.econometrics.unitroot.threshold_coint:enders_siklos",
+      "family": "unitroot"
+    },
+    "ers_pt": {
+      "entry": "openecon.econometrics.unitroot.ers:ers_pt",
+      "family": "unitroot"
     },
     "estat_ic": {
       "entry": "openecon.econometrics.postest.likelihood:estat_ic",
@@ -884,6 +916,34 @@
       "entry": "openecon.econometrics.measurement.agreement:fleiss_kappa",
       "family": "measurement"
     },
+    "forecast_backtest": {
+      "entry": "openecon.econometrics.tsworkflows.backtest:forecast_backtest",
+      "family": "tsworkflows"
+    },
+    "forecast_combination": {
+      "entry": "openecon.econometrics.tsworkflows.combination:forecast_combination",
+      "family": "tsworkflows"
+    },
+    "fourier_adf": {
+      "entry": "openecon.econometrics.unitroot.fourier:fourier_adf",
+      "family": "unitroot"
+    },
+    "fourier_adl": {
+      "entry": "openecon.econometrics.unitroot.fourier_coint:fourier_adl",
+      "family": "unitroot"
+    },
+    "fourier_kpss": {
+      "entry": "openecon.econometrics.unitroot.fourier:fourier_kpss",
+      "family": "unitroot"
+    },
+    "fourier_lm": {
+      "entry": "openecon.econometrics.unitroot.fourier:fourier_lm",
+      "family": "unitroot"
+    },
+    "fouriertycausality": {
+      "entry": "openecon.econometrics.var.fourier_causality:fouriertycausality",
+      "family": "var"
+    },
     "fp_derivative": {
       "entry": "openecon.econometrics.smoothing.postestimation:fp_derivative",
       "family": "smoothing"
@@ -904,17 +964,33 @@
       "entry": "openecon.econometrics.smoothing.postestimation:gam_derivative",
       "family": "smoothing"
     },
+    "garch_midas_forecast": {
+      "entry": "openecon.econometrics.arch.midas:garch_midas_forecast",
+      "family": "arch"
+    },
     "gph": {
       "entry": "openecon.econometrics.fractional.procedures:gph",
       "family": "fractional"
+    },
+    "gregory_hansen": {
+      "entry": "openecon.econometrics.unitroot.coint_breaks:gregory_hansen",
+      "family": "unitroot"
     },
     "gwet_ac": {
       "entry": "openecon.econometrics.measurement.agreement:gwet_ac",
       "family": "measurement"
     },
+    "hatemi_j": {
+      "entry": "openecon.econometrics.unitroot.coint_breaks:hatemi_j",
+      "family": "unitroot"
+    },
     "hausman": {
       "entry": "openecon.econometrics.panel.hausman:hausman",
       "family": "panel"
+    },
+    "hegy": {
+      "entry": "openecon.econometrics.unitroot.hegy:hegy",
+      "family": "unitroot"
     },
     "hoeffding_confidence_sequence": {
       "entry": "openecon.econometrics.postest.confidence_sequences:hoeffding_confidence_sequence",
@@ -943,6 +1019,10 @@
     "interval_weibull_regression_predict": {
       "entry": "openecon.econometrics.survival_ext.weibull_regression:interval_weibull_regression_predict",
       "family": "interval_weibull_covariate_public"
+    },
+    "intervention_regressors": {
+      "entry": "openecon.econometrics.tsworkflows.calendar:intervention_regressors",
+      "family": "tsworkflows"
     },
     "irf": {
       "entry": "openecon.econometrics.var.postestimation:irf",
@@ -1068,6 +1148,14 @@
       "entry": "openecon.econometrics.iv.weak_inference:iv_weak_test",
       "family": "iv"
     },
+    "iv_wild_confidence_set": {
+      "entry": "openecon.econometrics.iv.wild_bootstrap:iv_wild_confidence_set",
+      "family": "iv"
+    },
+    "iv_wild_test": {
+      "entry": "openecon.econometrics.iv.wild_bootstrap:iv_wild_test",
+      "family": "iv"
+    },
     "ivqreg": {
       "entry": "openecon.econometrics.ivquantile.api:ivqreg",
       "family": "ivquantile"
@@ -1095,6 +1183,10 @@
     "kernel_derivative": {
       "entry": "openecon.econometrics.smoothing.postestimation:kernel_derivative",
       "family": "smoothing"
+    },
+    "konyacausality": {
+      "entry": "openecon.econometrics.var.panel_bootstrap_causality:konyacausality",
+      "family": "var"
     },
     "kpss": {
       "entry": "openecon.econometrics.unitroot.series:kpss",
@@ -1135,6 +1227,10 @@
     "lee_bounds": {
       "entry": "openecon.econometrics.causal_design.partial_identification:lee_bounds",
       "family": "causal_design"
+    },
+    "lee_strazicich": {
+      "entry": "openecon.econometrics.unitroot.lee_strazicich:lee_strazicich",
+      "family": "unitroot"
     },
     "litterman": {
       "entry": "openecon.econometrics.temporal.gls:litterman",
@@ -1199,6 +1295,10 @@
     "lts_predict": {
       "entry": "openecon.econometrics.finite.trimmed:lts_predict",
       "family": "finite"
+    },
+    "maki_coint": {
+      "entry": "openecon.econometrics.unitroot.coint_breaks:maki_coint",
+      "family": "unitroot"
     },
     "manova": {
       "entry": "openecon.econometrics.stats.manova:manova",
@@ -1284,6 +1384,10 @@
       "entry": "openecon.econometrics.decomposition.binary:mediation_binary_restore",
       "family": "decomposition"
     },
+    "meta_cr2": {
+      "entry": "openecon.econometrics.meta.small_sample:meta_cr2",
+      "family": "meta"
+    },
     "meta_dependent": {
       "entry": "openecon.econometrics.meta.dependent:meta_dependent",
       "family": "meta"
@@ -1316,6 +1420,18 @@
       "entry": "openecon.econometrics.meta.effects:meta_effectsize",
       "family": "meta"
     },
+    "meta_multilevel": {
+      "entry": "openecon.econometrics.meta.multilevel:meta_multilevel",
+      "family": "meta"
+    },
+    "meta_multilevel_predict": {
+      "entry": "openecon.econometrics.meta.multilevel:meta_multilevel_predict",
+      "family": "meta"
+    },
+    "meta_pet_peese": {
+      "entry": "openecon.econometrics.meta.bias:meta_pet_peese",
+      "family": "meta"
+    },
     "meta_plot": {
       "entry": "openecon.econometrics.meta.diagnostics:meta_plot",
       "family": "meta"
@@ -1330,6 +1446,14 @@
     },
     "meta_regress": {
       "entry": "openecon.econometrics.meta.models:meta_regress",
+      "family": "meta"
+    },
+    "meta_selection": {
+      "entry": "openecon.econometrics.meta.selection:meta_selection",
+      "family": "meta"
+    },
+    "meta_trimfill": {
+      "entry": "openecon.econometrics.meta.bias:meta_trimfill",
       "family": "meta"
     },
     "mi_chained": {
@@ -1379,6 +1503,10 @@
     "missing_patterns": {
       "entry": "openecon.econometrics.mi.pooling:missing_patterns",
       "family": "mi"
+    },
+    "mixed_contrast": {
+      "entry": "openecon.econometrics.mixed.small_sample:mixed_contrast",
+      "family": "mixed"
     },
     "mixed_predict": {
       "entry": "openecon.econometrics.mixed.predict:mixed_predict",
@@ -1764,6 +1892,10 @@
       "entry": "openecon.econometrics.nonparametric.distribution:prtest",
       "family": "nonparametric"
     },
+    "psy": {
+      "entry": "openecon.econometrics.unitroot.bubbles:psy",
+      "family": "unitroot"
+    },
     "randomization_confidence_set": {
       "entry": "openecon.econometrics.causal_design.confidence_sets:randomization_confidence_set",
       "family": "causal_design"
@@ -1908,6 +2040,10 @@
       "entry": "openecon.econometrics.tsworkflows.window_targets:rolling_predict",
       "family": "tsworkflows"
     },
+    "rollingcausality": {
+      "entry": "openecon.econometrics.var.rolling_causality:rollingcausality",
+      "family": "var"
+    },
     "rologit": {
       "entry": "openecon.econometrics.discrete.rank_ordered:rologit",
       "family": "discrete"
@@ -1944,9 +2080,17 @@
       "entry": "openecon.econometrics.unitroot.stability:sbsingle",
       "family": "unitroot"
     },
+    "score_bootstrap_test": {
+      "entry": "openecon.econometrics.postest.score_bootstrap:score_bootstrap_test",
+      "family": "postest"
+    },
     "sdtest": {
       "entry": "openecon.econometrics.stats.ttest:sdtest",
       "family": "stats"
+    },
+    "seasonal_restore": {
+      "entry": "openecon.econometrics.tsworkflows.stl:seasonal_restore",
+      "family": "tsworkflows"
     },
     "sem_effects": {
       "entry": "openecon.econometrics.latent.sem:sem_effects",
@@ -1967,6 +2111,14 @@
     "sfrancia": {
       "entry": "openecon.econometrics.nonparametric.normality:sfrancia",
       "family": "nonparametric"
+    },
+    "shift_share_instrument": {
+      "entry": "openecon.econometrics.iv.shift_share:shift_share_instrument",
+      "family": "iv"
+    },
+    "shift_share_iv": {
+      "entry": "openecon.econometrics.iv.shift_share:shift_share_iv",
+      "family": "iv"
     },
     "signrank": {
       "entry": "openecon.econometrics.nonparametric.paired:signrank",
@@ -2087,6 +2239,14 @@
     "stinterval_weibull_regression": {
       "entry": "openecon.econometrics.survival_ext.weibull_regression:stinterval_weibull_regression",
       "family": "interval_weibull_covariate_public"
+    },
+    "stl": {
+      "entry": "openecon.econometrics.tsworkflows.stl:stl",
+      "family": "tsworkflows"
+    },
+    "stl_forecast": {
+      "entry": "openecon.econometrics.tsworkflows.stl:stl_forecast",
+      "family": "tsworkflows"
     },
     "stock_yogo": {
       "entry": "openecon.econometrics.iv.weak_inference:stock_yogo",
@@ -2480,6 +2640,10 @@
       "entry": "openecon.econometrics.tsmodels.filters:tsfilter",
       "family": "tsmodels"
     },
+    "tsong_fourier": {
+      "entry": "openecon.econometrics.unitroot.fourier_coint:tsong_fourier",
+      "family": "unitroot"
+    },
     "tssmooth": {
       "entry": "openecon.econometrics.arima.smoothing:tssmooth",
       "family": "arima"
@@ -2560,6 +2724,10 @@
       "entry": "openecon.econometrics.var.johansen:vecrank",
       "family": "var"
     },
+    "weakivtest": {
+      "entry": "openecon.econometrics.iv.mop:weakivtest",
+      "family": "iv"
+    },
     "wild_cluster_confidence_set": {
       "entry": "openecon.econometrics.postest.wild_restricted:wild_cluster_confidence_set",
       "family": "postest"
@@ -2568,9 +2736,17 @@
       "entry": "openecon.econometrics.postest.wild_restricted:wild_cluster_test",
       "family": "postest"
     },
+    "wild_multiway_test": {
+      "entry": "openecon.econometrics.postest.wild_multiway:wild_multiway_test",
+      "family": "postest"
+    },
     "wntestq": {
       "entry": "openecon.econometrics.arima.diagnostics:wntestq",
       "family": "arima"
+    },
+    "x11": {
+      "entry": "openecon.econometrics.tsworkflows.x11:x11",
+      "family": "tsworkflows"
     },
     "xtabond": {
       "entry": "openecon.econometrics.dpanel.xtdpd:xtabond",
@@ -3316,10 +3492,12 @@
           "choices": [
             "normal",
             "t",
-            "ged"
+            "ged",
+            "skewt",
+            "sged"
           ],
           "default": "normal",
-          "doc": "Innovation distribution: normal, t (Student t, estimated degrees of freedom, /lndfm2 = ln(df - 2)) or ged (generalized error distribution, /lnshape = ln(shape)).",
+          "doc": "Innovation distribution: normal, t (Student t, estimated degrees of freedom, /lndfm2 = ln(df - 2)), ged (generalized error distribution, /lnshape = ln(shape)), skewt (Hansen's skewed t: /lndfm2 and /atlambda = atanh(lambda)) or sged (Fernandez-Steel skewed GED: /lnshape and /lnxi = ln(xi)).",
           "required": false,
           "type": "str"
         },
@@ -3352,10 +3530,12 @@
             "tarch",
             "egarch",
             "parch",
-            "igarch"
+            "igarch",
+            "cgarch",
+            "figarch"
           ],
           "default": "garch",
-          "doc": "Variance equation: arch, garch (Bollerslev), gjr / tarch (Glosten-Jagannathan-Runkle threshold terms), egarch (Nelson), parch (power ARCH with an estimated power) or igarch (persistence fixed at 1).",
+          "doc": "Variance equation: arch, garch (Bollerslev), gjr / tarch (Glosten-Jagannathan-Runkle threshold terms), egarch (Nelson), parch (power ARCH with an estimated power), igarch (persistence fixed at 1) cgarch (Engle-Lee component GARCH(1,1): permanent and transitory variance components) or figarch (Baillie-Bollerslev-Mikkelsen FIGARCH(p,d,q), p, q in {0, 1}, truncated ARCH(infinity) form).",
           "required": false,
           "type": "str"
         },
@@ -3372,6 +3552,13 @@
           "doc": "Gradient tolerance of the optimizer.",
           "required": false,
           "type": "float"
+        },
+        "truncation": {
+          "choices": [],
+          "default": null,
+          "doc": "FIGARCH only: lags of the truncated ARCH(infinity) representation (default 1000, as Python arch).",
+          "required": false,
+          "type": "int"
         }
       },
       "outcome": "continuous",
@@ -7404,6 +7591,88 @@
       "title": "Penalized Gaussian additive splines",
       "weights": []
     },
+    "garch_midas": {
+      "binary_outcome": false,
+      "categorical_predictors": false,
+      "cluster_dimensions": 1,
+      "columns": {
+        "covariate": {
+          "doc": "Low-frequency covariate of the long-run component, constant within each period; default the realized variance of the period.",
+          "kind": "numeric",
+          "many": false,
+          "required": false
+        },
+        "period": {
+          "doc": "Integer low-frequency period of each observation (consecutive integers that never decrease in time order, e.g. 12 * year + month).",
+          "kind": "numeric",
+          "many": false,
+          "required": true
+        }
+      },
+      "covariances": [
+        "robust",
+        "opg",
+        "nonrobust"
+      ],
+      "default_covariance": "robust",
+      "description": "Engle-Ghysels-Sohn GARCH-MIDAS with the conventions of mfGARCH (Conrad and Kleen): y_t = mu + sqrt(tau_s g_t) Z_t with a unit-mean GARCH or GJR short-run component g and a long-run component ln tau_s = m + theta sum_k phi_k(w1, w2) X_(s-k) driven by K lags of a low-frequency covariate (or the realized variance) with beta weights. Gaussian quasi-maximum likelihood with analytic gradients; robust (default), OPG or observed-information covariance.",
+      "family": "arch",
+      "function": "garch_midas",
+      "inference": "Normal z",
+      "intercept": true,
+      "intercept_rule": "optional",
+      "missing": [
+        "raise",
+        "drop"
+      ],
+      "options": {
+        "asymmetric": {
+          "choices": [],
+          "default": true,
+          "doc": "GJR short-run component (gamma) rather than GARCH(1,1).",
+          "required": false,
+          "type": "bool"
+        },
+        "lags": {
+          "choices": [],
+          "default": 12,
+          "doc": "K, the number of low-frequency lags of the long-run component.",
+          "required": false,
+          "type": "int"
+        },
+        "max_iterations": {
+          "choices": [],
+          "default": 500,
+          "doc": "Maximum number of BFGS iterations.",
+          "required": false,
+          "type": "int"
+        },
+        "tolerance": {
+          "choices": [],
+          "default": 1e-08,
+          "doc": "Gradient tolerance of the optimizer.",
+          "required": false,
+          "type": "float"
+        },
+        "weighting": {
+          "choices": [
+            "beta_restricted",
+            "beta_unrestricted"
+          ],
+          "default": "beta_restricted",
+          "doc": "Beta lag weights with w1 = 1 (restricted, estimates w2) or with both w1 and w2 estimated (unrestricted, needs lags >= 3).",
+          "required": false,
+          "type": "str"
+        }
+      },
+      "outcome": "continuous",
+      "panel": "none",
+      "predictors": "none",
+      "stata": [],
+      "time": "optional",
+      "title": "GARCH-MIDAS regression",
+      "weights": []
+    },
     "glm": {
       "binary_outcome": false,
       "categorical_predictors": true,
@@ -8312,6 +8581,85 @@
       "title": "Continuously updated IV GMM",
       "weights": []
     },
+    "ivlewbel": {
+      "binary_outcome": false,
+      "categorical_predictors": true,
+      "cluster_dimensions": 1,
+      "columns": {
+        "endogenous": {
+          "doc": "Endogenous regressors (instrumented).",
+          "kind": "numeric",
+          "many": true,
+          "required": true
+        },
+        "generators": {
+          "doc": "Numeric exogenous regressors Z generating (Z - mean Z) * e2hat; default: every non-constant exogenous regressor.",
+          "kind": "numeric",
+          "many": true,
+          "required": false
+        },
+        "instruments": {
+          "doc": "Optional external excluded instruments, added to the generated ones.",
+          "kind": "numeric",
+          "many": true,
+          "required": false
+        }
+      },
+      "covariances": [
+        "nonrobust",
+        "robust",
+        "cluster"
+      ],
+      "default_covariance": "robust",
+      "description": "Lewbel (2012) generated instruments (Z - mean Z) times the first-stage residuals of the endogenous regressors on the exogenous regressors, with optional external instruments, by 2SLS or efficient GMM; covariance with or without the first-step correction (ivreg2h treats them as data).",
+      "family": "iv",
+      "function": "ivlewbel",
+      "inference": "Normal z",
+      "intercept": true,
+      "intercept_rule": "optional",
+      "missing": [
+        "raise",
+        "drop"
+      ],
+      "options": {
+        "first_step": {
+          "choices": [
+            "corrected",
+            "ignored"
+          ],
+          "default": "corrected",
+          "doc": "corrected: propagate the first-stage coefficients and generator means into the robust/cluster covariance; ignored: ivreg2h convention.",
+          "required": false,
+          "type": "str"
+        },
+        "method": {
+          "choices": [
+            "2sls",
+            "gmm"
+          ],
+          "default": "2sls",
+          "doc": "2sls, or two-step efficient GMM.",
+          "required": false,
+          "type": "str"
+        },
+        "small": {
+          "choices": [],
+          "default": false,
+          "doc": "t and F with N-K degrees of freedom and regress-style factors.",
+          "required": false,
+          "type": "bool"
+        }
+      },
+      "outcome": "continuous",
+      "panel": "none",
+      "predictors": "required",
+      "stata": [
+        "ivreg2h"
+      ],
+      "time": "none",
+      "title": "IV with Lewbel heteroskedasticity-based instruments",
+      "weights": []
+    },
     "ivprobit": {
       "binary_outcome": true,
       "categorical_predictors": true,
@@ -8698,6 +9046,70 @@
         "pweight",
         "iweight"
       ]
+    },
+    "jive": {
+      "binary_outcome": false,
+      "categorical_predictors": true,
+      "cluster_dimensions": 1,
+      "columns": {
+        "endogenous": {
+          "doc": "Endogenous regressors (instrumented).",
+          "kind": "numeric",
+          "many": true,
+          "required": true
+        },
+        "instruments": {
+          "doc": "Excluded instruments. The exogenous regressors (predictors) are instruments for themselves and must not be repeated here.",
+          "kind": "numeric",
+          "many": true,
+          "required": true
+        }
+      },
+      "covariances": [
+        "nonrobust",
+        "robust",
+        "cluster"
+      ],
+      "default_covariance": "robust",
+      "description": "Jackknife IV: JIVE1 and JIVE2 (Angrist, Imbens and Krueger 1999) and UJIVE (Kolesar 2013) from the leverage of one QR of the instruments, with the IV sandwich of the jackknife instrument (iid, robust or one-way cluster). Leverage-one observations are rejected, never dropped.",
+      "family": "iv",
+      "function": "jive",
+      "inference": "Normal z",
+      "intercept": true,
+      "intercept_rule": "optional",
+      "missing": [
+        "raise",
+        "drop"
+      ],
+      "options": {
+        "method": {
+          "choices": [
+            "jive1",
+            "jive2",
+            "ujive"
+          ],
+          "default": "jive1",
+          "doc": "jive1/jive2: Angrist-Imbens-Krueger leave-one-out first stage with 1-h or 1-1/N; ujive: Kolesar unbiased JIVE, one endogenous regressor.",
+          "required": false,
+          "type": "str"
+        },
+        "small": {
+          "choices": [],
+          "default": false,
+          "doc": "t and F with N-K degrees of freedom and regress-style factors.",
+          "required": false,
+          "type": "bool"
+        }
+      },
+      "outcome": "continuous",
+      "panel": "none",
+      "predictors": "optional",
+      "stata": [
+        "jive"
+      ],
+      "time": "none",
+      "title": "Jackknife instrumental-variables regression",
+      "weights": []
     },
     "kernelreg": {
       "binary_outcome": false,
@@ -9734,6 +10146,130 @@
       "title": "Mixed-effects NB2 regression",
       "weights": []
     },
+    "meologit": {
+      "binary_outcome": false,
+      "categorical_predictors": true,
+      "cluster_dimensions": 1,
+      "columns": {
+        "group": {
+          "doc": "Grouping column of the normal random intercept.",
+          "kind": "label",
+          "many": false,
+          "required": true
+        }
+      },
+      "covariances": [
+        "nonrobust"
+      ],
+      "default_covariance": "nonrobust",
+      "description": "Random-intercept ordered logit: Pr(y <= k | u) = F(cut_k - x'b - u), u ~ N(0, var), by adaptive Gauss-Hermite quadrature with modes recomputed at every parameter (ordinal::clmm nAGQ); full observed information of slopes, cutpoints and variance.",
+      "family": "mixed",
+      "function": "meologit",
+      "inference": "Normal z",
+      "intercept": false,
+      "intercept_rule": "never",
+      "missing": [
+        "raise",
+        "drop"
+      ],
+      "options": {
+        "intmethod": {
+          "choices": [
+            "mcaghermite",
+            "ghermite"
+          ],
+          "default": "mcaghermite",
+          "doc": "Mode-curvature adaptive (modes recomputed at every parameter) or non-adaptive Gauss-Hermite quadrature.",
+          "required": false,
+          "type": "str"
+        },
+        "intpoints": {
+          "choices": [],
+          "default": 12,
+          "doc": "Gauss-Hermite quadrature points for the random intercept.",
+          "required": false,
+          "type": "int"
+        },
+        "max_work": {
+          "choices": [],
+          "default": 2000000000,
+          "doc": "Explicit likelihood and derivative work budget; no silent truncation.",
+          "required": false,
+          "type": "int"
+        }
+      },
+      "outcome": "ordered",
+      "panel": "none",
+      "predictors": "optional",
+      "stata": [
+        "meologit"
+      ],
+      "time": "none",
+      "title": "Mixed-effects ordered logistic regression",
+      "weights": []
+    },
+    "meoprobit": {
+      "binary_outcome": false,
+      "categorical_predictors": true,
+      "cluster_dimensions": 1,
+      "columns": {
+        "group": {
+          "doc": "Grouping column of the normal random intercept.",
+          "kind": "label",
+          "many": false,
+          "required": true
+        }
+      },
+      "covariances": [
+        "nonrobust"
+      ],
+      "default_covariance": "nonrobust",
+      "description": "Random-intercept ordered probit: Pr(y <= k | u) = F(cut_k - x'b - u), u ~ N(0, var), by adaptive Gauss-Hermite quadrature with modes recomputed at every parameter (ordinal::clmm nAGQ); full observed information of slopes, cutpoints and variance.",
+      "family": "mixed",
+      "function": "meoprobit",
+      "inference": "Normal z",
+      "intercept": false,
+      "intercept_rule": "never",
+      "missing": [
+        "raise",
+        "drop"
+      ],
+      "options": {
+        "intmethod": {
+          "choices": [
+            "mcaghermite",
+            "ghermite"
+          ],
+          "default": "mcaghermite",
+          "doc": "Mode-curvature adaptive (modes recomputed at every parameter) or non-adaptive Gauss-Hermite quadrature.",
+          "required": false,
+          "type": "str"
+        },
+        "intpoints": {
+          "choices": [],
+          "default": 12,
+          "doc": "Gauss-Hermite quadrature points for the random intercept.",
+          "required": false,
+          "type": "int"
+        },
+        "max_work": {
+          "choices": [],
+          "default": 2000000000,
+          "doc": "Explicit likelihood and derivative work budget; no silent truncation.",
+          "required": false,
+          "type": "int"
+        }
+      },
+      "outcome": "ordered",
+      "panel": "none",
+      "predictors": "optional",
+      "stata": [
+        "meoprobit"
+      ],
+      "time": "none",
+      "title": "Mixed-effects ordered probit regression",
+      "weights": []
+    },
     "mepoisson": {
       "binary_outcome": false,
       "categorical_predictors": true,
@@ -9874,6 +10410,83 @@
       "title": "Mixed-effects probit regression",
       "weights": []
     },
+    "metobit": {
+      "binary_outcome": false,
+      "categorical_predictors": true,
+      "cluster_dimensions": 1,
+      "columns": {
+        "group": {
+          "doc": "Grouping column of the normal random intercept.",
+          "kind": "label",
+          "many": false,
+          "required": true
+        }
+      },
+      "covariances": [
+        "nonrobust"
+      ],
+      "default_covariance": "nonrobust",
+      "description": "Random-intercept censored-normal (Tobit) regression with constant left and/or right limits, by adaptive Gauss-Hermite quadrature with modes recomputed at every parameter; full observed information of the coefficients and both variances.",
+      "family": "mixed",
+      "function": "metobit",
+      "inference": "Normal z",
+      "intercept": true,
+      "intercept_rule": "optional",
+      "missing": [
+        "raise",
+        "drop"
+      ],
+      "options": {
+        "intmethod": {
+          "choices": [
+            "mcaghermite",
+            "ghermite"
+          ],
+          "default": "mcaghermite",
+          "doc": "Mode-curvature adaptive (modes recomputed at every parameter) or non-adaptive Gauss-Hermite quadrature.",
+          "required": false,
+          "type": "str"
+        },
+        "intpoints": {
+          "choices": [],
+          "default": 12,
+          "doc": "Gauss-Hermite quadrature points for the random intercept.",
+          "required": false,
+          "type": "int"
+        },
+        "ll": {
+          "choices": [],
+          "default": null,
+          "doc": "Left-censoring limit: rows with y <= ll.",
+          "required": false,
+          "type": "float"
+        },
+        "max_work": {
+          "choices": [],
+          "default": 2000000000,
+          "doc": "Explicit likelihood and derivative work budget; no silent truncation.",
+          "required": false,
+          "type": "int"
+        },
+        "ul": {
+          "choices": [],
+          "default": null,
+          "doc": "Right-censoring limit: rows with y >= ul.",
+          "required": false,
+          "type": "float"
+        }
+      },
+      "outcome": "censored",
+      "panel": "none",
+      "predictors": "optional",
+      "stata": [
+        "metobit",
+        "xttobit, re"
+      ],
+      "time": "none",
+      "title": "Mixed-effects Tobit regression",
+      "weights": []
+    },
     "mfp_regress": {
       "binary_outcome": false,
       "categorical_predictors": false,
@@ -9990,6 +10603,70 @@
       "stata": [],
       "time": "required",
       "title": "Mean-group panel ARDL",
+      "weights": []
+    },
+    "mgarch_adcc": {
+      "binary_outcome": false,
+      "categorical_predictors": false,
+      "cluster_dimensions": 1,
+      "columns": {
+        "series": {
+          "doc": "Additional outcome series; outcome is the first series.",
+          "kind": "numeric",
+          "many": true,
+          "required": true
+        }
+      },
+      "covariances": [
+        "nonrobust"
+      ],
+      "default_covariance": "nonrobust",
+      "description": "Joint Gaussian ML of the Cappiello-Engle-Sheppard asymmetric DCC(1,1) with the estimated SPD target of mgarch_dcc and the sample second moment of the negative standardized residuals (a + b + delta g < 1), dimension 2..3, full observed information; multistep forecasts are labeled plug-in approximations.",
+      "family": "mgarch",
+      "function": "mgarch_adcc",
+      "inference": "Normal z",
+      "intercept": true,
+      "intercept_rule": "optional",
+      "missing": [
+        "raise",
+        "drop"
+      ],
+      "options": {
+        "initial_covariance": {
+          "choices": [],
+          "default": null,
+          "doc": "Optional symmetric strictly positive definite presample covariance.",
+          "required": false,
+          "type": "json"
+        },
+        "max_iterations": {
+          "choices": [],
+          "default": 300,
+          "doc": "",
+          "required": false,
+          "type": "int"
+        },
+        "max_n": {
+          "choices": [],
+          "default": 512,
+          "doc": "",
+          "required": false,
+          "type": "int"
+        },
+        "tolerance": {
+          "choices": [],
+          "default": 1e-07,
+          "doc": "",
+          "required": false,
+          "type": "float"
+        }
+      },
+      "outcome": "continuous",
+      "panel": "none",
+      "predictors": "none",
+      "stata": [],
+      "time": "optional",
+      "title": "Asymmetric DCC GARCH",
       "weights": []
     },
     "mgarch_bekk": {
@@ -10122,6 +10799,70 @@
       "title": "Constant conditional correlation GARCH",
       "weights": []
     },
+    "mgarch_dbekk": {
+      "binary_outcome": false,
+      "categorical_predictors": false,
+      "cluster_dimensions": 1,
+      "columns": {
+        "series": {
+          "doc": "Additional outcome series; outcome is the first series.",
+          "kind": "numeric",
+          "many": true,
+          "required": true
+        }
+      },
+      "covariances": [
+        "nonrobust"
+      ],
+      "default_covariance": "nonrobust",
+      "description": "Joint Gaussian ML of the diagonal BEKK(1,1) H_t = CC' + A'ee'A + B'H_(t-1)B with diagonal A, B (a_1, b_1 > 0; a_i^2 + b_i^2 < 1), dimension 2..3, full observed information, exact multistep covariance forecasts.",
+      "family": "mgarch",
+      "function": "mgarch_dbekk",
+      "inference": "Normal z",
+      "intercept": true,
+      "intercept_rule": "optional",
+      "missing": [
+        "raise",
+        "drop"
+      ],
+      "options": {
+        "initial_covariance": {
+          "choices": [],
+          "default": null,
+          "doc": "Optional symmetric strictly positive definite presample covariance.",
+          "required": false,
+          "type": "json"
+        },
+        "max_iterations": {
+          "choices": [],
+          "default": 300,
+          "doc": "",
+          "required": false,
+          "type": "int"
+        },
+        "max_n": {
+          "choices": [],
+          "default": 512,
+          "doc": "",
+          "required": false,
+          "type": "int"
+        },
+        "tolerance": {
+          "choices": [],
+          "default": 1e-07,
+          "doc": "",
+          "required": false,
+          "type": "float"
+        }
+      },
+      "outcome": "continuous",
+      "panel": "none",
+      "predictors": "none",
+      "stata": [],
+      "time": "optional",
+      "title": "Diagonal BEKK GARCH",
+      "weights": []
+    },
     "mgarch_dcc": {
       "binary_outcome": false,
       "categorical_predictors": false,
@@ -10186,6 +10927,72 @@
       ],
       "time": "optional",
       "title": "Dynamic conditional correlation GARCH",
+      "weights": []
+    },
+    "mgarch_dvech": {
+      "binary_outcome": false,
+      "categorical_predictors": false,
+      "cluster_dimensions": 1,
+      "columns": {
+        "series": {
+          "doc": "Additional outcome series; outcome is the first series.",
+          "kind": "numeric",
+          "many": true,
+          "required": true
+        }
+      },
+      "covariances": [
+        "nonrobust"
+      ],
+      "default_covariance": "nonrobust",
+      "description": "Joint Gaussian ML of the diagonal VECH(1,1) H_t = C + A o e e' + B o H_(t-1) in the Ding-Engle domain (C positive definite, A and B positive semidefinite, a_ii + b_ii < 1), dimension 2..3, full observed information, exact multistep covariance forecasts.",
+      "family": "mgarch",
+      "function": "mgarch_dvech",
+      "inference": "Normal z",
+      "intercept": true,
+      "intercept_rule": "optional",
+      "missing": [
+        "raise",
+        "drop"
+      ],
+      "options": {
+        "initial_covariance": {
+          "choices": [],
+          "default": null,
+          "doc": "Optional symmetric strictly positive definite presample covariance.",
+          "required": false,
+          "type": "json"
+        },
+        "max_iterations": {
+          "choices": [],
+          "default": 300,
+          "doc": "",
+          "required": false,
+          "type": "int"
+        },
+        "max_n": {
+          "choices": [],
+          "default": 512,
+          "doc": "",
+          "required": false,
+          "type": "int"
+        },
+        "tolerance": {
+          "choices": [],
+          "default": 1e-07,
+          "doc": "",
+          "required": false,
+          "type": "float"
+        }
+      },
+      "outcome": "continuous",
+      "panel": "none",
+      "predictors": "none",
+      "stata": [
+        "mgarch dvech"
+      ],
+      "time": "optional",
+      "title": "Diagonal VECH GARCH",
       "weights": []
     },
     "midas": {
@@ -10482,6 +11289,113 @@
       "stata": [],
       "time": "none",
       "title": "Random-parameter panel choice logit",
+      "weights": []
+    },
+    "mixedresid": {
+      "binary_outcome": false,
+      "categorical_predictors": true,
+      "cluster_dimensions": 1,
+      "columns": {
+        "group": {
+          "doc": "Grouping column of the random effects.",
+          "kind": "label",
+          "many": false,
+          "required": true
+        },
+        "occasion": {
+          "doc": "Integer time of residual='ar1' (rho^|t_a - t_b|).",
+          "kind": "numeric",
+          "many": false,
+          "required": false
+        },
+        "random": {
+          "doc": "Columns with random slopes.",
+          "kind": "numeric",
+          "many": true,
+          "required": false
+        },
+        "stratum": {
+          "doc": "Heteroskedastic residual variance per level (nlme varIdent).",
+          "kind": "label",
+          "many": false,
+          "required": false
+        },
+        "within": {
+          "doc": "Cells nested in the groups that carry the residual correlation.",
+          "kind": "label",
+          "many": false,
+          "required": false
+        }
+      },
+      "covariances": [
+        "nonrobust"
+      ],
+      "default_covariance": "nonrobust",
+      "description": "Gaussian random intercept/slopes combined with AR(1) or exchangeable within-group residual correlation and stratum-specific residual variances (nlme lme with corAR1/corCompSymm/varIdent; Stata mixed, residuals()), by ML or REML on dense per-group covariances; full fixed/covariance-parameter information.",
+      "family": "mixed",
+      "function": "mixedresid",
+      "inference": "Normal z",
+      "intercept": true,
+      "intercept_rule": "optional",
+      "missing": [
+        "raise",
+        "drop"
+      ],
+      "options": {
+        "covstructure": {
+          "choices": [
+            "independent",
+            "unstructured"
+          ],
+          "default": "independent",
+          "doc": "Covariance of the random effects.",
+          "required": false,
+          "type": "str"
+        },
+        "max_work": {
+          "choices": [],
+          "default": 2000000000,
+          "doc": "Explicit likelihood and derivative work budget; no silent truncation.",
+          "required": false,
+          "type": "int"
+        },
+        "method": {
+          "choices": [
+            "ml",
+            "reml"
+          ],
+          "default": "reml",
+          "doc": "Restricted (default, as nlme lme) or full maximum likelihood.",
+          "required": false,
+          "type": "str"
+        },
+        "random_intercept": {
+          "choices": [],
+          "default": true,
+          "doc": "Random intercept of the groups.",
+          "required": false,
+          "type": "bool"
+        },
+        "residual": {
+          "choices": [
+            "independent",
+            "ar1",
+            "exchangeable"
+          ],
+          "default": "ar1",
+          "doc": "Within-block residual correlation.",
+          "required": false,
+          "type": "str"
+        }
+      },
+      "outcome": "continuous",
+      "panel": "none",
+      "predictors": "optional",
+      "stata": [
+        "mixed, residuals()"
+      ],
+      "time": "none",
+      "title": "Linear mixed model with structured residual covariance",
       "weights": []
     },
     "mlogit": {
@@ -13903,6 +14817,176 @@
         "pweight"
       ]
     },
+    "stcox_frailty": {
+      "binary_outcome": false,
+      "categorical_predictors": true,
+      "cluster_dimensions": 1,
+      "columns": {
+        "entry": {
+          "doc": "Start of (start, stop] records; the frailty multiplies the whole history of its group.",
+          "kind": "numeric",
+          "many": false,
+          "required": false
+        },
+        "failure": {
+          "doc": "0/1 failure indicator (default: every record fails).",
+          "kind": "numeric",
+          "many": false,
+          "required": false
+        },
+        "offset": {
+          "doc": "Offset with coefficient 1 in the linear predictor.",
+          "kind": "numeric",
+          "many": false,
+          "required": false
+        },
+        "shared": {
+          "doc": "Group column of the shared frailty (Stata's shared()).",
+          "kind": "label",
+          "many": false,
+          "required": true
+        },
+        "strata": {
+          "doc": "Stratification columns.",
+          "kind": "label",
+          "many": true,
+          "required": false
+        }
+      },
+      "covariances": [
+        "nonrobust"
+      ],
+      "default_covariance": "nonrobust",
+      "description": "Shared gamma or log-normal frailty Cox model: penalized partial likelihood for fixed variance, variance by the integrated partial likelihood; LR chibar2 test of theta = 0; conditional penalized-Hessian covariance.",
+      "family": "survival",
+      "function": "stcox_frailty",
+      "inference": "Normal z",
+      "intercept": false,
+      "intercept_rule": "never",
+      "missing": [
+        "raise",
+        "drop"
+      ],
+      "options": {
+        "frailty": {
+          "choices": [
+            "gamma",
+            "lognormal"
+          ],
+          "default": "gamma",
+          "doc": "Frailty distribution: gamma (closed-form integrated likelihood) or log-normal (Laplace approximation).",
+          "required": false,
+          "type": "str"
+        },
+        "theta": {
+          "choices": [],
+          "default": null,
+          "doc": "Fixed frailty variance (default: estimated).",
+          "required": false,
+          "type": "float"
+        },
+        "ties": {
+          "choices": [
+            "breslow",
+            "efron"
+          ],
+          "default": "breslow",
+          "doc": "Tied failures: Breslow (default) or Efron.",
+          "required": false,
+          "type": "str"
+        }
+      },
+      "outcome": "survival time",
+      "panel": "none",
+      "predictors": "required",
+      "stata": [
+        "stcox, shared()"
+      ],
+      "time": "none",
+      "title": "Cox regression with shared frailty",
+      "weights": []
+    },
+    "stcox_recurrent": {
+      "binary_outcome": false,
+      "categorical_predictors": true,
+      "cluster_dimensions": 1,
+      "columns": {
+        "entry": {
+          "doc": "Start of the (start, stop] record (0 when omitted).",
+          "kind": "numeric",
+          "many": false,
+          "required": false
+        },
+        "failure": {
+          "doc": "0/1 event indicator at the record's exit.",
+          "kind": "numeric",
+          "many": false,
+          "required": true
+        },
+        "id": {
+          "doc": "Subject identifier; robust covariance clusters on it.",
+          "kind": "label",
+          "many": false,
+          "required": true
+        }
+      },
+      "covariances": [
+        "robust",
+        "nonrobust"
+      ],
+      "default_covariance": "robust",
+      "description": "Recurrent-event Cox models on counting-process records: Andersen-Gill, PWP total/gap time stratified by event number, WLW marginal model; Lin-Wei robust covariance clustered on the subject.",
+      "family": "survival",
+      "function": "stcox_recurrent",
+      "inference": "Normal z",
+      "intercept": false,
+      "intercept_rule": "never",
+      "missing": [
+        "raise",
+        "drop"
+      ],
+      "options": {
+        "max_events": {
+          "choices": [],
+          "default": null,
+          "doc": "Cap on event-number strata (PWP pools above it; WLW models the first max_events events).",
+          "required": false,
+          "type": "int"
+        },
+        "model": {
+          "choices": [
+            "ag",
+            "pwp_total",
+            "pwp_gap",
+            "wlw"
+          ],
+          "default": "ag",
+          "doc": "Andersen-Gill, Prentice-Williams-Peterson total or gap time, or Wei-Lin-Weissfeld marginal model.",
+          "required": false,
+          "type": "str"
+        },
+        "ties": {
+          "choices": [
+            "breslow",
+            "efron"
+          ],
+          "default": "breslow",
+          "doc": "Tied failures: Breslow (default) or Efron.",
+          "required": false,
+          "type": "str"
+        }
+      },
+      "outcome": "survival time",
+      "panel": "none",
+      "predictors": "required",
+      "stata": [
+        "stcox, vce(cluster)",
+        "stcox, strata() vce(cluster)"
+      ],
+      "time": "none",
+      "title": "Recurrent-event Cox regression",
+      "weights": []
+    },
     "streg": {
       "binary_outcome": false,
       "categorical_predictors": true,
@@ -14001,6 +15085,181 @@
         "iweight",
         "pweight"
       ]
+    },
+    "streg_frailty": {
+      "binary_outcome": false,
+      "categorical_predictors": true,
+      "cluster_dimensions": 1,
+      "columns": {
+        "failure": {
+          "doc": "0/1 failure indicator (default: every record fails).",
+          "kind": "numeric",
+          "many": false,
+          "required": false
+        },
+        "offset": {
+          "doc": "Offset with coefficient 1 in the linear predictor.",
+          "kind": "numeric",
+          "many": false,
+          "required": false
+        },
+        "shared": {
+          "doc": "Group column of the shared frailty (Stata's shared()).",
+          "kind": "label",
+          "many": false,
+          "required": true
+        }
+      },
+      "covariances": [
+        "nonrobust"
+      ],
+      "default_covariance": "nonrobust",
+      "description": "Exponential or Weibull PH/AFT regression with a shared gamma or inverse-Gaussian frailty: closed-form marginal likelihood, analytic Newton-Raphson, OIM covariance, LR chibar2 test of theta = 0.",
+      "family": "survival",
+      "function": "streg_frailty",
+      "inference": "Normal z",
+      "intercept": true,
+      "intercept_rule": "always",
+      "missing": [
+        "raise",
+        "drop"
+      ],
+      "options": {
+        "distribution": {
+          "choices": [
+            "exponential",
+            "weibull"
+          ],
+          "default": "weibull",
+          "doc": "Survival distribution.",
+          "required": false,
+          "type": "str"
+        },
+        "frailty": {
+          "choices": [
+            "gamma",
+            "invgaussian"
+          ],
+          "default": "gamma",
+          "doc": "Frailty distribution (mean 1, variance theta).",
+          "required": false,
+          "type": "str"
+        },
+        "metric": {
+          "choices": [
+            "ph",
+            "aft"
+          ],
+          "default": null,
+          "doc": "ph (default) or aft (Stata's time option).",
+          "required": false,
+          "type": "str"
+        }
+      },
+      "outcome": "survival time",
+      "panel": "none",
+      "predictors": "optional",
+      "stata": [
+        "streg, shared() frailty()"
+      ],
+      "time": "none",
+      "title": "Parametric survival regression with shared frailty",
+      "weights": []
+    },
+    "stteffects": {
+      "binary_outcome": false,
+      "categorical_predictors": true,
+      "cluster_dimensions": 1,
+      "columns": {
+        "cx": {
+          "doc": "ipw: censoring-model covariates (default: the outcome covariates).",
+          "kind": "numeric",
+          "many": true,
+          "required": false
+        },
+        "failure": {
+          "doc": "0/1 failure indicator.",
+          "kind": "numeric",
+          "many": false,
+          "required": true
+        },
+        "treatment": {
+          "doc": "Binary treatment variable.",
+          "kind": "label",
+          "many": false,
+          "required": true
+        },
+        "tx": {
+          "doc": "Treatment-model covariates (default: the outcome covariates).",
+          "kind": "numeric",
+          "many": true,
+          "required": false
+        }
+      },
+      "covariances": [
+        "robust",
+        "cluster"
+      ],
+      "default_covariance": "robust",
+      "description": "Treatment effects on mean survival time with Weibull outcome or censoring models and a logit treatment model; stacked estimating equations with analytic Jacobian and M-estimation sandwich covariance.",
+      "family": "survival",
+      "function": "stteffects",
+      "inference": "Normal z",
+      "intercept": true,
+      "intercept_rule": "optional",
+      "missing": [
+        "raise",
+        "drop"
+      ],
+      "options": {
+        "control": {
+          "choices": [],
+          "default": null,
+          "doc": "Control level (default: the lowest level).",
+          "required": false,
+          "type": "json"
+        },
+        "estimand": {
+          "choices": [
+            "ate",
+            "atet",
+            "pomeans"
+          ],
+          "default": "ate",
+          "doc": "Average treatment effect, ATE on the treated, or potential-outcome means of mean survival time.",
+          "required": false,
+          "type": "str"
+        },
+        "method": {
+          "choices": [
+            "ra",
+            "ipw",
+            "ipwra"
+          ],
+          "default": "ra",
+          "doc": "Weibull regression adjustment, censoring-adjusted IPW, or IPW regression adjustment.",
+          "required": false,
+          "type": "str"
+        },
+        "pstolerance": {
+          "choices": [],
+          "default": 1e-05,
+          "doc": "Overlap check: smallest admissible estimated treatment probability.",
+          "required": false,
+          "type": "float"
+        }
+      },
+      "outcome": "survival time",
+      "panel": "none",
+      "predictors": "optional",
+      "stata": [
+        "stteffects ra",
+        "stteffects ipw",
+        "stteffects ipwra"
+      ],
+      "time": "none",
+      "title": "Survival treatment effects",
+      "weights": []
     },
     "sureg": {
       "binary_outcome": false,
@@ -16862,6 +18121,15 @@
         "source_dataset_fit": false,
         "source_fit": true
       },
+      "garch_midas": {
+        "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
+        "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
+        "option_contract": "estimators.garch_midas",
+        "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
+        "source_common_prediction": false,
+        "source_dataset_fit": false,
+        "source_fit": true
+      },
       "glm": {
         "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
         "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
@@ -16970,6 +18238,15 @@
         "source_dataset_fit": false,
         "source_fit": true
       },
+      "ivlewbel": {
+        "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
+        "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
+        "option_contract": "estimators.ivlewbel",
+        "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
+        "source_common_prediction": false,
+        "source_dataset_fit": false,
+        "source_fit": true
+      },
       "ivprobit": {
         "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
         "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
@@ -17004,6 +18281,15 @@
         "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
         "source_common_prediction": true,
         "source_dataset_fit": true,
+        "source_fit": true
+      },
+      "jive": {
+        "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
+        "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
+        "option_contract": "estimators.jive",
+        "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
+        "source_common_prediction": false,
+        "source_dataset_fit": false,
         "source_fit": true
       },
       "kernelreg": {
@@ -17114,6 +18400,24 @@
         "source_dataset_fit": false,
         "source_fit": true
       },
+      "meologit": {
+        "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
+        "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
+        "option_contract": "estimators.meologit",
+        "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
+        "source_common_prediction": false,
+        "source_dataset_fit": false,
+        "source_fit": true
+      },
+      "meoprobit": {
+        "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
+        "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
+        "option_contract": "estimators.meoprobit",
+        "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
+        "source_common_prediction": false,
+        "source_dataset_fit": false,
+        "source_fit": true
+      },
       "mepoisson": {
         "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
         "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
@@ -17132,6 +18436,15 @@
         "source_dataset_fit": true,
         "source_fit": true
       },
+      "metobit": {
+        "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
+        "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
+        "option_contract": "estimators.metobit",
+        "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
+        "source_common_prediction": false,
+        "source_dataset_fit": false,
+        "source_fit": true
+      },
       "mfp_regress": {
         "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
         "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
@@ -17145,6 +18458,15 @@
         "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
         "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
         "option_contract": "estimators.mg",
+        "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
+        "source_common_prediction": false,
+        "source_dataset_fit": false,
+        "source_fit": true
+      },
+      "mgarch_adcc": {
+        "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
+        "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
+        "option_contract": "estimators.mgarch_adcc",
         "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
         "source_common_prediction": false,
         "source_dataset_fit": false,
@@ -17168,10 +18490,28 @@
         "source_dataset_fit": false,
         "source_fit": true
       },
+      "mgarch_dbekk": {
+        "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
+        "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
+        "option_contract": "estimators.mgarch_dbekk",
+        "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
+        "source_common_prediction": false,
+        "source_dataset_fit": false,
+        "source_fit": true
+      },
       "mgarch_dcc": {
         "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
         "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
         "option_contract": "estimators.mgarch_dcc",
+        "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
+        "source_common_prediction": false,
+        "source_dataset_fit": false,
+        "source_fit": true
+      },
+      "mgarch_dvech": {
+        "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
+        "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
+        "option_contract": "estimators.mgarch_dvech",
         "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
         "source_common_prediction": false,
         "source_dataset_fit": false,
@@ -17208,6 +18548,15 @@
         "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
         "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
         "option_contract": "estimators.mixedlogit",
+        "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
+        "source_common_prediction": false,
+        "source_dataset_fit": false,
+        "source_fit": true
+      },
+      "mixedresid": {
+        "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
+        "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
+        "option_contract": "estimators.mixedresid",
         "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
         "source_common_prediction": false,
         "source_dataset_fit": false,
@@ -17582,6 +18931,24 @@
         "source_dataset_fit": true,
         "source_fit": true
       },
+      "stcox_frailty": {
+        "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
+        "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
+        "option_contract": "estimators.stcox_frailty",
+        "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
+        "source_common_prediction": false,
+        "source_dataset_fit": false,
+        "source_fit": true
+      },
+      "stcox_recurrent": {
+        "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
+        "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
+        "option_contract": "estimators.stcox_recurrent",
+        "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
+        "source_common_prediction": false,
+        "source_dataset_fit": false,
+        "source_fit": true
+      },
       "streg": {
         "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
         "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
@@ -17589,6 +18956,24 @@
         "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
         "source_common_prediction": false,
         "source_dataset_fit": true,
+        "source_fit": true
+      },
+      "streg_frailty": {
+        "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
+        "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
+        "option_contract": "estimators.streg_frailty",
+        "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
+        "source_common_prediction": false,
+        "source_dataset_fit": false,
+        "source_fit": true
+      },
+      "stteffects": {
+        "independent_scientific_validation": "requires method/option-specific reference and dated receipt",
+        "installed_package_verification": "requires exact package/source hash and method/option execution receipt",
+        "option_contract": "estimators.stteffects",
+        "public_shipment": "requires accessible release/source manifest and matching method/option package pin",
+        "source_common_prediction": false,
+        "source_dataset_fit": false,
         "source_fit": true
       },
       "sureg": {
@@ -18378,6 +19763,47 @@
       "trim-and-fill/selection models",
       "causal moderator or publication-bias conclusions"
     ],
+    "extensions": {
+      "dataset_support": false,
+      "devices": [
+        "cpu"
+      ],
+      "documentation": "docs/econometrics/meta-extensions.md",
+      "exclusions": [
+        "multivariate/unstructured random-effect covariance",
+        "observation weights",
+        "missing deletion",
+        "CR2 generalized inverse for full-leverage studies",
+        "two-sided p-value selection models",
+        "variance-component uncertainty in coefficient or prediction intervals",
+        "publication-bias conclusions or causal moderator claims",
+        "licensed vendor parity"
+      ],
+      "inference": "three-level GLS z or t(N-p), observed-information component SEs, per-component LRT (naive and 50:50 boundary mixture), profile-likelihood component limits; CR2 with Satterthwaite t and HTZ F on saved multilevel/dependent fits; selection natural-scale observed information and LRT",
+      "limits": {
+        "effects_per_study": 100,
+        "likelihood_evaluations": 50000,
+        "multilevel_effects": 2000,
+        "multilevel_studies": 1000,
+        "multilevel_terms": 16,
+        "padded_block_entries": 200000,
+        "pet_peese_min_studies": 10,
+        "selection_intervals": 10,
+        "selection_moderators": 10,
+        "trimfill_studies": 1000
+      },
+      "models": "three-level random effects (study and effect-within-study components, ML/REML, vi or labelled within-study covariance); Vevea-Hedges step-function selection (estimated or fixed weights)",
+      "precision": "float64",
+      "procedures": [
+        "meta_multilevel",
+        "meta_multilevel_predict",
+        "meta_cr2",
+        "meta_trimfill",
+        "meta_pet_peese",
+        "meta_selection"
+      ],
+      "sensitivity": "Duval-Tweedie L0/R0 trim-and-fill; PET, PEESE and declared conditional PET-PEESE WLS"
+    },
     "inference": [
       "z",
       "hksj",
@@ -19724,7 +21150,7 @@
       "native_ols_default_kind": "xb",
       "precision": "float64",
       "refits": false,
-      "remaining_estimator_count": 83,
+      "remaining_estimator_count": 97,
       "remaining_estimators": [
         "ahreg",
         "arch",
@@ -19754,9 +21180,12 @@
         "fmols",
         "fp_regress",
         "gam_gaussian",
+        "garch_midas",
         "gmm",
         "heterodid",
         "htaylor_moment",
+        "ivlewbel",
+        "jive",
         "kernelreg",
         "lasso",
         "localreg",
@@ -19766,13 +21195,20 @@
         "mars",
         "mediation",
         "mediation_interaction",
+        "meologit",
+        "meoprobit",
+        "metobit",
         "mfp_regress",
         "mg",
+        "mgarch_adcc",
         "mgarch_bekk",
         "mgarch_ccc",
+        "mgarch_dbekk",
         "mgarch_dcc",
+        "mgarch_dvech",
         "midas",
         "mixedlogit",
+        "mixedresid",
         "mswitch",
         "nardl",
         "npreg_mixed",
@@ -19796,7 +21232,11 @@
         "sem",
         "sspace",
         "stcox",
+        "stcox_frailty",
+        "stcox_recurrent",
         "streg",
+        "streg_frailty",
+        "stteffects",
         "svar",
         "synthcontrol",
         "teffects",
@@ -20107,10 +21547,10 @@
     "packages/openecon-charts/pyproject.toml": "f78bad50758400d5719b85df59878e42609c32f69e49ed4dd4d4658e4179789e",
     "pyproject.toml": "7c58a3355b16f7581d071be8fbefb56cb06e1afd87d5578cf4a1afed7d343092",
     "src/openecon/__init__.py": "a1f1848e93b83ca0beceef8ef89fa9e497e684b0a7cce43743fdd6273059c0ef",
-    "src/openecon/analysis_contracts.py": "69cca9181eb2e6ccd6d5866e9a4554ec902b7d12cd69f2647ba9172fcd9398b9",
+    "src/openecon/analysis_contracts.py": "36406b1c879c3a5f6d369f8f7ba8c5c45bd991b958e4721ed884f67f1923369c",
     "src/openecon/dataset.py": "cfc19b714a6807ab33b3e8264cdda2d92e9418bfd909ca9532082fcd1b516616",
     "src/openecon/dataset_prepare.py": "180aca26fddac9276f7706bb539b20c9851dddc9e9c37eef569b8bb26cd76cdb",
-    "src/openecon/econometrics/arch/__init__.py": "c0e958ed097858bf2773248f4d3bd6bfc3396da6a423e0bb72c9d9ddfa27639f",
+    "src/openecon/econometrics/arch/__init__.py": "c63ecbe3cd37e2e15a25064fc1206bd68744893ac100e6e5dc433445ee8c753f",
     "src/openecon/econometrics/arima/__init__.py": "f7da65fa05c82e77c61d00e3cb4fa8eda87ea24ee97f58d31b56ad920aa0d740",
     "src/openecon/econometrics/bayesian/__init__.py": "882363d46fbd5f337fc7f53a399d812d7a7223fb039f78536b8e35c8a25bbafb",
     "src/openecon/econometrics/bayesian/bma.py": "2faabd1e3a8b4c73947a0bcce5785117870049a1f1bf518132d471b9810cd004",
@@ -20151,15 +21591,15 @@
     "src/openecon/econometrics/glm/__init__.py": "0cbe40c5b76eb2427e0c8b50897620854798bd7d11722433b3e66e4112db110e",
     "src/openecon/econometrics/interval_weibull_covariate_public/__init__.py": "5f6faa7539a182cfa6028d0997feb8c53c72562b4d4d5eb78129e406efd91c7d",
     "src/openecon/econometrics/irt/__init__.py": "8780dc501945cfd41923b77d14466dc1cd6ad7567e0f40e683d4e6b546bd7224",
-    "src/openecon/econometrics/iv/__init__.py": "b4f186e6659db958042ee21c07903ac75b67f694e9667fc857c6cdc9de0236a4",
+    "src/openecon/econometrics/iv/__init__.py": "1eeeae04d1b64afe1bea43cc2100541da29277d5b2089e9e95d4d63da89c7d8c",
     "src/openecon/econometrics/ivquantile/__init__.py": "458883133bc5557db55a5cea1ca568223022d69fd8aa353682a1fcb362977cf3",
     "src/openecon/econometrics/latent/__init__.py": "b91e382f11520ca96ecb79b1cb8fca81e043cd76669470e6533aa9519d93ec11",
     "src/openecon/econometrics/limited/__init__.py": "379f4b026c0452af5d1e9b8c0aae4af06897fdd12bd9448d1ed450e33eafc8a8",
     "src/openecon/econometrics/linear/__init__.py": "49fcc03b41048ac47360e082219639226a25f4f4efbb7726012dbee9e5668160",
     "src/openecon/econometrics/longrun/__init__.py": "506102f12d34d50945fb1915d6813895655630335ed0895da8b9b1e300112f26",
     "src/openecon/econometrics/measurement/__init__.py": "4d9635f91d1bd833c04b0b92e7f579dae207dd1e0272eebc1adc242a0f7f6618",
-    "src/openecon/econometrics/meta/__init__.py": "aae53bd3be33db4b5225efdde29036f87bf41b703680c223b00b1c382f00587f",
-    "src/openecon/econometrics/mgarch/__init__.py": "459a325499282bf55c65097b62fb62f4cd12abfbc03fbb11649d0303ac50866f",
+    "src/openecon/econometrics/meta/__init__.py": "f44eb022062325d415eaccccb6b0125ee7fa9a44f662957693ee46db2316e872",
+    "src/openecon/econometrics/mgarch/__init__.py": "50598ab23f84c363b0bcb4064b830277d66aa2f2c40931ef1125d0f36502dcc7",
     "src/openecon/econometrics/mi/__init__.py": "cc5f7fdd3782379d115d98e43729f5721812d2d0c055a649a0eaaa6fcdeff623",
     "src/openecon/econometrics/mi/chained.py": "f3afc19955d20663c1f03f2fd94e7cb40d70163c64965206c6f0501a300a53e5",
     "src/openecon/econometrics/mi/common.py": "7fc4940ba36392f32fdaa4088590fc6fe79e366eb5f987e1ad0def4881d76497",
@@ -20171,13 +21611,13 @@
     "src/openecon/econometrics/mi/passive.py": "0cbfc290cff9941e4913ac51665f0a57594a37a7fe0b22551f32de30c6c696d2",
     "src/openecon/econometrics/mi/pooling.py": "d68e0bcdcd738a2da586d4d96a3f8b613ece3f29bead5c91f7c8083b5c17d4d9",
     "src/openecon/econometrics/mi/sensitivity.py": "83305e95d212e36c78255c3261deefe4c6baf342a7797b8569394cbb58a56c04",
-    "src/openecon/econometrics/mixed/__init__.py": "31fc049e783a01bfdfa60622801720aad9b65067e91c00294f908b0a95e1f51b",
+    "src/openecon/econometrics/mixed/__init__.py": "e9944e1d7b6071d9d7874217cdcd37473a05a1dda315a61a99ef609efea2ca87",
     "src/openecon/econometrics/mixtures/__init__.py": "6affefc14677722d56cd6b60ec38329e378bef47d711eaa0997eb5036eff93ef",
     "src/openecon/econometrics/multivariate/__init__.py": "8fe9f17ec08b4362f783fa2ba3fb214f8d36a53e104dec724001345e94120863",
     "src/openecon/econometrics/nonparametric/__init__.py": "9feb50043fed862ed103949c2c804f41f5820e62c46e5d4239b471c25fd1d9b0",
     "src/openecon/econometrics/panel/__init__.py": "35818c47661950f34c4ea75452a78be977f9a4b57eacf9e7dcb6edb9da89890d",
     "src/openecon/econometrics/panel_ardl/__init__.py": "2c5228b3775cc46d641e7b1e364d7a973f44323b7fcf058b9403c3199df8dfa7",
-    "src/openecon/econometrics/postest/__init__.py": "b2bccb3c1c4a67cd7eb752d8dfbc45831ec948663de2abc56b98526d5d8d5b64",
+    "src/openecon/econometrics/postest/__init__.py": "6d756ad0c587638b49e8fe92e5493495c7130b350038bfdc9f0da7fd40826c9d",
     "src/openecon/econometrics/quantile/__init__.py": "f8b8590d2e892867eca6ded4cd5b777aa9138a843987e63c28df9c8b81dfcf23",
     "src/openecon/econometrics/registry.py": "20b7db214036ded7c84d5a57eb770bc1d0316e6c840fc7b24bfd0e6bed3cdea1",
     "src/openecon/econometrics/regularized/__init__.py": "cddfb88386fcc650673a9283134e3737578d49e2b766b752cafc3dece04ff781",
@@ -20188,11 +21628,11 @@
     "src/openecon/econometrics/stats/__init__.py": "f532a72efcf1d8d5cf1b99e78c6ff594505f9c58783f564a99a8154cd8767102",
     "src/openecon/econometrics/stats/sequential.py": "f7fa2e8d187b717939e7b7b7da5dc358adaef1ad6f248cded93075a749309c4c",
     "src/openecon/econometrics/stats/sequential_kernels.py": "bb4b0f86b36d3075afc28e542427e8795670342d3a7c63ad7788f1ee038c8761",
-    "src/openecon/econometrics/streaming_registry.py": "7fc8ada1a93aa4a5557cf1d05c01c76a210b7cf600c22f83f4748ef567a06eed",
+    "src/openecon/econometrics/streaming_registry.py": "852261886680d96807c1df7c2089af3b922897fdbc8237259e2bdf6949808763",
     "src/openecon/econometrics/structural/__init__.py": "2b9396c5113eba83427ae1a364513dab691123d04378bdcb8380f0fda25da079",
     "src/openecon/econometrics/supervised/__init__.py": "85e5b36e4538fbefe018b4b8d05d7a4501ceaef946cb780fbf6b6bd57670b254",
     "src/openecon/econometrics/survey/__init__.py": "a468dc3a5e241673b30c4d4396d602a72c144301c1af13e7e27d43605bfd8202",
-    "src/openecon/econometrics/survival/__init__.py": "c4063b72111f7adb4ff538ab09724ee6c6e68935942508440f51ef6e4e92a494",
+    "src/openecon/econometrics/survival/__init__.py": "430a82b336612c2ad588ba2a9e046be346a8694e373f84bcdcd9bd091f362466",
     "src/openecon/econometrics/survival_ext/__init__.py": "9c4df9d76774a8aab2a1ff54626297945083e661447d3db9b5b2d7f0de3ce3be",
     "src/openecon/econometrics/survival_ext/weibull_regression.py": "7871034c70c8db538bc1222e1321feb6b1b7b4dc77f6f8286683e65548cb64f3",
     "src/openecon/econometrics/survival_ext/weibull_regression_common.py": "96c346d6b84a08607999c72dd4c9ce78de473aa02f0feac2a2664b8b8a726f8b",
@@ -20201,10 +21641,10 @@
     "src/openecon/econometrics/teffects/__init__.py": "27b51e5aca6542461c050c70044c7d4fb91942bec3dedd4de30da1d3f29e5452",
     "src/openecon/econometrics/temporal/__init__.py": "c112092488533805413da31fd1fe0fab273da517a8f33b64c4f5ea879d91a41f",
     "src/openecon/econometrics/tsmodels/__init__.py": "d26aa69a4670d1bb62b1d9b9103f8ddfbb15a091ea98aea14baf02c6f231b825",
-    "src/openecon/econometrics/tsworkflows/__init__.py": "bdf1dba1ddbb8590905e5b6dea753d989fb62865e5bb8ce1ea28d77344d21442",
+    "src/openecon/econometrics/tsworkflows/__init__.py": "cbb7c94c3483924ad46c49561cb9eb6169059b40d9668ac7e772b0ed99b47be1",
     "src/openecon/econometrics/twostep/__init__.py": "5a613b1aff5ef5153449ca2e654684149630a50fb83507e2809a4ee7f509175a",
-    "src/openecon/econometrics/unitroot/__init__.py": "a3f99ecd17d9c94991e14679b5c1496748c1f498dca9144f3fd394a5b4cfb870",
-    "src/openecon/econometrics/var/__init__.py": "3ec7488f053344927900a4dd6898fdd7ea7cdc0b4933c007582e8de73eadbd6e",
+    "src/openecon/econometrics/unitroot/__init__.py": "60a17d2f466b606ab21e559e2ea9785a6271755f0b8eeb1cda5b427c862d8a73",
+    "src/openecon/econometrics/var/__init__.py": "2383668cc7b9145ec7414455acf6210fbb5a740d861f9b628586b490cfbd3172",
     "src/openecon/econometrics/weakiv/__init__.py": "aff573773ea90a8ed1b7e036717dc4126fb3531352e1dd0d0875c84e66a27fb1",
     "src/openecon/engines/separation.py": "a2f3aca6e5390dcc6c4443ca90c3f3d2758a637eea0b676553c9a0f5d615c612",
     "src/openecon/linear_ols/spec.py": "164cc1449bfe0208bfe1468bdb3612f14255106d13b4d1a732fb1bf8ea36e53e",
@@ -20213,7 +21653,7 @@
     "src/openecon/source_readers.py": "6c90b8870ba76a6a906889f8f2dbd318223f45189332993d59c13cdd1b53a18c",
     "src/openecon/survey.py": "1d03d66d8ca4223f9699d0e57d31ac38bbfb3242c8ac8c245427f925628f85ec"
   },
-  "source_ref": "fca01bfb12e1b5e35851233e23bc4cc87d84abf7",
+  "source_ref": "751bf7bd3f591095e65f648fe19db030319ae215",
   "stata_parity_validated": false,
   "state_space_paths": {
     "budgets": {

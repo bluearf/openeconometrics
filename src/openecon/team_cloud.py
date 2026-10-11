@@ -17,6 +17,7 @@ def team_app():
     from openecon.team_server import create_team_app
     from openecon.team_storage import TeamStorage
     from openecon.team_store import FirestoreDocuments, TeamStore
+    from openecon.email_code import configured_email_codes
     if any(not os.environ.get(key) for key in REQUIRED_SETTINGS):
         raise ValueError('Team serving requires explicit identity and storage configuration.')
     project = os.environ['OPENECON_PROJECT_ID']
@@ -32,8 +33,9 @@ def team_app():
     return create_team_app(
         store=store,
         storage=storage,
-        auth=TeamAuth(project),
+        auth=TeamAuth(project, passwordless_only=True),
         public_origin=origin, firebase_config=firebase,
+        email_codes=configured_email_codes(store, storage, project), passwordless_only=True,
         # Set at image build time from the reviewed source commit; read-only.
         source_commit_id=os.environ.get('OPENECON_SOURCE_COMMIT'),
     )

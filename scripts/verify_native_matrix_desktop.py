@@ -29,6 +29,33 @@ sys.path.insert(0, str(ROOT / "benchmarks"))
 from native_model_matrix_replay import compare, digest, write  # noqa: E402
 
 
+# These modules belong to the deployed sync/auth service or CLI, not local
+# analysis. Every other source module must be present and match compiled code.
+NONLOCAL_MODULES = frozenset({
+    "cloud", "team_history", "team_recovery", "team_storage", "team_server",
+    "desktop_cloud", "team_cloud", "cli", "team_auth", "entrypoints", "team_store",
+    "team_transfer", "email_code", "team_quiescence",
+})
+
+
+def bundled_module_hashes(archive, package_root):
+    def normalize(code):
+        return code.replace(co_filename="<verified>", co_consts=tuple(
+            normalize(value) if isinstance(value, CodeType) else value for value in code.co_consts))
+
+    hashes = {}
+    for source in sorted(package_root.rglob("*.py")):
+        relative = source.relative_to(package_root)
+        module = ("openecon." + str(relative).removesuffix(".py").replace("/", ".")).removesuffix(".__init__")
+        if module.removeprefix("openecon.") in NONLOCAL_MODULES:
+            continue
+        if normalize(archive.extract(module)) != normalize(compile(
+                source.read_text(), str(source), "exec", dont_inherit=True)):
+            raise RuntimeError("Frozen module differs from source: " + module)
+        hashes["src/openecon/" + relative.as_posix()] = digest(source)
+    return hashes
+
+
 def bundled_identity(app, expected_identifier="org.openecon.qa.networkmodels"):
     from PyInstaller.archive.readers import CArchiveReader
     info = plistlib.loads((app / "Contents/Info.plist").read_bytes())
@@ -41,30 +68,12 @@ def bundled_identity(app, expected_identifier="org.openecon.qa.networkmodels"):
     runtime = app / "Contents/Resources/runtime/openecon-runtime/openecon-runtime"
     archive = CArchiveReader(str(runtime)).open_embedded_archive("PYZ.pyz")
 
-    def normalize(code):
-        return code.replace(co_filename="<verified>", co_consts=tuple(
-            normalize(value) if isinstance(value, CodeType) else value for value in code.co_consts))
-
-    hashes = {}
-    # The local bundle deliberately excludes cloud/team server and CLI entry
-    # points. They are outside this local analysis acceptance denominator.
-    nonlocal_modules = {"cloud", "team_history", "team_recovery", "team_storage", "team_server",
-        "desktop_cloud", "team_cloud", "cli", "team_auth", "entrypoints", "team_store",
-        "team_transfer"}  # Server-side membership/storage routes, imported only by team_server.
-    for source in sorted((ROOT / "src/openecon").rglob("*.py")):
-        module = str(source.relative_to(ROOT / "src")).removesuffix(".py").replace("/", ".")
-        module = module.removesuffix(".__init__")
-        if module.removeprefix("openecon.") in nonlocal_modules:
-            continue
-        if normalize(archive.extract(module)) != normalize(compile(
-                source.read_text(), str(source), "exec", dont_inherit=True)):
-            raise RuntimeError("Frozen module differs from source: " + module)
-        hashes[str(source.relative_to(ROOT))] = digest(source)
+    hashes = bundled_module_hashes(archive, ROOT / "src/openecon")
     return {"installed_app": str(app), "identifier": info["CFBundleIdentifier"],
             "shell_version": info["CFBundleShortVersionString"], "strict_ad_hoc_signature": True,
             "runtime_executable_sha256": digest(runtime), "modules_sha256": hashes,
             "all_local_analysis_sdk_embedded_code_matches_source": True,
-            "unmeasured_nonlocal_modules": sorted(nonlocal_modules),
+            "unmeasured_nonlocal_modules": sorted(NONLOCAL_MODULES),
             "runtime_manifest": json.loads((app / "Contents/Resources/runtime/runtime-manifest.json").read_text()),
             "git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip()}
 

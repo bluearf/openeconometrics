@@ -13,10 +13,16 @@ generalized error distribution with shape s > 0, parameter tau = ln(s) (Stata's 
     ln f(z) = ln s - ln lam - (1 + 1/s) ln 2 - lnG(1/s) - |z / lam|^s / 2,
     lam = [2^(-2/s) G(1/s) / G(3/s)]^(1/2);    s = 2 is the normal, s = 1 the Laplace.
 
+skewed Student t (Hansen 1994) and skewed GED (Fernandez-Steel), two parameters each
+    see ``skewed``; tau is then the pair of reported parameters
+    (``/lndfm2, /atlambda`` and ``/lnshape, /lnxi``).
+
 ``log_density`` returns the per-observation log density and its analytic derivatives with
-respect to e_t, ln h_t and tau. ``abs_moment`` is E|z|^p (persistence of power ARCH,
-EGARCH forecasts) and ``critical_value`` the two-sided quantile used for forecast
-intervals.
+respect to e_t, ln h_t and tau (``[T]`` for one parameter, ``[2, T]`` for the skewed
+pairs). ``abs_moment`` is E|z|^p (persistence of power ARCH, EGARCH forecasts),
+``negative_share`` is E[z^2 1(z < 0)] (GJR persistence and forecasts), ``quantiles`` the
+lower and upper quantiles used for forecast intervals and ``critical_value`` the
+two-sided quantile of the symmetric densities.
 """
 
 from __future__ import annotations
@@ -26,6 +32,7 @@ import math
 import torch
 from torch import Tensor
 
+from openecon.econometrics.arch import skewed
 from openecon.engines.distributions import chi2_isf, normal_isf, t_isf
 
 _HALF_LOG_2PI = 0.5 * math.log(2.0 * math.pi)
@@ -37,21 +44,34 @@ ABS_NORMAL = math.sqrt(2.0 / math.pi)        # E|z| of the standard normal
 # to lose digits), so the optimizer is stopped at that bound and the fit reports that the
 # degrees of freedom diverge instead of a spurious maximum on the flat ridge.
 TAU_BOUNDS = {"t": (-12.0, math.log(1000.0)), "ged": (-2.5, 4.0)}
+# Reported parameters of each distribution, in the order of the parameter vector.
+PARAMETERS = {"normal": (), "t": ("/lndfm2",), "ged": ("/lnshape",),
+              "skewt": ("/lndfm2", "/atlambda"), "sged": ("/lnshape", "/lnxi")}
+SKEWED = skewed.SKEWED
+
+
+def _pair(tau) -> tuple[float, float]:
+    values = [float(value) for value in tau]
+    return values[0], values[1]
 
 
 def _digamma(value: float) -> float:
     return float(torch.digamma(torch.tensor(value, dtype=torch.float64)))
 
 
-def feasible(dist: str, tau: float) -> bool:
+def feasible(dist: str, tau) -> bool:
     if dist == "normal":
         return True
+    if dist in SKEWED:
+        return skewed.feasible(dist, _pair(tau))
     low, high = TAU_BOUNDS[dist]
     return low < tau < high
 
 
-def shape_value(dist: str, tau: float) -> float | None:
-    """Degrees of freedom (t) or shape (GED) implied by the reported parameter."""
+def shape_value(dist: str, tau) -> float | None:
+    """Degrees of freedom (t, skewt) or shape (GED, sged) implied by the first parameter."""
+    if dist in SKEWED:
+        return skewed.natural(dist, (float(tau), 0.0))[0]
     if dist == "t":
         return 2.0 + math.exp(tau)
     if dist == "ged":
@@ -74,7 +94,12 @@ def log_density(dist: str, e: Tensor, h: Tensor, tau: float = 0.0, derivatives: 
     of observations whose kernel ``|z / lam|^s`` is taken as zero whatever e_t: the
     observations held at z_t = 0 by a kink of the EGARCH likelihood, where the kernel
     vanishes but its second derivative is unbounded for s < 2 (see ``kinks``).
+
+    For the skewed distributions ``tau`` is the pair of reported parameters and
+    ``dl/dtau`` is ``[2, T]``.
     """
+    if dist in SKEWED:
+        return skewed.log_density(dist, e, h, _pair(tau), derivatives)
     log_h = h.log()
     if dist == "normal":
         z2 = e.square() / h
@@ -118,8 +143,10 @@ def log_density(dist: str, e: Tensor, h: Tensor, tau: float = 0.0, derivatives: 
     raise ValueError(f"Unknown distribution {dist!r}.")
 
 
-def abs_moment(dist: str, power: float, tau: float = 0.0) -> float:
+def abs_moment(dist: str, power: float, tau=0.0) -> float:
     """E|z|^power of the unit-variance innovation (``inf`` when it does not exist)."""
+    if dist in SKEWED:
+        return skewed.abs_moment(dist, power, _pair(tau))
     if dist == "normal":
         return 2.0 ** (0.5 * power) * math.gamma(0.5 * (power + 1.0)) / math.sqrt(math.pi)
     if dist == "t":
@@ -136,8 +163,25 @@ def abs_moment(dist: str, power: float, tau: float = 0.0) -> float:
     return math.exp(log_value)
 
 
+def negative_share(dist: str, tau=0.0) -> float:
+    """E[z^2 1(z < 0)]: 1/2 for the symmetric densities."""
+    if dist in SKEWED:
+        return skewed.negative_share(dist, _pair(tau))
+    return 0.5
+
+
+def quantiles(dist: str, alpha: float, tau=0.0) -> tuple[float, float]:
+    """(q_(alpha/2), q_(1-alpha/2)) of the unit-variance innovation."""
+    if dist in SKEWED:
+        pair = _pair(tau)
+        return (skewed.quantile(dist, 0.5 * alpha, pair),
+                skewed.quantile(dist, 1.0 - 0.5 * alpha, pair))
+    critical = critical_value(dist, alpha, tau)
+    return -critical, critical
+
+
 def critical_value(dist: str, alpha: float, tau: float = 0.0) -> float:
-    """c with P(|z| > c) = alpha for the unit-variance innovation."""
+    """c with P(|z| > c) = alpha for the unit-variance innovation (symmetric densities)."""
     if dist == "normal":
         return normal_isf(0.5 * alpha)
     if dist == "t":

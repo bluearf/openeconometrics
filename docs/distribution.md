@@ -6,28 +6,28 @@ without installing the web server, CLI, MCP or additional file readers.
 ## Published PyPI alpha
 
 The published public package pair is
-[openecon 0.3.18a4](https://pypi.org/project/openecon/0.3.18a4/) and
-[openecon-charts 0.3.0a2](https://pypi.org/project/openecon-charts/0.3.0a2/).
+[openecon 0.3.19a1](https://pypi.org/project/openecon/0.3.19a1/) and
+[openecon-charts 0.3.1a1](https://pypi.org/project/openecon-charts/0.3.1a1/).
 It follows the reviewed public snapshot and its `SOURCE-MANIFEST.json`.
 Use an explicit prerelease version pin on Python 3.11–3.14:
 
 ```sh
-python -m pip install 'openecon==0.3.18a4'
+python -m pip install 'openecon==0.3.19a1'
 ```
 
-The SDK requires exactly `openecon-charts==0.3.0a2`. For charts alone, run
-`python -m pip install 'openecon-charts==0.3.0a2'`; it has no required Python dependencies.
+The SDK requires exactly `openecon-charts==0.3.1a1`. For charts alone, run
+`python -m pip install 'openecon-charts==0.3.1a1'`; it has no required Python dependencies.
 
 | Installation | Included application layer |
 | --- | --- |
-| `python -m pip install 'openecon==0.3.18a4'` | Scientific library and openecon-charts |
-| `python -m pip install 'openecon[files]==0.3.18a4'` | Excel and Stata readers |
-| `python -m pip install 'openecon[cli]==0.3.18a4'` | Command-line interface |
-| `python -m pip install 'openecon[server]==0.3.18a4'` | Local HTTP workspace service |
-| `python -m pip install 'openecon[agent]==0.3.18a4'` | MCP service |
-| `python -m pip install 'openecon[app]==0.3.18a4'` | Files, CLI, server and agent together |
-| `python -m pip install 'openecon[desktop]==0.3.18a4'` | Application plus bundled pip/uv tooling |
-| `python -m pip install 'openecon[cloud]==0.3.18a4'` | Application plus authentication/storage services |
+| `python -m pip install 'openecon==0.3.19a1'` | Scientific library and openecon-charts |
+| `python -m pip install 'openecon[files]==0.3.19a1'` | Excel and Stata readers |
+| `python -m pip install 'openecon[cli]==0.3.19a1'` | Command-line interface |
+| `python -m pip install 'openecon[server]==0.3.19a1'` | Local HTTP workspace service |
+| `python -m pip install 'openecon[agent]==0.3.19a1'` | MCP service |
+| `python -m pip install 'openecon[app]==0.3.19a1'` | Files, CLI, server and agent together |
+| `python -m pip install 'openecon[desktop]==0.3.19a1'` | Application plus bundled pip/uv tooling |
+| `python -m pip install 'openecon[cloud]==0.3.19a1'` | Application plus authentication/storage services |
 
 The table describes optional Python layers for the published version. Native
 Mac installers are available through the
@@ -35,7 +35,7 @@ Mac installers are available through the
 
 ## Current source and release acceptance
 
-This source checkout uses SDK **0.3.19a1** and charts **0.3.1a1**. Its generated
+This source checkout uses SDK **0.3.20a1** and charts **0.3.2a1**. Its generated
 capability catalogue describes the checkout, including work beyond the published
 PyPI snapshot. These candidate versions require their own public-source, package
 installation and PyPI publication acceptance before replacing the published pair.
@@ -43,7 +43,7 @@ Use `uv sync --frozen --extra app` for the local application,
 `--extra cli` for the CLI, and `--extra desktop` for freezing. The launcher and
 locked runtime exporter select their extras explicitly.
 
-Desktop candidate **0.3.44** retains its own installed-app and public-release
+Desktop candidate **0.3.46** retains its own installed-app and public-release
 acceptance. Mac installers require Apple Silicon and macOS 15 or later;
 Developer ID signing and notarization remain pending. Method-specific device
 contracts retain their documented scope: supported Mac Metal factors use float32

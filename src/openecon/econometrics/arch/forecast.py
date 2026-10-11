@@ -9,8 +9,9 @@ future innovations replaced by their expectations given the sample:
                      y^_(n+k) = x_(n+k)'b + psi g(h^_(n+k)) + u^_(n+k)
 
 where observed periods use the actual innovations and variances and future periods use
-E[e^2] = h^, E[e^2 1(e<0)] = h^/2 (GARCH, GJR, IGARCH: the recursion then yields the
-exact conditional expectation E_n[h_(n+k)]), E[z] = 0 and E|z| - sqrt(2/pi) (EGARCH) or
+E[e^2] = h^, E[e^2 1(e<0)] = s h^ with s = E[z^2 1(z<0)] (1/2 for the symmetric
+densities; GARCH, GJR, IGARCH: the recursion then yields the exact conditional
+expectation E_n[h_(n+k)]), E[z] = 0 and E|z| - sqrt(2/pi) (EGARCH) or
 E|e|^phi = E|z|^phi s^ (power ARCH). For EGARCH and power ARCH the reported variance
 is the transformation of the forecast state, exp(E_n[ln h]) and (E_n[s])^(2/phi): exact
 one step ahead, and beyond that the usual plug-in forecast (Stata's dynamic ``predict,
@@ -35,7 +36,8 @@ from openecon.analysis import _coerce_frame, _numeric
 from openecon.analysis_contracts import AnalysisError
 from openecon.econometrics.arch import densities
 from openecon.econometrics.arch.estimators import prepare
-from openecon.econometrics.arch.kernels import ArchLikelihood
+from openecon.econometrics.arch.extended import likelihood
+from openecon.econometrics.arch.kernels import distribution_parameters
 from openecon.econometrics.arch.layout import Layout, read_layout
 from openecon.econometrics.arch.postfit import state_record
 from openecon.econometrics.core import table
@@ -106,7 +108,7 @@ def _state_from_data(result: ResultBundle, layout: Layout, terms: list[str], the
                             "rebuild the model's state.")
     x = prepared.design.x[:, [prepared.design.terms.index(term) for term in x_terms]]
     z = prepared.z[:, [prepared.z_terms.index(term) for term in z_terms]]
-    like = ArchLikelihood(prepared.y, x.contiguous(), z.contiguous(), layout)
+    like = likelihood(prepared.y, x.contiguous(), z.contiguous(), layout)
     evaluation = like.evaluate(theta, derivatives=False)
     if evaluation is None:
         raise AnalysisError("invalid_data", "The fitted model does not define a positive, finite "
@@ -129,6 +131,71 @@ def _check_state(state: Any, layout: Layout) -> None:
         raise problem
     if any(not value > 0.0 for value in series[2]):
         raise problem
+
+
+def _extended_variance(layout: Layout, theta: Tensor, state: dict[str, Any],
+                       steps: int) -> list[float] | None:
+    """Conditional expectations E_n[h_(n+k)] of the extended models (``None`` otherwise).
+
+    Component GARCH: with x = (h, q), E_n[x_(n+1)] is the recursion at the last actual
+    s_n = e_n^2, and beyond it E[s] = h gives E_n[q_(n+k)] = w + rho^(k-1) (q_(n+1) - w),
+    w = omega / (1 - rho), and E_n[h_(n+k) - q_(n+k)] = (alpha + beta)^(k-1)
+    (h_(n+1) - q_(n+1)) (Engle and Lee 1999): exact conditional expectations.
+
+    FIGARCH: E_n[h_(n+k)] = omega / (1 - beta) + sum_i lambda_i E_n[e_(n+k-i)^2] with the
+    actual squared innovations in the sample, h_0 before it and E_n[e^2] = E_n[h] beyond
+    it (the truncated ARCH(infinity) recursion; exact conditional expectations).
+    """
+    if layout.kind == "figarch":
+        return _figarch_variance(layout, theta, state, steps)
+    if layout.kind != "cgarch":
+        return None
+    ix = layout.index
+    alpha, beta = float(theta[ix.a[0]]), float(theta[ix.b[0]])
+    rho, phi, omega = float(theta[ix.r[0]]), float(theta[ix.r[1]]), float(theta[ix.c])
+    permanent = state.get("permanent")
+    if not isinstance(permanent, list) or len(permanent) != 1 \
+            or isinstance(permanent[0], bool) or not isinstance(permanent[0], (int, float)) \
+            or not math.isfinite(permanent[0]):
+        raise AnalysisError("invalid_result", "The result does not carry the permanent "
+                            "variance component of the fitted CGARCH model (extra['state']).")
+    s, h, q = state["residuals"][-1] ** 2, state["variances"][-1], float(permanent[0])
+    q_next = omega + rho * q + phi * (s - h)
+    h_next = q_next + alpha * (s - q) + beta * (h - q)
+    path, transitory = [], h_next - q_next
+    for _ in range(steps):
+        path.append(q_next + transitory)
+        q_next = omega + rho * q_next
+        transitory *= alpha + beta
+    return path
+
+
+def _figarch_variance(layout: Layout, theta: Tensor, state: dict[str, Any],
+                      steps: int) -> list[float]:
+    from openecon.econometrics.arch.extended import figarch_weights
+
+    ix, count = layout.index, layout.truncation
+    phi = float(theta[ix.a[0]]) if ix.a else 0.0
+    beta = float(theta[ix.b[0]]) if ix.b else 0.0
+    weights, _ = figarch_weights(phi, float(theta[ix.r[0]]), beta, count)
+    stored, h0 = state.get("squared_residuals"), state.get("presample_variance")
+    if not isinstance(stored, list) or not stored or len(stored) > count or any(
+            isinstance(value, bool) or not isinstance(value, (int, float))
+            or not math.isfinite(value) or value < 0.0 for value in stored) \
+            or isinstance(h0, bool) or not isinstance(h0, (int, float)) or not h0 > 0.0:
+        raise AnalysisError("invalid_result", "The result does not carry the squared "
+                            "innovations of the fitted FIGARCH model (extra['state']).")
+    # history[-i] is E_n[e^2] i periods back; presample periods hold h_0.
+    history = torch.full((count + steps,), float(h0), dtype=torch.float64)
+    history[count - len(stored):count] = torch.tensor(stored, dtype=torch.float64)
+    reversed_weights = weights.flip(0)
+    level = float(theta[ix.c]) / (1.0 - beta)
+    path = []
+    for step in range(steps):
+        value = level + float(torch.dot(reversed_weights, history[step:step + count]))
+        history[count + step] = value
+        path.append(value)
+    return path
 
 
 def arch_forecast(result: ResultBundle, steps: int, *, data: Any = None, exog: Any = None,
@@ -160,7 +227,8 @@ def arch_forecast(result: ResultBundle, steps: int, *, data: Any = None, exog: A
 
     Variance forecasts continue the fitted recursion with future squared innovations at
     their expectation: for GARCH, GJR and IGARCH models
-    ``h^_(n+k) = omega + sum (a_i + g_i/2) h^_(n+k-i) + sum b_j h^_(n+k-j)`` once all lags
+    ``h^_(n+k) = omega + sum (a_i + s g_i) h^_(n+k-i) + sum b_j h^_(n+k-j)`` once all lags
+    (s = E[z^2 1(z<0)], 1/2 for symmetric innovations)
     are in the future, which converges to the unconditional variance at the rate of the
     persistence (and grows linearly for IGARCH with a positive constant). EGARCH and
     power-ARCH forecasts beyond one step are the plug-in forecasts exp(E[ln h]) and
@@ -168,7 +236,8 @@ def arch_forecast(result: ResultBundle, steps: int, *, data: Any = None, exog: A
     term at the forecast variance and the ARMA forecast of the disturbance. Its
     ``std_error`` is ``sqrt(sum_(j<k) psi_j^2 h^_(n+k-j))`` with the MA(infinity) weights of
     the ARMA part (simply ``sqrt(h^_(n+k))`` without ARMA terms); the interval uses the
-    quantile of the fitted innovation distribution and is exact one step ahead.
+    lower and upper quantiles of the fitted innovation distribution (asymmetric for the
+    skewed densities) and is exact one step ahead.
     Parameter uncertainty is ignored, as in Stata's ``predict`` and EViews.
 
     Stata: ``tsappend, add(k)`` then ``predict v, variance dynamic(...)`` and
@@ -218,7 +287,7 @@ def arch_forecast(result: ResultBundle, steps: int, *, data: Any = None, exog: A
     else:
         omega = [float(theta[ix.c])] * steps
 
-    tau = float(theta[ix.d[0]]) if ix.d else 0.0
+    tau = distribution_parameters(theta, ix)
     phi = float(theta[ix.p[0]]) if ix.p else 2.0
     psi = float(theta[ix.m[0]]) if ix.m else 0.0
     a, b = theta[ix.a].tolist(), theta[ix.b].tolist()
@@ -245,34 +314,41 @@ def arch_forecast(result: ResultBundle, steps: int, *, data: Any = None, exog: A
         news1 = [e * e for e in residuals]
         news2 = [e * e if e < 0.0 else 0.0 for e in residuals]
         states = list(variances)
+        share = densities.negative_share(layout.dist, tau) if kind == "gjr" else 0.5
 
     variance, mean = [], []
+    extended = _extended_variance(layout, theta, state, steps)
     try:
         for step in range(steps):
-            v = omega[step]
-            for value, lag in zip(a, layout.arch_lags):
-                v += value * news1[-lag]
-            if layout.asymmetric:
-                for value, lag in zip(g, layout.arch_lags):
-                    v += value * news2[-lag]
-            for value, lag in zip(b, layout.garch_lags):
-                v += value * states[-lag]
-            if kind == "egarch":
-                h = math.exp(v)
-                news1.append(0.0)
-                news2.append(expected2)
-            elif kind == "parch":
-                if not v > 0.0:
+            if extended is not None:
+                h = extended[step]
+                if not (h > 0.0 and math.isfinite(h)):
                     raise ValueError
-                h = v ** (2.0 / phi)
-                news1.append(moment * v)
             else:
-                if not v > 0.0:
-                    raise ValueError
-                h = v
-                news1.append(h)
-                news2.append(0.5 * h)
-            states.append(v)
+                v = omega[step]
+                for value, lag in zip(a, layout.arch_lags):
+                    v += value * news1[-lag]
+                if layout.asymmetric:
+                    for value, lag in zip(g, layout.arch_lags):
+                        v += value * news2[-lag]
+                for value, lag in zip(b, layout.garch_lags):
+                    v += value * states[-lag]
+                if kind == "egarch":
+                    h = math.exp(v)
+                    news1.append(0.0)
+                    news2.append(expected2)
+                elif kind == "parch":
+                    if not v > 0.0:
+                        raise ValueError
+                    h = v ** (2.0 / phi)
+                    news1.append(moment * v)
+                else:
+                    if not v > 0.0:
+                        raise ValueError
+                    h = v
+                    news1.append(h)
+                    news2.append(share * h)
+                states.append(v)
             u = sum(value * disturbances[-lag] for value, lag in zip(rho, layout.ar_lags)) \
                 + sum(value * residuals[-lag] for value, lag in zip(tma, layout.ma_lags))
             disturbances.append(u)
@@ -308,15 +384,15 @@ def arch_forecast(result: ResultBundle, steps: int, *, data: Any = None, exog: A
     if not all(bool(torch.isfinite(values).all()) for values in (point, variance_t, std_error)):
         raise AnalysisError("non_finite_result", "The forecasts are not finite; the fitted model "
                             "is explosive over this horizon.")
-    critical = densities.critical_value(layout.dist, alpha, tau)
+    low, high = densities.quantiles(layout.dist, alpha, tau)
     last = state.get("last_period")
     periods = list(range(1, steps + 1)) if last is None else [last + k for k in range(1, steps + 1)]
     plug_in = kind in {"egarch", "parch"}
     return table(
         {"period": periods, "mean_forecast": point.tolist(),
          "variance_forecast": variance_t.tolist(), "std_error": std_error.tolist(),
-         "ci_low": (point - critical * std_error).tolist(),
-         "ci_high": (point + critical * std_error).tolist()},
+         "ci_low": (point + low * std_error).tolist(),
+         "ci_high": (point + high * std_error).tolist()},
         title=f"Forecasts of {result.spec.outcome}: {layout.label()}",
         model=layout.label(), outcome=result.spec.outcome, steps=steps, alpha=alpha,
         confidence_level=1.0 - alpha, origin=origin,
@@ -326,4 +402,5 @@ def arch_forecast(result: ResultBundle, steps: int, *, data: Any = None, exog: A
             "exact one step ahead" if plug_in else
             "conditional expectation of h given the sample"),
         std_error_definition="innovation uncertainty only (no parameter uncertainty)",
-        interval_distribution=layout.dist, critical_value=critical)
+        interval_distribution=layout.dist, critical_value=max(-low, high),
+        interval_quantiles=[low, high])

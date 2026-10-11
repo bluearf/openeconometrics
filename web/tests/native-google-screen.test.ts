@@ -29,12 +29,13 @@ const component = readFileSync(
   "utf8",
 );
 const source =
-  `import {useState,useRef,useEffect} from ${JSON.stringify(pathToFileURL(require.resolve("react")).href)};
+  `import {useState,useRef,useEffect,useMemo} from ${JSON.stringify(pathToFileURL(require.resolve("react")).href)};
 const isDesktop=()=>true;
 const Brand=()=> <div>OpenEconometrics</div>;
 const Notice=({children})=> <p>{children}</p>;
 const message=error=>error.message;
-const sendPasswordResetEmail=async()=>{},signInWithEmailAndPassword=async()=>{};
+const EmailCodeSession=class { cancel() {} };
+const EmailCodeForm=({disabled})=><button disabled={disabled}>Send sign-in code</button>;
 const startGoogleSignIn=(auth,popup,progress,options)=>globalThis.__nativeScreen.start(progress,options);
 ` +
   component.slice(
@@ -84,7 +85,7 @@ async function harness() {
       React.createElement(AuthScreen, {
         auth: {},
         invitation: false,
-        onSignup: async () => {},
+        emailCodeAvailable: true,
       }),
     ),
   );
@@ -108,10 +109,10 @@ test("cancel releases the form and old completion cannot release a newer attempt
   const h = await harness();
   try {
     await h.click("Continue with Google");
-    assert.equal(h.button("Please wait…").disabled, true);
+    assert.equal(h.button("Send sign-in code").disabled, true);
     await h.click("Cancel Google sign-in");
     assert.equal(h.attempts[0].signal.aborted, true);
-    assert.equal(h.button("Sign in").disabled, false);
+    assert.equal(h.button("Send sign-in code").disabled, false);
     await h.click("Continue with Google");
     await React.act(async () => h.attempts[0].resolve());
     assert.equal(h.button("Waiting for Google sign-in…").disabled, true);
@@ -122,14 +123,14 @@ test("cancel releases the form and old completion cannot release a newer attempt
     await h.close();
   }
 });
-test("switching to password recovery cancels approval; unmount and page close abort polling", async () => {
+test("cancelling Google enables email sign-in; unmount and page close abort polling", async () => {
   const h = await harness();
   try {
     await h.click("Continue with Google");
-    await h.click("Forgot password");
+    await h.click("Cancel Google sign-in");
     assert.equal(h.attempts[0].signal.aborted, true);
-    assert.match(h.holder.textContent!, /Reset password/);
-    await h.click("← Back to sign-in");
+    assert.equal(h.button("Send sign-in code").disabled, false);
+    assert.equal(h.holder.querySelectorAll('input[type="password"]').length, 0);
     await h.click("Continue with Google");
     await React.act(async () => window.dispatchEvent(new Event("pagehide")));
     assert.equal(h.attempts[1].signal.aborted, true);
@@ -156,9 +157,10 @@ test("a network failure permits retry; cancellation cannot interrupt the identit
       ),
       false,
     );
-    assert.equal(h.button("Forgot password").disabled, true);
+    assert.equal(h.button("Continue with Google").disabled, true);
+    assert.equal(h.button("Send sign-in code").disabled, true);
     await React.act(async () => h.attempts[1].resolve());
-    assert.equal(h.button("Sign in").disabled, false);
+    assert.equal(h.button("Send sign-in code").disabled, false);
   } finally {
     await h.close();
   }

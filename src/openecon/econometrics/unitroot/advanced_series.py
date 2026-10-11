@@ -27,9 +27,15 @@ from openecon.econometrics.unitroot.series import nested_adf
 from openecon.resources import plan_workspace, workspace_budget_bytes
 
 NG_SOURCE = "https://www.columbia.edu/~sn2294/pub/ecta01.pdf"
+NG_CALIBRATION = {
+    "constant": "published_table_replicated",
+    "trend": "published_trend_row_inconsistent_with_theorem1_limit",
+}
 KSS_SOURCE = "https://www.econ.ed.ac.uk/papers/id69_esedps.pdf"
 LEVELS = ("1%", "5%", "10%")
-# Ng & Perron (2001), Econometrica 69, Table I, p. 1524.
+# Ng & Perron (2001), Econometrica 69, Table I, p. 1524. Only the constant row
+# is used for inference: it passed the preregistered 2026-10-10 replication
+# (MARKET-136). The trend row is inconsistent with the Theorem-1 limit.
 NG_CRITICAL = {
     "constant": {
         "MZa": (-13.8, -8.1, -5.7),
@@ -134,7 +140,7 @@ def ngperron(
     max_memory_mb: int = 256,
     max_work: int = 100_000_000,
 ):
-    """Ng--Perron MZa/MZt/MSB/MPT statistics; calibrated inference pending.
+    """Ng--Perron MZa/MZt/MSB/MPT statistics with constant-case Table I inference.
 
     H0: a unit root; H1: level/trend stationarity. All four reject in the lower
     tail. trend='constant' uses GLS c=-7, 'trend' c=-13.5. n levels are y_0..y_T
@@ -146,19 +152,22 @@ def ngperron(
 
     Missing/repeated/gapped integer calendars and singular/exact fits fail.
     Datetime calendars require explicit conversion to consecutive integers.
-    inference='none' returns statistics only, p_value=None and no critical
-    values or rejection decisions. Published-table calibration did not pass
-    independent replication; inference='published' refuses until MARKET-136
-    resolves that discrepancy. This procedure cannot currently decide H0.
+    inference='none' (default) returns statistics only, with no critical values
+    or rejection decisions. inference='published' with trend='constant' adds
+    Table I asymptotic 1/5/10% lower-tail critical values and rejection flags;
+    that row passed a preregistered Theorem-1 replication. p_value is always
+    None. The published trend row is inconsistent with the Theorem-1 limit, so
+    trend='trend' with inference='published' raises critical_values_unverified.
     Resource limits plan complete resident tensor buffers and QR work, excluding
     caller input, initial DataFrame coercion, Python/BLAS/allocator overhead.
     """
     check_choice(trend, "trend", ("constant", "trend"))
     check_choice(inference, "inference", ("none", "published"))
-    if inference == "published":
+    if inference == "published" and trend == "trend":
         raise AnalysisError(
             "critical_values_unverified",
-            "Ng--Perron published-table calibration is unresolved (MARKET-136). Use inference='none' for statistics only.",
+            "The published Ng--Perron trend critical values are inconsistent with their Theorem-1 "
+            "limit (MARKET-136). Use inference='none' for trend statistics only.",
         )
     if lags is not None and maxlag is not None:
         raise AnalysisError("invalid_lags", "Supply fixed lags or MAIC maxlag, not both.")
@@ -219,18 +228,49 @@ def ngperron(
             "numerical_failure",
             "Ng--Perron statistics are numerically unresolved; rescale the input.",
         )
+    published = inference == "published"
+    if published:
+        cvs = NG_CRITICAL[trend]
+        rows = [_row(name, value, cvs[name]) for name, value in statistics.items()]
+        critical_values = {name: dict(zip(LEVELS, cvs[name], strict=True)) for name in statistics}
+        reject = {
+            name: {level: value < cv for level, cv in zip(LEVELS, cvs[name], strict=True)}
+            for name, value in statistics.items()
+        }
+    else:
+        rows = [
+            {"test": name, "statistic": value, "p_value": None}
+            for name, value in statistics.items()
+        ]
+        critical_values = reject = None
+    if published:
+        notes = [
+            "Table I asymptotic lower-tail critical values (constant row, GLS c=-7); no p-value or finite-sample size guarantee.",
+            "At the 1% level the published MSB and MPT thresholds are conservative: exact limiting size is about 0.57% and 0.69%.",
+        ]
+    elif trend == "trend":
+        notes = [
+            "Statistics only: the published trend critical values are inconsistent with their Theorem-1 limit (MARKET-136).",
+        ]
+    else:
+        notes = ["Statistics only. Use inference='published' for Table I critical values and rejection flags."]
+    notes.append(
+        "Short-memory innovations and adequate AR augmentation are required; underfitting can distort size."
+    )
     return table(
-        [{"test": name, "statistic": value, "p_value": None} for name, value in statistics.items()],
+        rows,
         test="ngperron",
         label="Ng--Perron GLS M tests",
         statistic=mza,
         statistics=statistics,
         p_value=None,
-        critical_values=None,
-        reject=None,
+        critical_values=critical_values,
+        reject=reject,
         inference=inference,
-        calibration_status="unresolved_published_table_replication",
-        distribution=None,
+        calibration_status=NG_CALIBRATION[trend],
+        distribution="Ng--Perron Theorem 1 asymptotic lower-tail distribution (GLS c=-7)"
+        if published
+        else None,
         null="Unit root",
         alternative="Level stationarity" if trend == "constant" else "Trend stationarity",
         trend=trend,
@@ -259,10 +299,7 @@ def ngperron(
         device="cpu",
         resource_plan=plan,
         estimated_work=work,
-        notes=[
-            "Statistics only: published critical-value calibration failed independent replication; no rejection decisions are supplied (MARKET-136).",
-            "Short-memory innovations and adequate AR augmentation are required; underfitting can distort size.",
-        ],
+        notes=notes,
     )
 
 

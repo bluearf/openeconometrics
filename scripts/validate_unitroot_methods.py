@@ -31,10 +31,10 @@ def wilson(success, total):
     return [float(center - radius), float(center + radius)]
 
 
-def calibration():
+def calibration(ngperron_seed):
     records = []
     for method, draws, steps, seed in [
-        ("ngperron", 20_000, 5_000, 136001),
+        ("ngperron", 20_000, 5_000, ngperron_seed),
         ("kss", 100_000, 1_000, 137001),
     ]:
         rng = np.random.default_rng(seed)
@@ -125,6 +125,13 @@ def calibration():
     return records
 
 
+def grid_options(method, trend, dgp):
+    if method == "kss":
+        return {"lags": 4 if dgp == "ar04_unit_root" else 0}
+    # Published Ng--Perron inference exists only for the constant case.
+    return {"maxlag": 8, "inference": "published" if trend == "constant" else "none"}
+
+
 def finite_grid():
     records = []
     repetitions = 250
@@ -169,22 +176,32 @@ def finite_grid():
                     for trend in trends:
                         key = (method, trend)
                         cell = cells.setdefault(
-                            key, dict(rejections={}, failures=0, error_codes={})
+                            key,
+                            dict(rejections={}, failures=0, error_codes={}, published_mismatches=0),
                         )
                         try:
-                            options = (
-                                {"maxlag": 8}
-                                if method == "ngperron"
-                                else {"lags": 4 if dgp == "ar04_unit_root" else 0}
-                            )
+                            options = grid_options(method, trend, dgp)
                             result = getattr(oe, method)(data, "y", trend=trend, **options)
                             for row in result.to_dict("records"):
+                                published = options.get("inference", "published") == "published"
+                                if published:
+                                    cvs = (
+                                        NG_CRITICAL[trend][row["test"]]
+                                        if method == "ngperron"
+                                        else KSS_CRITICAL[trend]
+                                    )
+                                    consistent = all(
+                                        row[f"critical_{percent}pct"] == cv
+                                        and row[f"reject_{percent}pct"] == (row["statistic"] < cv)
+                                        for percent, cv in zip((1, 5, 10), cvs, strict=True)
+                                    )
+                                    cell["published_mismatches"] += int(not consistent)
                                 cell["rejections"][row["test"]] = cell["rejections"].get(
                                     row["test"], 0
                                 ) + int(
-                                    row["statistic"] < NG_CRITICAL[trend][row["test"]][1]
-                                    if method == "ngperron"
-                                    else row["reject_5pct"]
+                                    row["reject_5pct"]
+                                    if published
+                                    else row["statistic"] < NG_CRITICAL[trend][row["test"]][1]
                                 )
                         except Exception as e:
                             cell["failures"] += 1
@@ -201,9 +218,8 @@ def finite_grid():
                         replications=repetitions,
                         failures=cell["failures"],
                         error_codes=cell["error_codes"],
-                        options={"maxlag": 8}
-                        if method == "ngperron"
-                        else {"lags": 4 if dgp == "ar04_unit_root" else 0},
+                        published_mismatches=cell["published_mismatches"],
+                        options=grid_options(method, trend, dgp),
                         tests={
                             name: dict(
                                 rejections=count,
@@ -221,30 +237,47 @@ def finite_grid():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
+    # 136001 reproduces the 2026-10-07 receipt; 20261010 is the preregistered
+    # constant-case acceptance seed (docs/evidence/ngperron-constant-2026-10-10).
+    parser.add_argument("--ngperron-seed", type=int, default=136001)
     args = parser.parse_args()
     if args.output.exists():
         parser.error("Choose a new receipt path.")
     torch.set_num_threads(1)
     start = time.monotonic()
-    calibration_records = calibration()
+    calibration_records = calibration(args.ngperron_seed)
     grid = finite_grid()
     source = ROOT / "src/openecon/econometrics/unitroot/advanced_series.py"
-    method_status = {}
-    for method in ("ngperron", "kss"):
-        complete = all(
+
+    def accepted(selected):
+        return all(
             check["passed"]
             for item in calibration_records
-            if item["method"] == method
+            if selected(item)
             for check in item["checks"]
+        ) and all(
+            item["failures"] == 0 and item["published_mismatches"] == 0
+            for item in grid
+            if selected(item)
         )
-        complete = complete and all(
-            item["failures"] == 0 for item in grid if item["method"] == method
-        )
-        method_status[method] = "passed" if complete else "unresolved"
+
+    method_status = {
+        method: "passed" if accepted(lambda item: item["method"] == method) else "unresolved"
+        for method in ("ngperron", "kss")
+    }
+    # Acceptance units are (method, trend); each unit is decided on its own.
+    acceptance_units = {
+        f"{method}/{trend}": "passed"
+        if accepted(lambda item: (item["method"], item["trend"]) == (method, trend))
+        else "unresolved"
+        for method, trend in sorted({(item["method"], item["trend"]) for item in calibration_records})
+    }
     passed = all(value == "passed" for value in method_status.values())
     record = dict(
         status="passed" if passed else "partial",
         method_status=method_status,
+        acceptance_units=acceptance_units,
+        ngperron_seed=args.ngperron_seed,
         source_sha256=hashlib.sha256(source.read_bytes()).hexdigest(),
         validator_sha256=hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         python=platform.python_version(),

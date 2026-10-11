@@ -51,16 +51,23 @@ failure aborts the call; it cannot silently shrink the draw denominator.
 `T*log(SSR/T) + ((k+1)*q+k)*log(T)`. This includes estimated break dates in the
 penalty. BIC selects a model; the calibrated tests address **no break**, rather
 than the selected number of breaks. `coefficients` and `covariance` describe
-the selected partition. Covariance uses a common pooled error variance and is
-conditional on the estimated dates. **It is not selective inference**: there
-are no coefficient p-values or confidence intervals, no date confidence
-intervals, and no sequential `k` versus `k+1` test.
+the selected partition. With iid errors the covariance uses a common pooled
+error variance; it is conditional on the estimated dates. **It is not selective
+inference**: there are no coefficient p-values or coefficient confidence
+intervals.
 
-The `errors` argument accepts only `"iid_gaussian"`. HAC, heteroskedastic,
-autoregressive-error and partial-change models are unsupported. An iid
-assumption cannot be diagnosed automatically from arbitrary observed data;
-the caller must justify it. No general Stata, EViews or full Bai–Perron parity
-claim follows from this bounded contract.
+`errors="heteroskedastic"` and `errors="hac"` (Bai and Perron's segment-wise
+quadratic-spectral HAC, optional prewhitening) give robust supF(k), UDmax and
+WDmax with Bai–Perron asymptotic critical values; every error type also reports
+the asymptotic-table tests, the sequential supF(ℓ+1|ℓ) tests with their
+selection rule (`selection`, `level`) and Bai (1997) / Bai–Perron break-date
+intervals allowing regime-specific moments. Those extensions, their sources,
+conventions and validation are documented in
+[advanced-unitroot-breaks.md](advanced-unitroot-breaks.md). Partial-change
+models remain unsupported. An iid assumption cannot be diagnosed automatically
+from arbitrary observed data; the caller must justify the chosen error
+contract. No general Stata, EViews or full Bai–Perron parity claim follows from
+this bounded contract.
 
 The quadratic search is explicitly bounded: at most 1000 rows, eight parameters,
 five breaks and 9999 null draws, subject to a more restrictive 256 MiB planned

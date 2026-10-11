@@ -10,8 +10,9 @@ jobs and the web job succeed. Failed, cancelled and skipped prerequisites fail
 this gate. The strict current-base repository rule remains enabled.
 
 Quick checks cover core estimator/reference results, bounded conjoint covariance/target oracles, data readers, LaTeX/saved
-output, package metadata, process cleanup and small full-gate authentication
-fixtures (including the daily job name and scheduled-event binding). Python 3.13 also checks Ruff and
+output, package metadata, process cleanup, the BVAR original-author lifecycle
+code pin and small full-gate authentication fixtures (including the daily job
+name and scheduled-event binding). Python 3.13 also checks Ruff and
 the generated capability/editor catalogues. The web job runs the existing web
 and Cloud source-guard tests and builds the application. SDK and web test commands
 have a three-minute limit; job limits include checkout and installation.

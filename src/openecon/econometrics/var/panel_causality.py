@@ -21,7 +21,9 @@ _MAX_WORK_BYTES = 512 * 1024**2
 _MAX_QR_WORK = 2_000_000_000
 
 
-def _panel_sample(data, y, x, panel, time, p):
+def _panel_sample(data, y, x, panel, time, p, minimum=None):
+    """Complete balanced panel on one shared regular grid; ``minimum`` overrides
+    the Dumitrescu--Hurlin period rule with ``periods >= minimum``."""
     names = [y, x, panel, time]
     if not all(isinstance(name, str) and name for name in names) or len(set(names)) != 4:
         raise AnalysisError("invalid_spec", "y, x, panel and time must name distinct nonempty columns.")
@@ -55,9 +57,12 @@ def _panel_sample(data, y, x, panel, time, p):
         raise AnalysisError("insufficient_panels", "At least two panel units are required.")
     if not bool((counts == total).all()):
         raise AnalysisError("unbalanced_panel", "This validated route requires a balanced panel.")
-    if total <= 3 * p + 5:
+    if minimum is None and total <= 3 * p + 5:
         raise AnalysisError("insufficient_observations", "Dumitrescu--Hurlin Ztilde requires "
                             "more than 3*lags+5 complete periods in every unit.")
+    if minimum is not None and total < minimum:
+        raise AnalysisError("insufficient_observations", f"Every unit needs at least {minimum} "
+                            "complete periods for the requested lags and SUR covariance.")
     usable, m = total - p, 2 * p + 1
     work_bytes = 4 * input_bytes + 8 * count * (8 * usable * m + 4 * total * 2 + 8 * m * m)
     if work_bytes > _MAX_WORK_BYTES or count * usable * m * m > _MAX_QR_WORK:

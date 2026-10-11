@@ -1337,7 +1337,7 @@ def test_daily_parallel_workflow_keeps_all_eight_jobs_and_full_aggregate():
     assert "merge-gate-${{ github.run_id }}-${{ github.run_attempt }}-python-${{ matrix.sdk }}-shard-${{ matrix.shard }}" in component
     assert "node-version: '24'" in component and "Chrome with its sandbox enabled" in component
     assert "name: OpenEconometrics / daily full gate" in aggregate
-    assert "needs: sdk-components" in aggregate and "if: always()" in aggregate
+    assert "needs: [sdk-components, teaching]" in aggregate and "if: always()" in aggregate
     assert "fetch-depth: 0" in component
     assert "fetch-depth: 2" in aggregate
     assert "sparse-checkout-cone-mode: false" in aggregate
@@ -1356,6 +1356,12 @@ def test_daily_parallel_workflow_keeps_all_eight_jobs_and_full_aggregate():
             assert f'--component "artifacts/ci/components/merge-gate-$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-python-{version}-shard-{shard}"' in aggregate
             assert f'--job-result "{version}:{shard}=$SDK_COMPONENT_RESULT"' in aggregate
     assert "SDK_COMPONENT_RESULT: ${{ needs.sdk-components.result }}" in aggregate
+    assert 'test "$TEACHING_RESULT" = success' in aggregate
+    assert "TEACHING_RESULT: ${{ needs.teaching.result }}" in aggregate
+    teaching, sdk = component.split("\n  sdk-components:\n")
+    assert "needs: preflight" in teaching and "scripts/verify_teaching_labs.py" in teaching
+    assert "scripts/verify_teaching_labs.py" not in sdk
+
     for expected in ("source", "head", "base", "event", "run-id", "run-attempt"):
         assert f"--expected-{expected}" in aggregate
     assert "--publish-repo" not in workflow and "--timeout" not in workflow

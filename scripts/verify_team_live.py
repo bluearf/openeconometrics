@@ -2,14 +2,23 @@
 
 Creates no emails. Test credentials live only in an ignored, mode-0600 local file.
 The sync backend never executes code: `verify` checks that old execution routes
-are refused, never that a cloud analysis runs. Automatic cleanup is disabled:
-ownership inspection cannot enforce quiescence across Firestore, Cloud Storage
-and Firebase Auth.
+are refused, never that a cloud analysis runs.
+
+`prepare` labels every identity with a random session in Firebase Auth. `cleanup
+--confirm-session` removes only that session's resources, and only from a
+service that advertises the reviewed write-quiescence contract
+(`openecon.team_quiescence`): disable and revoke the identities, wait until every
+write admitted for them has finished, re-inventory, delete in order and read
+back. Each phase is journaled in the private state, so an interrupted cleanup
+resumes safely. Anything shared with another account refuses before any change.
 """
 import argparse
 from datetime import datetime
 import json
+import math
+import os
 from pathlib import Path
+import re
 import secrets
 import subprocess
 import time
@@ -22,7 +31,10 @@ from google.oauth2.credentials import Credentials
 import httpx
 
 PROJECT = 'openecon-workbench'
+BUCKET = PROJECT + '-projects'
 STATE = Path('artifacts/team-setup/qa-state.json')
+SESSION_CLAIM = 'openecon_qa_session'
+QA_EMAIL = re.compile(r'openecon-qa-(?:owner|editor|viewer|outsider|unverified)-[0-9a-f]{12}@example\.com')
 def ensure_cleanup_idle(db, project_ids):
     """Read all disposable projects before deleting any project or identity."""
     terminal = {'finished', 'failed', 'cancelled'}
@@ -119,13 +131,311 @@ def _inspect_cleanup_users(db, user_ids, project_ids):
 
 def refuse_automatic_cleanup():
     raise SystemExit(
-        'QA cleanup refused: no enforced admission or quiescence contract exists. '
-        'Automatic deletion is disabled; inspect-cleanup is read-only and cannot authorize deletion.')
+        'QA cleanup refused: quiet flags, receipts and inspection snapshots cannot authorize deletion. '
+        'Automatic deletion is disabled; run `cleanup --confirm-session SESSION`, which enforces '
+        'admission and write quiescence first.')
 
 
 def cleanup_qa(db, blobs, app, state, **claims):
     """Refuse legacy callers without inspecting state or trusting quiet claims."""
     refuse_automatic_cleanup()
+
+
+def _refuse(reason):
+    raise SystemExit('QA cleanup refused: ' + reason + ' No resource was changed by this check.')
+
+
+def require_quiescence_contract(advertised):
+    """Return the wait only for a service enforcing exactly the reviewed contract."""
+    from openecon.team_quiescence import CONTRACT
+    if advertised != CONTRACT:
+        _refuse('the service does not advertise the reviewed write-quiescence contract.')
+    return CONTRACT['quiescence_seconds']
+
+
+class FirebaseIdentities:
+    """The four Firebase Auth operations cleanup needs, bound to one Admin app."""
+
+    def __init__(self, app):
+        self.app = app
+
+    def get(self, uid):
+        try:
+            return auth.get_user(uid, app=self.app)
+        except auth.UserNotFoundError:
+            return None
+
+    def label(self, uid, session):
+        auth.set_custom_user_claims(uid, {SESSION_CLAIM: session}, app=self.app)
+
+    def disable(self, uid):
+        auth.update_user(uid, disabled=True, app=self.app)
+        auth.revoke_refresh_tokens(uid, app=self.app)
+
+    def delete(self, uid):
+        try:
+            auth.delete_user(uid, app=self.app)
+        except auth.UserNotFoundError:
+            pass
+
+
+def _session_users(state):
+    session, users = state.get('session'), state.get('users')
+    if not isinstance(session, str) or not re.fullmatch('[0-9a-f]{32}', session):
+        _refuse('the private QA manifest has no session label; run `label-session` after review.')
+    if not isinstance(users, dict) or not users or any(
+        not isinstance(user, dict) or not isinstance(user.get('uid'), str)
+        or not re.fullmatch('[A-Za-z0-9]{1,128}', user['uid'])
+        or not isinstance(user.get('email'), str) or not QA_EMAIL.fullmatch(user['email'])
+        for user in users.values()
+    ) or len({user['uid'] for user in users.values()}) != len(users):
+        _refuse('invalid disposable identity manifest.')
+    return session, {user['uid']: user['email'] for user in users.values()}
+
+
+def label_session(identities, state):
+    """Label a reviewed legacy manifest's identities; never relabel another session."""
+    if state.get('session') is not None:
+        _refuse('this QA manifest is already labelled.')
+    session = uuid4().hex
+    _, emails = _session_users({**state, 'session': session})
+    for uid, email in emails.items():
+        record = identities.get(uid)
+        if record is None or (record.email or '').lower() != email or record.custom_claims:
+            _refuse('a manifest identity is missing, has another email or already carries claims.')
+    for uid in emails:
+        identities.label(uid, session)
+    state['session'] = session
+    return session
+
+
+def session_identities(identities, state):
+    """Map each manifest UID to its Auth record; None means it no longer exists.
+
+    The Auth label, not the local file alone, proves session ownership.
+    """
+    session, emails = _session_users(state)
+    records = {}
+    for uid, email in emails.items():
+        record = identities.get(uid)
+        if record is not None and (
+            (record.email or '').lower() != email
+            or (record.custom_claims or {}).get(SESSION_CLAIM) != session
+        ):
+            _refuse('a manifest identity is not labelled for this QA session.')
+        records[uid] = record
+    return records
+
+
+def _where(db, collection, field, value):
+    from google.cloud.firestore_v1.base_query import FieldFilter
+    return db.collection(collection).where(filter=FieldFilter(field, '==', value))
+
+
+def _account_link_limits(db, uid):
+    """Every account-link quota document of one identity, by exact document-ID range."""
+    from google.cloud.firestore_v1.base_query import FieldFilter
+    from google.cloud.firestore_v1.field_path import FieldPath
+    prefix = f'account-link-{uid}-'
+    query = (db.collection('oe_limits')
+             .where(filter=FieldFilter(FieldPath.document_id(), '>=', db.document('oe_limits/' + prefix)))
+             .where(filter=FieldFilter(FieldPath.document_id(), '<', db.document('oe_limits/' + prefix + '\uf8ff'))))
+    keys = []
+    for snapshot in query.stream():
+        quota, day = _cleanup_document(snapshot), snapshot.id[len(prefix):]
+        if (not snapshot.id.startswith(prefix) or not re.fullmatch('[0-9]{8}', day)
+                or quota is None or set(quota) != {'count'} or type(quota['count']) is not int
+                or not 0 <= quota['count'] <= 32):
+            _refuse('an account-link quota could not be attributed to this QA session.')
+        keys.append(snapshot.id)
+    return keys
+
+
+def session_inventory(db, state, uids):
+    """Read every resource of this session completely; refuse anything shared.
+
+    A project belongs to the session only when its owner and all members are
+    session identities and every invitation it ever issued targeted one of them.
+    """
+    _, emails = _session_users(state)
+    manifest_projects = _cleanup_ids(state['projects'])
+    projects = set()
+    for snapshot in db.collection('oe_projects').stream():
+        project = _cleanup_document(snapshot)
+        if project is None or not isinstance(project.get('members'), dict) \
+                or not isinstance(project.get('owner_uid'), str):
+            _refuse('resource ownership could not be established.')
+        _cleanup_ids([snapshot.id])
+        associated = set(project['members']) | {project['owner_uid']}
+        if snapshot.id in manifest_projects or associated & uids:
+            if project['owner_uid'] not in uids or associated - uids:
+                _refuse('a session identity or project is shared with another account.')
+            projects.add(snapshot.id)
+    for uid in uids:
+        profile = _cleanup_document(db.document('oe_users/' + uid).get())
+        indexed = _cleanup_ids(profile.get('project_ids', []) if profile else [])
+        for project_id in indexed - projects:
+            if db.document('oe_projects/' + project_id).get().to_dict() is not None:
+                _refuse('a session identity is indexed in another project.')
+    session_emails = set(emails.values())
+    invitations = set()
+    for project_id in projects:
+        for snapshot in _where(db, 'oe_invitations', 'project_id', project_id).stream():
+            invitation = _cleanup_document(snapshot) or {}
+            if invitation.get('email') not in session_emails:
+                _refuse('a session project invited another account.')
+            invitations.add(snapshot.id)
+    for invitation_id in _cleanup_ids(state['invites']):
+        invitation = _cleanup_document(db.document('oe_invitations/' + invitation_id).get())
+        if invitation is not None and invitation.get('project_id') not in projects:
+            _refuse('an invitation belongs to another project.')
+    grants = set()
+    for uid in uids:
+        grants.update(snapshot.id for snapshot in _where(db, 'oe_desktop_logins', 'uid', uid).stream())
+    for request_id in _cleanup_ids(state.get('desktop_login_ids', [])):
+        grant = _cleanup_document(db.document('oe_desktop_logins/' + request_id).get())
+        if grant is not None:
+            if grant.get('uid') is not None and grant['uid'] not in uids:
+                _refuse('a desktop grant belongs to another account.')
+            grants.add(request_id)
+    limits = set(_cleanup_account_link_limits(db, uids, state.get('account_link_limit_ids', [])))
+    for uid in uids:
+        limits.update(_account_link_limits(db, uid))
+    recoveries = set()
+    for project_id in projects:
+        recoveries.update(snapshot.id for snapshot in _where(db, 'oe_recoveries', 'project_id', project_id).stream())
+    return {'projects': sorted(projects), 'invitations': sorted(invitations),
+            'desktop_logins': sorted(grants), 'account_link_limits': sorted(limits),
+            'recoveries': sorted(recoveries), 'profiles': sorted(uids)}
+
+
+DOCUMENT_GROUPS = (('oe_invitations', 'invitations'), ('oe_recoveries', 'recoveries'),
+                   ('oe_desktop_logins', 'desktop_logins'), ('oe_limits', 'account_link_limits'),
+                   ('oe_users', 'profiles'))
+
+
+def delete_session(db, bucket, identities, inventory):
+    """Idempotently delete blobs, project trees, related documents, then identities."""
+    from google.api_core.exceptions import NotFound
+    blobs = 0
+    for project_id in inventory['projects']:
+        for blob in bucket.list_blobs(prefix=f'projects/{project_id}/'):
+            try:
+                blob.delete()
+                blobs += 1
+            except NotFound:
+                pass
+        db.recursive_delete(db.document('oe_projects/' + project_id))
+    for collection, group in DOCUMENT_GROUPS:
+        for identifier in inventory[group]:
+            db.document(f'{collection}/{identifier}').delete()
+    for uid in inventory['profiles']:
+        identities.delete(uid)
+    return blobs
+
+
+def residual_resources(db, bucket, identities, inventory):
+    """Count every remaining session resource with fresh reads."""
+    count = 0
+    for project_id in inventory['projects']:
+        count += len(list(bucket.list_blobs(prefix=f'projects/{project_id}/', max_results=1)))
+        reference = db.document('oe_projects/' + project_id)
+        count += reference.get().to_dict() is not None
+        count += sum(len(list(collection.limit(1).stream())) for collection in reference.collections())
+        for collection in ('oe_invitations', 'oe_recoveries'):
+            count += len(list(_where(db, collection, 'project_id', project_id).limit(1).stream()))
+    for collection, group in DOCUMENT_GROUPS:
+        count += sum(db.document(f'{collection}/{identifier}').get().to_dict() is not None
+                     for identifier in inventory[group])
+    for uid in inventory['profiles']:
+        count += len(list(_where(db, 'oe_desktop_logins', 'uid', uid).limit(1).stream()))
+        count += len(_account_link_limits(db, uid))
+        count += identities.get(uid) is not None
+    return count
+
+
+def cleanup_session(db, bucket, identities, state, *, quiescence_seconds, save,
+                    clock=time.time, sleep=time.sleep, log=print):
+    """Admission stop -> enforced quiescence -> inventory -> deletion -> readback.
+
+    The journal in ``state['cleanup']`` records the phase. Rerunning after any
+    interruption repeats only idempotent work and never shortens the wait.
+    """
+    journal = state.setdefault('cleanup', {'phase': 'admission'})
+    try:
+        while True:
+            phase = journal['phase']
+            if phase == 'admission':
+                records = session_identities(identities, state)
+                session_inventory(db, state, set(records))
+                for uid, record in records.items():
+                    if record is not None:
+                        identities.disable(uid)
+                if any(record is not None and not record.disabled
+                       for record in (identities.get(uid) for uid in records)):
+                    raise SystemExit('QA cleanup stopped: an identity could not be disabled. '
+                                     'Private QA state was retained; rerun cleanup.')
+                journal.update(phase='quiescence', identities=sorted(records),
+                               admission_completed_at=clock())
+                save()
+                log('Disabled and revoked every session identity; waiting for write quiescence.')
+            elif phase in ('quiescence', 'deletion', 'readback'):
+                records = session_identities(identities, state)
+                if set(records) != set(journal['identities']) or any(
+                        record is not None and not record.disabled for record in records.values()):
+                    # Someone re-enabled an identity: its writes are admitted again.
+                    journal.clear()
+                    journal['phase'] = 'admission'
+                    save()
+                    continue
+                if phase == 'quiescence':
+                    elapsed = clock() - journal['admission_completed_at']
+                    if elapsed < 0:
+                        journal['admission_completed_at'] = clock()
+                        save()
+                        continue
+                    if elapsed < quiescence_seconds:
+                        remaining = quiescence_seconds - elapsed
+                        log(f'Waiting {math.ceil(remaining)} seconds for enforced write quiescence.')
+                        sleep(remaining)
+                        continue
+                    journal.update(phase='deletion', inventory=session_inventory(db, state, set(records)))
+                    save()
+                elif phase == 'deletion':
+                    journal['blobs_removed'] = journal.get('blobs_removed', 0) + delete_session(
+                        db, bucket, identities, journal['inventory'])
+                    journal['phase'] = 'readback'
+                    save()
+                else:
+                    residual = residual_resources(db, bucket, identities, journal['inventory'])
+                    if residual:
+                        journal['phase'] = 'deletion'
+                        save()
+                        raise SystemExit(f'QA cleanup readback found {residual} remaining session resources. '
+                                         'Private QA state was retained; rerun cleanup.')
+                    journal['phase'] = 'complete'
+                    save()
+            elif phase == 'complete':
+                inventory = journal['inventory']
+                return {'session_cleanup': 'complete', 'residual_resources': 0,
+                        'quiescence_seconds': quiescence_seconds,
+                        'projects_removed': len(inventory['projects']),
+                        'identities_removed': len(inventory['profiles']),
+                        'invitations_removed': len(inventory['invitations']),
+                        'desktop_grants_removed': len(inventory['desktop_logins']),
+                        'account_link_quotas_removed': len(inventory['account_link_limits']),
+                        'recovery_receipts_removed': len(inventory['recoveries']),
+                        'blobs_removed': journal.get('blobs_removed', 0)}
+            else:
+                _refuse('the private cleanup journal is invalid.')
+    except SystemExit:
+        save()
+        raise
+    except Exception:
+        # SDK errors may contain private paths; keep the journal and resume later.
+        save()
+        raise SystemExit(f'QA cleanup stopped safely during {journal.get("phase")}. '
+                         'Private QA state was retained; rerun cleanup to resume.') from None
 
 
 def inspect_cleanup_qa(db, state):
@@ -196,13 +506,22 @@ def platform_request(client, method, url, **kwargs):
     raise AssertionError('Unreachable retry state.')
 
 
+def save_private_state(path, state):
+    temporary = path.with_name(path.name + '.tmp')
+    descriptor = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(descriptor, 'w') as stream:
+        stream.write(json.dumps(state, indent=2))
+    os.replace(temporary, path)
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('action', choices=['prepare', 'verify', 'cleanup', 'inspect-cleanup'])
+    parser.add_argument('action', choices=['prepare', 'verify', 'cleanup', 'inspect-cleanup', 'label-session'])
     parser.add_argument('--url', default='https://openecon-teams-preview-291739190496.us-central1.run.app')
     parser.add_argument('--expect-commit', help='Require this full source commit in /api/auth/config')
+    parser.add_argument('--confirm-session', help='The session label printed by prepare; required by cleanup')
     args = parser.parse_args()
-    if args.action == 'cleanup':
+    if args.action == 'cleanup' and not args.confirm_session:
         # Refuse before acquiring credentials, reading the private manifest, or
         # constructing any SDK client. No caller-supplied receipt admits cleanup.
         refuse_automatic_cleanup()
@@ -221,10 +540,34 @@ def main():
 
     app = firebase_admin.initialize_app(AdminCredential(), {'projectId': PROJECT})
     db = firestore.Client(project=PROJECT, credentials=credential)
+    if args.action in ('cleanup', 'label-session'):
+        state = json.loads(STATE.read_text())
+        identities = FirebaseIdentities(app)
+        if args.action == 'label-session':
+            session = label_session(identities, state)
+            save_private_state(STATE, state)
+            print('Labelled the reviewed QA identities. Cleanup confirmation session:', session)
+            return
+        if state.get('session') != args.confirm_session:
+            _refuse('the confirmed session does not match the private QA manifest.')
+        with httpx.Client(timeout=30, follow_redirects=False) as client:
+            public = client.get(args.url.rstrip('/') + '/api/auth/config').json()
+        seconds = require_quiescence_contract(public.get('write_quiescence'))
+        from google.cloud import storage as cloud_storage
+        bucket = cloud_storage.Client(project=PROJECT, credentials=credential).bucket(BUCKET)
+        report = cleanup_session(db, bucket, identities, state, quiescence_seconds=seconds,
+                                 save=lambda: save_private_state(STATE, state))
+        # Keep the reviewed manifest without passwords; a new prepare may follow.
+        for user in state['users'].values():
+            user.pop('password', None)
+        save_private_state(STATE.with_name(f'qa-state.cleaned-{state["session"]}.json'), state)
+        STATE.unlink()
+        print(json.dumps(report, indent=2))
+        return
     if args.action == 'prepare':
         if STATE.exists():
             raise SystemExit('Existing QA state must be retained and explicitly reviewed before another prepare.')
-        state = {'users': {}, 'projects': [], 'invites': [], 'checks': [],
+        state = {'session': uuid4().hex, 'users': {}, 'projects': [], 'invites': [], 'checks': [],
                  'account_link_limit_ids': []}
         STATE.parent.mkdir(exist_ok=True, parents=True)
         STATE.touch(mode=0o600)
@@ -238,10 +581,12 @@ def main():
                                     display_name=f'QA {role.title()}', app=app)
             state['users'][role] = {'uid': user.uid, 'email': email, 'password': password}
             save()
+            auth.set_custom_user_claims(user.uid, {SESSION_CLAIM: state['session']}, app=app)
         owner = state['users']['owner']
         db.document('oe_users/' + owner['uid']).set({'uid': owner['uid'], 'email': owner['email'],
             'name': 'QA Owner', 'enabled': True, 'project_ids': [], 'created_at': '2026-10-01T00:00:00+00:00'})
-        print('Prepared five disposable QA identities; no emails sent.')
+        print('Prepared five disposable QA identities; no emails sent. '
+              'Cleanup confirmation session:', state['session'])
         return
     state = json.loads(STATE.read_text())
     state['url'] = args.url.rstrip('/')
@@ -327,7 +672,7 @@ def main():
     call('GET', workspace + '/console', 'viewer', status=404)
     check('Role changes and member removal take effect on the next request')
     print('Live sync integration finished; QA identities remain preserved for UI verification. '
-          'Automatic cleanup is disabled.', flush=True)
+          'Remove them with `cleanup --confirm-session SESSION` when finished.', flush=True)
 
 
 if __name__ == '__main__':

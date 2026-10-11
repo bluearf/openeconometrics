@@ -10,7 +10,7 @@ import json
 import math
 
 SCHEMA = "openecon.editor-api.interned.v1"
-MAX_WIRE_BYTES = 500_000
+MAX_WIRE_BYTES = 2_000_000
 MAX_DECODED_BYTES = 8 * 1024 * 1024
 MAX_ITEMS = 500_000
 MAX_DEPTH = 32
@@ -240,7 +240,7 @@ def decode_wire(raw):
 def admit_logical(entries):
     """Independent full logical limit after all legacy parameter-token expansion.
 
-    The unchanged 500000-byte bound applies to encoded output; this separate
+    The 2,000,000-byte bound applies to encoded output; this separate
     8-MiB conservative decoded JSON reserve and 500000-node cap are not RSS.
     """
     if type(entries) is not list or len(entries) > MAX_ENTRIES:

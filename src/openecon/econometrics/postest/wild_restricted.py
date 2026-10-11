@@ -194,7 +194,9 @@ def _weights(groups, reps, seed, wild, enumerate_all):
     lower, upper = (1 - math.sqrt(5)) / 2, (1 + math.sqrt(5)) / 2
     prob = (math.sqrt(5) + 1) / (2 * math.sqrt(5))
     draws = torch.rand((reps, groups), generator=rng, dtype=torch.float64)
-    return torch.where(draws < prob, lower, upper)
+    # Python-float branches would promote to the default (float32) dtype.
+    return torch.where(draws < prob, torch.tensor(lower, dtype=torch.float64),
+                       torch.tensor(upper, dtype=torch.float64))
 
 
 def _admit_draws(g, reps, enumerate_all, wild, max_work, grid=1):

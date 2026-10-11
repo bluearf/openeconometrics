@@ -150,7 +150,9 @@ def test_rank_deficient_segments_have_fixed_design_exclusions():
 
 
 @pytest.mark.parametrize("options,code", [
-    ({"errors": "hac"}, "invalid_option"), ({"errors": "robust"}, "invalid_option"),
+    ({"errors": "hac", "prewhiten": 1}, "invalid_option"), ({"errors": "robust"}, "invalid_option"),
+    ({"selection": "aic"}, "invalid_option"), ({"level": .2}, "invalid_option"),
+    ({"errors": "hac", "trim": .12, "selection": "sequential"}, "critical_values_unavailable"),
     ({"max_breaks": True}, "invalid_option"), ({"max_breaks": 6}, "invalid_option"),
     ({"replications": 18}, "invalid_option"), ({"seed": -1}, "invalid_option"),
     ({"trim": .5}, "invalid_option"), ({"min_segment": 20}, "insufficient_observations"),

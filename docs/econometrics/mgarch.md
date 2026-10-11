@@ -20,10 +20,18 @@ forecast.to_latex(index=False)
 | CCC | 2 or 3 | All entries of an estimated SPD fixed correlation target | Exact one step; later off-diagonal entries use plug-in scaling |
 | DCC | 2 or 3 | Estimated SPD target and scalar DCC coefficients | Exact one step; later Q-forward and variance plug-in approximation |
 | Full BEKK | 2 | Lower triangular C and every entry of A and B | Exact conditional covariance expectation at every horizon |
+| Diagonal VECH (`oe.mgarch_dvech`) | 2 or 3 | Positive definite C; A, B lower triangles (positive `a_ii`, `b_ii`) | Exact conditional covariance expectation at every horizon |
+| Diagonal BEKK (`oe.mgarch_dbekk`) | 2 or 3 | Lower triangular C, diagonal `a`, `b` | Exact conditional covariance expectation at every horizon |
+| Asymmetric DCC (`oe.mgarch_adcc`) | 2 or 3 | Estimated SPD target, scalar `a`, `b`, `g` | Exact one step; later Q-forward and variance plug-in approximation |
 
-This is bounded method coverage. CCC/DCC support no exogenous mean equation,
-asymmetry, higher orders, Student-t innovations, panel pooling, weights, or robust
-sandwich covariance. VECH, VCC, and component MGARCH are outside this domain.
+The diagonal VECH, diagonal BEKK and asymmetric DCC models (MARKET-161) are
+documented with their sources, domains and validation in
+[GARCH extensions](garch-extensions.md#5-multivariate-diagonal-vech-diagonal-bekk-and-asymmetric-dcc).
+
+This is bounded method coverage. CCC/DCC/aDCC support no exogenous mean
+equation, higher orders, Student-t innovations, panel pooling, weights, or
+robust sandwich covariance. The full (non-diagonal) VECH, VCC and component
+MGARCH are outside this domain.
 The full BEKK model includes both off-diagonal entries in each of A and B; it is
 not a diagonal BEKK alias. No Stata coefficient or uncertainty parity is claimed.
 

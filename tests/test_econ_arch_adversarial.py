@@ -362,7 +362,7 @@ def test_every_declared_option_and_covariance_is_handled(base):
     assert info.weights == () and info.panel == "none" and info.time == "optional"
     assert {option.name for option in info.options} == {
         "model", "dist", "arch", "garch", "archm", "ar", "ma", "test_lags", "max_iterations",
-        "tolerance"}
+        "tolerance", "truncation"}
     for covariance in info.covariances:
         kind, result = outcome(data=base, y="y", x=["x1"], covariance=covariance)
         assert kind == "ok" and result.inference["covariance"] == covariance

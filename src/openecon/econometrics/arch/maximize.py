@@ -142,6 +142,27 @@ def _variance_candidates(layout: Layout, s2: float) -> list[dict[str, Any]]:
         return [total / count] * count if count else []
 
     candidates = []
+    if kind == "figarch":
+        # Python arch's FIGARCH grid: phi = (1 - d)/2 r_phi, beta = (d + phi) r_beta, omega
+        # matching the sample variance through the truncated weights.
+        from openecon.econometrics.arch.extended import figarch_weights
+        for d in (0.2, 0.5, 0.7):
+            for ratio_phi in ((0.2, 0.5) if n_a else (0.0,)):
+                for ratio_beta in ((0.5, 0.9) if n_b else (0.0,)):
+                    phi = 0.5 * (1.0 - d) * ratio_phi
+                    beta = (d + phi) * ratio_beta
+                    weights, _ = figarch_weights(phi, d, beta, layout.truncation)
+                    omega = (1.0 - beta) * s2 * max(1.0 - float(weights.sum()), 1e-3)
+                    candidates.append({"a": [phi] * n_a, "b": [beta] * n_b, "r": [d],
+                                       "omega": omega})
+        return candidates
+    if kind == "cgarch":
+        # (alpha, beta, rho, phi): a persistent permanent and a short-lived transitory part.
+        for alpha, beta, rho, phi in [(0.05, 0.80, 0.98, 0.03), (0.10, 0.60, 0.95, 0.05),
+                                      (0.03, 0.90, 0.995, 0.02), (0.15, 0.40, 0.90, 0.08)]:
+            candidates.append({"a": [alpha], "b": [beta], "r": [rho, phi],
+                               "omega": s2 * (1.0 - rho)})
+        return candidates
     if layout.restricted:
         for alpha in (0.05, 0.15, 0.30):
             candidates.append({"a": spread(alpha, n_a), "b": spread(1.0 - alpha, n_b),
@@ -246,12 +267,16 @@ def starting_values(like: ArchLikelihood) -> tuple[list[Tensor], Tensor]:
         if ix.g:
             start[ix.g] = torch.tensor(candidate["g"], dtype=torch.float64)
         start[ix.b] = torch.tensor(candidate["b"], dtype=torch.float64)
+        if ix.r:
+            start[list(ix.r)] = torch.tensor(candidate["r"], dtype=torch.float64)
         omega = candidate["omega"]
         start[ix.c] = math.log(omega) if layout.k_z and exponential else omega
         if ix.p:
             start[ix.p[0]] = candidate["power"]
         if ix.d:
-            start[ix.d[0]] = _T_START if layout.dist == "t" else _GED_START
+            start[ix.d[0]] = _T_START if layout.dist in {"t", "skewt"} else _GED_START
+            if len(ix.d) > 1:
+                start[ix.d[1]] = 0.0          # symmetric start: lambda = 0, xi = 1
         starts.append(start)
     return starts, scale
 
@@ -367,13 +392,15 @@ def maximize(like: ArchLikelihood, tolerance: float, max_iterations: int) -> Fit
             failure = ("BFGS stopped near a point from which the active-set Newton steps on the "
                        "kinks of the EGARCH likelihood found no maximum.")
         stopped.append((result.value, offset + transform @ result.theta))
-        if layout.dist == "t":
+        if layout.dist in {"t", "skewt"}:
             tau = float(stopped[-1][1][layout.index.d[0]])
             if tau > densities.TAU_BOUNDS["t"][1] - 1.0:
                 raise AnalysisError(
                     "nonconvergence", "The Student t degrees of freedom diverge (the likelihood "
                     "keeps rising beyond several hundred degrees of freedom): the standardized "
-                    "innovations are indistinguishable from normal. Use dist='normal'.")
+                    "innovations are indistinguishable from normal. Use dist='normal'" + (
+                        " (or dist='sged', whose shape 2 contains the normal, for skewed "
+                        "innovations)." if layout.dist == "skewt" else "."))
     reason = _diagnose(like, max(stopped, key=lambda item: item[0])[1]) if stopped else None
     if reason is not None:
         raise AnalysisError("nonconvergence", reason)
@@ -417,6 +444,15 @@ def _diagnose(like: ArchLikelihood, theta: Tensor) -> str | None:
                 "of the density is unbounded there, so neither Newton steps nor Hessian-based "
                 "standard errors exist at that point. Use dist='t' or dist='normal' with "
                 "model='egarch', or keep dist='ged' with model='gjr'.")
+    if layout.kind == "figarch":
+        d = float(theta[ix.r[0]])
+        if d < 0.02 or d > 0.98:
+            return (
+                f"The FIGARCH likelihood keeps rising towards the edge of the fractional "
+                f"difference domain 0 < d < 1 (the search reached d = {d:.4f}): at d = 0 the "
+                "model is a short-memory GARCH (use model='garch') and at d = 1 an integrated "
+                "one (use model='igarch').")
+        return None
     if layout.kind == "parch":
         power = float(theta[ix.p[0]])
         if power <= 1.0:

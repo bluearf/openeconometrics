@@ -70,6 +70,7 @@ export async function linkDesktopAccount(
     reload: firebase.reload,
     token: firebase.getIdToken,
   },
+  action: "link" | "verify" = "link",
 ): Promise<void> {
   const uid = user.uid;
   const sameUser = () => {
@@ -98,7 +99,15 @@ export async function linkDesktopAccount(
     deps.request<{ request_id: string; code: string }>(
       "/api/desktop/account-link",
       token,
-      { method: "POST", body: JSON.stringify({ challenge, target }), signal },
+      {
+        method: "POST",
+        body: JSON.stringify({
+          challenge,
+          target,
+          ...(action === "verify" ? { action } : {}),
+        }),
+        signal,
+      },
     ),
     signal,
   );
@@ -118,7 +127,9 @@ export async function linkDesktopAccount(
   try {
     sameUser();
     progress?.(
-      `Account code: ${grant.code}. Verify your existing sign-in in the browser, then add the method.`,
+      action === "verify"
+        ? `Account code: ${grant.code}. Verify with Google in the browser, then return here to add your password.`
+        : `Account code: ${grant.code}. Verify your existing sign-in in the browser, then add the method.`,
     );
     await abortable(
       deps.open("open_desktop_login", { requestId: grant.request_id }),
@@ -136,6 +147,7 @@ export async function linkDesktopAccount(
         deps.request<{
           pending?: boolean;
           linked?: boolean;
+          verified?: boolean;
           uid?: string;
           target?: string;
         }>(`/api/desktop/account-link/${grant.request_id}/exchange`, token, {
@@ -146,7 +158,11 @@ export async function linkDesktopAccount(
         signal,
       );
       sameUser();
-      if (response.linked === true) {
+      if (
+        action === "verify"
+          ? response.verified === true
+          : response.linked === true
+      ) {
         if (response.uid !== uid || response.target !== target)
           throw Object.assign(new Error("Account changed."), {
             code: "account/session-changed",
@@ -154,6 +170,7 @@ export async function linkDesktopAccount(
         await abortable(deps.reload(user), signal);
         sameUser();
         if (
+          action === "link" &&
           !user.providerData.some((provider) => provider.providerId === target)
         )
           throw new Error("The method is not linked to this Firebase user.");
@@ -169,4 +186,23 @@ export async function linkDesktopAccount(
     signal?.removeEventListener("abort", cancelGrant);
     cancelGrant();
   }
+}
+
+/** Browser proves only the existing identity; the password stays in the app. */
+export function verifyDesktopAccount(
+  auth: Auth,
+  user: User,
+  signal?: AbortSignal,
+  progress?: (value: string) => void,
+  deps?: NativeLinkDependencies,
+) {
+  return linkDesktopAccount(
+    auth,
+    user,
+    "google.com",
+    signal,
+    progress,
+    deps,
+    "verify",
+  );
 }

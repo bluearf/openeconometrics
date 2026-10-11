@@ -27,6 +27,27 @@ def sha256(path: Path) -> str:
         return hashlib.file_digest(stream, "sha256").hexdigest()
 
 
+def verify_migrated_environment(before: dict, after: dict, bundled_core: dict,
+                                expected_version: str, expected_charts_version: str) -> dict:
+    """Separate current bundled identity from unchanged user environment state."""
+    application = {"openecon", "openecon-charts", "uv"}
+    if (not isinstance(before, dict) or not isinstance(after, dict)
+            or not isinstance(before.get("core"), dict)
+            or not isinstance(after.get("core"), dict)
+            or not isinstance(bundled_core, dict)
+            or bundled_core.get("openecon") != expected_version
+            or bundled_core.get("openecon-charts") != expected_charts_version
+            or after["core"] != bundled_core):
+        raise RuntimeError("The migrated environment is not bound to the expected frozen core.")
+    if ({k: v for k, v in before.items() if k != "core"}
+            != {k: v for k, v in after.items() if k != "core"}
+            or {k: v for k, v in before["core"].items() if k not in application}
+            != {k: v for k, v in after["core"].items() if k not in application}):
+        raise RuntimeError("Persisted project requirements, locks, Python or numerical core changed.")
+    return {key: {"before": before["core"].get(key), "after": after["core"].get(key)}
+            for key in sorted(application) if before["core"].get(key) != after["core"].get(key)}
+
+
 class InstalledRuntime:
     def __init__(self, executable: Path, root: Path, expected_version: str):
         self.executable, self.root = executable, root
@@ -280,19 +301,24 @@ print("WINDOWS_MIGRATION:" + json.dumps({"files": files, "model_sha256": files["
                 raise RuntimeError("The old execution history did not survive.")
             if [history_digest(row) for row in history[:len(record["history_sha256"])]] != record["history_sha256"]:
                 raise RuntimeError("Original execution code, stdout, model outputs or metadata changed.")
-            if runtime.call(prefix + "/environment", token=token)["manifest"] != record["environment"]:
-                raise RuntimeError("The old project environment manifest changed.")
+            environment = runtime.call(prefix + "/environment", token=token)["manifest"]
             replay = runtime.execute(prefix, token, '''
 from pathlib import Path
+import json
 from openecon.models import ResultBundle
+from openecon.project_packages import protected_versions
 saved = ResultBundle.model_validate_json(Path("migration-model.json").read_text(encoding="utf-8"))
 assert saved.nobs == 60
 assert saved.to_latex() == Path("migration-model.tex").read_text(encoding="utf-8")
 assert "OpenEconCharts.mount" in Path("migration-chart.html").read_text(encoding="utf-8")
+print("WINDOWS_MIGRATION_CORE:" + json.dumps(protected_versions()))
 print("WINDOWS_MIGRATION_REPLAY_OK")
 ''')
             if "WINDOWS_MIGRATION_REPLAY_OK" not in replay["stdout"]:
                 raise RuntimeError("The replaced frozen runtime could not replay old saved results.")
+            receipt["bundled_identity_changes"] = verify_migrated_environment(
+                record["environment"], environment, marker(replay, "WINDOWS_MIGRATION_CORE:"),
+                expected_version, expected_charts_version)
             receipt["checks"].update(project_and_four_artifact_hashes_preserved=True,
                                      saved_editor_history_and_environment_preserved=True,
                                      actual_replaced_frozen_runtime_replay_without_refit=True)

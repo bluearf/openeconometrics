@@ -4,7 +4,7 @@ The team edition adds an application login, persistent projects and project
 membership to the local-first desktop workbench. **Analyses always run on the
 member's own computer.** The cloud service is a team sync layer only: accounts,
 project membership and roles, shared code and documents, dataset transfer,
-account linking and archived results that members share from the desktop app.
+email verification and archived results that members share from the desktop app.
 It never executes user code, estimators or LaTeX, and it does not parse uploaded
 statistical data formats.
 
@@ -22,37 +22,23 @@ signs in through the application login screen.
 
 ## Account and project flow
 
-Users can continue with Google or register with email and password through
-Firebase Authentication / Identity Platform. Password registration requires
-email verification; Google sign-in uses the verification claim issued by
-Firebase. Both methods still require a verified email for project access.
-Passwords and Google credentials are handled by the provider. The API accepts
-the resulting Firebase ID token, checks the explicit project, and verifies
-revocation and disabled-user status. An unverified account can view its
-verification state but cannot access project resources.
+Users can continue with Google or enter an email address and verify the
+single-use code delivered on each new sign-in. Google supplies its verified
+identity directly. No password creation, password recovery or method-linking
+step appears in either flow. Email code entry stays in the desktop app; Google
+uses the system browser only for authentication and the app approval exchange.
+See [email-code sign-in and delivery configuration](email-code-signin.md).
 
-Registration sends one verification email independently of the optional profile
-name update. The verification screen retains the provider's success/error result
-through profile refreshes and displays a resend cooldown. A successful request
-means the provider accepted the send; it does not confirm inbox delivery.
-No email is automatically resent when an existing account opens the application.
+The API verifies the Firebase ID token's project, signature, email verification,
+revocation and disabled-user status. Project membership remains attached to the
+Firebase UID. Email-code verification resolves the existing UID when present;
+it never copies or grants memberships. A first successful code verification can
+create an identity, but account creation alone cannot open another user's project.
 
-Enable the Google provider in Firebase Authentication, retain **one account per
-email address**, and authorize the deployed application domain. The browser uses
-the project's Firebase auth handler and requests only normal sign-in profile and
-email information. OAuth client secrets belong in provider configuration, never
-the browser bundle. [Firebase Google sign-in setup](https://firebase.google.com/docs/auth/web/google-signin).
-
-Existing projects belong to the **Firebase UID**, not an email address or a
-Google provider-specific identifier. Firebase-linked methods retain that UID.
-Automatic same-email linking depends on the provider and email trust rules; it
-is not guaranteed for every password account. When Firebase reports a provider
-collision, the interface preserves password sign-in and asks the user to use
-their existing method. Project data is never merged by email. Adding a sign-in
-method to the same UID uses the authenticated
-[account-linking flow](account-linking.md) and Firebase's linking API.
-[Account linking](https://firebase.google.com/docs/auth/web/account-linking) and
-[provider trust rules](https://docs.cloud.google.com/identity-platform/docs/concepts-manage-users).
+Enable the Google provider in Firebase Authentication, retain one account per
+email address, and authorize the deployed application domain. Google requests
+only normal sign-in profile and email information. OAuth secrets and email
+transport credentials never belong in the browser bundle.
 
 The configured owner's verified email bootstraps access. Other accounts gain
 access by accepting a project invitation addressed to their verified email.
@@ -63,8 +49,7 @@ access; it does not disable their independent account or other memberships.
 Project owners create or revoke invitations, change editor/viewer roles and
 remove members. Invitations expire after seven days, are single-use and cannot
 be accepted by another email account. The interface produces a shareable link;
-it does **not** automatically send invitation emails. Provider verification and
-password-reset emails remain available from their corresponding account flows.
+it does **not** automatically send invitation emails. Email sign-in codes are sent only when the user requests a sign-in; invitation links remain separate.
 
 | Role | Read and download | Edit, upload and share results | Manage membership |
 | --- | --- | --- | --- |
@@ -128,17 +113,20 @@ bypass Firebase or project membership checks on the API. Session affinity is
 disabled: durable state is external.
 
 For verification, use disposable identities with
-`scripts/verify_team_live.py prepare`, then `verify --url URL`. The script never
-impersonates the real owner, does not send email and never starts a
-computation. Automatic cleanup is refused; `inspect-cleanup` is read-only.
-Browser verification and the real owner's initial registration are distinct
-checks.
+`scripts/verify_team_live.py prepare`, then `verify --url URL`. This historical API fixture uses disposable password credentials; it is not
+acceptance of Google or email-code sign-in and cannot authenticate new password
+sessions against passwordless production. It never impersonates the real owner,
+sends email or starts a computation. Verify the new login methods separately
+with the configured sender and designated test identities. `inspect-cleanup` is read-only. `cleanup --confirm-session
+SESSION` removes one prepared session; see
+[QA cleanup](sync-backend-deployment.md#disposable-qa-cleanup). Browser
+verification and the real owner's initial registration are distinct checks.
 
 ## References
 
 - [Firebase: verify ID tokens](https://firebase.google.com/docs/auth/admin/verify-id-tokens)
 - [Firebase: manage sessions and revocation](https://firebase.google.com/docs/auth/admin/manage-sessions)
-- [Identity Platform: password policy](https://docs.cloud.google.com/identity-platform/docs/password-policy)
+- [Firebase: custom authentication](https://firebase.google.com/docs/auth/admin/create-custom-tokens)
 - [Cloud Run: IAM roles](https://docs.cloud.google.com/run/docs/reference/iam/roles)
 
 Local test evidence and historical release evidence are recorded separately in

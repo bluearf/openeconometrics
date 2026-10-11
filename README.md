@@ -1,7 +1,7 @@
 # OpenEconometrics
 
 <!-- BEGIN source-generated capability scope -->
-Current source: **157 registered fit names**, **92 Dataset fit routes**, **74 common saved predict/margins adapters**. The [generated method/option inventory](docs/capabilities.md) states conditions, exclusions and devices.
+Current source: **171 registered fit names**, **92 Dataset fit routes**, **74 common saved predict/margins adapters**. The [generated method/option inventory](docs/capabilities.md) states conditions, exclusions and devices.
 
 Fit routes, common prediction adapters and family-specific helpers/forecasts have separate contracts. Source implementation does not establish independent scientific validation, installed-package verification or public shipment for a method/option. Those require their own dated, source-pinned evidence; historical measurements retain their original scope.
 <!-- END source-generated capability scope -->
@@ -24,7 +24,9 @@ Their scope follows the reviewed public snapshot. See
 [PUBLIC-SOURCE.md](https://github.com/bluearf/openeconometrics/blob/main/PUBLIC-SOURCE.md) and `SOURCE-MANIFEST.json` in the
 public snapshot for its precise source and external-fixture boundary.
 
-The frozen Mac **0.3.46** alpha includes SDK **0.3.20a1** and charts **0.3.2a1** wheels and source distributions in its [GitHub release](https://github.com/bluearf/openeconometrics/releases/tag/v0.3.46-alpha.1). Install those exact assets using [the package instructions](PYPI-README.md). They are separate from the published PyPI pair above; later development commits may have additional capabilities.
+This checkout prepares SDK **0.3.20a1** and charts **0.3.2a1**. Those versions
+require their own frozen public-source manifest, wheel/sdist installation checks
+and verified PyPI publication; the published pair above retains its earlier scope.
 
 Distribution preserves the [third-party notices](THIRD_PARTY.md). See
 [contribution guidelines](CONTRIBUTING.md) and the [private security-reporting
@@ -99,8 +101,8 @@ python -m pip install 'openecon==0.3.19a1'
 ```
 
 This version installs its exact chart dependency, `openecon-charts==0.3.1a1`.
-The frozen GitHub alpha pair is `openecon==0.3.20a1` with
-`openecon-charts==0.3.2a1`; it has not replaced the PyPI pair above.
+The current source candidate is `openecon==0.3.20a1` with
+`openecon-charts==0.3.2a1`; it has not replaced the published pair above.
 The source checkout and desktop candidate have separate release scope;
 see [distribution versions and extras](docs/distribution.md).
 

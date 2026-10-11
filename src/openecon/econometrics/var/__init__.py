@@ -8,7 +8,11 @@ error-correction model by Johansen's maximum likelihood. The family also
 publishes ``varsoc`` (lag-order selection), ``vecrank`` (Johansen trace and
 maximum-eigenvalue tests), ``irf`` (impulse responses and variance
 decompositions as a table), ``tycausality`` (Toda-Yamamoto modified Wald tests
-of first-base-lag restrictions in an augmented levels VAR), and the forecast functions ``var_forecast`` and
+of first-base-lag restrictions in an augmented levels VAR), the bootstrap
+causality extensions ``konyacausality`` (Kónya SUR panel Wald),
+``ekcausality`` (Emirmahmutoğlu--Köse panel Fisher), ``fouriertycausality``
+(single/cumulative Fourier Toda--Yamamoto) and ``rollingcausality``
+(rolling-window bootstrap sequence), and the forecast functions ``var_forecast`` and
 ``vec_forecast`` (``oe.forecast`` dispatches to them). Everything is
 implemented in OpenEconometrics on float64 tensors; see ``docs/econometrics/var.md``.
 """
@@ -105,4 +109,8 @@ EXPORTS: dict[str, str] = {
     "tycausality": "openecon.econometrics.var.toda_yamamoto:tycausality",
     "bccaustest": "openecon.econometrics.var.frequency_causality:bccaustest",
     "dhcausality": "openecon.econometrics.var.panel_causality:dhcausality",
+    "konyacausality": "openecon.econometrics.var.panel_bootstrap_causality:konyacausality",
+    "ekcausality": "openecon.econometrics.var.panel_bootstrap_causality:ekcausality",
+    "fouriertycausality": "openecon.econometrics.var.fourier_causality:fouriertycausality",
+    "rollingcausality": "openecon.econometrics.var.rolling_causality:rollingcausality",
 }

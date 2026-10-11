@@ -331,7 +331,7 @@ DESCRIPTIONS = {
     "openecon.survey_two_stage_logit": "Binary logit with complete two-stage SRSWOR score covariance and observed bread. Finite identified fits only; saved primitives retain both stage FPC terms.",
     "openecon.survey_two_stage_probit": "Binary probit with observed bread and full two-stage SRSWOR score covariance. Finite identified fits only; complete nested sampling geometry persists.",
     "openecon.survey_two_stage_poisson": "Poisson counts with observed bread and full two-stage SRSWOR score covariance. Exact nonnegative counts and finite identified fits; both stage FPC terms persist.",
-    "openecon.ngperron": "Ng-Perron GLS MZa/MZt/MSB/MPT statistics only, p_value=None. Fixed lags or MAIC including lag zero. No critical values or rejection decisions until published-table calibration is resolved (MARKET-136). Complete consecutive integer periods required.",
+    "openecon.ngperron": "Ng-Perron GLS MZa/MZt/MSB/MPT statistics, p_value=None. Fixed lags or MAIC including lag zero. inference='published' adds Table I asymptotic 1/5/10% lower-tail critical values for trend='constant' only; the trend row is refused (MARKET-136). Complete consecutive integer periods required.",
     "openecon.kss": "KSS cubic-regression unit-root test against globally stationary ESTAR dynamics. Raw, demeaned or detrended levels with fixed augmentation; published asymptotic 1/5/10% lower-tail critical values, p_value=None.",
     "openecon.ols": "Fit an OLS/WLS regression. Use y/x or formula; explicitly choose standard errors, weights and missing-value handling.",
     "openecon.logit": "Fit a logistic regression for a binary (0/1) outcome.",

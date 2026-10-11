@@ -1,6 +1,6 @@
 /** Off-tree editor-wire proposal. No browser acceptance has run. */
 const SCHEMA = "openecon.editor-api.interned.v1";
-const MAX_WIRE_BYTES = 500_000;
+const MAX_WIRE_BYTES = 2_000_000;
 const MAX_DECODED_BYTES = 8 * 1024 * 1024;
 const MAX_ITEMS = 500_000;
 const MAX_DEPTH = 32;

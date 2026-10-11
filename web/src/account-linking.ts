@@ -120,6 +120,19 @@ export class AccountLinkSession {
     if (!this.user.email) throw failure("account/email-required");
     return this.user.email;
   }
+  async reauthenticateNative(verify: () => Promise<void>): Promise<void> {
+    const epoch = this.begin();
+    this.verifiedAt = null;
+    try {
+      if (!accountMethods(this.user).includes("google.com"))
+        throw failure("account/method-unavailable");
+      await verify();
+      this.finish({ user: this.user } as UserCredential, epoch);
+      this.verifiedAt = this.deps.now();
+    } finally {
+      this.busy = false;
+    }
+  }
   link(method: AccountMethod, password = ""): Promise<UserCredential> {
     const epoch = this.begin();
     try {

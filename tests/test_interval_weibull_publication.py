@@ -96,6 +96,12 @@ def test_complete_current_main_inventory_and_editor_objects_survive_weibull_addi
     old = generator.decode_catalog(generator.read_catalog_wire(old_raw))
     raw = (ROOT / "web/src/editor-api.json").read_bytes()
     complete = generator.decode_catalog(generator.read_catalog_wire(raw))
+    # Undo later approved method waves (newest first) before the named bootstrap check.
+    for path in sorted((ROOT / "tests/fixtures").glob("editor-catalog-methods-wave*-approved-changes.json"),
+                       key=lambda item: int(item.name.split("wave")[1].split("-")[0]), reverse=True):
+        wave = json.loads(path.read_text())
+        complete = [wave["changed_entries"][row["name"]]["before_logical"] if row["name"] in wave["changed_entries"] else row
+                    for row in complete if row["name"] not in set(wave["added_names"])]
     # Likewise admit only the three named conjoint bootstrap entries before the
     # exact Weibull1420 comparison.
     bootstrap_names = ["openecon.conjoint_bootstrap_fit", "openecon.conjoint_bootstrap_importance",
@@ -106,4 +112,4 @@ def test_complete_current_main_inventory_and_editor_objects_survive_weibull_addi
     assert len(old) == len(names) == 1395 and len(actual) == 1420 and len(complete) == 1423
     assert [row for row in actual if row["name"] in names] == old
     assert [row["name"] for row in actual if row["name"] not in names] == bindings["complete_added_Weibull_names_in_order"]
-    assert len(raw) <= 500000
+    assert len(raw) <= 2_000_000

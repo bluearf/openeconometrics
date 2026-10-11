@@ -244,9 +244,19 @@ def test_documentation_covers_every_function_and_the_manifest_is_light():
                 "power_paired_mean", "power_two_proportions", "power_two_correlations", "power_slope", "power_logrank", "power_mcnemar", "precision_mean_unknown", "precision_variance"}
     power_designs = {"power_tmean", "power_ttwomeans", "power_tpaired", "power_anova",
                      "power_regression", "power_cluster_mean", "power_gof", "power_independence"}
+    # Procedures merged after this contract; each is documented on its own page.
+    later = {"manova_contrast", "manova_factorial", "manova_factorial_summary", "manova_oneway", "manova_summary",
+             "power_mcnemar_unconditional", "power_unbalanced_anova", "power_unequal_cluster_mean", "power_welch",
+             "precision_binomial", "precision_poisson", "precision_twomeans_unknown", "restore_sequential_design",
+             "rm_anova_fweight", "rm_anova_summary", "rm_contrast", "rm_mtest", "sequential_design",
+             "sequential_information", "sequential_power", "survival_accrual"}
     assert manifest.ESTIMATORS == () and set(manifest.EXPORTS) == (
-        set(_EXPORTS) | planning | power_designs | {"planning_scenarios", "planning_plot"}
+        set(_EXPORTS) | planning | power_designs | {"planning_scenarios", "planning_plot"} | later
     )
+    docs = "\n".join(path.read_text() for path in
+                     (Path(manifest.__file__).resolve().parents[4] / "docs" / "econometrics").glob("*.md"))
+    for name in later:
+        assert f"{name}(" in docs or f"`{name}`" in docs
     designs_page = (Path(manifest.__file__).resolve().parents[4]
                     / "docs" / "econometrics" / "power-designs.md").read_text()
     for name in power_designs:
