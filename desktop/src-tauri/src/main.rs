@@ -139,6 +139,42 @@ async fn download_project_file(
 }
 
 #[tauri::command]
+async fn save_project_file(
+    window: WebviewWindow,
+    state: State<'_, DesktopState>,
+    project_id: String,
+    file_id: String,
+    token: String,
+) -> Result<export::ExportReceipt, String> {
+    trusted_window(&window, &state)?;
+    if state.export_busy.swap(true, Ordering::AcqRel) {
+        return Err("Finish or cancel the open export dialog first.".into());
+    }
+    struct BusyGuard<'a>(&'a AtomicBool);
+    impl Drop for BusyGuard<'_> {
+        fn drop(&mut self) { self.0.store(false, Ordering::Release); }
+    }
+    let _guard = BusyGuard(&state.export_busy);
+    // The authenticated listing supplies the filename and checksum. The renderer
+    // supplies only identifiers, never a local source or destination path.
+    let cached = broker::download(&state.client, &state.root, &project_id, &file_id, &token).await?;
+    let selected = rfd::AsyncFileDialog::new().set_parent(&window)
+        .set_title("Save data file").set_file_name(&cached.name).save_file().await;
+    trusted_window(&window, &state)?;
+    let Some(selected) = selected else { return Ok(export::cancelled()); };
+    // A Save panel may remain open while membership or the shared file changes.
+    let current = broker::download(&state.client, &state.root, &project_id, &file_id, &token).await?;
+    if current.name != cached.name || current.data_hash != cached.data_hash || current.size_bytes != cached.size_bytes {
+        return Err("The shared data changed while choosing a destination. Try again.".into());
+    }
+    let source = broker::project_dir(&state.root, &project_id)?;
+    let path = selected.path().to_path_buf();
+    tauri::async_runtime::spawn_blocking(move ||
+        export::write_cached_selected(&path, &source, &current.name, current.size_bytes, &current.data_hash))
+        .await.map_err(|_| "The data export operation could not finish.")?
+}
+
+#[tauri::command]
 async fn download_project_files(
     window: WebviewWindow,
     state: State<'_, DesktopState>,
@@ -333,7 +369,7 @@ fn main() {
     }
     let diagnostic_window = std::env::args().any(|arg| arg == "--diagnostic-window");
     let app = tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![desktop_info, save_text_export, cloud_request, download_project_file, download_project_files, upload_project_file, project_transfer_action, open_desktop_login, suggestions_status, suggestions_install, suggestions_configure, suggestions_complete, suggestions_cancel])
+        .invoke_handler(tauri::generate_handler![desktop_info, save_text_export, save_project_file, cloud_request, download_project_file, download_project_files, upload_project_file, project_transfer_action, open_desktop_login, suggestions_status, suggestions_install, suggestions_configure, suggestions_complete, suggestions_cancel])
         .setup(move |app| {
             let resources = app.path().resource_dir()?;
             let data_root = app.path().app_data_dir()?;

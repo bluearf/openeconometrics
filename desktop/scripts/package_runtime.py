@@ -369,6 +369,11 @@ def main():
         "uvicorn.protocols.websockets.auto", "uvicorn.lifespan.on",
         "python_multipart", "pyarrow", "pyarrow.dataset", "openpyxl", "pyreadstat",
     ]
+    if sys.platform == "win32":
+        # Retain the protected core of the previous public Windows installer.
+        # Importing the JWT library does not include deployed service routes.
+        importlib.metadata.distribution("PyJWT")
+        hidden.append("jwt")
     hidden.extend(econometrics_hidden_imports())
     command = [
         sys.executable, "-m", "PyInstaller", "--noconfirm", "--clean", "--onedir",

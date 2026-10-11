@@ -1507,8 +1507,15 @@ function App({
   async function downloadArtifact(artifact: { name: string; url: string }) {
     if (!client.projectId) return;
     try {
+      const path = workspaceDownloadPath(artifact.url, client.projectId);
+      const inputFile = /^\/files\/([a-f0-9]{32})\/download$/.exec(path);
+      if (client.desktop && inputFile) {
+        if (!client.saveInputFile) throw new Error("Native file saving is unavailable.");
+        await client.saveInputFile(inputFile[1]);
+        return;
+      }
       const blob = await api<Blob>(
-        workspaceDownloadPath(artifact.url, client.projectId),
+        path,
         {},
         "blob",
       );

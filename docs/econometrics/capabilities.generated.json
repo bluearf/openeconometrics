@@ -21543,7 +21543,7 @@
   },
   "schema": 1,
   "source_fingerprints": {
-    "desktop/src-tauri/tauri.conf.json": "9510b66925486f20d06359728321a7591f6a2620793092c486f14f126265fa3b",
+    "desktop/src-tauri/tauri.conf.json": "03a3962c9f0d921d20f7fd8737374344057dcd828ba8b78a4a6dc05a0ffc97ef",
     "packages/openecon-charts/pyproject.toml": "f78bad50758400d5719b85df59878e42609c32f69e49ed4dd4d4658e4179789e",
     "pyproject.toml": "7c58a3355b16f7581d071be8fbefb56cb06e1afd87d5578cf4a1afed7d343092",
     "src/openecon/__init__.py": "a1f1848e93b83ca0beceef8ef89fa9e497e684b0a7cce43743fdd6273059c0ef",
@@ -21653,7 +21653,7 @@
     "src/openecon/source_readers.py": "6c90b8870ba76a6a906889f8f2dbd318223f45189332993d59c13cdd1b53a18c",
     "src/openecon/survey.py": "1d03d66d8ca4223f9699d0e57d31ac38bbfb3242c8ac8c245427f925628f85ec"
   },
-  "source_ref": "751bf7bd3f591095e65f648fe19db030319ae215",
+  "source_ref": "ecb9424e3b1c4bba13d4ac7358638a7a50e5fccb",
   "stata_parity_validated": false,
   "state_space_paths": {
     "budgets": {

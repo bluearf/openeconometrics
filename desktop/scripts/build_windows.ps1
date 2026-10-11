@@ -21,6 +21,11 @@ if ($LASTEXITCODE -ne 0) { throw 'Locked runtime dependency export failed.' }
 if ($LASTEXITCODE -ne 0) { throw 'Locked CPU PyTorch installation failed.' }
 & $BuildPython -m pip install --no-deps -r $RuntimeLock.requirements
 if ($LASTEXITCODE -ne 0) { throw 'Locked runtime dependency installation failed.' }
+# Public0.3.44 projects protect PyJWT as part of their frozen core. Keep that
+# exact locked library available across upgrades; no cloud server is bundled.
+& $BuildPython -m pip install --no-deps "PyJWT==$($RuntimeLock.pyjwt_version)"
+if ($LASTEXITCODE -ne 0) { throw 'Locked Windows compatibility dependency installation failed.' }
+
 & $BuildPython -m pip install --no-deps "$ProjectRoot\packages\openecon-charts" "$ProjectRoot"
 if ($LASTEXITCODE -ne 0) { throw 'openecon wheel installation failed.' }
 Set-Location "$ProjectRoot\web"

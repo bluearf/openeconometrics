@@ -247,6 +247,18 @@ fn auth_request_policy(method: &str, path: &str, body: Option<&Value>) -> Result
     Ok(public)
 }
 
+/// Cloud ingress requires an explicit length even when a POST has no payload.
+pub(crate) fn frame_bodyless_post(
+    builder: reqwest::RequestBuilder,
+    method: &Method,
+) -> reqwest::RequestBuilder {
+    if method == Method::POST {
+        builder.header(reqwest::header::CONTENT_LENGTH, "0")
+    } else {
+        builder
+    }
+}
+
 pub async fn request(
     client: &Client,
     method: &str,
@@ -263,7 +275,7 @@ pub async fn request(
     let public_login = auth_request_policy(method, path, body.as_ref())?;
     let method = Method::from_bytes(method.as_bytes()).map_err(|_| "Invalid cloud method.")?;
     let mut builder = authorize(
-        client.request(method, format!("{CLOUD_ORIGIN}{path}")),
+        client.request(method.clone(), format!("{CLOUD_ORIGIN}{path}")),
         token,
         path == "/api/auth/config" || public_login,
     )?;
@@ -282,6 +294,8 @@ pub async fn request(
         builder = builder
             .header("Content-Type", "application/json")
             .body(bytes);
+    } else {
+        builder = frame_bodyless_post(builder, &method);
     }
     json_response(builder.send().await.map_err(|_| "OPENECON_NETWORK")?).await
 }
@@ -889,6 +903,29 @@ mod tests {
         assert!(authorize(client.post(CLOUD_ORIGIN), None, public).is_err());
         assert!(auth_request_policy("GET", &format!("/api/desktop/login/{id}"), Some(&exchange)).is_err());
     }
+    #[test]
+    fn bodyless_post_carries_explicit_zero_length_before_protocol_negotiation() {
+        let client = Client::new();
+        let request = frame_bodyless_post(
+            client.post(format!("{CLOUD_ORIGIN}/api/invitations/test/accept")),
+            &Method::POST,
+        )
+        .build()
+        .unwrap();
+        assert_eq!(request.headers()[reqwest::header::CONTENT_LENGTH], "0");
+        assert!(request.body().is_none());
+        assert!(!request.headers().contains_key(reqwest::header::CONTENT_TYPE));
+        for method in [Method::GET, Method::DELETE] {
+            let request = frame_bodyless_post(
+                client.request(method.clone(), CLOUD_ORIGIN),
+                &method,
+            )
+            .build()
+            .unwrap();
+            assert!(!request.headers().contains_key(reqwest::header::CONTENT_LENGTH));
+        }
+    }
+
     #[test]
     fn large_local_upload_has_explicit_format_origin_and_role_boundaries() {
         assert!(!local_upload(MAX_FILE_BYTES, "wages.csv").unwrap());

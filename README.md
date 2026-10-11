@@ -8,6 +8,10 @@ Fit routes, common prediction adapters and family-specific helpers/forecasts hav
 
 An open-source Python statistics library and local research workbench with a code editor, persistent Python session, data inspector, plots and MCP integration. Apache-2.0 licensed.
 
+OpenEconometrics is free and open source. Optional cloud, team and institutional
+support services may be offered in the future. See the
+[licensing policy](docs/licensing.md).
+
 Python package remains `openecon`. Project website: [openeconometrics.com](https://openeconometrics.com).
 
 [Teaching Labs](docs/teaching/README.md): twenty English classroom labs with

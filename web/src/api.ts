@@ -159,6 +159,8 @@ export interface WorkspaceClient {
   /** Native local runtime tools; its transport never uses the cloud broker. */
   readonly localDesktop?: boolean;
   readonly transferActions?: ProjectTransferActions;
+  /** Save a shared input through the native dialog without a renderer-sized Blob. */
+  saveInputFile?: (fileId: string) => Promise<void>;
   cancelFileDownload?: (fileId: string) => Promise<void>;
   subscribeFileDownload?: (listener: (file: {id: string; name: string} | null) => void) => () => void;
   readScriptConflict?: (id: string) => Promise<ScriptConflictSnapshot>;

@@ -96,10 +96,17 @@ def test_complete_current_main_inventory_and_editor_objects_survive_weibull_addi
     old = generator.decode_catalog(generator.read_catalog_wire(old_raw))
     raw = (ROOT / "web/src/editor-api.json").read_bytes()
     complete = generator.decode_catalog(generator.read_catalog_wire(raw))
-    # Undo later approved method waves (newest first) before the named bootstrap check.
-    for path in sorted((ROOT / "tests/fixtures").glob("editor-catalog-methods-wave*-approved-changes.json"),
-                       key=lambda item: int(item.name.split("wave")[1].split("-")[0]), reverse=True):
-        wave = json.loads(path.read_text())
+    # Undo the explicitly reviewed later catalogue changes, newest first. The
+    # Ng-Perron entry changes under its own exact before/after receipt, so a
+    # historical Weibull baseline must validate and restore it before comparison.
+    approved = ["editor-catalog-methods-wave1-approved-changes.json",
+                "editor-catalog-methods-wave2-approved-changes.json",
+                "editor-catalog-ngperron136-approved-changes.json"]
+    for name in reversed(approved):
+        wave = json.loads((ROOT / "tests/fixtures" / name).read_text())
+        current_rows = {row["name"]: row for row in complete}
+        for changed_name, change in wave["changed_entries"].items():
+            assert current_rows[changed_name] == change["after_logical"]
         complete = [wave["changed_entries"][row["name"]]["before_logical"] if row["name"] in wave["changed_entries"] else row
                     for row in complete if row["name"] not in set(wave["added_names"])]
     # Likewise admit only the three named conjoint bootstrap entries before the

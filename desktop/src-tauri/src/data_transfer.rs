@@ -368,9 +368,11 @@ impl Remote<'_> {
         suffix: &str,
         body: Option<Value>,
     ) -> Result<CloudResponse, String> {
-        let mut builder = self.builder(method, suffix)?;
+        let mut builder = self.builder(method.clone(), suffix)?;
         if let Some(body) = body {
             builder = builder.json(&body);
+        } else {
+            builder = broker::frame_bodyless_post(builder, &method);
         }
         let response = builder.send().await.map_err(|_| "OPENECON_NETWORK")?;
         let status = response.status().as_u16();
@@ -1191,6 +1193,9 @@ mod tests {
             let line: Vec<_> = text.lines().next().unwrap().split_whitespace().collect();
             let method = line[0];
             let path = line[1];
+            if method == "post" && path.ends_with("/complete") {
+                assert!(text.lines().any(|line| line == "content-length: 0"));
+            }
             let length: usize = text
                 .lines()
                 .find_map(|v| {

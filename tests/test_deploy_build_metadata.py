@@ -23,7 +23,7 @@ def test_windows_runtime_export_retains_locked_markers_and_cpu_version(
     spec.loader.exec_module(module)
     (tmp_path / "uv.lock").write_text("\n".join(
         f'[[package]]\nname = "torch"\nversion = "{version}"\n' for version in versions
-    ))
+    ) + '\n[[package]]\nname = "pyjwt"\nversion = "2.15.1"\n')
     monkeypatch.setattr(module, "ROOT", tmp_path)
     monkeypatch.setattr(module, "DESKTOP", tmp_path / "desktop")
     calls = []
@@ -41,6 +41,7 @@ def test_windows_runtime_export_retains_locked_markers_and_cpu_version(
     module.main()
     result = json.loads(capsys.readouterr().out)
     assert result["torch_version"] == "2.14.0" and len(calls) == 1
+    assert result["pyjwt_version"] == "2.15.1"
     assert Path(result["requirements"]).read_text() == (
         'colorama==0.4.6 ; sys_platform == "win32"\n'
     )
@@ -66,6 +67,32 @@ def test_windows_runtime_export_rejects_ambiguous_lock_before_export(
 
     monkeypatch.setattr(module.subprocess, "run", unexpected_export)
     with pytest.raises(SystemExit, match="one unambiguous PyTorch version"):
+        module.main()
+    assert not (tmp_path / "desktop/build").exists()
+
+
+@pytest.mark.parametrize("versions", [[], ["2.14.0", "2.15.1"]])
+def test_windows_runtime_export_rejects_missing_or_ambiguous_jwt_before_export(
+    tmp_path, monkeypatch, versions,
+):
+    spec = importlib.util.spec_from_file_location(
+        "runtime_export_invalid_jwt", ROOT / "desktop/scripts/export_locked_runtime.py",
+    )
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    (tmp_path / "uv.lock").write_text(
+        '[[package]]\nname = "torch"\nversion = "2.14.0"\n' + "\n".join(
+            f'[[package]]\nname = "pyjwt"\nversion = "{version}"\n' for version in versions
+        )
+    )
+    monkeypatch.setattr(module, "ROOT", tmp_path)
+    monkeypatch.setattr(module, "DESKTOP", tmp_path / "desktop")
+
+    def unexpected_export(*args, **kwargs):
+        pytest.fail("A missing or ambiguous JWT lock must not start dependency export")
+
+    monkeypatch.setattr(module.subprocess, "run", unexpected_export)
+    with pytest.raises(SystemExit, match="one locked PyJWT version"):
         module.main()
     assert not (tmp_path / "desktop/build").exists()
 

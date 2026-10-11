@@ -166,10 +166,12 @@ def test_frozen_metadata_preserves_utf8_and_record_hashes_under_windows_locale(
         assert row[1:] == ["sha256=" + expected, str(len(metadata))]
 
 
-def test_pyinstaller_command_includes_inventory_and_preserves_native_bootstrap(packager, monkeypatch, tmp_path):
+@pytest.mark.parametrize("target_platform", ["darwin", "win32"])
+def test_pyinstaller_command_includes_inventory_and_preserves_native_bootstrap(packager, monkeypatch, tmp_path, target_platform):
     module, _, _, _ = packager
     inventory = module.econometrics_hidden_imports()
     monkeypatch.setattr(sys, "argv", ["package_runtime.py", "--skip-web-build"])
+    monkeypatch.setattr(module.sys, "platform", target_platform)
     monkeypatch.setattr(module, "uv_bundle_inputs", lambda: (tmp_path / "uv", [], {}))
     monkeypatch.setattr(module.importlib.metadata, "distribution", lambda name: object())
     commands = []
@@ -193,6 +195,7 @@ def test_pyinstaller_command_includes_inventory_and_preserves_native_bootstrap(p
     assert hidden[:3] == ["openecon.desktop_entry", "openecon.desktop_runtime", "openecon.server"]
     assert "openecon._network_signed" in hidden
     assert "openecon.console_worker" in hidden and "openecon_charts.annotations" in hidden
+    assert ("jwt" in hidden) == (target_platform == "win32")
     assert {"openecon._network_store", "openecon._network_disk_algorithms"} <= set(hidden)
     assert "openecon._network_multi" in hidden
     assert {"openecon._network_dynamic", "openecon._network_dynamic_io"} <= set(hidden)

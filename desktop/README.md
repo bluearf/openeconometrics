@@ -90,6 +90,7 @@ Use `window.__TAURI__.core.invoke(command, args)` only when
 | `desktop_info` | none | `local_origin`, `data_root`, fixed `cloud_origin`, `version` |
 | `cloud_request` | `method`, `path`, optional `token`, optional JSON `body` | `{status, body}`; HTTP errors preserve status and JSON |
 | `download_project_file` | `projectId`, `fileId`, `token` | `{cloud_id,name,python_path,data_hash,sha256,size_bytes,reused}` |
+| `save_project_file` | `projectId`, `fileId`, `token` | native Save panel; streams the authenticated, checksum-pinned input from the managed cache and returns a saved/cancelled export receipt |
 | `download_project_files` | `projectId`, `token` | array of cache records; authenticated listing, at most 20 files / 8 GiB shared bytes; legacy inline files retain a separate 64 MiB budget |
 | `upload_project_file` | `projectId`, `token` | native chooser; negotiated chunked upload or legacy multipart; picker cancellation returns status 204 |
 | `project_transfer_action` | `projectId`, optional `requestId`, `token`, `action` | pending local upload list/status, explicit resume/cancel, or active chunked download cancellation |
