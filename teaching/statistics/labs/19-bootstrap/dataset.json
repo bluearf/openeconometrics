@@ -1,0 +1,21 @@
+{
+  "filename": "bootstrap_baskets.xlsx",
+  "description": "Resampling the Observed Baskets; original synthetic teaching data.",
+  "observation_unit": "One synthetic observed shopping basket.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710019,
+  "columns": [
+    {
+      "name": "basket_id",
+      "description": "Basket identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "spending",
+      "description": "Observed basket expenditure",
+      "unit": "hypothetical currency/basket",
+      "missing": 0
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "filename": "revealed_preference.xlsx",
+  "description": "Affordability and Revealed Preference; original synthetic teaching data.",
+  "observation_unit": "One observed synthetic price/bundle choice.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720008,
+  "columns": [
+    {
+      "name": "choice_id",
+      "description": "Choice identifier",
+      "unit": "ID",
+      "missing": 0
+    },
+    {
+      "name": "px",
+      "description": "Price X",
+      "unit": "currency/X",
+      "missing": 0
+    },
+    {
+      "name": "py",
+      "description": "Price Y",
+      "unit": "currency/Y",
+      "missing": 0
+    },
+    {
+      "name": "income",
+      "description": "Income",
+      "unit": "currency",
+      "missing": 0
+    },
+    {
+      "name": "x",
+      "description": "Chosen X",
+      "unit": "units",
+      "missing": 0
+    },
+    {
+      "name": "y",
+      "description": "Chosen Y",
+      "unit": "units",
+      "missing": 0
+    }
+  ]
+}

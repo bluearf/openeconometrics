@@ -1,0 +1,21 @@
+{
+  "filename": "delivery_variation.xlsx",
+  "description": "How Variable Are Delivery Times?; original synthetic teaching data.",
+  "observation_unit": "One synthetic parcel delivery.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710003,
+  "columns": [
+    {
+      "name": "delivery_id",
+      "description": "Delivery identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "minutes",
+      "description": "Elapsed delivery time",
+      "unit": "minutes",
+      "missing": 0
+    }
+  ]
+}

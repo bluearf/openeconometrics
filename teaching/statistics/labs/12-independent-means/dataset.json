@@ -1,0 +1,27 @@
+{
+  "filename": "delivery_methods.xlsx",
+  "description": "Comparing Two Delivery Methods; original synthetic teaching data.",
+  "observation_unit": "One synthetic independent parcel delivery.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710012,
+  "columns": [
+    {
+      "name": "delivery_id",
+      "description": "Delivery identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "method",
+      "description": "Assigned delivery method",
+      "unit": "A or B",
+      "missing": 0
+    },
+    {
+      "name": "minutes",
+      "description": "Elapsed delivery time",
+      "unit": "minutes",
+      "missing": 0
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "filename": "school_tutoring.xlsx",
+  "description": "Fictional observational schools, tutoring, prior achievement, resources and final achievement, including raw missing resource records.",
+  "observation_unit": "One independently observed fictional school.",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "school",
+      "description": "School observation identifier.",
+      "unit": "Integer identifier 1–300",
+      "missing": 0
+    },
+    {
+      "name": "prior_score",
+      "description": "Baseline achievement index.",
+      "unit": "Score points",
+      "missing": 0
+    },
+    {
+      "name": "resource_index",
+      "description": "Standardized school-resource measure; negative values are valid.",
+      "unit": "Index units",
+      "missing": 23
+    },
+    {
+      "name": "tutoring_hours",
+      "description": "Average weekly tutoring offered by the school.",
+      "unit": "Hours per week",
+      "missing": 0
+    },
+    {
+      "name": "final_score",
+      "description": "End-of-year achievement index; not bounded to 0–100.",
+      "unit": "Score points",
+      "missing": 0
+    }
+  ]
+}

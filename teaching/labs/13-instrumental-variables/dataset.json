@@ -1,0 +1,62 @@
+{
+  "filename": "schooling_instruments.xlsx",
+  "description": "700 synthetic people with saved strong-valid, weak-valid and exclusion-violating instrument scenarios.",
+  "observation_unit": "One synthetic person, with alternate scenario columns on the same row",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "person",
+      "description": "Synthetic person identifier; common across all three scenarios.",
+      "unit": "Identifier",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "offer",
+      "description": "Randomized fictional scholarship offer; excluded instrument.",
+      "unit": "Binary indicator (0/1)",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "background",
+      "description": "Observed exogenous background characteristic.",
+      "unit": "Standardized index",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "schooling",
+      "description": "Schooling exposure in the strong-valid instrument scenario.",
+      "unit": "Year-equivalent units",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "log_earnings",
+      "description": "Natural log of hourly earnings in the strong-valid scenario.",
+      "unit": "Log hypothetical currency units per hour",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "schooling_weak",
+      "description": "Saved schooling exposure in the weak-valid instrument scenario.",
+      "unit": "Year-equivalent units",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "schooling_invalid",
+      "description": "Saved schooling exposure in the strong instrument scenario with violated exclusion.",
+      "unit": "Year-equivalent units",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "log_earnings_weak",
+      "description": "Saved log hourly earnings in the weak-valid instrument scenario.",
+      "unit": "Log hypothetical currency units per hour",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "log_earnings_invalid",
+      "description": "Saved log hourly earnings with a direct offer effect, violating exclusion.",
+      "unit": "Log hypothetical currency units per hour",
+      "missing": "None in the supplied workbook"
+    }
+  ]
+}

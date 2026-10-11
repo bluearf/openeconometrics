@@ -1,0 +1,96 @@
+{
+  "metadata": {
+    "lab": "06-discrete-model",
+    "title": "How Many Orders Arrive in Ten Offers?",
+    "synthetic": true,
+    "data_file": "ten_offer_orders.xlsx",
+    "raw_rows": 500
+  },
+  "summary": {
+    "batches": 500,
+    "empirical_mean": 3.064,
+    "empirical_variance": 2.1321683366733466,
+    "model_mean": 2.9999999999999987,
+    "model_variance": 2.0999999999999988,
+    "p_at_least_five": 0.15026833259999992,
+    "empirical_fraction_at_least_five": 0.158
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "index": [
+        "orders"
+      ],
+      "columns": [
+        "n",
+        "mean",
+        "std_dev",
+        "min",
+        "max"
+      ],
+      "values": [
+        [
+          500.0,
+          3.064,
+          1.460194622875097,
+          0.0,
+          9.0
+        ]
+      ],
+      "attrs": {
+        "percentile_method": "stata",
+        "moments": "spss",
+        "alpha": 0.05,
+        "missing": "variable-wise",
+        "n": 500
+      }
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "bar",
+        "title": "How Many Orders Arrive in Ten Offers?",
+        "xlabel": "Orders in ten offers",
+        "ylabel": "Model probability",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10
+            ],
+            "y": [
+              0.02824752489999998,
+              0.12106082099999993,
+              0.23347444049999988,
+              0.2668279319999998,
+              0.2001209489999999,
+              0.10291934519999994,
+              0.03675690899999999,
+              0.009001691999999995,
+              0.0014467004999999993,
+              0.00013778099999999996,
+              5.9048999999999975e-06
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "pmf_sums_to_one": true,
+    "mean_matches_np": true,
+    "variance_matches_npq": true,
+    "counts_in_support": true
+  }
+}

@@ -1,0 +1,37 @@
+\begin{table}[htbp]
+\centering
+\caption{Class size and test scores: original synthetic data}
+\label{tab:lab04-class-size}
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Dependent variable: & test\_score & test\_score \\
+ & (1) & (2) \\
+ & HC3 robust & Classical \\
+\midrule
+Students per class & $-1.943$ & $-1.943$ \\
+ & $(0.145)$ & $(0.142)$ \\[0.35em]
+Constant & $705.723$ & $705.723$ \\
+ & $(3.200)$ & $(3.424)$ \\[0.35em]
+\midrule
+Observations & 240 & 240 \\
+$R^{2}$ & 0.442 & 0.442 \\
+$\text{Adjusted }R^{2}$ & 0.440 & 0.440 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\footnotesize
+\raggedright
+\textit{Notes:} Standard errors are in parentheses.\par
+(1) OLS: HC3 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1; Student t inference (df = 238); 95\% confidence level (alpha = 0.05); estimation sample 240 of 240 observations; model F(1, 238) = 180.591, p = 5.1645e-31.\par
+(2) OLS: conventional standard errors; Student t inference (df = 238); 95\% confidence level (alpha = 0.05); estimation sample 240 of 240 observations; model F(1, 238) = 188.462, p = 5.56096e-32.\par
+Identical 240-school sample in both columns; only covariance differs. School outcomes are simulated, not empirical policy evidence.\par
+\end{minipage}
+\endgroup
+\end{table}

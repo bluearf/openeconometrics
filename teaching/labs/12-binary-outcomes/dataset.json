@@ -1,0 +1,38 @@
+{
+  "filename": "labor_force_participation.xlsx",
+  "description": "720 synthetic adults with binary labor-force participation and observed covariates.",
+  "observation_unit": "One synthetic adult",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "person",
+      "description": "Synthetic adult identifier; excluded from regression.",
+      "unit": "Identifier",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "education",
+      "description": "Completed schooling, taking integer values 10–18.",
+      "unit": "Years",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "children",
+      "description": "Number of children, taking values 0–3.",
+      "unit": "Count",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "age",
+      "description": "Adult age, between 20 and 60.",
+      "unit": "Years",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "participating",
+      "description": "Labor-force participation: 1 participates, 0 does not.",
+      "unit": "Binary indicator (0/1)",
+      "missing": "None in the supplied workbook"
+    }
+  ]
+}

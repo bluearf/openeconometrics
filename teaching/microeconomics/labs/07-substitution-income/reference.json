@@ -1,0 +1,98 @@
+{
+  "metadata": {
+    "lab": "07-substitution-income",
+    "title": "Separating Substitution and Income Effects",
+    "synthetic": true,
+    "data_file": "substitution_income.xlsx",
+    "raw_rows": 2
+  },
+  "summary": {
+    "original_x": 16.0,
+    "new_x": 8.0,
+    "hicks_compensated_income": 158.3409492927473,
+    "compensated_x": 10.556063286183154,
+    "hicks_substitution_effect": -5.443936713816846,
+    "income_effect": -2.5560632861831536,
+    "total_effect": -8.0,
+    "original_utility": 26.027322508744767,
+    "compensated_utility": 26.027322508744763
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "index": [
+        "original_x",
+        "new_x",
+        "hicks_compensated_income",
+        "compensated_x",
+        "hicks_substitution_effect",
+        "income_effect",
+        "total_effect",
+        "original_utility",
+        "compensated_utility"
+      ],
+      "columns": [
+        "value"
+      ],
+      "values": [
+        [
+          16.0
+        ],
+        [
+          8.0
+        ],
+        [
+          158.3409492927473
+        ],
+        [
+          10.556063286183154
+        ],
+        [
+          -5.443936713816846
+        ],
+        [
+          -2.5560632861831536
+        ],
+        [
+          -8.0
+        ],
+        [
+          26.027322508744767
+        ],
+        [
+          26.027322508744763
+        ]
+      ],
+      "attrs": {}
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "bar",
+        "title": "Separating Substitution and Income Effects",
+        "xlabel": "Consumption comparison",
+        "ylabel": "X (units)",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              "Original",
+              "Compensated",
+              "New"
+            ],
+            "y": [
+              16.0,
+              10.556063286183154,
+              8.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "effects_add_to_total": true,
+    "utility_held_fixed": true
+  }
+}

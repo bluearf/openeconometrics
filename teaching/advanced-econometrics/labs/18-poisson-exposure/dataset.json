@@ -1,0 +1,39 @@
+{
+  "filename": "poisson_exposure.xlsx",
+  "description": "Poisson Rates with an Exposure Offset; original synthetic teaching data.",
+  "observation_unit": "One synthetic independent unit; dependence is stated explicitly where groups are supplied.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 730018,
+  "columns": [
+    {
+      "name": "row_id",
+      "description": "Stable record identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "x",
+      "description": "Exposure or predictor X",
+      "unit": "centered units",
+      "missing": 0
+    },
+    {
+      "name": "z",
+      "description": "Observed covariate Z",
+      "unit": "centered units",
+      "missing": 0
+    },
+    {
+      "name": "y",
+      "description": "Observed event count",
+      "unit": "nonnegative integer events",
+      "missing": 0
+    },
+    {
+      "name": "exposure",
+      "description": "Positive observation exposure",
+      "unit": "exposure units",
+      "missing": 0
+    }
+  ]
+}

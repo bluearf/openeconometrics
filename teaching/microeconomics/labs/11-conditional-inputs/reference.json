@@ -1,0 +1,97 @@
+{
+  "metadata": {
+    "lab": "11-conditional-inputs",
+    "title": "Cost Minimization with Two Inputs",
+    "synthetic": true,
+    "data_file": "conditional_inputs.xlsx",
+    "raw_rows": 6
+  },
+  "summary": {
+    "base_output": 60.0,
+    "base_labor": 15.0,
+    "base_capital": 60.0,
+    "base_cost": 120.0,
+    "high_wage_labor": 10.0,
+    "high_wage_capital": 90.0,
+    "high_wage_cost": 180.0,
+    "base_capital_labor_ratio": 4.0
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "index": [
+        "base_output",
+        "base_labor",
+        "base_capital",
+        "base_cost",
+        "high_wage_labor",
+        "high_wage_capital",
+        "high_wage_cost",
+        "base_capital_labor_ratio"
+      ],
+      "columns": [
+        "value"
+      ],
+      "values": [
+        [
+          60.0
+        ],
+        [
+          15.0
+        ],
+        [
+          60.0
+        ],
+        [
+          120.0
+        ],
+        [
+          10.0
+        ],
+        [
+          90.0
+        ],
+        [
+          180.0
+        ],
+        [
+          4.0
+        ]
+      ],
+      "attrs": {}
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "line",
+        "title": "Cost Minimization with Two Inputs",
+        "xlabel": "Target output (units/day)",
+        "ylabel": "Minimum cost (currency/day)",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              20,
+              40,
+              60,
+              80,
+              100
+            ],
+            "y": [
+              40.0,
+              80.0,
+              120.0,
+              160.0,
+              200.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "production_constraint": true,
+    "input_tangency": true
+  }
+}

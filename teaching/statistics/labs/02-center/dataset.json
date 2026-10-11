@@ -1,0 +1,21 @@
+{
+  "filename": "shop_spending.xlsx",
+  "description": "Which Average Answers the Question?; original synthetic teaching data.",
+  "observation_unit": "One synthetic shopping basket.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710002,
+  "columns": [
+    {
+      "name": "basket_id",
+      "description": "Stable basket identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "spending",
+      "description": "Basket expenditure",
+      "unit": "hypothetical currency/basket",
+      "missing": 0
+    }
+  ]
+}

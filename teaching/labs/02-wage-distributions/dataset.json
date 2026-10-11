@@ -1,0 +1,20 @@
+{
+  "filename": "wage_distributions.xlsx",
+  "description": "Fixed hourly wages with a right tail, one unusually high observation and five missing wage reports.",
+  "observation_unit": "One synthetic worker observed once.",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "worker_id",
+      "description": "Worker identifier from 1 to 800; a row label.",
+      "unit": "Identifier",
+      "missing": "No missing values."
+    },
+    {
+      "name": "hourly_wage",
+      "description": "Recorded hourly pay, positive when observed; retain the large wage observation.",
+      "unit": "Hypothetical currency units per hour",
+      "missing": "Five blank wage reports for worker IDs 1, 161, 321, 481 and 641; exclude these explicitly for observed-wage summaries, never replace with zero."
+    }
+  ]
+}

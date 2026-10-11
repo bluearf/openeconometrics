@@ -1,0 +1,120 @@
+{
+  "metadata": {
+    "lab": "14-two-proportions",
+    "title": "Did Two Messages Produce Different Response Rates?",
+    "synthetic": true,
+    "data_file": "message_responses.xlsx",
+    "raw_rows": 600
+  },
+  "summary": {
+    "n_A": 300,
+    "n_B": 300,
+    "rate_A": 0.26,
+    "rate_B": 0.2966666666666667,
+    "difference_A_minus_B": -0.03666666666666668,
+    "difference_percentage_points": -3.666666666666668,
+    "pooled_null_se": 0.036593614095803556,
+    "unpooled_interval_se": 0.036562984722966096,
+    "z": -1.0019963201959738,
+    "two_sided_p": 0.31634537009844516,
+    "ci_low": -0.10832879989096844,
+    "ci_high": 0.03499546655763508
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "index": [
+        "A",
+        "B",
+        "diff"
+      ],
+      "columns": [
+        "n",
+        "proportion",
+        "std_error",
+        "ci_low",
+        "ci_high",
+        "z",
+        "p_value"
+      ],
+      "values": [
+        [
+          300.0,
+          0.26,
+          0.025324559884296775,
+          0.2103647747024505,
+          0.30963522529754955,
+          null,
+          null
+        ],
+        [
+          300.0,
+          0.2966666666666667,
+          0.026372685083595842,
+          0.24497715372720213,
+          0.34835617960613124,
+          null,
+          null
+        ],
+        [
+          600.0,
+          -0.03666666666666668,
+          0.036562984722966096,
+          -0.10832879989096844,
+          0.03499546655763508,
+          -1.0019963201959738,
+          0.31634537009844516
+        ]
+      ],
+      "attrs": {
+        "n": 600,
+        "n1": 300,
+        "n2": 300,
+        "groups": [
+          "A",
+          "B"
+        ],
+        "difference": -0.03666666666666668,
+        "pooled": 0.2783333333333333,
+        "z": -1.0019963201959738,
+        "p_value": 0.31634537009844516,
+        "p_lower": 0.15817268504922258,
+        "p_upper": 0.8418273149507774,
+        "std_error_null": 0.036593614095803556,
+        "alpha": 0.05,
+        "positive": 1,
+        "n_dropped": 0,
+        "label": "Two-sample test of proportions: response by message"
+      }
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "bar",
+        "title": "Did Two Messages Produce Different Response Rates?",
+        "xlabel": "Message",
+        "ylabel": "Response fraction",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              "A",
+              "B"
+            ],
+            "y": [
+              0.26,
+              0.2966666666666667
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "native_z_uses_pooled_null": true,
+    "native_interval_se_is_unpooled": true,
+    "group_counts_partition": true,
+    "percentage_point_scale": true
+  }
+}

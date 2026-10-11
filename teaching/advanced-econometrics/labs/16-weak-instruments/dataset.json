@@ -1,0 +1,45 @@
+{
+  "filename": "weak_instruments.xlsx",
+  "description": "Weak Relevance and IV Sensitivity; original synthetic teaching data.",
+  "observation_unit": "One synthetic independent unit; dependence is stated explicitly where groups are supplied.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 730016,
+  "columns": [
+    {
+      "name": "row_id",
+      "description": "Stable record identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "x",
+      "description": "Endogenous exposure",
+      "unit": "units",
+      "missing": 0
+    },
+    {
+      "name": "z",
+      "description": "Excluded instrument",
+      "unit": "units",
+      "missing": 0
+    },
+    {
+      "name": "control",
+      "description": "Exogenous control",
+      "unit": "units",
+      "missing": 0
+    },
+    {
+      "name": "y",
+      "description": "Outcome",
+      "unit": "outcome units",
+      "missing": 0
+    },
+    {
+      "name": "weak_x",
+      "description": "Exposure with a weak instrument coefficient",
+      "unit": "units",
+      "missing": 0
+    }
+  ]
+}

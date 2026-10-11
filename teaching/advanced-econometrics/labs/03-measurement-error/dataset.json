@@ -1,0 +1,33 @@
+{
+  "filename": "measurement_error.xlsx",
+  "description": "Measurement Error and Attenuation; original synthetic teaching data.",
+  "observation_unit": "One synthetic independent unit; dependence is stated explicitly where groups are supplied.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 730003,
+  "columns": [
+    {
+      "name": "row_id",
+      "description": "Stable record identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "x",
+      "description": "Latent exposure, visible for teaching",
+      "unit": "units",
+      "missing": 0
+    },
+    {
+      "name": "observed_x",
+      "description": "Exposure plus independent error",
+      "unit": "units",
+      "missing": 0
+    },
+    {
+      "name": "y",
+      "description": "Outcome",
+      "unit": "outcome units",
+      "missing": 0
+    }
+  ]
+}

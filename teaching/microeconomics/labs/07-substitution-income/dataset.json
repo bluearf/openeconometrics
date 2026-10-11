@@ -1,0 +1,33 @@
+{
+  "filename": "substitution_income.xlsx",
+  "description": "Separating Substitution and Income Effects; original synthetic teaching data.",
+  "observation_unit": "One price scenario with a common preference specification.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720007,
+  "columns": [
+    {
+      "name": "px",
+      "description": "X price",
+      "unit": "currency/X",
+      "missing": 0
+    },
+    {
+      "name": "py",
+      "description": "Y price",
+      "unit": "currency/Y",
+      "missing": 0
+    },
+    {
+      "name": "income",
+      "description": "Income",
+      "unit": "currency",
+      "missing": 0
+    },
+    {
+      "name": "alpha",
+      "description": "X share",
+      "unit": "fraction",
+      "missing": 0
+    }
+  ]
+}

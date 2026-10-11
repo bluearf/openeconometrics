@@ -1,0 +1,143 @@
+{
+  "metadata": {
+    "lab": "18-rank-comparisons",
+    "title": "Comparing Ordinal Customer Ratings",
+    "synthetic": true,
+    "data_file": "customer_ratings.xlsx",
+    "raw_rows": 80
+  },
+  "summary": {
+    "n_A": 40,
+    "n_B": 40,
+    "U_A": 733.0,
+    "rank_sum_A": 1553.0,
+    "probability_A_exceeds_B_with_half_ties": 0.458125,
+    "z_without_continuity_correction": -0.6600003052188756,
+    "asymptotic_two_sided_p": 0.5092536334753133,
+    "tied_pair_fraction": 0.19875
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "tables": {
+        "ranks": {
+          "index": [
+            "A",
+            "B"
+          ],
+          "columns": [
+            "n",
+            "rank_sum",
+            "mean_rank",
+            "expected"
+          ],
+          "values": [
+            [
+              40.0,
+              1553.0,
+              38.825,
+              1620.0
+            ],
+            [
+              40.0,
+              1687.0,
+              42.175,
+              1620.0
+            ]
+          ],
+          "attrs": {}
+        },
+        "tests": {
+          "index": [
+            "z",
+            "z_continuity"
+          ],
+          "columns": [
+            "statistic",
+            "p_value"
+          ],
+          "values": [
+            [
+              -0.6600003052188756,
+              0.5092536334753133
+            ],
+            [
+              -0.6550749298067945,
+              0.512419512379455
+            ]
+          ],
+          "attrs": {}
+        }
+      },
+      "attrs": {
+        "n": 80,
+        "n1": 40,
+        "n2": 40,
+        "groups": [
+          "A",
+          "B"
+        ],
+        "u": 733.0,
+        "u1": 733.0,
+        "u2": 867.0,
+        "w": 1553.0,
+        "z": -0.6600003052188756,
+        "p_value": 0.5092536334753133,
+        "z_continuity": -0.6550749298067945,
+        "p_value_continuity": 0.512419512379455,
+        "variance_unadjusted": 10800.0,
+        "variance": 10305.316455696202,
+        "ties": true,
+        "effect_r": -0.07379027738200075,
+        "porder": 0.458125,
+        "exact": false,
+        "hl_estimate": 0.0,
+        "hl_ci_low": -1.0,
+        "hl_ci_high": 0.0,
+        "hl_ci_method": "normal",
+        "alpha": 0.05,
+        "n_dropped": 0,
+        "label": "Wilcoxon rank-sum (Mann-Whitney) test"
+      }
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "bar",
+        "title": "Comparing Ordinal Customer Ratings",
+        "xlabel": "Rating (ordered 1\u20137)",
+        "ylabel": "Customers",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "y": [
+              4,
+              8,
+              13,
+              23,
+              19,
+              12,
+              1
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "native_U_matches_pair_enumeration": true,
+    "rank_sum_identity": true,
+    "native_probability_matches_pair_comparison": true,
+    "all_ranks_sum_correctly": true
+  }
+}

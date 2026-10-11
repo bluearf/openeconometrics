@@ -1,0 +1,44 @@
+\begin{table}[htbp]
+\centering
+\caption{Explaining Labor-Force Participation: original synthetic data}
+\label{tab:12-binary-outcomes}
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Dependent variable: & participating & participating & participating \\
+ & (1) & (2) & (3) \\
+ & LPM HC1 & Logit information & Probit information \\
+\midrule
+education & $0.0518$ & $0.2654$ & $0.1602$ \\
+ & $(0.0060)$ & $(0.0351)$ & $(0.0206)$ \\[0.35em]
+children & $-0.0796$ & $-0.4073$ & $-0.2464$ \\
+ & $(0.0146)$ & $(0.0773)$ & $(0.0460)$ \\[0.35em]
+age & $0.0028$ & $0.0149$ & $0.0092$ \\
+ & $(0.0014)$ & $(0.0072)$ & $(0.0043)$ \\[0.35em]
+Constant & $-0.3884$ & $-4.5266$ & $-2.7385$ \\
+ & $(0.0982)$ & $(0.5928)$ & $(0.3459)$ \\[0.35em]
+\midrule
+Observations & 720 & 720 & 720 \\
+$R^{2}$ & 0.1232 &  &  \\
+$\text{Adjusted }R^{2}$ & 0.1196 &  &  \\
+$\text{Pseudo }R^{2}$ &  & 0.1035 & 0.1044 \\
+Log likelihood &  & -409.5906 & -409.2039 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\footnotesize
+\raggedright
+\textit{Notes:} Standard errors are in parentheses.\par
+(1) OLS: HC1 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1.00559; Student t inference (df = 716); 95\% confidence level (alpha = 0.05); estimation sample 720 of 720 observations; model F(3, 716) = 42.3295, p = 3.44256e-25.\par
+(2) LOGIT: conventional standard errors; normal z inference; 95\% confidence level (alpha = 0.05); estimation sample 720 of 720 observations; covariance correction: nonrobust; residual df: 716.\par
+(3) PROBIT: conventional standard errors; normal z inference; 95\% confidence level (alpha = 0.05); estimation sample 720 of 720 observations; covariance correction: nonrobust; residual df: 716.\par
+Original synthetic observations. Inference conventions and exact estimation samples are retained in the model notes; no empirical policy claim.\par
+\end{minipage}
+\endgroup
+\end{table}

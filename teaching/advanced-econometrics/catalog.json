@@ -1,0 +1,288 @@
+{
+  "id": "advanced-econometrics",
+  "title": "Advanced Econometrics with OpenEconometrics",
+  "student_title": "Advanced econometrics in practice",
+  "expected_labs": 20,
+  "labs": [
+    {
+      "number": 1,
+      "slug": "01-partialling-out",
+      "title": "The Frisch\u2013Waugh\u2013Lovell Identity",
+      "scope": "Why can residualizing both outcome and exposure recover a controlled regression slope?",
+      "data_mode": "prepared_excel",
+      "data_file": "partialling_out.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 2,
+      "slug": "02-omitted-variable-bias",
+      "title": "An Exact Sample Omitted-Variable Decomposition",
+      "scope": "How does omitting a correlated control change a regression coefficient?",
+      "data_mode": "prepared_excel",
+      "data_file": "omitted_variable_bias.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 3,
+      "slug": "03-measurement-error",
+      "title": "Measurement Error and Attenuation",
+      "scope": "Why can noisy exposure measurement shrink an ordinary regression slope?",
+      "data_mode": "prepared_excel",
+      "data_file": "measurement_error.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 4,
+      "slug": "04-collinearity",
+      "title": "Collinearity, Coefficients and Stable Combinations",
+      "scope": "Why can individual slopes be uncertain while their sum is estimated well?",
+      "data_mode": "prepared_excel",
+      "data_file": "collinearity.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 5,
+      "slug": "05-leverage-influence",
+      "title": "Leverage and Leave-One-Out Sensitivity",
+      "scope": "How do unusual predictor values affect a fit and its uncertainty?",
+      "data_mode": "prepared_excel",
+      "data_file": "leverage_influence.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 6,
+      "slug": "06-weighted-least-squares",
+      "title": "Known Variance Weights and WLS",
+      "scope": "How do inverse-variance weights change a least-squares fit?",
+      "data_mode": "prepared_excel",
+      "data_file": "weighted_least_squares.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 7,
+      "slug": "07-clustered-inference",
+      "title": "Clustered Errors and the Sampling Unit",
+      "scope": "Which observations provide independent information when errors share a group shock?",
+      "data_mode": "prepared_excel",
+      "data_file": "clustered_inference.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 8,
+      "slug": "08-hac-inference",
+      "title": "Serial Dependence and HAC Covariance",
+      "scope": "How can uncertainty account for correlated scores over time?",
+      "data_mode": "prepared_excel",
+      "data_file": "hac_inference.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 9,
+      "slug": "09-joint-restrictions",
+      "title": "Joint Wald Restrictions with Robust Covariance",
+      "scope": "Why is a joint test different from reading two individual p values?",
+      "data_mode": "prepared_excel",
+      "data_file": "joint_restrictions.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 10,
+      "slug": "10-nonlinear-delta",
+      "title": "Delta-Method Inference for a Coefficient Ratio",
+      "scope": "How should uncertainty be propagated through a nonlinear function of coefficients?",
+      "data_mode": "prepared_excel",
+      "data_file": "nonlinear_delta.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 11,
+      "slug": "11-common-sample",
+      "title": "Specification Changes and Common Samples",
+      "scope": "When coefficients change after adding a control, how much came from changing rows?",
+      "data_mode": "prepared_excel",
+      "data_file": "common_sample.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 12,
+      "slug": "12-polynomial-centering",
+      "title": "Centering a Polynomial without Changing Its Fit",
+      "scope": "Why does centering change coefficients while leaving a polynomial fit unchanged?",
+      "data_mode": "prepared_excel",
+      "data_file": "polynomial_centering.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 13,
+      "slug": "13-fixed-effects-algebra",
+      "title": "Fixed Effects as Dummies and Within Variation",
+      "scope": "How do unit dummies recover the same slope as within-unit demeaning?",
+      "data_mode": "prepared_excel",
+      "data_file": "fixed_effects_algebra.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 14,
+      "slug": "14-first-differences",
+      "title": "First Differences and Their Error Structure",
+      "scope": "What does differencing remove, and what dependence can it introduce?",
+      "data_mode": "prepared_excel",
+      "data_file": "first_differences.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 15,
+      "slug": "15-iv-moment-condition",
+      "title": "Instrumental Variables and the Projection Formula",
+      "scope": "How does an instrument isolate exposure variation that is orthogonal to the structural error?",
+      "data_mode": "prepared_excel",
+      "data_file": "iv_moment_condition.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 16,
+      "slug": "16-weak-instruments",
+      "title": "Weak Relevance and IV Sensitivity",
+      "scope": "What changes when an otherwise valid instrument barely predicts exposure?",
+      "data_mode": "prepared_excel",
+      "data_file": "weak_instruments.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 17,
+      "slug": "17-logit-marginal-effects",
+      "title": "Logit Probabilities, Odds and Marginal Effects",
+      "scope": "Why is a logit coefficient not a probability change?",
+      "data_mode": "prepared_excel",
+      "data_file": "logit_marginal_effects.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 18,
+      "slug": "18-poisson-exposure",
+      "title": "Poisson Rates with an Exposure Offset",
+      "scope": "How can counts from different observation exposures be compared?",
+      "data_mode": "prepared_excel",
+      "data_file": "poisson_exposure.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 19,
+      "slug": "19-local-projections",
+      "title": "Local Projections over Several Horizons",
+      "scope": "How can horizon-specific regressions trace the response to an exogenous shock?",
+      "data_mode": "prepared_excel",
+      "data_file": "local_projections.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 20,
+      "slug": "20-specification-report",
+      "title": "A Reproducible Treatment-Effect Report",
+      "scope": "How should a report retain its estimand, sensitivity specifications and full evidence?",
+      "data_mode": "prepared_excel",
+      "data_file": "specification_report.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    }
+  ]
+}

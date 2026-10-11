@@ -1,0 +1,318 @@
+{
+  "metadata": {
+    "lab": "16-categorical-independence",
+    "title": "Are Shopping Channels and Membership Independent?",
+    "synthetic": true,
+    "data_file": "shopping_channels.xlsx",
+    "raw_rows": 360
+  },
+  "summary": {
+    "transactions": 360,
+    "pearson_chi_squared": 39.70285714285714,
+    "df": 2,
+    "p_value": 2.39130027355993e-09,
+    "minimum_expected_count": 50.0,
+    "cramers_v": 0.3320929301953209
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "tables": {
+        "counts": {
+          "index": [
+            "App",
+            "Store",
+            "Web",
+            "total"
+          ],
+          "columns": [
+            "0",
+            "1",
+            "total"
+          ],
+          "values": [
+            [
+              45,
+              75,
+              120
+            ],
+            [
+              93,
+              27,
+              120
+            ],
+            [
+              72,
+              48,
+              120
+            ],
+            [
+              210,
+              150,
+              360
+            ]
+          ],
+          "attrs": {}
+        },
+        "expected": {
+          "index": [
+            "App",
+            "Store",
+            "Web"
+          ],
+          "columns": [
+            "0",
+            "1"
+          ],
+          "values": [
+            [
+              70.0,
+              50.0
+            ],
+            [
+              70.0,
+              50.0
+            ],
+            [
+              70.0,
+              50.0
+            ]
+          ],
+          "attrs": {}
+        },
+        "tests": {
+          "index": [
+            "pearson",
+            "likelihood_ratio",
+            "linear_by_linear"
+          ],
+          "columns": [
+            "statistic",
+            "df",
+            "p_value"
+          ],
+          "values": [
+            [
+              39.70285714285714,
+              2.0,
+              2.39130027355993e-09
+            ],
+            [
+              40.76185249680961,
+              2.0,
+              1.4082384379613809e-09
+            ],
+            [
+              12.46242857142857,
+              1.0,
+              0.0004152197351760586
+            ]
+          ],
+          "attrs": {}
+        },
+        "measures": {
+          "index": [
+            "phi",
+            "cramers_v",
+            "contingency_coefficient",
+            "lambda_symmetric",
+            "lambda_row",
+            "lambda_column",
+            "goodman_kruskal_tau_row",
+            "goodman_kruskal_tau_column",
+            "uncertainty_symmetric",
+            "uncertainty_row",
+            "uncertainty_column",
+            "gamma",
+            "kendall_tau_b",
+            "kendall_tau_c",
+            "somers_d_symmetric",
+            "somers_d_row",
+            "somers_d_column",
+            "pearson_r",
+            "spearman_rho"
+          ],
+          "columns": [
+            "value",
+            "ase",
+            "t",
+            "p_value"
+          ],
+          "values": [
+            [
+              0.3320929301953209,
+              null,
+              null,
+              2.39130027355993e-09
+            ],
+            [
+              0.3320929301953209,
+              null,
+              null,
+              2.39130027355993e-09
+            ],
+            [
+              0.31516810046251637,
+              null,
+              null,
+              2.39130027355993e-09
+            ],
+            [
+              0.2,
+              0.04458885152673673,
+              4.286620260628902,
+              1.8141201175532722e-05
+            ],
+            [
+              0.2,
+              0.04377975178854566,
+              4.18420826252644,
+              2.8616167921745785e-05
+            ],
+            [
+              0.2,
+              0.06531972647421809,
+              2.767593624086655,
+              0.005647182255806738
+            ],
+            [
+              0.055142857142857084,
+              0.01657958826399387,
+              null,
+              2.526866816091332e-09
+            ],
+            [
+              0.11028571428571429,
+              0.032403741280592764,
+              null,
+              2.5268668160912803e-09
+            ],
+            [
+              0.06368939941149554,
+              0.01921147553108917,
+              3.3124970531241797,
+              1.4082384379613809e-09
+            ],
+            [
+              0.051531995961907,
+              0.015556842809355745,
+              3.31249705312418,
+              1.4082384379613809e-09
+            ],
+            [
+              0.08335430702584853,
+              0.025124512305039228,
+              3.31249705312418,
+              1.4082384379613809e-09
+            ],
+            [
+              -0.2924451665312754,
+              0.08267507708323124,
+              -3.4252074194160755,
+              0.0006143302159056568
+            ],
+            [
+              -0.17566201313073596,
+              0.05121339464811154,
+              -3.4252074194160755,
+              0.0006143302159056568
+            ],
+            [
+              -0.2,
+              0.05839062442358475,
+              -3.4252074194160755,
+              0.0006143302159056568
+            ],
+            [
+              -0.17349397590361446,
+              0.0505892900548913,
+              -3.4252074194160755,
+              0.0006143302159056568
+            ],
+            [
+              -0.2057142857142857,
+              0.05994698013744822,
+              -3.4252074194160755,
+              0.0006143302159056568
+            ],
+            [
+              -0.15,
+              0.043792968317688565,
+              -3.4252074194160755,
+              0.0006143302159056568
+            ],
+            [
+              -0.18631770102243564,
+              0.05312844093164851,
+              -3.5881260446998717,
+              0.0003794126135302324
+            ],
+            [
+              -0.18631770102243564,
+              0.05432000796489377,
+              -3.5881260446998717,
+              0.0003794126135302324
+            ]
+          ],
+          "attrs": {}
+        }
+      },
+      "attrs": {
+        "n": 360,
+        "statistic": 39.70285714285714,
+        "df": 2,
+        "p_value": 2.39130027355993e-09,
+        "likelihood_ratio": 40.76185249680961,
+        "p_value_likelihood_ratio": 1.4082384379613809e-09,
+        "min_expected": 50.0,
+        "cells_below_5": 0,
+        "cramers_v": 0.3320929301953209,
+        "row": "channel",
+        "column": "member",
+        "row_levels": [
+          "App",
+          "Store",
+          "Web"
+        ],
+        "column_levels": [
+          0,
+          1
+        ],
+        "alpha": 0.05,
+        "n_dropped": 0,
+        "distribution": "chi2"
+      }
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "bar",
+        "title": "Are Shopping Channels and Membership Independent?",
+        "xlabel": "Shopping channel",
+        "ylabel": "Member fraction",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              "App",
+              "Store",
+              "Web"
+            ],
+            "y": [
+              0.625,
+              0.225,
+              0.4
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "native_chi_square_matches_cell_formula": true,
+    "expected_margins_match_observed": true,
+    "adequate_expected_counts": true,
+    "observed_cells_partition": true
+  }
+}

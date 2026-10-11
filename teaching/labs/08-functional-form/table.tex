@@ -1,0 +1,39 @@
+\begin{table}[htbp]
+\centering
+\caption{Original synthetic log-wage models: the same 500 workers}
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Dependent variable: & log\_wage & log\_wage \\
+ & (1) & (2) \\
+ & Linear experience & Quadratic experience \\
+\midrule
+education & $0.06170$ & $0.05990$ \\
+ & $(0.00489)$ & $(0.00463)$ \\[0.35em]
+experience & $0.01843$ & $0.04945$ \\
+ & $(0.00101)$ & $(0.00324)$ \\[0.35em]
+experience\_squared &  & $-0.00078$ \\
+ &  & $(0.00009)$ \\[0.35em]
+Constant & $1.91876$ & $1.74120$ \\
+ & $(0.07218)$ & $(0.06776)$ \\[0.35em]
+\midrule
+Observations & 500 & 500 \\
+$R^{2}$ & 0.50914 & 0.57804 \\
+$\text{Adjusted }R^{2}$ & 0.50717 & 0.57548 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\footnotesize
+\raggedright
+\textit{Notes:} Standard errors are in parentheses.\par
+(1) OLS: HC3 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1; Student t inference (df = 497); 95\% confidence level (alpha = 0.05); estimation sample 500 of 500 observations; model F(2, 497) = 229.374, p = 2.68743e-71.\par
+(2) OLS: HC3 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1; Student t inference (df = 496); 95\% confidence level (alpha = 0.05); estimation sample 500 of 500 observations; model F(3, 496) = 303.568, p = 7.61318e-112.\par
+\end{minipage}
+\endgroup
+\end{table}

@@ -1,0 +1,36 @@
+\begin{table}[htbp]
+\centering
+\caption{Synthetic education-wage association: confidence levels differ; fit does not}
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Dependent variable: & hourly\_wage & hourly\_wage & hourly\_wage \\
+ & (1) & (2) & (3) \\
+ & 90 percent & 95 percent & 99 percent \\
+\midrule
+education & $0.7334$ & $0.7334$ & $0.7334$ \\
+ & $(0.1681)$ & $(0.1681)$ & $(0.1681)$ \\[0.35em]
+Constant & $15.0166$ & $15.0166$ & $15.0166$ \\
+ & $(2.2585)$ & $(2.2585)$ & $(2.2585)$ \\[0.35em]
+\midrule
+Observations & 140 & 140 & 140 \\
+$R^{2}$ & 0.1213 & 0.1213 & 0.1213 \\
+$\text{Adjusted }R^{2}$ & 0.1150 & 0.1150 & 0.1150 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\footnotesize
+\raggedright
+\textit{Notes:} Standard errors are in parentheses.\par
+(1) OLS: HC3 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1; Student t inference (df = 138); 90\% confidence level (alpha = 0.1); estimation sample 140 of 140 observations; model F(1, 138) = 19.0253, p = 2.50678e-05.\par
+(2) OLS: HC3 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1; Student t inference (df = 138); 95\% confidence level (alpha = 0.05); estimation sample 140 of 140 observations; model F(1, 138) = 19.0253, p = 2.50678e-05.\par
+(3) OLS: HC3 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1; Student t inference (df = 138); 99\% confidence level (alpha = 0.01); estimation sample 140 of 140 observations; model F(1, 138) = 19.0253, p = 2.50678e-05.\par
+\end{minipage}
+\endgroup
+\end{table}

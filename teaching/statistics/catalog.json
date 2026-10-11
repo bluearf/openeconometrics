@@ -1,0 +1,289 @@
+{
+  "id": "statistics",
+  "title": "Statistics with OpenEconometrics",
+  "student_title": "Statistics in practice",
+  "language": "en",
+  "expected_labs": 20,
+  "labs": [
+    {
+      "number": 1,
+      "slug": "01-measurement",
+      "title": "What Does One Row Represent?",
+      "scope": "Observational units, measurement scales and missing values.",
+      "data_mode": "prepared_excel",
+      "data_file": "household_measurements.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 2,
+      "slug": "02-center",
+      "title": "Which Average Answers the Question?",
+      "scope": "Mean, median, geometric mean and the influence of a tail.",
+      "data_mode": "prepared_excel",
+      "data_file": "shop_spending.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 3,
+      "slug": "03-spread",
+      "title": "How Variable Are Delivery Times?",
+      "scope": "Sample variance, standard deviation, IQR and rescaling.",
+      "data_mode": "prepared_excel",
+      "data_file": "delivery_variation.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 4,
+      "slug": "04-conditional-probability",
+      "title": "Which Denominator Belongs in a Probability?",
+      "scope": "Joint, marginal and conditional event frequencies.",
+      "data_mode": "prepared_excel",
+      "data_file": "customer_events.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 5,
+      "slug": "05-bayes",
+      "title": "What Does a Quality Alert Tell Us?",
+      "scope": "Bayes theorem, sensitivity, specificity and base rates.",
+      "data_mode": "prepared_excel",
+      "data_file": "quality_alerts.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 6,
+      "slug": "06-discrete-model",
+      "title": "How Many Orders Arrive in Ten Offers?",
+      "scope": "Binomial probabilities, expectation and variance.",
+      "data_mode": "prepared_excel",
+      "data_file": "ten_offer_orders.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 7,
+      "slug": "07-normal-model",
+      "title": "From Parcel Weights to Standard Scores",
+      "scope": "Normal models, standardization and model versus observed tails.",
+      "data_mode": "prepared_excel",
+      "data_file": "parcel_weights.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 8,
+      "slug": "08-sampling-means",
+      "title": "Why Do Averages Vary Less Than Observations?",
+      "scope": "Repeated sampling, standard errors and the CLT.",
+      "data_mode": "prepared_excel",
+      "data_file": "spending_population.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 9,
+      "slug": "09-confidence-intervals",
+      "title": "What Does a Confidence Interval Cover?",
+      "scope": "Student-t intervals, coverage and interval width.",
+      "data_mode": "prepared_excel",
+      "data_file": "service_waits.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 10,
+      "slug": "10-mean-test",
+      "title": "Is the Filling Process Centered on Its Target?",
+      "scope": "Null hypotheses, t statistics, p values and practical importance.",
+      "data_mode": "prepared_excel",
+      "data_file": "filling_volumes.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 11,
+      "slug": "11-one-proportion",
+      "title": "How Uncertain Is an Opt-In Rate?",
+      "scope": "Proportion z tests, Wald and Wilson intervals.",
+      "data_mode": "prepared_excel",
+      "data_file": "app_opt_in.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 12,
+      "slug": "12-independent-means",
+      "title": "Comparing Two Delivery Methods",
+      "scope": "Independent samples, Welch uncertainty and group order.",
+      "data_mode": "prepared_excel",
+      "data_file": "delivery_methods.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 13,
+      "slug": "13-paired-means",
+      "title": "The Same Workers Before and After",
+      "scope": "Pairing, complete pairs and the variance of differences.",
+      "data_mode": "prepared_excel",
+      "data_file": "worker_before_after.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 14,
+      "slug": "14-two-proportions",
+      "title": "Did Two Messages Produce Different Response Rates?",
+      "scope": "Pooled null tests, unpooled intervals and percentage points.",
+      "data_mode": "prepared_excel",
+      "data_file": "message_responses.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 15,
+      "slug": "15-correlation",
+      "title": "Do Study Hours and Scores Move Together?",
+      "scope": "Pearson correlation, common samples and noncausal association.",
+      "data_mode": "prepared_excel",
+      "data_file": "study_hours_scores.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 16,
+      "slug": "16-categorical-independence",
+      "title": "Are Shopping Channels and Membership Independent?",
+      "scope": "Expected counts, Pearson chi-square and association size.",
+      "data_mode": "prepared_excel",
+      "data_file": "shopping_channels.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 17,
+      "slug": "17-anova",
+      "title": "Comparing Three Training Formats",
+      "scope": "Between/within variation, ANOVA F and adjusted comparisons.",
+      "data_mode": "prepared_excel",
+      "data_file": "training_formats.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 18,
+      "slug": "18-rank-comparisons",
+      "title": "Comparing Ordinal Customer Ratings",
+      "scope": "Midranks, ties, rank-sum tests and probability of superiority.",
+      "data_mode": "prepared_excel",
+      "data_file": "customer_ratings.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 19,
+      "slug": "19-bootstrap",
+      "title": "Resampling the Observed Baskets",
+      "scope": "Nonparametric bootstrap, Monte Carlo error and percentile intervals.",
+      "data_mode": "prepared_excel",
+      "data_file": "bootstrap_baskets.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 20,
+      "slug": "20-statistical-report",
+      "title": "From a Question to a Statistical Report",
+      "scope": "Primary outcomes, missingness, uncertainty and multiple testing.",
+      "data_mode": "prepared_excel",
+      "data_file": "campus_cafe_offer.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    }
+  ]
+}

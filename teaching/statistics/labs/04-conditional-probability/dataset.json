@@ -1,0 +1,27 @@
+{
+  "filename": "customer_events.xlsx",
+  "description": "Which Denominator Belongs in a Probability?; original synthetic teaching data.",
+  "observation_unit": "One synthetic customer visit.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710004,
+  "columns": [
+    {
+      "name": "visit_id",
+      "description": "Visit identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "member",
+      "description": "Loyalty membership before visit",
+      "unit": "0=no, 1=yes",
+      "missing": 0
+    },
+    {
+      "name": "purchase",
+      "description": "Purchase during visit",
+      "unit": "0=no, 1=yes",
+      "missing": 0
+    }
+  ]
+}

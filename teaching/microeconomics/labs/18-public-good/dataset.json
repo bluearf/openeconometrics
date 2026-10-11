@@ -1,0 +1,33 @@
+{
+  "filename": "public_good.xlsx",
+  "description": "Vertical Summation for a Public Good; original synthetic teaching data.",
+  "observation_unit": "One shared public-good quantity.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720018,
+  "columns": [
+    {
+      "name": "quantity",
+      "description": "Shared provision",
+      "unit": "units",
+      "missing": 0
+    },
+    {
+      "name": "mb_a",
+      "description": "Person A marginal benefit 40\u2212q",
+      "unit": "currency/unit",
+      "missing": 0
+    },
+    {
+      "name": "mb_b",
+      "description": "Person B marginal benefit 30\u2212.5q",
+      "unit": "currency/unit",
+      "missing": 0
+    },
+    {
+      "name": "mc",
+      "description": "Marginal provision cost",
+      "unit": "currency/unit",
+      "missing": 0
+    }
+  ]
+}

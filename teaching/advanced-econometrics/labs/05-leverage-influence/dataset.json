@@ -1,0 +1,33 @@
+{
+  "filename": "leverage_influence.xlsx",
+  "description": "Leverage and Leave-One-Out Sensitivity; original synthetic teaching data.",
+  "observation_unit": "One synthetic independent unit; dependence is stated explicitly where groups are supplied.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 730005,
+  "columns": [
+    {
+      "name": "row_id",
+      "description": "Stable record identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "x",
+      "description": "Exposure or predictor X",
+      "unit": "centered units",
+      "missing": 0
+    },
+    {
+      "name": "z",
+      "description": "Observed covariate Z",
+      "unit": "centered units",
+      "missing": 0
+    },
+    {
+      "name": "y",
+      "description": "Outcome",
+      "unit": "outcome units",
+      "missing": 0
+    }
+  ]
+}

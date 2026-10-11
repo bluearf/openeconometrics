@@ -1,0 +1,288 @@
+{
+  "id": "microeconomics",
+  "title": "Microeconomics with OpenEconometrics",
+  "student_title": "Microeconomics in practice",
+  "expected_labs": 20,
+  "labs": [
+    {
+      "number": 1,
+      "slug": "01-production-frontier",
+      "title": "Scarcity and Increasing Opportunity Cost",
+      "scope": "Why does producing more of X require an increasing sacrifice of Y?",
+      "data_mode": "prepared_excel",
+      "data_file": "production_frontier.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 2,
+      "slug": "02-comparative-advantage",
+      "title": "Comparative Advantage and Trading Prices",
+      "scope": "Can both economies gain from trade even when productivity comparisons differ by good?",
+      "data_mode": "prepared_excel",
+      "data_file": "comparative_advantage.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 3,
+      "slug": "03-market-equilibrium",
+      "title": "Market Equilibrium and a Demand Shift",
+      "scope": "How does a demand shift differ from moving along a demand curve?",
+      "data_mode": "prepared_excel",
+      "data_file": "market_equilibrium.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 4,
+      "slug": "04-elasticity-revenue",
+      "title": "Point Elasticity and Total Revenue",
+      "scope": "When does raising price increase revenue?",
+      "data_mode": "prepared_excel",
+      "data_file": "elasticity_revenue.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 5,
+      "slug": "05-consumer-choice",
+      "title": "A Budget Line and Cobb\u2013Douglas Choice",
+      "scope": "How do preferences and a budget determine a consumption bundle?",
+      "data_mode": "prepared_excel",
+      "data_file": "consumer_choice.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 6,
+      "slug": "06-demand-comparative-statics",
+      "title": "Income and Price Comparative Statics",
+      "scope": "What changes when income rises, and what changes when only one price rises?",
+      "data_mode": "prepared_excel",
+      "data_file": "demand_comparative_statics.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 7,
+      "slug": "07-substitution-income",
+      "title": "Separating Substitution and Income Effects",
+      "scope": "How much of a price response reflects substitution rather than lost purchasing power?",
+      "data_mode": "prepared_excel",
+      "data_file": "substitution_income.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 8,
+      "slug": "08-revealed-preference",
+      "title": "Affordability and Revealed Preference",
+      "scope": "What can observed choices reveal when another bundle was affordable?",
+      "data_mode": "prepared_excel",
+      "data_file": "revealed_preference.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 9,
+      "slug": "09-production-input",
+      "title": "Marginal Product and Labor Demand",
+      "scope": "When should a firm stop adding labor to a fixed technology?",
+      "data_mode": "prepared_excel",
+      "data_file": "production_input.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 10,
+      "slug": "10-cost-curves",
+      "title": "Total, Average and Marginal Cost",
+      "scope": "Why does marginal cost cross average cost at its minimum?",
+      "data_mode": "prepared_excel",
+      "data_file": "cost_curves.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 11,
+      "slug": "11-conditional-inputs",
+      "title": "Cost Minimization with Two Inputs",
+      "scope": "How can a firm produce a fixed output at minimum cost?",
+      "data_mode": "prepared_excel",
+      "data_file": "conditional_inputs.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 12,
+      "slug": "12-competitive-supply",
+      "title": "Competitive Supply and Shutdown",
+      "scope": "Why might a firm produce while making a loss?",
+      "data_mode": "prepared_excel",
+      "data_file": "competitive_supply.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 13,
+      "slug": "13-monopoly-welfare",
+      "title": "Monopoly Output, Markup and Welfare",
+      "scope": "Why does a monopolist restrict output relative to a competitive benchmark?",
+      "data_mode": "prepared_excel",
+      "data_file": "monopoly_welfare.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 14,
+      "slug": "14-price-ceiling",
+      "title": "A Binding Price Ceiling and Rationing",
+      "scope": "How can a lower legal price reduce total gains from trade?",
+      "data_mode": "prepared_excel",
+      "data_file": "price_ceiling.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 15,
+      "slug": "15-tax-incidence",
+      "title": "A Unit Tax: Incidence and Deadweight Loss",
+      "scope": "Who bears a tax when the legal remitter is the seller?",
+      "data_mode": "prepared_excel",
+      "data_file": "tax_incidence.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 16,
+      "slug": "16-subsidy-welfare",
+      "title": "A Producer Subsidy and Overproduction",
+      "scope": "Can buyers and sellers both gain while total surplus falls?",
+      "data_mode": "prepared_excel",
+      "data_file": "subsidy_welfare.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 17,
+      "slug": "17-external-cost",
+      "title": "An External Cost and a Corrective Tax",
+      "scope": "How does an unpriced external cost change efficient output?",
+      "data_mode": "prepared_excel",
+      "data_file": "external_cost.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 18,
+      "slug": "18-public-good",
+      "title": "Vertical Summation for a Public Good",
+      "scope": "Why are public-good marginal benefits added vertically?",
+      "data_mode": "prepared_excel",
+      "data_file": "public_good.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 19,
+      "slug": "19-cournot-competition",
+      "title": "Cournot Competition and the Number of Firms",
+      "scope": "How does strategic quantity competition change with the number of firms?",
+      "data_mode": "prepared_excel",
+      "data_file": "cournot_competition.xlsx",
+      "display_types": [
+        "table",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    },
+    {
+      "number": 20,
+      "slug": "20-estimated-demand",
+      "title": "From a Demand Model to an Estimated Elasticity",
+      "scope": "How can a log-demand coefficient be interpreted without confusing identification and fit?",
+      "data_mode": "prepared_excel",
+      "data_file": "estimated_demand.xlsx",
+      "display_types": [
+        "model",
+        "plot",
+        "table"
+      ],
+      "status": "verified"
+    }
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "metadata": {
+    "lab": "02-wage-distributions",
+    "title": "A First Look at Wages",
+    "seed": 2022026,
+    "synthetic": true,
+    "percentile_rule": "Stata empirical percentile: ceiling np; average adjacent order statistics when np integer",
+    "wage_unit": "hypothetical currency/hour",
+    "missing_rule": "exclude five missing wages explicitly"
+  },
+  "summary": {
+    "generated_workers": 800,
+    "observed_wages": 795,
+    "missing_wages": 5,
+    "mean_wage": 19.051771734175546,
+    "median_wage": 16.6439061464792,
+    "sample_sd": 10.774415150300683,
+    "p25": 11.680982816603622,
+    "p75": 23.47692372390705,
+    "iqr": 11.795940907303427,
+    "minimum_wage": 4.823151788155144,
+    "maximum_wage": 114.86247488929246,
+    "mean_without_largest": 18.93110334229253,
+    "mean_change_remove_largest": 0.12066839188301515,
+    "median_without_largest": 16.641434749611594,
+    "mean_log_wage": 2.8136502865770736,
+    "geometric_mean_wage": 16.670659975269626,
+    "top_one_percent_count": 8,
+    "top_one_percent_wage_share": 0.035816911318996475
+  },
+  "models": {},
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "bar",
+        "title": "Wages on the original scale",
+        "xlabel": "Hypothetical currency/hour",
+        "ylabel": "Workers per equal-width bin",
+        "series": [
+          {
+            "label": "Workers",
+            "x": [
+              7.115637686095505,
+              11.700609481976226,
+              16.28558127785695,
+              20.870553073737668,
+              25.455524869618394,
+              30.040496665499113,
+              34.62546846137984,
+              39.21044025726056,
+              43.79541205314128,
+              48.380383849021996,
+              52.96535564490272,
+              57.55032744078344,
+              62.13529923666416,
+              66.72027103254487,
+              71.3052428284256,
+              75.89021462430631,
+              80.47518642018704,
+              85.06015821606778,
+              89.64513001194848,
+              94.23010180782921,
+              98.81507360370992,
+              103.40004539959065,
+              107.98501719547139,
+              112.56998899135209
+            ],
+            "y": [
+              112.0,
+              178.0,
+              179.0,
+              120.0,
+              78.0,
+              51.0,
+              32.0,
+              15.0,
+              8.0,
+              5.0,
+              7.0,
+              5.0,
+              3.0,
+              1.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          }
+        ]
+      },
+      {
+        "kind": "bar",
+        "title": "The same workers on a log scale",
+        "xlabel": "Natural log of wage",
+        "ylabel": "Workers per equal-width bin",
+        "series": [
+          {
+            "label": "Workers",
+            "x": [
+              1.6394756941945936,
+              1.7715718579399986,
+              1.9036680216854038,
+              2.035764185430809,
+              2.1678603491762143,
+              2.299956512921619,
+              2.4320526766670243,
+              2.564148840412429,
+              2.6962450041578343,
+              2.828341167903239,
+              2.9604373316486443,
+              3.092533495394049,
+              3.2246296591394543,
+              3.3567258228848598,
+              3.4888219866302643,
+              3.6209181503756698,
+              3.7530143141210743,
+              3.88511047786648,
+              4.017206641611884,
+              4.14930280535729,
+              4.281398969102694,
+              4.4134951328481,
+              4.545591296593505,
+              4.67768746033891
+            ],
+            "y": [
+              7.0,
+              12.0,
+              13.0,
+              38.0,
+              41.0,
+              47.0,
+              64.0,
+              62.0,
+              83.0,
+              80.0,
+              78.0,
+              73.0,
+              57.0,
+              48.0,
+              33.0,
+              22.0,
+              14.0,
+              9.0,
+              9.0,
+              3.0,
+              1.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "missing_count_explicit": true,
+    "native_mean_matches_direct_sum": true,
+    "native_sd_matches_centered_formula": true,
+    "native_percentiles_match_stated_rule": true,
+    "jensen_inequality": true,
+    "all_observed_wages_positive": true,
+    "hourly_wage_histogram_retains_every_worker": true,
+    "log_wage_histogram_retains_every_worker": true
+  }
+}

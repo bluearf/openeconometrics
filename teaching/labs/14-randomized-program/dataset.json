@@ -1,0 +1,50 @@
+{
+  "filename": "training_program.xlsx",
+  "description": "600 synthetic applicants with fixed randomized offers, observed uptake and earnings; two labeled simulation oracle columns.",
+  "observation_unit": "One synthetic training-program applicant",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "applicant",
+      "description": "Synthetic applicant identifier; excluded from regression.",
+      "unit": "Identifier",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "offer",
+      "description": "Randomized offer: 1 offered, 0 not offered; exactly 300 in each group.",
+      "unit": "Binary indicator (0/1)",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "baseline_score",
+      "description": "Pre-assignment assessment used as a precision control.",
+      "unit": "Assessment points",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "participated",
+      "description": "Observed training receipt under recorded assignment.",
+      "unit": "Binary indicator (0/1)",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "earnings",
+      "description": "Follow-up earnings under recorded assignment.",
+      "unit": "Hypothetical currency units per reporting period",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "take_if_no_offer",
+      "description": "Simulation oracle only: potential uptake without an offer; not jointly observable with uptake under offer in real data.",
+      "unit": "Binary indicator (0/1)",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "take_if_offer",
+      "description": "Simulation oracle only: potential uptake with an offer; never an estimated-model control.",
+      "unit": "Binary indicator (0/1)",
+      "missing": "None in the supplied workbook"
+    }
+  ]
+}

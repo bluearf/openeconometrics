@@ -1,0 +1,40 @@
+\begin{table}[htbp]
+\centering
+\caption{Testing Several Claims Together: original synthetic data}
+\label{tab:10-joint-tests}
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lc@{}}
+\toprule
+Dependent variable: & productivity \\
+ & (1) \\
+ & HC1 productivity \\
+\midrule
+coaching & $0.7940$ \\
+ & $(0.6316)$ \\[0.35em]
+software & $1.7912$ \\
+ & $(0.6209)$ \\[0.35em]
+tenure & $0.4455$ \\
+ & $(0.1093)$ \\[0.35em]
+Constant & $49.7656$ \\
+ & $(1.8817)$ \\[0.35em]
+\midrule
+Observations & 380 \\
+$R^{2}$ & 0.5278 \\
+$\text{Adjusted }R^{2}$ & 0.5240 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\footnotesize
+\raggedright
+\textit{Notes:} Standard errors are in parentheses.\par
+(1) OLS: HC1 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1.01064; Student t inference (df = 376); 95\% confidence level (alpha = 0.05); estimation sample 380 of 380 observations; model F(3, 376) = 138.669, p = 1.68248e-60.\par
+Original synthetic observations. Inference conventions and exact estimation samples are retained in the model notes; no empirical policy claim.\par
+\end{minipage}
+\endgroup
+\end{table}

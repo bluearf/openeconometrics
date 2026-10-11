@@ -1,0 +1,33 @@
+{
+  "filename": "campus_cafe_offer.xlsx",
+  "description": "From a Question to a Statistical Report; original synthetic teaching data.",
+  "observation_unit": "One synthetic customer assigned an offer and followed once.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710020,
+  "columns": [
+    {
+      "name": "customer_id",
+      "description": "Customer identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "offer",
+      "description": "Randomized offer",
+      "unit": "A=standard, B=discount",
+      "missing": 0
+    },
+    {
+      "name": "spending",
+      "description": "Follow-up spending; six responses missing",
+      "unit": "hypothetical currency/customer",
+      "missing": 6
+    },
+    {
+      "name": "returned",
+      "description": "Return visit observed for all customers",
+      "unit": "0=no, 1=yes",
+      "missing": 0
+    }
+  ]
+}

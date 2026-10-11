@@ -1,0 +1,21 @@
+{
+  "filename": "service_waits.xlsx",
+  "description": "What Does a Confidence Interval Cover?; original synthetic teaching data.",
+  "observation_unit": "One synthetic service encounter.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710009,
+  "columns": [
+    {
+      "name": "encounter_id",
+      "description": "Encounter identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "minutes",
+      "description": "Waiting time",
+      "unit": "minutes",
+      "missing": 2
+    }
+  ]
+}

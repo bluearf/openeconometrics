@@ -1,0 +1,229 @@
+{
+  "title": "OpenEconometrics Teaching Labs",
+  "language": "en",
+  "pilot_numbers": [
+    4,
+    6,
+    15
+  ],
+  "labs": [
+    {
+      "number": 1,
+      "title": "The Economic Question Comes First",
+      "scope": "Research questions, observational units, data types and study design.",
+      "status": "verified",
+      "issue_id": "MARKET-752",
+      "issue_url": "https://linear.app/bluearf/issue/MARKET-752",
+      "slug": "01-economic-question",
+      "data_mode": "prepared_excel",
+      "data_file": "training_and_wages.xlsx"
+    },
+    {
+      "number": 2,
+      "title": "A First Look at Wages",
+      "scope": "Descriptive statistics, distributions and clear exploratory plots.",
+      "status": "verified",
+      "issue_id": "MARKET-753",
+      "issue_url": "https://linear.app/bluearf/issue/MARKET-753",
+      "slug": "02-wage-distributions",
+      "data_mode": "prepared_excel",
+      "data_file": "wage_distributions.xlsx"
+    },
+    {
+      "number": 3,
+      "title": "What Changes Across Random Samples?",
+      "scope": "Sampling variation, standard errors and the central limit theorem.",
+      "status": "verified",
+      "issue_id": "MARKET-754",
+      "issue_url": "https://linear.app/bluearf/issue/MARKET-754",
+      "slug": "03-sampling",
+      "data_mode": "sampling_simulation"
+    },
+    {
+      "number": 4,
+      "title": "Does Class Size Predict Test Scores?",
+      "scope": "Simple OLS with robust inference.",
+      "slug": "04-class-size",
+      "status": "verified",
+      "data_mode": "prepared_excel",
+      "data_file": "class_size.xlsx"
+    },
+    {
+      "number": 5,
+      "title": "How Precise Is Our Estimate?",
+      "scope": "Confidence intervals, t tests and the difference between precision and importance.",
+      "status": "verified",
+      "issue_id": "MARKET-755",
+      "issue_url": "https://linear.app/bluearf/issue/MARKET-755",
+      "slug": "05-inference",
+      "data_mode": "prepared_excel",
+      "data_file": "wage_inference.xlsx"
+    },
+    {
+      "number": 6,
+      "title": "What Changes When We Add Controls?",
+      "scope": "Multiple regression, omitted variable bias and same-sample comparisons.",
+      "slug": "06-controls",
+      "status": "verified",
+      "data_mode": "prepared_excel",
+      "data_file": "wages_and_controls.xlsx"
+    },
+    {
+      "number": 7,
+      "title": "Do Groups Have Different Wage Profiles?",
+      "scope": "Indicator variables, interactions and conditional comparisons.",
+      "status": "verified",
+      "issue_id": "MARKET-756",
+      "issue_url": "https://linear.app/bluearf/issue/MARKET-756",
+      "slug": "07-interactions",
+      "data_mode": "prepared_excel",
+      "data_file": "wage_interactions.xlsx"
+    },
+    {
+      "number": 8,
+      "title": "Modeling Percentage Changes and Curvature",
+      "scope": "Log transformations, polynomial terms and interpretation.",
+      "status": "verified",
+      "issue_id": "MARKET-757",
+      "issue_url": "https://linear.app/bluearf/issue/MARKET-757",
+      "slug": "08-functional-form",
+      "data_mode": "prepared_excel",
+      "data_file": "wage_profiles.xlsx"
+    },
+    {
+      "number": 9,
+      "title": "Same Coefficient, Different Standard Error?",
+      "scope": "Heteroskedasticity and robust covariance estimation.",
+      "status": "verified",
+      "issue_id": "MARKET-758",
+      "issue_url": "https://linear.app/bluearf/issue/MARKET-758",
+      "slug": "09-robust-uncertainty",
+      "data_mode": "prepared_excel",
+      "data_file": "household_spending.xlsx"
+    },
+    {
+      "number": 10,
+      "title": "Testing Several Claims Together",
+      "scope": "Joint restrictions, F/Wald tests and specification questions.",
+      "status": "verified",
+      "issue_id": "MARKET-759",
+      "issue_url": "https://linear.app/bluearf/issue/MARKET-759",
+      "slug": "10-joint-tests",
+      "data_mode": "prepared_excel",
+      "data_file": "productivity_joint_tests.xlsx"
+    },
+    {
+      "number": 11,
+      "title": "Comparing Firms to Themselves",
+      "scope": "Panel data, fixed effects and cluster-robust uncertainty.",
+      "status": "verified",
+      "issue_id": "MARKET-760",
+      "issue_url": "https://linear.app/bluearf/issue/MARKET-760",
+      "slug": "11-panel-fixed-effects",
+      "data_mode": "prepared_excel",
+      "data_file": "firm_panel.xlsx"
+    },
+    {
+      "number": 12,
+      "title": "Explaining Labor-Force Participation",
+      "scope": "Linear probability, logit/probit models and marginal effects.",
+      "status": "verified",
+      "issue_id": "MARKET-761",
+      "issue_url": "https://linear.app/bluearf/issue/MARKET-761",
+      "slug": "12-binary-outcomes",
+      "data_mode": "prepared_excel",
+      "data_file": "labor_force_participation.xlsx"
+    },
+    {
+      "number": 13,
+      "title": "Estimating Effects with an Instrument",
+      "scope": "IV/2SLS, relevance, exclusion and weak-instrument limitations.",
+      "status": "verified",
+      "issue_id": "MARKET-762",
+      "issue_url": "https://linear.app/bluearf/issue/MARKET-762",
+      "slug": "13-instrumental-variables",
+      "data_mode": "prepared_excel",
+      "data_file": "schooling_instruments.xlsx"
+    },
+    {
+      "number": 14,
+      "title": "Evaluating a Randomized Training Program",
+      "scope": "Random assignment, treatment contrasts and uncertainty.",
+      "status": "verified",
+      "issue_id": "MARKET-763",
+      "issue_url": "https://linear.app/bluearf/issue/MARKET-763",
+      "slug": "14-randomized-program",
+      "data_mode": "prepared_excel",
+      "data_file": "training_program.xlsx"
+    },
+    {
+      "number": 15,
+      "title": "Before and After a Policy Reform",
+      "scope": "Difference-in-Differences, parallel trends and treatment-unit clustering.",
+      "slug": "15-difference-in-differences",
+      "status": "verified",
+      "data_mode": "prepared_excel",
+      "data_file": "policy_panel.xlsx"
+    },
+    {
+      "number": 16,
+      "title": "What Happens Around an Eligibility Cutoff?",
+      "scope": "Regression discontinuity, bandwidths, continuity and local effects.",
+      "status": "verified",
+      "issue_id": "MARKET-764",
+      "issue_url": "https://linear.app/bluearf/issue/MARKET-764",
+      "slug": "16-regression-discontinuity",
+      "data_mode": "prepared_excel",
+      "data_file": "scholarship_cutoff.xlsx"
+    },
+    {
+      "number": 17,
+      "title": "The Trap of Trending Series",
+      "scope": "Stationarity, unit roots and spurious regression.",
+      "status": "verified",
+      "issue_id": "MARKET-765",
+      "issue_url": "https://linear.app/bluearf/issue/MARKET-765",
+      "slug": "17-trending-series",
+      "data_mode": "prepared_excel",
+      "data_file": "trending_series.xlsx"
+    },
+    {
+      "number": 18,
+      "title": "Accounting for Persistent Shocks",
+      "scope": "Serial correlation and HAC inference.",
+      "status": "verified",
+      "issue_id": "MARKET-766",
+      "issue_url": "https://linear.app/bluearf/issue/MARKET-766",
+      "slug": "18-serial-correlation",
+      "data_mode": "prepared_excel",
+      "data_file": "advertising_and_sales.xlsx"
+    },
+    {
+      "number": 19,
+      "title": "Forecasting Inflation Without Looking Ahead",
+      "scope": "Autoregressive models, time-ordered evaluation and forecast errors.",
+      "status": "verified",
+      "issue_id": "MARKET-767",
+      "issue_url": "https://linear.app/bluearf/issue/MARKET-767",
+      "slug": "19-forecasting",
+      "data_mode": "prepared_excel",
+      "data_file": "forecast_series.xlsx"
+    },
+    {
+      "number": 20,
+      "title": "From Research Question to Finished Report",
+      "scope": "Capstone: design, data, estimation, diagnostics and reproducible reporting.",
+      "status": "verified",
+      "issue_id": "MARKET-768",
+      "issue_url": "https://linear.app/bluearf/issue/MARKET-768",
+      "slug": "20-research-report",
+      "data_mode": "prepared_excel",
+      "data_file": "school_tutoring.xlsx"
+    }
+  ],
+  "audiences": [
+    "students",
+    "instructors"
+  ],
+  "series_state": "Twenty labs implemented and verified; separate student and instructor editions ready for user review."
+}

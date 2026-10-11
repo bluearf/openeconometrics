@@ -1,0 +1,33 @@
+{
+  "filename": "monopoly_welfare.xlsx",
+  "description": "Monopoly Output, Markup and Welfare; original synthetic teaching data.",
+  "observation_unit": "One market quantity on inverse demand.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720013,
+  "columns": [
+    {
+      "name": "quantity",
+      "description": "Market output",
+      "unit": "units/day",
+      "missing": 0
+    },
+    {
+      "name": "price",
+      "description": "Inverse demand 100\u2212q",
+      "unit": "currency/unit",
+      "missing": 0
+    },
+    {
+      "name": "marginal_cost",
+      "description": "Constant marginal cost",
+      "unit": "currency/unit",
+      "missing": 0
+    },
+    {
+      "name": "fixed_cost",
+      "description": "Common fixed cost",
+      "unit": "currency/day",
+      "missing": 0
+    }
+  ]
+}

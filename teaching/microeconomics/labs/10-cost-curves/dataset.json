@@ -1,0 +1,21 @@
+{
+  "filename": "cost_curves.xlsx",
+  "description": "Total, Average and Marginal Cost; original synthetic teaching data.",
+  "observation_unit": "One feasible output level.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720010,
+  "columns": [
+    {
+      "name": "quantity",
+      "description": "Output",
+      "unit": "units/day",
+      "missing": 0
+    },
+    {
+      "name": "total_cost",
+      "description": "Cost 100+2q+.1q\u00b2",
+      "unit": "currency/day",
+      "missing": 0
+    }
+  ]
+}

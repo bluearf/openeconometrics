@@ -1,0 +1,4530 @@
+{
+  "metadata": {
+    "lab_id": "15",
+    "title": "Before and After a Policy Reform",
+    "seed": 1515311,
+    "data_kind": "original synthetic balanced region-year panel",
+    "data_source": "make_data() in this lab; no external observations",
+    "outcome_unit": "employment rate, percent of working-age population",
+    "effect_unit": "percentage points",
+    "covariance": "cluster",
+    "cluster": "region",
+    "inference_distribution": "Student t(59)",
+    "missing": "raise",
+    "alpha": 0.05,
+    "openecon_version": "0.3.19a1",
+    "policy_year": 2018,
+    "runtime_dependencies": [
+      "openecon",
+      "pandas",
+      "torch"
+    ]
+  },
+  "summary": {
+    "nobs": 360,
+    "regions": 60,
+    "treated_regions": 30,
+    "control_regions": 30,
+    "periods": 6,
+    "pre_periods": 3,
+    "post_periods": 3,
+    "policy_year": 2018,
+    "true_effect": 3.0,
+    "control_pre": 61.08439468907212,
+    "control_post": 64.80329982266845,
+    "treated_pre": 54.69076794425642,
+    "treated_post": 60.958992494630074,
+    "control_change": 3.71890513359633,
+    "treated_change": 6.2682245503736524,
+    "post_only_gap": -3.8443073280383757,
+    "did_estimate": 2.5493194167773368,
+    "did_std_error": 0.4380483379976083,
+    "did_ci_low": 1.6727867170648776,
+    "did_ci_high": 3.425852116489796,
+    "did_p_value": 2.5703153911345873e-07,
+    "hc1_std_error": 0.3002942053458298,
+    "hc1_ci_low": 1.9583206945424299,
+    "hc1_ci_high": 3.1403181390122437,
+    "df_inference": 59,
+    "parallel_trends_p_value": 0.07115369809801209,
+    "granger_p_value": 0.009756633456862465,
+    "confounded_estimate": 4.549319416777338,
+    "confounded_std_error": 0.4380483379976083,
+    "confounded_ci_low": 3.6727867170648785,
+    "confounded_ci_high": 5.425852116489796,
+    "concurrent_shock": 2.0,
+    "manual_covariance_k": 7
+  },
+  "models": {
+    "did": {
+      "id": "9e4c71e9-cc32-48c2-97b5-4dc661ae3d7c",
+      "created_at": "2026-10-09T22:16:34.304038+00:00",
+      "spec": {
+        "estimator": "didregress",
+        "outcome": "employment_rate",
+        "predictors": [],
+        "categorical": [],
+        "intercept": true,
+        "covariance": "cluster",
+        "cluster": "region",
+        "missing": "raise",
+        "alpha": 0.05,
+        "weights": null,
+        "weight_type": null,
+        "panel": "region",
+        "time": "year",
+        "columns": {
+          "treatment": "treated_post"
+        },
+        "options": {}
+      },
+      "nobs": 360,
+      "nobs_original": 360,
+      "dropped_rows": 0,
+      "coefficients": [
+        {
+          "term": "ATET:r1vs0.treated_post",
+          "estimate": 2.5493194167773368,
+          "std_error": 0.4380483379976083,
+          "statistic": 5.819721696538559,
+          "p_value": 2.5703153911345873e-07,
+          "ci_low": 1.6727867170648776,
+          "ci_high": 3.425852116489796,
+          "equation": "ATET"
+        }
+      ],
+      "covariance_matrix": [
+        [
+          0.19188634642246688
+        ]
+      ],
+      "metrics": {
+        "r_squared": 0.9543271658253952,
+        "r_squared_within": 0.19687494438935993,
+        "rmse": 1.2999436396485444,
+        "df_resid": 353.0,
+        "n_groups": 60.0,
+        "n_periods": 6.0,
+        "n_clusters": 60.0
+      },
+      "warnings": [],
+      "predictions": [],
+      "sample_positions": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195,
+        196,
+        197,
+        198,
+        199,
+        200,
+        201,
+        202,
+        203,
+        204,
+        205,
+        206,
+        207,
+        208,
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        232,
+        233,
+        234,
+        235,
+        236,
+        237,
+        238,
+        239,
+        240,
+        241,
+        242,
+        243,
+        244,
+        245,
+        246,
+        247,
+        248,
+        249,
+        250,
+        251,
+        252,
+        253,
+        254,
+        255,
+        256,
+        257,
+        258,
+        259,
+        260,
+        261,
+        262,
+        263,
+        264,
+        265,
+        266,
+        267,
+        268,
+        269,
+        270,
+        271,
+        272,
+        273,
+        274,
+        275,
+        276,
+        277,
+        278,
+        279,
+        280,
+        281,
+        282,
+        283,
+        284,
+        285,
+        286,
+        287,
+        288,
+        289,
+        290,
+        291,
+        292,
+        293,
+        294,
+        295,
+        296,
+        297,
+        298,
+        299,
+        300,
+        301,
+        302,
+        303,
+        304,
+        305,
+        306,
+        307,
+        308,
+        309,
+        310,
+        311,
+        312,
+        313,
+        314,
+        315,
+        316,
+        317,
+        318,
+        319,
+        320,
+        321,
+        322,
+        323,
+        324,
+        325,
+        326,
+        327,
+        328,
+        329,
+        330,
+        331,
+        332,
+        333,
+        334,
+        335,
+        336,
+        337,
+        338,
+        339,
+        340,
+        341,
+        342,
+        343,
+        344,
+        345,
+        346,
+        347,
+        348,
+        349,
+        350,
+        351,
+        352,
+        353,
+        354,
+        355,
+        356,
+        357,
+        358,
+        359
+      ],
+      "provenance": {
+        "schema_version": "3",
+        "backend": "openecon.torch",
+        "engine": "openecon",
+        "device": "cpu",
+        "estimator": "didregress",
+        "family": "teffects",
+        "stata_equivalent": [
+          "didregress",
+          "xtdidregress",
+          "estat ptrends",
+          "estat granger"
+        ],
+        "versions": {
+          "openecon": "0.3.18a1",
+          "python": "3.13.5",
+          "pandas": "2.3.3",
+          "torch": "2.14.0"
+        },
+        "data_hash": "4f3839401228e264a099e5130a439b297fe55cf8a03ac731ed128bd8fa6d053e",
+        "sample_hash": "08b1253d8599b3fb251f7f27e23d4a4e9915653ae0c2ae71cb41ba35a495b0e1",
+        "hash_algorithm": "sha256 over schema and pandas row hashes (pandas version recorded)",
+        "hash_scope": "model-input columns in positional row order; index labels excluded",
+        "input_columns": [
+          "employment_rate",
+          "region",
+          "year",
+          "treated_post"
+        ],
+        "design_terms": [
+          "ATET:r1vs0.treated_post"
+        ],
+        "categorical_encoding": {},
+        "omitted_terms": [],
+        "precision": "float64",
+        "sample_position_base": 0,
+        "sample_order": "input row order",
+        "prediction_sample": null,
+        "prediction_limit": 400,
+        "stata_parity_validated": false,
+        "solver": "absorb_twfe_qr",
+        "solver_diagnostics": {},
+        "optimizer": null,
+        "resource_plans": [
+          {
+            "operation": "model input selection",
+            "estimated_workspace_bytes": 33480,
+            "budget_bytes": 536870912,
+            "buffers": {
+              "model_input_and_sample_indices": 33480
+            },
+            "scope": "estimated live model-input and tensor buffers; excludes caller input, Python result objects, private BLAS workspace and allocator overhead; not a process-RSS limit"
+          },
+          {
+            "operation": "dense encoded design",
+            "estimated_workspace_bytes": 42120,
+            "budget_bytes": 536870912,
+            "buffers": {
+              "model_input_and_sample_indices": 33480,
+              "encoded_columns_and_reference_categories": 0,
+              "design_and_qr_copies": 0,
+              "parameter_factors": 0,
+              "encoding_indices": 8640
+            },
+            "scope": "estimated live model-input and tensor buffers; excludes caller input, Python result objects, private BLAS workspace and allocator overhead; not a process-RSS limit"
+          }
+        ],
+        "weights": null,
+        "absorbed": [
+          "region",
+          "year"
+        ]
+      },
+      "inference": {
+        "covariance": "cluster",
+        "use_t": true,
+        "distribution": "t",
+        "alpha": 0.05,
+        "confidence_level": 0.95,
+        "df_resid": 353,
+        "df_inference": 59,
+        "cluster_count": 60,
+        "cluster_df": 59,
+        "cluster_column": "region",
+        "small_sample_correction": 1.034234407259807,
+        "correction": "CR1: G/(G-1) * (N-1)/(N-K)",
+        "intercept": true,
+        "n_parameters": 1,
+        "residual_definition": "observed minus fitted response",
+        "cluster_columns": [
+          "region"
+        ],
+        "k_small_sample": 7
+      },
+      "title": "Difference-in-differences regression",
+      "tests": {
+        "parallel_trends": {
+          "statistic": 3.3768865541375632,
+          "df": 1,
+          "df2": 59,
+          "p_value": 0.07115369809801209,
+          "distribution": "F",
+          "label": "Parallel-trends test: treated-group linear trend before treatment = 0 (estat ptrends)"
+        },
+        "granger": {
+          "statistic": 5.012890883065806,
+          "df": 2,
+          "df2": 59,
+          "p_value": 0.009756633456862465,
+          "distribution": "F",
+          "label": "Anticipation (Granger) test: treatment leads = 0 (estat granger)"
+        }
+      },
+      "extra": {
+        "treatment": "treated_post",
+        "group": "region",
+        "time": "year",
+        "absorbed_degrees_of_freedom": 6,
+        "treated_groups": 30,
+        "control_groups": 30,
+        "adoption": "common",
+        "first_treated_periods": [
+          2018
+        ]
+      }
+    },
+    "interaction": {
+      "id": "3710fe73-bd7e-48d9-be7e-2eb5faceb53d",
+      "created_at": "2026-10-09T22:16:34.322317+00:00",
+      "spec": {
+        "estimator": "ols",
+        "outcome": "employment_rate",
+        "predictors": [
+          "treated",
+          "post",
+          "treated_post"
+        ],
+        "categorical": [],
+        "intercept": true,
+        "covariance": "cluster",
+        "cluster": "region",
+        "missing": "raise",
+        "alpha": 0.05,
+        "weights": null,
+        "weight_type": null,
+        "panel": null,
+        "time": null,
+        "columns": {},
+        "options": {
+          "terms": [
+            "treated",
+            "post",
+            "treated_post"
+          ]
+        }
+      },
+      "nobs": 360,
+      "nobs_original": 360,
+      "dropped_rows": 0,
+      "coefficients": [
+        {
+          "term": "Intercept",
+          "estimate": 61.08439468907211,
+          "std_error": 0.8383922567802112,
+          "statistic": 72.8589680964643,
+          "p_value": 1.6944262036469312e-59,
+          "ci_low": 59.406775658229925,
+          "ci_high": 62.7620137199143,
+          "equation": null
+        },
+        {
+          "term": "treated",
+          "estimate": -6.393626744815717,
+          "std_error": 1.1286593635614317,
+          "statistic": -5.664797503332562,
+          "p_value": 4.6209490045996337e-07,
+          "ci_low": -8.652068914738182,
+          "ci_high": -4.135184574893252,
+          "equation": null
+        },
+        {
+          "term": "post",
+          "estimate": 3.718905133596318,
+          "std_error": 0.3406910948207682,
+          "statistic": 10.915768536752541,
+          "p_value": 8.714110182131654e-16,
+          "ci_low": 3.0371838275041307,
+          "ci_high": 4.400626439688505,
+          "equation": null
+        },
+        {
+          "term": "treated_post",
+          "estimate": 2.549319416777355,
+          "std_error": 0.4361987238051525,
+          "statistic": 5.844399072373539,
+          "p_value": 2.34026987994076e-07,
+          "ci_low": 1.676487786515246,
+          "ci_high": 3.422151047039464,
+          "equation": null
+        }
+      ],
+      "covariance_matrix": [
+        [
+          0.7029015762290156,
+          -0.7029015762290163,
+          0.036799903787504126,
+          -0.03679990378750367
+        ],
+        [
+          -0.7029015762290163,
+          1.273871958954896,
+          -0.03679990378750414,
+          0.01740217625532272
+        ],
+        [
+          0.036799903787504126,
+          -0.03679990378750414,
+          0.11607042209017368,
+          -0.11607042209017371
+        ],
+        [
+          -0.03679990378750367,
+          0.01740217625532272,
+          -0.11607042209017371,
+          0.19026932664924373
+        ]
+      ],
+      "metrics": {
+        "r_squared": 0.36359395921362647,
+        "pseudo_r_squared": null,
+        "adjusted_r_squared": 0.3582309869598087,
+        "rmse": 4.831979051440401,
+        "df_model": 3.0,
+        "df_resid": 356.0,
+        "ss_resid": 8311.895673066962,
+        "ss_model": 4748.78436509922,
+        "ss_total": 13060.680038166181,
+        "log_likelihood": -1075.8988829332852,
+        "condition_number_scaled": 3.1462643699419743,
+        "aic": 2159.7977658665704,
+        "bic": 2175.342181992371
+      },
+      "warnings": [],
+      "predictions": [
+        {
+          "row": 0,
+          "observed": 49.70323074288608,
+          "fitted": 54.69076794425641,
+          "residual": -4.98753720137033
+        },
+        {
+          "row": 1,
+          "observed": 54.3676647786317,
+          "fitted": 54.69076794425641,
+          "residual": -0.3231031656247083
+        },
+        {
+          "row": 2,
+          "observed": 53.31774240376631,
+          "fitted": 54.69076794425641,
+          "residual": -1.3730255404900973
+        },
+        {
+          "row": 3,
+          "observed": 57.12654058721178,
+          "fitted": 60.958992494630074,
+          "residual": -3.832451907418296
+        },
+        {
+          "row": 4,
+          "observed": 58.85595818963166,
+          "fitted": 60.958992494630074,
+          "residual": -2.103034304998417
+        },
+        {
+          "row": 5,
+          "observed": 58.880965121222594,
+          "fitted": 60.958992494630074,
+          "residual": -2.0780273734074797
+        },
+        {
+          "row": 6,
+          "observed": 48.960266274387756,
+          "fitted": 54.69076794425641,
+          "residual": -5.7305016698686515
+        },
+        {
+          "row": 7,
+          "observed": 51.590606935398576,
+          "fitted": 54.69076794425641,
+          "residual": -3.1001610088578317
+        },
+        {
+          "row": 8,
+          "observed": 53.86584784885919,
+          "fitted": 54.69076794425641,
+          "residual": -0.8249200953972178
+        },
+        {
+          "row": 9,
+          "observed": 56.37115947608469,
+          "fitted": 60.958992494630074,
+          "residual": -4.587833018545382
+        },
+        {
+          "row": 10,
+          "observed": 58.03612031360962,
+          "fitted": 60.958992494630074,
+          "residual": -2.922872181020452
+        },
+        {
+          "row": 11,
+          "observed": 59.409648007181474,
+          "fitted": 60.958992494630074,
+          "residual": -1.5493444874486002
+        },
+        {
+          "row": 12,
+          "observed": 48.37482310583461,
+          "fitted": 54.69076794425641,
+          "residual": -6.3159448384217995
+        },
+        {
+          "row": 13,
+          "observed": 50.840957904153655,
+          "fitted": 54.69076794425641,
+          "residual": -3.849810040102753
+        },
+        {
+          "row": 14,
+          "observed": 50.92466731540696,
+          "fitted": 54.69076794425641,
+          "residual": -3.7661006288494505
+        },
+        {
+          "row": 15,
+          "observed": 54.300483754247175,
+          "fitted": 60.958992494630074,
+          "residual": -6.658508740382899
+        },
+        {
+          "row": 16,
+          "observed": 56.4056175702958,
+          "fitted": 60.958992494630074,
+          "residual": -4.553374924334271
+        },
+        {
+          "row": 17,
+          "observed": 57.495279511111896,
+          "fitted": 60.958992494630074,
+          "residual": -3.463712983518178
+        },
+        {
+          "row": 18,
+          "observed": 52.06249280656934,
+          "fitted": 54.69076794425641,
+          "residual": -2.628275137687069
+        },
+        {
+          "row": 19,
+          "observed": 54.664477273716905,
+          "fitted": 54.69076794425641,
+          "residual": -0.026290670539502514
+        },
+        {
+          "row": 20,
+          "observed": 53.78560489513295,
+          "fitted": 54.69076794425641,
+          "residual": -0.905163049123459
+        },
+        {
+          "row": 21,
+          "observed": 56.13562344113147,
+          "fitted": 60.958992494630074,
+          "residual": -4.8233690534986025
+        },
+        {
+          "row": 22,
+          "observed": 59.60116927561249,
+          "fitted": 60.958992494630074,
+          "residual": -1.3578232190175825
+        },
+        {
+          "row": 23,
+          "observed": 59.69695799484171,
+          "fitted": 60.958992494630074,
+          "residual": -1.2620344997883635
+        },
+        {
+          "row": 24,
+          "observed": 59.262071957355815,
+          "fitted": 54.69076794425641,
+          "residual": 4.571304013099407
+        },
+        {
+          "row": 25,
+          "observed": 59.909878348137276,
+          "fitted": 54.69076794425641,
+          "residual": 5.219110403880869
+        },
+        {
+          "row": 26,
+          "observed": 58.235618359596614,
+          "fitted": 54.69076794425641,
+          "residual": 3.544850415340207
+        },
+        {
+          "row": 27,
+          "observed": 60.72453119172806,
+          "fitted": 60.958992494630074,
+          "residual": -0.2344613029020124
+        },
+        {
+          "row": 28,
+          "observed": 63.165168454091265,
+          "fitted": 60.958992494630074,
+          "residual": 2.2061759594611914
+        },
+        {
+          "row": 29,
+          "observed": 63.81704771726724,
+          "fitted": 60.958992494630074,
+          "residual": 2.8580552226371694
+        },
+        {
+          "row": 30,
+          "observed": 51.34584533216185,
+          "fitted": 54.69076794425641,
+          "residual": -3.3449226120945568
+        },
+        {
+          "row": 31,
+          "observed": 50.69236371547981,
+          "fitted": 54.69076794425641,
+          "residual": -3.9984042287766
+        },
+        {
+          "row": 32,
+          "observed": 51.63935655743275,
+          "fitted": 54.69076794425641,
+          "residual": -3.051411386823659
+        },
+        {
+          "row": 33,
+          "observed": 56.55089049966682,
+          "fitted": 60.958992494630074,
+          "residual": -4.408101994963253
+        },
+        {
+          "row": 34,
+          "observed": 59.56407806110326,
+          "fitted": 60.958992494630074,
+          "residual": -1.3949144335268144
+        },
+        {
+          "row": 35,
+          "observed": 61.936816070834524,
+          "fitted": 60.958992494630074,
+          "residual": 0.9778235762044503
+        },
+        {
+          "row": 36,
+          "observed": 60.64341365883195,
+          "fitted": 54.69076794425641,
+          "residual": 5.952645714575546
+        },
+        {
+          "row": 37,
+          "observed": 62.939799408880916,
+          "fitted": 54.69076794425641,
+          "residual": 8.249031464624508
+        },
+        {
+          "row": 38,
+          "observed": 64.28619743702436,
+          "fitted": 54.69076794425641,
+          "residual": 9.595429492767948
+        },
+        {
+          "row": 39,
+          "observed": 68.98012093910552,
+          "fitted": 60.958992494630074,
+          "residual": 8.021128444475444
+        },
+        {
+          "row": 40,
+          "observed": 69.29106058478345,
+          "fitted": 60.958992494630074,
+          "residual": 8.332068090153378
+        },
+        {
+          "row": 41,
+          "observed": 70.33463915491656,
+          "fitted": 60.958992494630074,
+          "residual": 9.375646660286485
+        },
+        {
+          "row": 42,
+          "observed": 59.60242417197328,
+          "fitted": 54.69076794425641,
+          "residual": 4.911656227716875
+        },
+        {
+          "row": 43,
+          "observed": 62.79721620285684,
+          "fitted": 54.69076794425641,
+          "residual": 8.10644825860043
+        },
+        {
+          "row": 44,
+          "observed": 64.80019604044782,
+          "fitted": 54.69076794425641,
+          "residual": 10.109428096191408
+        },
+        {
+          "row": 45,
+          "observed": 67.79729405872102,
+          "fitted": 60.958992494630074,
+          "residual": 6.838301564090948
+        },
+        {
+          "row": 46,
+          "observed": 70.09410275510825,
+          "fitted": 60.958992494630074,
+          "residual": 9.135110260478179
+        },
+        {
+          "row": 47,
+          "observed": 73.14288952871156,
+          "fitted": 60.958992494630074,
+          "residual": 12.18389703408149
+        },
+        {
+          "row": 48,
+          "observed": 53.89756086698342,
+          "fitted": 54.69076794425641,
+          "residual": -0.7932070772729887
+        },
+        {
+          "row": 49,
+          "observed": 55.20214840085238,
+          "fitted": 54.69076794425641,
+          "residual": 0.5113804565959725
+        },
+        {
+          "row": 50,
+          "observed": 57.0015517692225,
+          "fitted": 54.69076794425641,
+          "residual": 2.3107838249660944
+        },
+        {
+          "row": 51,
+          "observed": 61.659950196125195,
+          "fitted": 60.958992494630074,
+          "residual": 0.7009577014951205
+        },
+        {
+          "row": 52,
+          "observed": 64.42890026055463,
+          "fitted": 60.958992494630074,
+          "residual": 3.469907765924553
+        },
+        {
+          "row": 53,
+          "observed": 63.13358623926078,
+          "fitted": 60.958992494630074,
+          "residual": 2.1745937446307053
+        },
+        {
+          "row": 54,
+          "observed": 49.421331439349956,
+          "fitted": 54.69076794425641,
+          "residual": -5.2694365049064515
+        },
+        {
+          "row": 55,
+          "observed": 54.110984038262536,
+          "fitted": 54.69076794425641,
+          "residual": -0.579783905993871
+        },
+        {
+          "row": 56,
+          "observed": 55.93105931179902,
+          "fitted": 54.69076794425641,
+          "residual": 1.2402913675426106
+        },
+        {
+          "row": 57,
+          "observed": 56.82095490452461,
+          "fitted": 60.958992494630074,
+          "residual": -4.138037590105462
+        },
+        {
+          "row": 58,
+          "observed": 61.74036333872265,
+          "fitted": 60.958992494630074,
+          "residual": 0.781370844092578
+        },
+        {
+          "row": 59,
+          "observed": 60.08794096462658,
+          "fitted": 60.958992494630074,
+          "residual": -0.8710515300034913
+        },
+        {
+          "row": 60,
+          "observed": 49.98094300733597,
+          "fitted": 54.69076794425641,
+          "residual": -4.709824936920434
+        },
+        {
+          "row": 61,
+          "observed": 52.77849186470796,
+          "fitted": 54.69076794425641,
+          "residual": -1.9122760795484481
+        },
+        {
+          "row": 62,
+          "observed": 52.01435018977529,
+          "fitted": 54.69076794425641,
+          "residual": -2.6764177544811147
+        },
+        {
+          "row": 63,
+          "observed": 55.939915919382514,
+          "fitted": 60.958992494630074,
+          "residual": -5.01907657524756
+        },
+        {
+          "row": 64,
+          "observed": 59.21891006427301,
+          "fitted": 60.958992494630074,
+          "residual": -1.740082430357063
+        },
+        {
+          "row": 65,
+          "observed": 59.7359626463371,
+          "fitted": 60.958992494630074,
+          "residual": -1.223029848292974
+        },
+        {
+          "row": 66,
+          "observed": 50.16146173517424,
+          "fitted": 54.69076794425641,
+          "residual": -4.529306209082165
+        },
+        {
+          "row": 67,
+          "observed": 52.13225768899875,
+          "fitted": 54.69076794425641,
+          "residual": -2.5585102552576586
+        },
+        {
+          "row": 68,
+          "observed": 53.36125881326244,
+          "fitted": 54.69076794425641,
+          "residual": -1.3295091309939693
+        },
+        {
+          "row": 69,
+          "observed": 54.56447601802817,
+          "fitted": 60.958992494630074,
+          "residual": -6.394516476601908
+        },
+        {
+          "row": 70,
+          "observed": 57.60250367612833,
+          "fitted": 60.958992494630074,
+          "residual": -3.356488818501745
+        },
+        {
+          "row": 71,
+          "observed": 56.71064999770862,
+          "fitted": 60.958992494630074,
+          "residual": -4.2483424969214525
+        },
+        {
+          "row": 72,
+          "observed": 51.195370781393756,
+          "fitted": 54.69076794425641,
+          "residual": -3.495397162862652
+        },
+        {
+          "row": 73,
+          "observed": 54.544392241564786,
+          "fitted": 54.69076794425641,
+          "residual": -0.14637570269162126
+        },
+        {
+          "row": 74,
+          "observed": 56.201573408262504,
+          "fitted": 54.69076794425641,
+          "residual": 1.510805464006097
+        },
+        {
+          "row": 75,
+          "observed": 58.29032632719812,
+          "fitted": 60.958992494630074,
+          "residual": -2.668666167431951
+        },
+        {
+          "row": 76,
+          "observed": 61.142346528633496,
+          "fitted": 60.958992494630074,
+          "residual": 0.18335403400342187
+        },
+        {
+          "row": 77,
+          "observed": 63.337452119016206,
+          "fitted": 60.958992494630074,
+          "residual": 2.3784596243861316
+        },
+        {
+          "row": 78,
+          "observed": 51.27071506649893,
+          "fitted": 54.69076794425641,
+          "residual": -3.4200528777574775
+        },
+        {
+          "row": 79,
+          "observed": 55.24606780344606,
+          "fitted": 54.69076794425641,
+          "residual": 0.5552998591896525
+        },
+        {
+          "row": 80,
+          "observed": 55.92096823825036,
+          "fitted": 54.69076794425641,
+          "residual": 1.2302002939939527
+        },
+        {
+          "row": 81,
+          "observed": 57.42235684930036,
+          "fitted": 60.958992494630074,
+          "residual": -3.536635645329717
+        },
+        {
+          "row": 82,
+          "observed": 61.76249965981601,
+          "fitted": 60.958992494630074,
+          "residual": 0.803507165185934
+        },
+        {
+          "row": 83,
+          "observed": 61.081647805080294,
+          "fitted": 60.958992494630074,
+          "residual": 0.12265531045022016
+        },
+        {
+          "row": 84,
+          "observed": 62.78641250632127,
+          "fitted": 54.69076794425641,
+          "residual": 8.095644562064862
+        },
+        {
+          "row": 85,
+          "observed": 65.45630598849841,
+          "fitted": 54.69076794425641,
+          "residual": 10.765538044242007
+        },
+        {
+          "row": 86,
+          "observed": 65.32504893639533,
+          "fitted": 54.69076794425641,
+          "residual": 10.634280992138926
+        },
+        {
+          "row": 87,
+          "observed": 70.08894813785756,
+          "fitted": 60.958992494630074,
+          "residual": 9.129955643227483
+        },
+        {
+          "row": 88,
+          "observed": 67.53918391828468,
+          "fitted": 60.958992494630074,
+          "residual": 6.580191423654604
+        },
+        {
+          "row": 89,
+          "observed": 66.96494113794868,
+          "fitted": 60.958992494630074,
+          "residual": 6.005948643318611
+        },
+        {
+          "row": 90,
+          "observed": 47.110678015071244,
+          "fitted": 54.69076794425641,
+          "residual": -7.5800899291851636
+        },
+        {
+          "row": 91,
+          "observed": 47.894565679292434,
+          "fitted": 54.69076794425641,
+          "residual": -6.7962022649639735
+        },
+        {
+          "row": 92,
+          "observed": 51.39599471437128,
+          "fitted": 54.69076794425641,
+          "residual": -3.2947732298851307
+        },
+        {
+          "row": 93,
+          "observed": 54.692010239684905,
+          "fitted": 60.958992494630074,
+          "residual": -6.2669822549451695
+        },
+        {
+          "row": 94,
+          "observed": 57.50894906334758,
+          "fitted": 60.958992494630074,
+          "residual": -3.450043431282495
+        },
+        {
+          "row": 95,
+          "observed": 59.75498669399606,
+          "fitted": 60.958992494630074,
+          "residual": -1.2040058006340146
+        },
+        {
+          "row": 96,
+          "observed": 53.59441991924507,
+          "fitted": 54.69076794425641,
+          "residual": -1.0963480250113378
+        },
+        {
+          "row": 97,
+          "observed": 57.65710934675543,
+          "fitted": 54.69076794425641,
+          "residual": 2.966341402499026
+        },
+        {
+          "row": 98,
+          "observed": 57.232752808739015,
+          "fitted": 54.69076794425641,
+          "residual": 2.5419848644826075
+        },
+        {
+          "row": 99,
+          "observed": 59.598061585500865,
+          "fitted": 60.958992494630074,
+          "residual": -1.360930909129209
+        },
+        {
+          "row": 100,
+          "observed": 61.37511776705291,
+          "fitted": 60.958992494630074,
+          "residual": 0.41612527242283903
+        },
+        {
+          "row": 101,
+          "observed": 61.92117954585909,
+          "fitted": 60.958992494630074,
+          "residual": 0.9621870512290158
+        },
+        {
+          "row": 102,
+          "observed": 57.541144496873535,
+          "fitted": 54.69076794425641,
+          "residual": 2.850376552617128
+        },
+        {
+          "row": 103,
+          "observed": 58.58129264721892,
+          "fitted": 54.69076794425641,
+          "residual": 3.890524702962516
+        },
+        {
+          "row": 104,
+          "observed": 60.018176502781074,
+          "fitted": 54.69076794425641,
+          "residual": 5.327408558524667
+        },
+        {
+          "row": 105,
+          "observed": 62.350792522544694,
+          "fitted": 60.958992494630074,
+          "residual": 1.3918000279146199
+        },
+        {
+          "row": 106,
+          "observed": 66.20781238698915,
+          "fitted": 60.958992494630074,
+          "residual": 5.248819892359073
+        },
+        {
+          "row": 107,
+          "observed": 66.75185422179112,
+          "fitted": 60.958992494630074,
+          "residual": 5.792861727161046
+        },
+        {
+          "row": 108,
+          "observed": 52.21484840313799,
+          "fitted": 54.69076794425641,
+          "residual": -2.475919541118415
+        },
+        {
+          "row": 109,
+          "observed": 55.89848989125257,
+          "fitted": 54.69076794425641,
+          "residual": 1.207721946996159
+        },
+        {
+          "row": 110,
+          "observed": 57.41663396672856,
+          "fitted": 54.69076794425641,
+          "residual": 2.725866022472154
+        },
+        {
+          "row": 111,
+          "observed": 60.19640953756784,
+          "fitted": 60.958992494630074,
+          "residual": -0.7625829570622358
+        },
+        {
+          "row": 112,
+          "observed": 59.65710363744735,
+          "fitted": 60.958992494630074,
+          "residual": -1.3018888571827247
+        },
+        {
+          "row": 113,
+          "observed": 63.16954726973846,
+          "fitted": 60.958992494630074,
+          "residual": 2.2105547751083847
+        },
+        {
+          "row": 114,
+          "observed": 52.085309975889906,
+          "fitted": 54.69076794425641,
+          "residual": -2.605457968366501
+        },
+        {
+          "row": 115,
+          "observed": 51.72284061570073,
+          "fitted": 54.69076794425641,
+          "residual": -2.9679273285556746
+        },
+        {
+          "row": 116,
+          "observed": 54.575513316042105,
+          "fitted": 54.69076794425641,
+          "residual": -0.1152546282143021
+        },
+        {
+          "row": 117,
+          "observed": 56.021811131080256,
+          "fitted": 60.958992494630074,
+          "residual": -4.9371813635498185
+        },
+        {
+          "row": 118,
+          "observed": 58.11336451177912,
+          "fitted": 60.958992494630074,
+          "residual": -2.8456279828509565
+        },
+        {
+          "row": 119,
+          "observed": 58.22586985003402,
+          "fitted": 60.958992494630074,
+          "residual": -2.733122644596051
+        },
+        {
+          "row": 120,
+          "observed": 50.24952388171781,
+          "fitted": 54.69076794425641,
+          "residual": -4.441244062538594
+        },
+        {
+          "row": 121,
+          "observed": 50.60751452337911,
+          "fitted": 54.69076794425641,
+          "residual": -4.083253420877298
+        },
+        {
+          "row": 122,
+          "observed": 49.75203804057077,
+          "fitted": 54.69076794425641,
+          "residual": -4.9387299036856405
+        },
+        {
+          "row": 123,
+          "observed": 55.0357480503641,
+          "fitted": 60.958992494630074,
+          "residual": -5.9232444442659755
+        },
+        {
+          "row": 124,
+          "observed": 58.45165415773355,
+          "fitted": 60.958992494630074,
+          "residual": -2.507338336896524
+        },
+        {
+          "row": 125,
+          "observed": 57.504679182070994,
+          "fitted": 60.958992494630074,
+          "residual": -3.45431331255908
+        },
+        {
+          "row": 126,
+          "observed": 54.578143180682474,
+          "fitted": 54.69076794425641,
+          "residual": -0.11262476357393325
+        },
+        {
+          "row": 127,
+          "observed": 55.59685823491257,
+          "fitted": 54.69076794425641,
+          "residual": 0.9060902906561594
+        },
+        {
+          "row": 128,
+          "observed": 54.19697555647794,
+          "fitted": 54.69076794425641,
+          "residual": -0.4937923877784698
+        },
+        {
+          "row": 129,
+          "observed": 57.57262130187331,
+          "fitted": 60.958992494630074,
+          "residual": -3.386371192756762
+        },
+        {
+          "row": 130,
+          "observed": 62.05133709048663,
+          "fitted": 60.958992494630074,
+          "residual": 1.0923445958565594
+        },
+        {
+          "row": 131,
+          "observed": 60.14814242647284,
+          "fitted": 60.958992494630074,
+          "residual": -0.8108500681572366
+        },
+        {
+          "row": 132,
+          "observed": 55.931681299572936,
+          "fitted": 54.69076794425641,
+          "residual": 1.240913355316529
+        },
+        {
+          "row": 133,
+          "observed": 57.006575771986334,
+          "fitted": 54.69076794425641,
+          "residual": 2.3158078277299268
+        },
+        {
+          "row": 134,
+          "observed": 57.771370115451965,
+          "fitted": 54.69076794425641,
+          "residual": 3.080602171195558
+        },
+        {
+          "row": 135,
+          "observed": 62.446349852667524,
+          "fitted": 60.958992494630074,
+          "residual": 1.4873573580374497
+        },
+        {
+          "row": 136,
+          "observed": 65.13676861404574,
+          "fitted": 60.958992494630074,
+          "residual": 4.177776119415661
+        },
+        {
+          "row": 137,
+          "observed": 63.90501151074335,
+          "fitted": 60.958992494630074,
+          "residual": 2.9460190161132758
+        },
+        {
+          "row": 138,
+          "observed": 54.24100147586501,
+          "fitted": 54.69076794425641,
+          "residual": -0.44976646839139534
+        },
+        {
+          "row": 139,
+          "observed": 60.03808207774984,
+          "fitted": 54.69076794425641,
+          "residual": 5.347314133493434
+        },
+        {
+          "row": 140,
+          "observed": 59.899802256507144,
+          "fitted": 54.69076794425641,
+          "residual": 5.209034312250736
+        },
+        {
+          "row": 141,
+          "observed": 64.25930983069749,
+          "fitted": 60.958992494630074,
+          "residual": 3.3003173360674154
+        },
+        {
+          "row": 142,
+          "observed": 68.25810526003272,
+          "fitted": 60.958992494630074,
+          "residual": 7.299112765402647
+        },
+        {
+          "row": 143,
+          "observed": 67.88000461962947,
+          "fitted": 60.958992494630074,
+          "residual": 6.9210121249994
+        },
+        {
+          "row": 144,
+          "observed": 52.01812461673431,
+          "fitted": 54.69076794425641,
+          "residual": -2.6726433275220955
+        },
+        {
+          "row": 145,
+          "observed": 51.99386984586116,
+          "fitted": 54.69076794425641,
+          "residual": -2.696898098395245
+        },
+        {
+          "row": 146,
+          "observed": 54.558752998519935,
+          "fitted": 54.69076794425641,
+          "residual": -0.1320149457364721
+        },
+        {
+          "row": 147,
+          "observed": 61.28130194520857,
+          "fitted": 60.958992494630074,
+          "residual": 0.32230945057849425
+        },
+        {
+          "row": 148,
+          "observed": 61.239055921335115,
+          "fitted": 60.958992494630074,
+          "residual": 0.28006342670504125
+        },
+        {
+          "row": 149,
+          "observed": 63.72519185916185,
+          "fitted": 60.958992494630074,
+          "residual": 2.7661993645317793
+        },
+        {
+          "row": 150,
+          "observed": 57.941554004208754,
+          "fitted": 54.69076794425641,
+          "residual": 3.250786059952347
+        },
+        {
+          "row": 151,
+          "observed": 59.765864197058804,
+          "fitted": 54.69076794425641,
+          "residual": 5.075096252802396
+        },
+        {
+          "row": 152,
+          "observed": 63.39126199518855,
+          "fitted": 54.69076794425641,
+          "residual": 8.700494050932143
+        },
+        {
+          "row": 153,
+          "observed": 67.66871615677402,
+          "fitted": 60.958992494630074,
+          "residual": 6.709723662143951
+        },
+        {
+          "row": 154,
+          "observed": 68.72289364920259,
+          "fitted": 60.958992494630074,
+          "residual": 7.763901154572515
+        },
+        {
+          "row": 155,
+          "observed": 67.1711756074968,
+          "fitted": 60.958992494630074,
+          "residual": 6.212183112866732
+        },
+        {
+          "row": 156,
+          "observed": 48.573947272955785,
+          "fitted": 54.69076794425641,
+          "residual": -6.116820671300623
+        },
+        {
+          "row": 157,
+          "observed": 51.92724705217659,
+          "fitted": 54.69076794425641,
+          "residual": -2.7635208920798178
+        },
+        {
+          "row": 158,
+          "observed": 52.744038538420874,
+          "fitted": 54.69076794425641,
+          "residual": -1.9467294058355336
+        },
+        {
+          "row": 159,
+          "observed": 54.11819194536447,
+          "fitted": 60.958992494630074,
+          "residual": -6.840800549265602
+        },
+        {
+          "row": 160,
+          "observed": 56.9037118213756,
+          "fitted": 60.958992494630074,
+          "residual": -4.055280673254472
+        },
+        {
+          "row": 161,
+          "observed": 58.20805902284848,
+          "fitted": 60.958992494630074,
+          "residual": -2.750933471781593
+        },
+        {
+          "row": 162,
+          "observed": 53.831211977226054,
+          "fitted": 54.69076794425641,
+          "residual": -0.859555967030353
+        },
+        {
+          "row": 163,
+          "observed": 57.64317811937177,
+          "fitted": 54.69076794425641,
+          "residual": 2.952410175115361
+        },
+        {
+          "row": 164,
+          "observed": 59.64673695252577,
+          "fitted": 54.69076794425641,
+          "residual": 4.9559690082693635
+        },
+        {
+          "row": 165,
+          "observed": 62.03570201578714,
+          "fitted": 60.958992494630074,
+          "residual": 1.0767095211570634
+        },
+        {
+          "row": 166,
+          "observed": 63.62093807118427,
+          "fitted": 60.958992494630074,
+          "residual": 2.6619455765541957
+        },
+        {
+          "row": 167,
+          "observed": 62.32624265133619,
+          "fitted": 60.958992494630074,
+          "residual": 1.3672501567061133
+        },
+        {
+          "row": 168,
+          "observed": 46.70221974408774,
+          "fitted": 54.69076794425641,
+          "residual": -7.988548200168665
+        },
+        {
+          "row": 169,
+          "observed": 48.82884483682256,
+          "fitted": 54.69076794425641,
+          "residual": -5.861923107433846
+        },
+        {
+          "row": 170,
+          "observed": 51.93622596828306,
+          "fitted": 54.69076794425641,
+          "residual": -2.7545419759733463
+        },
+        {
+          "row": 171,
+          "observed": 54.66623968399135,
+          "fitted": 60.958992494630074,
+          "residual": -6.292752810638724
+        },
+        {
+          "row": 172,
+          "observed": 57.09690120647613,
+          "fitted": 60.958992494630074,
+          "residual": -3.862091288153941
+        },
+        {
+          "row": 173,
+          "observed": 56.995152772881966,
+          "fitted": 60.958992494630074,
+          "residual": -3.9638397217481085
+        },
+        {
+          "row": 174,
+          "observed": 49.54097964063846,
+          "fitted": 54.69076794425641,
+          "residual": -5.149788303617946
+        },
+        {
+          "row": 175,
+          "observed": 51.84692456186165,
+          "fitted": 54.69076794425641,
+          "residual": -2.843843382394759
+        },
+        {
+          "row": 176,
+          "observed": 51.91577837588258,
+          "fitted": 54.69076794425641,
+          "residual": -2.774989568373826
+        },
+        {
+          "row": 177,
+          "observed": 53.59505105032125,
+          "fitted": 60.958992494630074,
+          "residual": -7.363941444308821
+        },
+        {
+          "row": 178,
+          "observed": 54.84417393107102,
+          "fitted": 60.958992494630074,
+          "residual": -6.114818563559055
+        },
+        {
+          "row": 179,
+          "observed": 56.90804437663146,
+          "fitted": 60.958992494630074,
+          "residual": -4.050948117998615
+        },
+        {
+          "row": 180,
+          "observed": 61.38892709066367,
+          "fitted": 61.08439468907212,
+          "residual": 0.30453240159155115
+        },
+        {
+          "row": 181,
+          "observed": 64.05863448535541,
+          "fitted": 61.08439468907212,
+          "residual": 2.9742397962832925
+        },
+        {
+          "row": 182,
+          "observed": 65.67423676501231,
+          "fitted": 61.08439468907212,
+          "residual": 4.58984207594019
+        },
+        {
+          "row": 183,
+          "observed": 69.26212223248031,
+          "fitted": 64.80329982266844,
+          "residual": 4.458822409811873
+        },
+        {
+          "row": 184,
+          "observed": 74.12125395360681,
+          "fitted": 64.80329982266844,
+          "residual": 9.317954130938375
+        },
+        {
+          "row": 185,
+          "observed": 72.11825704115125,
+          "fitted": 64.80329982266844,
+          "residual": 7.314957218482817
+        },
+        {
+          "row": 186,
+          "observed": 65.43987414450409,
+          "fitted": 61.08439468907212,
+          "residual": 4.3554794554319685
+        },
+        {
+          "row": 187,
+          "observed": 66.62733773816797,
+          "fitted": 61.08439468907212,
+          "residual": 5.542943049095847
+        },
+        {
+          "row": 188,
+          "observed": 67.89451548499319,
+          "fitted": 61.08439468907212,
+          "residual": 6.810120795921073
+        },
+        {
+          "row": 189,
+          "observed": 69.93444214958613,
+          "fitted": 64.80329982266844,
+          "residual": 5.131142326917697
+        },
+        {
+          "row": 190,
+          "observed": 70.16671675042768,
+          "fitted": 64.80329982266844,
+          "residual": 5.363416927759246
+        },
+        {
+          "row": 191,
+          "observed": 72.3417748434351,
+          "fitted": 64.80329982266844,
+          "residual": 7.538475020766668
+        },
+        {
+          "row": 192,
+          "observed": 57.68802556419894,
+          "fitted": 61.08439468907212,
+          "residual": -3.396369124873182
+        },
+        {
+          "row": 193,
+          "observed": 62.102998384984204,
+          "fitted": 61.08439468907212,
+          "residual": 1.018603695912084
+        },
+        {
+          "row": 194,
+          "observed": 63.357025760667945,
+          "fitted": 61.08439468907212,
+          "residual": 2.272631071595825
+        },
+        {
+          "row": 195,
+          "observed": 67.17871558703129,
+          "fitted": 64.80329982266844,
+          "residual": 2.375415764362856
+        },
+        {
+          "row": 196,
+          "observed": 70.13762383234199,
+          "fitted": 64.80329982266844,
+          "residual": 5.334324009673551
+        },
+        {
+          "row": 197,
+          "observed": 71.37476792162543,
+          "fitted": 64.80329982266844,
+          "residual": 6.5714680989569985
+        },
+        {
+          "row": 198,
+          "observed": 47.5340066492242,
+          "fitted": 61.08439468907212,
+          "residual": -13.550388039847917
+        },
+        {
+          "row": 199,
+          "observed": 50.60783882473743,
+          "fitted": 61.08439468907212,
+          "residual": -10.476555864334692
+        },
+        {
+          "row": 200,
+          "observed": 53.76508789890948,
+          "fitted": 61.08439468907212,
+          "residual": -7.319306790162642
+        },
+        {
+          "row": 201,
+          "observed": 52.01218408131265,
+          "fitted": 64.80329982266844,
+          "residual": -12.791115741355789
+        },
+        {
+          "row": 202,
+          "observed": 54.64022798222898,
+          "fitted": 64.80329982266844,
+          "residual": -10.163071840439457
+        },
+        {
+          "row": 203,
+          "observed": 56.939242834024206,
+          "fitted": 64.80329982266844,
+          "residual": -7.864056988644229
+        },
+        {
+          "row": 204,
+          "observed": 67.9572643757564,
+          "fitted": 61.08439468907212,
+          "residual": 6.872869686684275
+        },
+        {
+          "row": 205,
+          "observed": 70.87042115251073,
+          "fitted": 61.08439468907212,
+          "residual": 9.78602646343861
+        },
+        {
+          "row": 206,
+          "observed": 75.26941704363088,
+          "fitted": 61.08439468907212,
+          "residual": 14.185022354558761
+        },
+        {
+          "row": 207,
+          "observed": 72.96386812391331,
+          "fitted": 64.80329982266844,
+          "residual": 8.16056830124488
+        },
+        {
+          "row": 208,
+          "observed": 75.23854351667575,
+          "fitted": 64.80329982266844,
+          "residual": 10.435243694007312
+        },
+        {
+          "row": 209,
+          "observed": 75.72167313351224,
+          "fitted": 64.80329982266844,
+          "residual": 10.918373310843805
+        },
+        {
+          "row": 210,
+          "observed": 63.637430791492605,
+          "fitted": 61.08439468907212,
+          "residual": 2.553036102420485
+        },
+        {
+          "row": 211,
+          "observed": 64.18748303508671,
+          "fitted": 61.08439468907212,
+          "residual": 3.1030883460145944
+        },
+        {
+          "row": 212,
+          "observed": 66.79526473501684,
+          "fitted": 61.08439468907212,
+          "residual": 5.7108700459447235
+        },
+        {
+          "row": 213,
+          "observed": 68.71259252236356,
+          "fitted": 64.80329982266844,
+          "residual": 3.909292699695129
+        },
+        {
+          "row": 214,
+          "observed": 69.47534353917176,
+          "fitted": 64.80329982266844,
+          "residual": 4.672043716503325
+        },
+        {
+          "row": 215,
+          "observed": 68.85659540430883,
+          "fitted": 64.80329982266844,
+          "residual": 4.053295581640398
+        },
+        {
+          "row": 216,
+          "observed": 57.93906256405499,
+          "fitted": 61.08439468907212,
+          "residual": -3.145332125017127
+        },
+        {
+          "row": 217,
+          "observed": 61.96242826104716,
+          "fitted": 61.08439468907212,
+          "residual": 0.8780335719750383
+        },
+        {
+          "row": 218,
+          "observed": 63.25858876028522,
+          "fitted": 61.08439468907212,
+          "residual": 2.174194071213101
+        },
+        {
+          "row": 219,
+          "observed": 64.724673668922,
+          "fitted": 64.80329982266844,
+          "residual": -0.07862615374644122
+        },
+        {
+          "row": 220,
+          "observed": 66.15176706242346,
+          "fitted": 64.80329982266844,
+          "residual": 1.3484672397550241
+        },
+        {
+          "row": 221,
+          "observed": 68.27207867573749,
+          "fitted": 64.80329982266844,
+          "residual": 3.468778853069054
+        },
+        {
+          "row": 222,
+          "observed": 55.42195086358434,
+          "fitted": 61.08439468907212,
+          "residual": -5.662443825487777
+        },
+        {
+          "row": 223,
+          "observed": 57.889943345079296,
+          "fitted": 61.08439468907212,
+          "residual": -3.1944513439928244
+        },
+        {
+          "row": 224,
+          "observed": 58.91706089037833,
+          "fitted": 61.08439468907212,
+          "residual": -2.1673337986937895
+        },
+        {
+          "row": 225,
+          "observed": 60.45821989749068,
+          "fitted": 64.80329982266844,
+          "residual": -4.345079925177757
+        },
+        {
+          "row": 226,
+          "observed": 60.130616485837784,
+          "fitted": 64.80329982266844,
+          "residual": -4.6726833368306515
+        },
+        {
+          "row": 227,
+          "observed": 61.73507099878415,
+          "fitted": 64.80329982266844,
+          "residual": -3.068228823884283
+        },
+        {
+          "row": 228,
+          "observed": 58.57147024100249,
+          "fitted": 61.08439468907212,
+          "residual": -2.512924448069633
+        },
+        {
+          "row": 229,
+          "observed": 60.149453277147,
+          "fitted": 61.08439468907212,
+          "residual": -0.9349414119251165
+        },
+        {
+          "row": 230,
+          "observed": 62.230113344865394,
+          "fitted": 61.08439468907212,
+          "residual": 1.1457186557932744
+        },
+        {
+          "row": 231,
+          "observed": 60.615321851960104,
+          "fitted": 64.80329982266844,
+          "residual": -4.1879779707083316
+        },
+        {
+          "row": 232,
+          "observed": 62.09933311252756,
+          "fitted": 64.80329982266844,
+          "residual": -2.7039667101408753
+        },
+        {
+          "row": 233,
+          "observed": 62.69389057809668,
+          "fitted": 64.80329982266844,
+          "residual": -2.109409244571758
+        },
+        {
+          "row": 234,
+          "observed": 60.456124203356524,
+          "fitted": 61.08439468907212,
+          "residual": -0.6282704857155963
+        },
+        {
+          "row": 235,
+          "observed": 61.44443596442782,
+          "fitted": 61.08439468907212,
+          "residual": 0.3600412753556981
+        },
+        {
+          "row": 236,
+          "observed": 67.73307330480571,
+          "fitted": 61.08439468907212,
+          "residual": 6.648678615733594
+        },
+        {
+          "row": 237,
+          "observed": 65.68300611121117,
+          "fitted": 64.80329982266844,
+          "residual": 0.8797062885427351
+        },
+        {
+          "row": 238,
+          "observed": 69.18714180186629,
+          "fitted": 64.80329982266844,
+          "residual": 4.383841979197854
+        },
+        {
+          "row": 239,
+          "observed": 67.42172936229387,
+          "fitted": 64.80329982266844,
+          "residual": 2.6184295396254385
+        },
+        {
+          "row": 240,
+          "observed": 57.6321586912328,
+          "fitted": 61.08439468907212,
+          "residual": -3.452235997839317
+        },
+        {
+          "row": 241,
+          "observed": 57.01208423908898,
+          "fitted": 61.08439468907212,
+          "residual": -4.072310449983142
+        },
+        {
+          "row": 242,
+          "observed": 59.22250601442275,
+          "fitted": 61.08439468907212,
+          "residual": -1.8618886746493715
+        },
+        {
+          "row": 243,
+          "observed": 58.92870262553132,
+          "fitted": 64.80329982266844,
+          "residual": -5.874597197137113
+        },
+        {
+          "row": 244,
+          "observed": 61.97087483576893,
+          "fitted": 64.80329982266844,
+          "residual": -2.832424986899504
+        },
+        {
+          "row": 245,
+          "observed": 64.64311290011644,
+          "fitted": 64.80329982266844,
+          "residual": -0.1601869225520005
+        },
+        {
+          "row": 246,
+          "observed": 61.84980630359315,
+          "fitted": 61.08439468907212,
+          "residual": 0.7654116145210281
+        },
+        {
+          "row": 247,
+          "observed": 61.42126363729331,
+          "fitted": 61.08439468907212,
+          "residual": 0.33686894822118774
+        },
+        {
+          "row": 248,
+          "observed": 63.98891120670874,
+          "fitted": 61.08439468907212,
+          "residual": 2.9045165176366226
+        },
+        {
+          "row": 249,
+          "observed": 64.85616443586122,
+          "fitted": 64.80329982266844,
+          "residual": 0.05286461319278146
+        },
+        {
+          "row": 250,
+          "observed": 64.62743801332155,
+          "fitted": 64.80329982266844,
+          "residual": -0.175861809346884
+        },
+        {
+          "row": 251,
+          "observed": 63.830234911333214,
+          "fitted": 64.80329982266844,
+          "residual": -0.9730649113352214
+        },
+        {
+          "row": 252,
+          "observed": 51.28024088754677,
+          "fitted": 61.08439468907212,
+          "residual": -9.804153801525352
+        },
+        {
+          "row": 253,
+          "observed": 56.949911187298426,
+          "fitted": 61.08439468907212,
+          "residual": -4.134483501773694
+        },
+        {
+          "row": 254,
+          "observed": 59.56078564032117,
+          "fitted": 61.08439468907212,
+          "residual": -1.5236090487509486
+        },
+        {
+          "row": 255,
+          "observed": 58.34199015724891,
+          "fitted": 64.80329982266844,
+          "residual": -6.4613096654195274
+        },
+        {
+          "row": 256,
+          "observed": 57.915484927358975,
+          "fitted": 64.80329982266844,
+          "residual": -6.887814895309461
+        },
+        {
+          "row": 257,
+          "observed": 60.895171040646794,
+          "fitted": 64.80329982266844,
+          "residual": -3.9081287820216417
+        },
+        {
+          "row": 258,
+          "observed": 64.46706266016857,
+          "fitted": 61.08439468907212,
+          "residual": 3.3826679710964456
+        },
+        {
+          "row": 259,
+          "observed": 66.38745970987326,
+          "fitted": 61.08439468907212,
+          "residual": 5.303065020801135
+        },
+        {
+          "row": 260,
+          "observed": 65.84446530383775,
+          "fitted": 61.08439468907212,
+          "residual": 4.760070614765631
+        },
+        {
+          "row": 261,
+          "observed": 68.9086590751575,
+          "fitted": 64.80329982266844,
+          "residual": 4.105359252489066
+        },
+        {
+          "row": 262,
+          "observed": 66.6107637821177,
+          "fitted": 64.80329982266844,
+          "residual": 1.8074639594492652
+        },
+        {
+          "row": 263,
+          "observed": 71.86022010187307,
+          "fitted": 64.80329982266844,
+          "residual": 7.056920279204633
+        },
+        {
+          "row": 264,
+          "observed": 56.11969772276342,
+          "fitted": 61.08439468907212,
+          "residual": -4.964696966308701
+        },
+        {
+          "row": 265,
+          "observed": 56.639088944033695,
+          "fitted": 61.08439468907212,
+          "residual": -4.445305745038425
+        },
+        {
+          "row": 266,
+          "observed": 62.78913887234677,
+          "fitted": 61.08439468907212,
+          "residual": 1.7047441832746486
+        },
+        {
+          "row": 267,
+          "observed": 60.36329706688676,
+          "fitted": 64.80329982266844,
+          "residual": -4.440002755781677
+        },
+        {
+          "row": 268,
+          "observed": 65.51101394066907,
+          "fitted": 64.80329982266844,
+          "residual": 0.7077141180006379
+        },
+        {
+          "row": 269,
+          "observed": 65.28108477938352,
+          "fitted": 64.80329982266844,
+          "residual": 0.4777849567150838
+        },
+        {
+          "row": 270,
+          "observed": 61.77650411502919,
+          "fitted": 61.08439468907212,
+          "residual": 0.6921094259570708
+        },
+        {
+          "row": 271,
+          "observed": 65.80207870130552,
+          "fitted": 61.08439468907212,
+          "residual": 4.7176840122333985
+        },
+        {
+          "row": 272,
+          "observed": 66.61790402570374,
+          "fitted": 61.08439468907212,
+          "residual": 5.533509336631617
+        },
+        {
+          "row": 273,
+          "observed": 68.9470752752949,
+          "fitted": 64.80329982266844,
+          "residual": 4.143775452626471
+        },
+        {
+          "row": 274,
+          "observed": 69.08236759465787,
+          "fitted": 64.80329982266844,
+          "residual": 4.279067771989432
+        },
+        {
+          "row": 275,
+          "observed": 69.5981847833426,
+          "fitted": 64.80329982266844,
+          "residual": 4.7948849606741675
+        },
+        {
+          "row": 276,
+          "observed": 56.552724082978266,
+          "fitted": 61.08439468907212,
+          "residual": -4.531670606093854
+        },
+        {
+          "row": 277,
+          "observed": 58.480619116152305,
+          "fitted": 61.08439468907212,
+          "residual": -2.6037755729198153
+        },
+        {
+          "row": 278,
+          "observed": 59.97330567804417,
+          "fitted": 61.08439468907212,
+          "residual": -1.1110890110279499
+        },
+        {
+          "row": 279,
+          "observed": 57.199390835297514,
+          "fitted": 64.80329982266844,
+          "residual": -7.603908987370922
+        },
+        {
+          "row": 280,
+          "observed": 60.56589303970037,
+          "fitted": 64.80329982266844,
+          "residual": -4.2374067829680655
+        },
+        {
+          "row": 281,
+          "observed": 62.62698425631152,
+          "fitted": 64.80329982266844,
+          "residual": -2.1763155663569123
+        },
+        {
+          "row": 282,
+          "observed": 58.96564694275897,
+          "fitted": 61.08439468907212,
+          "residual": -2.118747746313147
+        },
+        {
+          "row": 283,
+          "observed": 60.795202277925405,
+          "fitted": 61.08439468907212,
+          "residual": -0.2891924111467148
+        },
+        {
+          "row": 284,
+          "observed": 63.607201068007555,
+          "fitted": 61.08439468907212,
+          "residual": 2.522806378935435
+        },
+        {
+          "row": 285,
+          "observed": 62.175931019395065,
+          "fitted": 64.80329982266844,
+          "residual": -2.62736880327337
+        },
+        {
+          "row": 286,
+          "observed": 62.85829738302185,
+          "fitted": 64.80329982266844,
+          "residual": -1.9450024396465864
+        },
+        {
+          "row": 287,
+          "observed": 65.58039485165203,
+          "fitted": 64.80329982266844,
+          "residual": 0.7770950289835952
+        },
+        {
+          "row": 288,
+          "observed": 66.0221883042739,
+          "fitted": 61.08439468907212,
+          "residual": 4.937793615201777
+        },
+        {
+          "row": 289,
+          "observed": 67.30291891721654,
+          "fitted": 61.08439468907212,
+          "residual": 6.218524228144425
+        },
+        {
+          "row": 290,
+          "observed": 70.46732789184568,
+          "fitted": 61.08439468907212,
+          "residual": 9.382933202773565
+        },
+        {
+          "row": 291,
+          "observed": 68.33232275178136,
+          "fitted": 64.80329982266844,
+          "residual": 3.5290229291129265
+        },
+        {
+          "row": 292,
+          "observed": 73.30378836131136,
+          "fitted": 64.80329982266844,
+          "residual": 8.500488538642927
+        },
+        {
+          "row": 293,
+          "observed": 72.35034159399693,
+          "fitted": 64.80329982266844,
+          "residual": 7.5470417713284945
+        },
+        {
+          "row": 294,
+          "observed": 65.52364157329251,
+          "fitted": 61.08439468907212,
+          "residual": 4.439246884220388
+        },
+        {
+          "row": 295,
+          "observed": 66.28237150008945,
+          "fitted": 61.08439468907212,
+          "residual": 5.197976811017334
+        },
+        {
+          "row": 296,
+          "observed": 68.76177387871208,
+          "fitted": 61.08439468907212,
+          "residual": 7.677379189639957
+        },
+        {
+          "row": 297,
+          "observed": 68.12876411364697,
+          "fitted": 64.80329982266844,
+          "residual": 3.3254642909785304
+        },
+        {
+          "row": 298,
+          "observed": 69.24652876720393,
+          "fitted": 64.80329982266844,
+          "residual": 4.443228944535491
+        },
+        {
+          "row": 299,
+          "observed": 71.8896570150907,
+          "fitted": 64.80329982266844,
+          "residual": 7.08635719242227
+        },
+        {
+          "row": 300,
+          "observed": 59.9969441375249,
+          "fitted": 61.08439468907212,
+          "residual": -1.0874505515472208
+        },
+        {
+          "row": 301,
+          "observed": 60.89771504530142,
+          "fitted": 61.08439468907212,
+          "residual": -0.18667964377070234
+        },
+        {
+          "row": 302,
+          "observed": 62.69834235413456,
+          "fitted": 61.08439468907212,
+          "residual": 1.6139476650624403
+        },
+        {
+          "row": 303,
+          "observed": 61.43045272555739,
+          "fitted": 64.80329982266844,
+          "residual": -3.3728470971110482
+        },
+        {
+          "row": 304,
+          "observed": 63.33175050098884,
+          "fitted": 64.80329982266844,
+          "residual": -1.4715493216795963
+        },
+        {
+          "row": 305,
+          "observed": 61.32455316127272,
+          "fitted": 64.80329982266844,
+          "residual": -3.478746661395718
+        },
+        {
+          "row": 306,
+          "observed": 63.74581950793332,
+          "fitted": 61.08439468907212,
+          "residual": 2.6614248188611995
+        },
+        {
+          "row": 307,
+          "observed": 66.96311554251206,
+          "fitted": 61.08439468907212,
+          "residual": 5.878720853439937
+        },
+        {
+          "row": 308,
+          "observed": 67.26891478631882,
+          "fitted": 61.08439468907212,
+          "residual": 6.184520097246697
+        },
+        {
+          "row": 309,
+          "observed": 67.90205977009502,
+          "fitted": 64.80329982266844,
+          "residual": 3.0987599474265863
+        },
+        {
+          "row": 310,
+          "observed": 71.74102667974049,
+          "fitted": 64.80329982266844,
+          "residual": 6.93772685707205
+        },
+        {
+          "row": 311,
+          "observed": 70.83814898415841,
+          "fitted": 64.80329982266844,
+          "residual": 6.034849161489973
+        },
+        {
+          "row": 312,
+          "observed": 52.12041316520059,
+          "fitted": 61.08439468907212,
+          "residual": -8.963981523871531
+        },
+        {
+          "row": 313,
+          "observed": 53.16303513691943,
+          "fitted": 61.08439468907212,
+          "residual": -7.921359552152687
+        },
+        {
+          "row": 314,
+          "observed": 55.711700275557355,
+          "fitted": 61.08439468907212,
+          "residual": -5.372694413514765
+        },
+        {
+          "row": 315,
+          "observed": 53.78444645590529,
+          "fitted": 64.80329982266844,
+          "residual": -11.018853366763146
+        },
+        {
+          "row": 316,
+          "observed": 54.50876547859098,
+          "fitted": 64.80329982266844,
+          "residual": -10.294534344077455
+        },
+        {
+          "row": 317,
+          "observed": 56.23179926486039,
+          "fitted": 64.80329982266844,
+          "residual": -8.571500557808044
+        },
+        {
+          "row": 318,
+          "observed": 61.171630593520085,
+          "fitted": 61.08439468907212,
+          "residual": 0.08723590444796514
+        },
+        {
+          "row": 319,
+          "observed": 63.387259558317716,
+          "fitted": 61.08439468907212,
+          "residual": 2.302864869245596
+        },
+        {
+          "row": 320,
+          "observed": 67.89302720246077,
+          "fitted": 61.08439468907212,
+          "residual": 6.808632513388652
+        },
+        {
+          "row": 321,
+          "observed": 67.49371385630224,
+          "fitted": 64.80329982266844,
+          "residual": 2.6904140336338003
+        },
+        {
+          "row": 322,
+          "observed": 68.0830231432598,
+          "fitted": 64.80329982266844,
+          "residual": 3.2797233205913585
+        },
+        {
+          "row": 323,
+          "observed": 67.27258193151758,
+          "fitted": 64.80329982266844,
+          "residual": 2.469282108849143
+        },
+        {
+          "row": 324,
+          "observed": 55.49524780499132,
+          "fitted": 61.08439468907212,
+          "residual": -5.589146884080797
+        },
+        {
+          "row": 325,
+          "observed": 57.15085351746513,
+          "fitted": 61.08439468907212,
+          "residual": -3.93354117160699
+        },
+        {
+          "row": 326,
+          "observed": 58.46835072026287,
+          "fitted": 61.08439468907212,
+          "residual": -2.616043968809251
+        },
+        {
+          "row": 327,
+          "observed": 59.22070694298967,
+          "fitted": 64.80329982266844,
+          "residual": -5.582592879678764
+        },
+        {
+          "row": 328,
+          "observed": 64.15888672465745,
+          "fitted": 64.80329982266844,
+          "residual": -0.6444130980109861
+        },
+        {
+          "row": 329,
+          "observed": 64.98404826233494,
+          "fitted": 64.80329982266844,
+          "residual": 0.18074843966650178
+        },
+        {
+          "row": 330,
+          "observed": 54.49122043670817,
+          "fitted": 61.08439468907212,
+          "residual": -6.593174252363951
+        },
+        {
+          "row": 331,
+          "observed": 56.907330214348136,
+          "fitted": 61.08439468907212,
+          "residual": -4.177064474723984
+        },
+        {
+          "row": 332,
+          "observed": 58.448650521391464,
+          "fitted": 61.08439468907212,
+          "residual": -2.635744167680656
+        },
+        {
+          "row": 333,
+          "observed": 58.130464772609905,
+          "fitted": 64.80329982266844,
+          "residual": -6.672835050058531
+        },
+        {
+          "row": 334,
+          "observed": 60.40465225254494,
+          "fitted": 64.80329982266844,
+          "residual": -4.398647570123494
+        },
+        {
+          "row": 335,
+          "observed": 61.2360364625834,
+          "fitted": 64.80329982266844,
+          "residual": -3.567263360085036
+        },
+        {
+          "row": 336,
+          "observed": 55.22351478053973,
+          "fitted": 61.08439468907212,
+          "residual": -5.8608799085323895
+        },
+        {
+          "row": 337,
+          "observed": 57.9624837742495,
+          "fitted": 61.08439468907212,
+          "residual": -3.121910914822621
+        },
+        {
+          "row": 338,
+          "observed": 59.320702583785504,
+          "fitted": 61.08439468907212,
+          "residual": -1.7636921052866157
+        },
+        {
+          "row": 339,
+          "observed": 59.540517191410075,
+          "fitted": 64.80329982266844,
+          "residual": -5.262782631258361
+        },
+        {
+          "row": 340,
+          "observed": 60.92462533997984,
+          "fitted": 64.80329982266844,
+          "residual": -3.878674482688595
+        },
+        {
+          "row": 341,
+          "observed": 61.46973177625613,
+          "fitted": 64.80329982266844,
+          "residual": -3.333568046412303
+        },
+        {
+          "row": 342,
+          "observed": 58.78128302529418,
+          "fitted": 61.08439468907212,
+          "residual": -2.3031116637779405
+        },
+        {
+          "row": 343,
+          "observed": 61.66990500180659,
+          "fitted": 61.08439468907212,
+          "residual": 0.5855103127344705
+        },
+        {
+          "row": 344,
+          "observed": 64.53374522998661,
+          "fitted": 61.08439468907212,
+          "residual": 3.4493505409144873
+        },
+        {
+          "row": 345,
+          "observed": 65.28919717103759,
+          "fitted": 64.80329982266844,
+          "residual": 0.48589734836915
+        },
+        {
+          "row": 346,
+          "observed": 69.7833445217147,
+          "fitted": 64.80329982266844,
+          "residual": 4.98004469904626
+        },
+        {
+          "row": 347,
+          "observed": 67.3979450460654,
+          "fitted": 64.80329982266844,
+          "residual": 2.5946452233969666
+        },
+        {
+          "row": 348,
+          "observed": 57.55448473459761,
+          "fitted": 61.08439468907212,
+          "residual": -3.529909954474512
+        },
+        {
+          "row": 349,
+          "observed": 58.80999446504567,
+          "fitted": 61.08439468907212,
+          "residual": -2.2744002240264507
+        },
+        {
+          "row": 350,
+          "observed": 59.20715452837149,
+          "fitted": 61.08439468907212,
+          "residual": -1.8772401607006302
+        },
+        {
+          "row": 351,
+          "observed": 57.80618946980649,
+          "fitted": 64.80329982266844,
+          "residual": -6.997110352861945
+        },
+        {
+          "row": 352,
+          "observed": 58.45802220745036,
+          "fitted": 64.80329982266844,
+          "residual": -6.345277615218073
+        },
+        {
+          "row": 353,
+          "observed": 59.35105781939924,
+          "fitted": 64.80329982266844,
+          "residual": -5.452242003269198
+        },
+        {
+          "row": 354,
+          "observed": 55.89561417563385,
+          "fitted": 61.08439468907212,
+          "residual": -5.188780513438267
+        },
+        {
+          "row": 355,
+          "observed": 56.51343330792851,
+          "fitted": 61.08439468907212,
+          "residual": -4.570961381143611
+        },
+        {
+          "row": 356,
+          "observed": 57.2181518495709,
+          "fitted": 61.08439468907212,
+          "residual": -3.8662428395012185
+        },
+        {
+          "row": 357,
+          "observed": 59.56024092635152,
+          "fitted": 64.80329982266844,
+          "residual": -5.243058896316917
+        },
+        {
+          "row": 358,
+          "observed": 61.495453588165454,
+          "fitted": 64.80329982266844,
+          "residual": -3.307846234502982
+        },
+        {
+          "row": 359,
+          "observed": 62.34461232122504,
+          "fitted": 64.80329982266844,
+          "residual": -2.458687501443393
+        }
+      ],
+      "sample_positions": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195,
+        196,
+        197,
+        198,
+        199,
+        200,
+        201,
+        202,
+        203,
+        204,
+        205,
+        206,
+        207,
+        208,
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        232,
+        233,
+        234,
+        235,
+        236,
+        237,
+        238,
+        239,
+        240,
+        241,
+        242,
+        243,
+        244,
+        245,
+        246,
+        247,
+        248,
+        249,
+        250,
+        251,
+        252,
+        253,
+        254,
+        255,
+        256,
+        257,
+        258,
+        259,
+        260,
+        261,
+        262,
+        263,
+        264,
+        265,
+        266,
+        267,
+        268,
+        269,
+        270,
+        271,
+        272,
+        273,
+        274,
+        275,
+        276,
+        277,
+        278,
+        279,
+        280,
+        281,
+        282,
+        283,
+        284,
+        285,
+        286,
+        287,
+        288,
+        289,
+        290,
+        291,
+        292,
+        293,
+        294,
+        295,
+        296,
+        297,
+        298,
+        299,
+        300,
+        301,
+        302,
+        303,
+        304,
+        305,
+        306,
+        307,
+        308,
+        309,
+        310,
+        311,
+        312,
+        313,
+        314,
+        315,
+        316,
+        317,
+        318,
+        319,
+        320,
+        321,
+        322,
+        323,
+        324,
+        325,
+        326,
+        327,
+        328,
+        329,
+        330,
+        331,
+        332,
+        333,
+        334,
+        335,
+        336,
+        337,
+        338,
+        339,
+        340,
+        341,
+        342,
+        343,
+        344,
+        345,
+        346,
+        347,
+        348,
+        349,
+        350,
+        351,
+        352,
+        353,
+        354,
+        355,
+        356,
+        357,
+        358,
+        359
+      ],
+      "provenance": {
+        "engine": "openecon",
+        "version": "0.3.19a1",
+        "torch_version": "2.14.0",
+        "precision": "float64",
+        "device": "cpu",
+        "solver": "torch_qr",
+        "categories": {},
+        "inference_details": {
+          "covariance": "cluster",
+          "distribution": "t",
+          "dfadjust": false,
+          "hansen": false,
+          "correction": "CGM inclusion-exclusion with G/(G-1)*(N-1)/(N-k) for each intersection.",
+          "cluster_counts": [
+            60
+          ],
+          "cluster_count": 60,
+          "cluster_dimensions": 1,
+          "df_adjustment": "G-1",
+          "combination_counts": [
+            {
+              "dimensions": [
+                0
+              ],
+              "count": 60,
+              "correction": 1.0255189487716625
+            }
+          ],
+          "small_sample_correction": 1.0255189487716625,
+          "df": 59,
+          "standard_errors": [
+            0.8383922567802112,
+            1.1286593635614317,
+            0.3406910948207682,
+            0.4361987238051525
+          ],
+          "model_test": "F",
+          "f_statistic": 219.61887867378164,
+          "f_df_num": 3,
+          "f_df_denom": 59
+        },
+        "omitted_terms": [],
+        "schema_version": "5",
+        "backend": "openecon.torch",
+        "estimator": "ols",
+        "versions": {
+          "openecon": "0.3.19a1",
+          "python": "3.13.5",
+          "pandas": "2.3.3",
+          "torch": "2.14.0"
+        },
+        "data_hash": "6bb576778862830cbe55f38ac13d878363d49d7d8206f39ca0c621daed2b4dcd",
+        "sample_hash": "8599305d8a9c1e4ee8a859adc9cc2afe9639df8e0b93f5db9f030610589d796e",
+        "sample_positions_hash": null,
+        "input_columns": [
+          "employment_rate",
+          "treated",
+          "post",
+          "treated_post",
+          "region"
+        ],
+        "hash_algorithm": "sha256 over schema and pandas row hashes (pandas version recorded)",
+        "design_terms": [
+          "Intercept",
+          "treated",
+          "post",
+          "treated_post"
+        ],
+        "sample_position_base": 0,
+        "prediction_sample": "first retained positional observations",
+        "prediction_limit": 400,
+        "sample_positions_omitted": false,
+        "sample_position_count": 360,
+        "categorical_encoding": {},
+        "stata_parity_validated": false
+      },
+      "inference": {
+        "covariance": "cluster",
+        "distribution": "t",
+        "dfadjust": false,
+        "hansen": false,
+        "cluster_counts": [
+          60
+        ],
+        "cluster_count": 60,
+        "cluster_dimensions": 1,
+        "df_adjustment": "G-1",
+        "combination_counts": [
+          {
+            "dimensions": [
+              0
+            ],
+            "count": 60,
+            "correction": 1.0255189487716625
+          }
+        ],
+        "small_sample_correction": 1.0255189487716625,
+        "use_t": true,
+        "df_inference": 59,
+        "confidence_level": 0.95,
+        "correction": "cluster",
+        "weight_type": null
+      },
+      "title": "OLS",
+      "tests": {
+        "model": {
+          "statistic": 219.61887867378164,
+          "df": 3,
+          "df2": 59,
+          "p_value": 5.779091474206175e-32,
+          "distribution": "F",
+          "label": "Model F test"
+        }
+      },
+      "extra": {}
+    },
+    "unclustered_did": {
+      "id": "155b1248-ecb8-42e0-a69f-5960ce23b36d",
+      "created_at": "2026-10-09T22:16:34.327897+00:00",
+      "spec": {
+        "estimator": "didregress",
+        "outcome": "employment_rate",
+        "predictors": [],
+        "categorical": [],
+        "intercept": true,
+        "covariance": "HC1",
+        "cluster": null,
+        "missing": "raise",
+        "alpha": 0.05,
+        "weights": null,
+        "weight_type": null,
+        "panel": "region",
+        "time": "year",
+        "columns": {
+          "treatment": "treated_post"
+        },
+        "options": {}
+      },
+      "nobs": 360,
+      "nobs_original": 360,
+      "dropped_rows": 0,
+      "coefficients": [
+        {
+          "term": "ATET:r1vs0.treated_post",
+          "estimate": 2.5493194167773368,
+          "std_error": 0.3002942053458298,
+          "statistic": 8.489405960536093,
+          "p_value": 1.0414426373982607e-15,
+          "ci_low": 1.9583206945424299,
+          "ci_high": 3.1403181390122437,
+          "equation": "ATET"
+        }
+      ],
+      "covariance_matrix": [
+        [
+          0.09017660976428339
+        ]
+      ],
+      "metrics": {
+        "r_squared": 0.9543271658253952,
+        "r_squared_within": 0.19687494438935993,
+        "rmse": 1.4244204855647002,
+        "df_resid": 294.0,
+        "n_groups": 60.0,
+        "n_periods": 6.0
+      },
+      "warnings": [],
+      "predictions": [],
+      "sample_positions": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195,
+        196,
+        197,
+        198,
+        199,
+        200,
+        201,
+        202,
+        203,
+        204,
+        205,
+        206,
+        207,
+        208,
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        232,
+        233,
+        234,
+        235,
+        236,
+        237,
+        238,
+        239,
+        240,
+        241,
+        242,
+        243,
+        244,
+        245,
+        246,
+        247,
+        248,
+        249,
+        250,
+        251,
+        252,
+        253,
+        254,
+        255,
+        256,
+        257,
+        258,
+        259,
+        260,
+        261,
+        262,
+        263,
+        264,
+        265,
+        266,
+        267,
+        268,
+        269,
+        270,
+        271,
+        272,
+        273,
+        274,
+        275,
+        276,
+        277,
+        278,
+        279,
+        280,
+        281,
+        282,
+        283,
+        284,
+        285,
+        286,
+        287,
+        288,
+        289,
+        290,
+        291,
+        292,
+        293,
+        294,
+        295,
+        296,
+        297,
+        298,
+        299,
+        300,
+        301,
+        302,
+        303,
+        304,
+        305,
+        306,
+        307,
+        308,
+        309,
+        310,
+        311,
+        312,
+        313,
+        314,
+        315,
+        316,
+        317,
+        318,
+        319,
+        320,
+        321,
+        322,
+        323,
+        324,
+        325,
+        326,
+        327,
+        328,
+        329,
+        330,
+        331,
+        332,
+        333,
+        334,
+        335,
+        336,
+        337,
+        338,
+        339,
+        340,
+        341,
+        342,
+        343,
+        344,
+        345,
+        346,
+        347,
+        348,
+        349,
+        350,
+        351,
+        352,
+        353,
+        354,
+        355,
+        356,
+        357,
+        358,
+        359
+      ],
+      "provenance": {
+        "schema_version": "3",
+        "backend": "openecon.torch",
+        "engine": "openecon",
+        "device": "cpu",
+        "estimator": "didregress",
+        "family": "teffects",
+        "stata_equivalent": [
+          "didregress",
+          "xtdidregress",
+          "estat ptrends",
+          "estat granger"
+        ],
+        "versions": {
+          "openecon": "0.3.18a1",
+          "python": "3.13.5",
+          "pandas": "2.3.3",
+          "torch": "2.14.0"
+        },
+        "data_hash": "4f3839401228e264a099e5130a439b297fe55cf8a03ac731ed128bd8fa6d053e",
+        "sample_hash": "08b1253d8599b3fb251f7f27e23d4a4e9915653ae0c2ae71cb41ba35a495b0e1",
+        "hash_algorithm": "sha256 over schema and pandas row hashes (pandas version recorded)",
+        "hash_scope": "model-input columns in positional row order; index labels excluded",
+        "input_columns": [
+          "employment_rate",
+          "region",
+          "year",
+          "treated_post"
+        ],
+        "design_terms": [
+          "ATET:r1vs0.treated_post"
+        ],
+        "categorical_encoding": {},
+        "omitted_terms": [],
+        "precision": "float64",
+        "sample_position_base": 0,
+        "sample_order": "input row order",
+        "prediction_sample": null,
+        "prediction_limit": 400,
+        "stata_parity_validated": false,
+        "solver": "absorb_twfe_qr",
+        "solver_diagnostics": {},
+        "optimizer": null,
+        "resource_plans": [
+          {
+            "operation": "model input selection",
+            "estimated_workspace_bytes": 33480,
+            "budget_bytes": 536870912,
+            "buffers": {
+              "model_input_and_sample_indices": 33480
+            },
+            "scope": "estimated live model-input and tensor buffers; excludes caller input, Python result objects, private BLAS workspace and allocator overhead; not a process-RSS limit"
+          },
+          {
+            "operation": "dense encoded design",
+            "estimated_workspace_bytes": 42120,
+            "budget_bytes": 536870912,
+            "buffers": {
+              "model_input_and_sample_indices": 33480,
+              "encoded_columns_and_reference_categories": 0,
+              "design_and_qr_copies": 0,
+              "parameter_factors": 0,
+              "encoding_indices": 8640
+            },
+            "scope": "estimated live model-input and tensor buffers; excludes caller input, Python result objects, private BLAS workspace and allocator overhead; not a process-RSS limit"
+          }
+        ],
+        "weights": null,
+        "absorbed": [
+          "region",
+          "year"
+        ]
+      },
+      "inference": {
+        "covariance": "HC1",
+        "use_t": true,
+        "distribution": "t",
+        "alpha": 0.05,
+        "confidence_level": 0.95,
+        "df_resid": 294,
+        "df_inference": 294,
+        "cluster_count": null,
+        "cluster_df": null,
+        "cluster_column": null,
+        "small_sample_correction": 1.2244897959183674,
+        "correction": "HC1: N/(N-K)",
+        "intercept": true,
+        "n_parameters": 1,
+        "residual_definition": "observed minus fitted response",
+        "k_small_sample": 66
+      },
+      "title": "Difference-in-differences regression",
+      "tests": {
+        "parallel_trends": {
+          "statistic": 2.9752564188743342,
+          "df": 1,
+          "df2": 293,
+          "p_value": 0.08560124899523314,
+          "distribution": "F",
+          "label": "Parallel-trends test: treated-group linear trend before treatment = 0 (estat ptrends)"
+        },
+        "granger": {
+          "statistic": 3.8321820435277023,
+          "df": 2,
+          "df2": 292,
+          "p_value": 0.02275997162099091,
+          "distribution": "F",
+          "label": "Anticipation (Granger) test: treatment leads = 0 (estat granger)"
+        }
+      },
+      "extra": {
+        "treatment": "treated_post",
+        "group": "region",
+        "time": "year",
+        "absorbed_degrees_of_freedom": 65,
+        "treated_groups": 30,
+        "control_groups": 30,
+        "adoption": "common",
+        "first_treated_periods": [
+          2018
+        ]
+      }
+    },
+    "confounded_did": {
+      "id": "a557ce2f-24ac-4402-8621-a6f70f35e1fc",
+      "created_at": "2026-10-09T22:16:34.334592+00:00",
+      "spec": {
+        "estimator": "didregress",
+        "outcome": "employment_rate",
+        "predictors": [],
+        "categorical": [],
+        "intercept": true,
+        "covariance": "cluster",
+        "cluster": "region",
+        "missing": "raise",
+        "alpha": 0.05,
+        "weights": null,
+        "weight_type": null,
+        "panel": "region",
+        "time": "year",
+        "columns": {
+          "treatment": "treated_post"
+        },
+        "options": {}
+      },
+      "nobs": 360,
+      "nobs_original": 360,
+      "dropped_rows": 0,
+      "coefficients": [
+        {
+          "term": "ATET:r1vs0.treated_post",
+          "estimate": 4.549319416777338,
+          "std_error": 0.4380483379976083,
+          "statistic": 10.385427867556883,
+          "p_value": 6.117487183370795e-15,
+          "ci_low": 3.6727867170648785,
+          "ci_high": 5.425852116489796,
+          "equation": "ATET"
+        }
+      ],
+      "covariance_matrix": [
+        [
+          0.19188634642246688
+        ]
+      ],
+      "metrics": {
+        "r_squared": 0.9559360125996272,
+        "r_squared_within": 0.43840463768411775,
+        "rmse": 1.2999436396485444,
+        "df_resid": 353.0,
+        "n_groups": 60.0,
+        "n_periods": 6.0,
+        "n_clusters": 60.0
+      },
+      "warnings": [],
+      "predictions": [],
+      "sample_positions": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51,
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        70,
+        71,
+        72,
+        73,
+        74,
+        75,
+        76,
+        77,
+        78,
+        79,
+        80,
+        81,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        118,
+        119,
+        120,
+        121,
+        122,
+        123,
+        124,
+        125,
+        126,
+        127,
+        128,
+        129,
+        130,
+        131,
+        132,
+        133,
+        134,
+        135,
+        136,
+        137,
+        138,
+        139,
+        140,
+        141,
+        142,
+        143,
+        144,
+        145,
+        146,
+        147,
+        148,
+        149,
+        150,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        179,
+        180,
+        181,
+        182,
+        183,
+        184,
+        185,
+        186,
+        187,
+        188,
+        189,
+        190,
+        191,
+        192,
+        193,
+        194,
+        195,
+        196,
+        197,
+        198,
+        199,
+        200,
+        201,
+        202,
+        203,
+        204,
+        205,
+        206,
+        207,
+        208,
+        209,
+        210,
+        211,
+        212,
+        213,
+        214,
+        215,
+        216,
+        217,
+        218,
+        219,
+        220,
+        221,
+        222,
+        223,
+        224,
+        225,
+        226,
+        227,
+        228,
+        229,
+        230,
+        231,
+        232,
+        233,
+        234,
+        235,
+        236,
+        237,
+        238,
+        239,
+        240,
+        241,
+        242,
+        243,
+        244,
+        245,
+        246,
+        247,
+        248,
+        249,
+        250,
+        251,
+        252,
+        253,
+        254,
+        255,
+        256,
+        257,
+        258,
+        259,
+        260,
+        261,
+        262,
+        263,
+        264,
+        265,
+        266,
+        267,
+        268,
+        269,
+        270,
+        271,
+        272,
+        273,
+        274,
+        275,
+        276,
+        277,
+        278,
+        279,
+        280,
+        281,
+        282,
+        283,
+        284,
+        285,
+        286,
+        287,
+        288,
+        289,
+        290,
+        291,
+        292,
+        293,
+        294,
+        295,
+        296,
+        297,
+        298,
+        299,
+        300,
+        301,
+        302,
+        303,
+        304,
+        305,
+        306,
+        307,
+        308,
+        309,
+        310,
+        311,
+        312,
+        313,
+        314,
+        315,
+        316,
+        317,
+        318,
+        319,
+        320,
+        321,
+        322,
+        323,
+        324,
+        325,
+        326,
+        327,
+        328,
+        329,
+        330,
+        331,
+        332,
+        333,
+        334,
+        335,
+        336,
+        337,
+        338,
+        339,
+        340,
+        341,
+        342,
+        343,
+        344,
+        345,
+        346,
+        347,
+        348,
+        349,
+        350,
+        351,
+        352,
+        353,
+        354,
+        355,
+        356,
+        357,
+        358,
+        359
+      ],
+      "provenance": {
+        "schema_version": "3",
+        "backend": "openecon.torch",
+        "engine": "openecon",
+        "device": "cpu",
+        "estimator": "didregress",
+        "family": "teffects",
+        "stata_equivalent": [
+          "didregress",
+          "xtdidregress",
+          "estat ptrends",
+          "estat granger"
+        ],
+        "versions": {
+          "openecon": "0.3.18a1",
+          "python": "3.13.5",
+          "pandas": "2.3.3",
+          "torch": "2.14.0"
+        },
+        "data_hash": "0b297a021f2fb8cf65ac606586aea1dcec929d4e9c8781a6db220edf6e23d498",
+        "sample_hash": "113eb1f1a0e5c0ecff436e4eff6549aa54df3df8a6fa7f50e392d9cc8271b291",
+        "hash_algorithm": "sha256 over schema and pandas row hashes (pandas version recorded)",
+        "hash_scope": "model-input columns in positional row order; index labels excluded",
+        "input_columns": [
+          "employment_rate",
+          "region",
+          "year",
+          "treated_post"
+        ],
+        "design_terms": [
+          "ATET:r1vs0.treated_post"
+        ],
+        "categorical_encoding": {},
+        "omitted_terms": [],
+        "precision": "float64",
+        "sample_position_base": 0,
+        "sample_order": "input row order",
+        "prediction_sample": null,
+        "prediction_limit": 400,
+        "stata_parity_validated": false,
+        "solver": "absorb_twfe_qr",
+        "solver_diagnostics": {},
+        "optimizer": null,
+        "resource_plans": [
+          {
+            "operation": "model input selection",
+            "estimated_workspace_bytes": 33480,
+            "budget_bytes": 536870912,
+            "buffers": {
+              "model_input_and_sample_indices": 33480
+            },
+            "scope": "estimated live model-input and tensor buffers; excludes caller input, Python result objects, private BLAS workspace and allocator overhead; not a process-RSS limit"
+          },
+          {
+            "operation": "dense encoded design",
+            "estimated_workspace_bytes": 42120,
+            "budget_bytes": 536870912,
+            "buffers": {
+              "model_input_and_sample_indices": 33480,
+              "encoded_columns_and_reference_categories": 0,
+              "design_and_qr_copies": 0,
+              "parameter_factors": 0,
+              "encoding_indices": 8640
+            },
+            "scope": "estimated live model-input and tensor buffers; excludes caller input, Python result objects, private BLAS workspace and allocator overhead; not a process-RSS limit"
+          }
+        ],
+        "weights": null,
+        "absorbed": [
+          "region",
+          "year"
+        ]
+      },
+      "inference": {
+        "covariance": "cluster",
+        "use_t": true,
+        "distribution": "t",
+        "alpha": 0.05,
+        "confidence_level": 0.95,
+        "df_resid": 353,
+        "df_inference": 59,
+        "cluster_count": 60,
+        "cluster_df": 59,
+        "cluster_column": "region",
+        "small_sample_correction": 1.034234407259807,
+        "correction": "CR1: G/(G-1) * (N-1)/(N-K)",
+        "intercept": true,
+        "n_parameters": 1,
+        "residual_definition": "observed minus fitted response",
+        "cluster_columns": [
+          "region"
+        ],
+        "k_small_sample": 7
+      },
+      "title": "Difference-in-differences regression",
+      "tests": {
+        "parallel_trends": {
+          "statistic": 3.3768865541375623,
+          "df": 1,
+          "df2": 59,
+          "p_value": 0.07115369809801238,
+          "distribution": "F",
+          "label": "Parallel-trends test: treated-group linear trend before treatment = 0 (estat ptrends)"
+        },
+        "granger": {
+          "statistic": 5.012890883065808,
+          "df": 2,
+          "df2": 59,
+          "p_value": 0.009756633456862446,
+          "distribution": "F",
+          "label": "Anticipation (Granger) test: treatment leads = 0 (estat granger)"
+        }
+      },
+      "extra": {
+        "treatment": "treated_post",
+        "group": "region",
+        "time": "year",
+        "absorbed_degrees_of_freedom": 6,
+        "treated_groups": 30,
+        "control_groups": 30,
+        "adoption": "common",
+        "first_treated_periods": [
+          2018
+        ]
+      }
+    }
+  },
+  "chart_data": {
+    "group_means": [
+      {
+        "year": 2015,
+        "control": 59.023332671113984,
+        "treated": 52.82743837856551,
+        "gap": -6.1958942925484735
+      },
+      {
+        "year": 2016,
+        "control": 61.01330327542382,
+        "treated": 55.14276233316624,
+        "gap": -5.870540942257584
+      },
+      {
+        "year": 2017,
+        "control": 63.21654812067854,
+        "treated": 56.1021031210375,
+        "gap": -7.114444999641037
+      },
+      {
+        "year": 2018,
+        "control": 63.26284776214793,
+        "treated": 59.277062971658026,
+        "gap": -3.9857847904899018
+      },
+      {
+        "year": 2019,
+        "control": 65.19768563731108,
+        "treated": 61.5878623246736,
+        "gap": -3.609823312637481
+      },
+      {
+        "year": 2020,
+        "control": 65.94936606854631,
+        "treated": 62.0120521875586,
+        "gap": -3.937313880987709
+      }
+    ],
+    "confounded_group_means": [
+      {
+        "year": 2015,
+        "control": 59.023332671113984,
+        "treated": 52.82743837856551,
+        "gap": -6.1958942925484735
+      },
+      {
+        "year": 2016,
+        "control": 61.01330327542382,
+        "treated": 55.14276233316624,
+        "gap": -5.870540942257584
+      },
+      {
+        "year": 2017,
+        "control": 63.21654812067854,
+        "treated": 56.1021031210375,
+        "gap": -7.114444999641037
+      },
+      {
+        "year": 2018,
+        "control": 63.26284776214793,
+        "treated": 61.277062971658026,
+        "gap": -1.9857847904899018
+      },
+      {
+        "year": 2019,
+        "control": 65.19768563731108,
+        "treated": 63.5878623246736,
+        "gap": -1.6098233126374808
+      },
+      {
+        "year": 2020,
+        "control": 65.94936606854631,
+        "treated": 64.0120521875586,
+        "gap": -1.9373138809877162
+      }
+    ]
+  },
+  "checks": {
+    "balanced_region_year_panel": true,
+    "no_missing_observations": true,
+    "employment_rates_in_range": true,
+    "same_estimation_sample": true,
+    "four_cell_abs_error": 1.4210854715202004e-14,
+    "interaction_abs_error": 1.8207657603852567e-14,
+    "covariance_choice_coefficient_abs_error": 0.0,
+    "manual_within_abs_error": 1.3322676295501878e-15,
+    "manual_cluster_se_abs_error": 5.551115123125783e-17,
+    "cluster_df_matches_assignment_units": true,
+    "concurrent_shock_abs_error": 8.881784197001252e-16,
+    "parallel_trends_p_unchanged_abs_error": 2.914335439641036e-16,
+    "granger_p_unchanged_abs_error": 1.9081958235744878e-17
+  }
+}

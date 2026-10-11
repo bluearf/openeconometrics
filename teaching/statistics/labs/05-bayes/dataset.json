@@ -1,0 +1,27 @@
+{
+  "filename": "quality_alerts.xlsx",
+  "description": "What Does a Quality Alert Tell Us?; original synthetic teaching data.",
+  "observation_unit": "One synthetic manufactured component.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710005,
+  "columns": [
+    {
+      "name": "component_id",
+      "description": "Component identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "defect",
+      "description": "Inspection truth, observed for teaching",
+      "unit": "0=sound, 1=defective",
+      "missing": 0
+    },
+    {
+      "name": "alert",
+      "description": "Automated alert",
+      "unit": "0=no, 1=yes",
+      "missing": 0
+    }
+  ]
+}

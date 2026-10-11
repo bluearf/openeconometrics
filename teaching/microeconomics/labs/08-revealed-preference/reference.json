@@ -1,0 +1,75 @@
+{
+  "metadata": {
+    "lab": "08-revealed-preference",
+    "title": "Affordability and Revealed Preference",
+    "synthetic": true,
+    "data_file": "revealed_preference.xlsx",
+    "raw_rows": 4
+  },
+  "summary": {
+    "choices": 4,
+    "ordered_direct_comparisons": 4,
+    "warp_violations": 0,
+    "max_budget_error": 0.0
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "index": [
+        "choices",
+        "ordered_direct_comparisons",
+        "warp_violations",
+        "max_budget_error"
+      ],
+      "columns": [
+        "value"
+      ],
+      "values": [
+        [
+          4.0
+        ],
+        [
+          4.0
+        ],
+        [
+          0.0
+        ],
+        [
+          0.0
+        ]
+      ],
+      "attrs": {}
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "scatter",
+        "title": "Affordability and Revealed Preference",
+        "xlabel": "Chosen X (units)",
+        "ylabel": "Chosen Y (units)",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              20,
+              16,
+              11,
+              12
+            ],
+            "y": [
+              30,
+              36,
+              33,
+              45
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "chosen_bundles_exhaust_budget": true,
+    "no_strict_two_choice_cycle": true
+  }
+}

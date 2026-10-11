@@ -1,0 +1,27 @@
+{
+  "filename": "study_hours_scores.xlsx",
+  "description": "Do Study Hours and Scores Move Together?; original synthetic teaching data.",
+  "observation_unit": "One synthetic student.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710015,
+  "columns": [
+    {
+      "name": "student_id",
+      "description": "Student identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "hours",
+      "description": "Weekly study time",
+      "unit": "hours/week",
+      "missing": 0
+    },
+    {
+      "name": "score",
+      "description": "Assessment score",
+      "unit": "points",
+      "missing": 2
+    }
+  ]
+}

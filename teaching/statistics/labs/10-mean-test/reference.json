@@ -1,0 +1,182 @@
+{
+  "metadata": {
+    "lab": "10-mean-test",
+    "title": "Is the Filling Process Centered on Its Target?",
+    "synthetic": true,
+    "data_file": "filling_volumes.xlsx",
+    "raw_rows": 80
+  },
+  "summary": {
+    "containers": 80,
+    "target_ml": 500,
+    "mean_ml": 500.7553441929781,
+    "difference_from_target_ml": 0.7553441929781002,
+    "se_ml": 0.20486424639600362,
+    "t": 3.687047429047121,
+    "df": 79.0,
+    "two_sided_p": 0.00041453139017038026,
+    "ci_low_ml": 500.34757211067046,
+    "ci_high_ml": 501.16311627528563
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "tables": {
+        "statistics": {
+          "index": [
+            "milliliters"
+          ],
+          "columns": [
+            "n",
+            "mean",
+            "std_dev",
+            "std_error",
+            "ci_low",
+            "ci_high"
+          ],
+          "values": [
+            [
+              80.0,
+              500.75534419297804,
+              1.8323615244029217,
+              0.20486424639600362,
+              500.34757211067046,
+              501.16311627528563
+            ]
+          ],
+          "attrs": {}
+        },
+        "test": {
+          "index": [
+            "one_sample"
+          ],
+          "columns": [
+            "statistic",
+            "df",
+            "p_value",
+            "p_less",
+            "p_greater",
+            "mean_difference",
+            "std_error",
+            "ci_low",
+            "ci_high"
+          ],
+          "values": [
+            [
+              3.687047429047121,
+              79.0,
+              0.00041453139017038026,
+              0.9997927343049149,
+              0.00020726569508519013,
+              0.7553441929780611,
+              0.20486424639600362,
+              0.34757211067049837,
+              1.163116275285624
+            ]
+          ],
+          "attrs": {}
+        },
+        "effect_sizes": {
+          "index": [
+            "cohens_d",
+            "hedges_g"
+          ],
+          "columns": [
+            "standardizer",
+            "estimate"
+          ],
+          "values": [
+            [
+              1.8323615244029217,
+              0.4122244343807598
+            ],
+            [
+              1.8499898243803445,
+              0.40829640413350066
+            ]
+          ],
+          "attrs": {}
+        }
+      },
+      "attrs": {
+        "kind": "one_sample",
+        "statistic": 3.687047429047121,
+        "df": 79.0,
+        "p_value": 0.00041453139017038026,
+        "p_less": 0.9997927343049149,
+        "p_greater": 0.00020726569508519013,
+        "one_sided_p_value": 0.00020726569508519013,
+        "distribution": "t",
+        "n": 80,
+        "n_missing": 0,
+        "mu": 500.0,
+        "alpha": 0.05,
+        "cohens_d": 0.4122244343807598,
+        "hedges_g": 0.40829640413350066,
+        "glass_delta": null,
+        "missing": "listwise"
+      }
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "hist",
+        "title": "Is the Filling Process Centered on Its Target?",
+        "xlabel": "Filled volume (ml)",
+        "ylabel": "Containers",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              496.58408920481133,
+              497.0357583724799,
+              497.48742754014853,
+              497.93909670781716,
+              498.3907658754857,
+              498.8424350431544,
+              499.294104210823,
+              499.74577337849166,
+              500.19744254616023,
+              500.64911171382886,
+              501.1007808814975,
+              501.55245004916605,
+              502.00411921683474,
+              502.4557883845033,
+              502.907457552172,
+              503.35912671984056,
+              503.81079588750913,
+              504.2624650551778
+            ],
+            "y": [
+              1.0,
+              0.0,
+              4.0,
+              4.0,
+              4.0,
+              3.0,
+              6.0,
+              6.0,
+              2.0,
+              7.0,
+              10.0,
+              7.0,
+              9.0,
+              4.0,
+              8.0,
+              0.0,
+              3.0,
+              2.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "native_t_matches_direct_formula": true,
+    "df_matches_retained_n": true,
+    "p_in_unit_interval": true,
+    "two_sided_tail_sum": true
+  }
+}

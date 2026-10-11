@@ -1,0 +1,26 @@
+{
+  "filename": "household_spending.xlsx",
+  "description": "420 synthetic household income and spending observations for comparing covariance estimators.",
+  "observation_unit": "One synthetic household",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "household",
+      "description": "Synthetic household identifier; excluded from regression.",
+      "unit": "Identifier",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "income_thousands",
+      "description": "Monthly household income divided by 1,000.",
+      "unit": "Thousand hypothetical currency units per month",
+      "missing": "None in the supplied workbook"
+    },
+    {
+      "name": "spending",
+      "description": "Monthly household spending.",
+      "unit": "Hypothetical currency units per month",
+      "missing": "None in the supplied workbook"
+    }
+  ]
+}

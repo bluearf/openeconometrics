@@ -1,0 +1,26 @@
+{
+  "filename": "advertising_and_sales.xlsx",
+  "description": "Fictional quarterly advertising and sales with persistent shocks and three unavailable calendar quarters.",
+  "observation_unit": "One observed quarter; quarters 40, 41 and 95 are absent.",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "quarter",
+      "description": "Original calendar index; do not renumber the gaps at 40, 41 and 95.",
+      "unit": "Quarter index within 1–200",
+      "missing": 0
+    },
+    {
+      "name": "advertising",
+      "description": "Synthetic advertising measure with persistent deviations.",
+      "unit": "Advertising index units",
+      "missing": 0
+    },
+    {
+      "name": "sales",
+      "description": "Synthetic sales outcome with persistent disturbances.",
+      "unit": "Sales index units",
+      "missing": 0
+    }
+  ]
+}

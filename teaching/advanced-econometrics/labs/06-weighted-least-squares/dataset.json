@@ -1,0 +1,45 @@
+{
+  "filename": "weighted_least_squares.xlsx",
+  "description": "Known Variance Weights and WLS; original synthetic teaching data.",
+  "observation_unit": "One synthetic independent unit; dependence is stated explicitly where groups are supplied.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 730006,
+  "columns": [
+    {
+      "name": "row_id",
+      "description": "Stable record identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "x",
+      "description": "Exposure or predictor X",
+      "unit": "centered units",
+      "missing": 0
+    },
+    {
+      "name": "z",
+      "description": "Observed covariate Z",
+      "unit": "centered units",
+      "missing": 0
+    },
+    {
+      "name": "y",
+      "description": "Outcome",
+      "unit": "outcome units",
+      "missing": 0
+    },
+    {
+      "name": "variance",
+      "description": "Known error variance",
+      "unit": "outcome units squared",
+      "missing": 0
+    },
+    {
+      "name": "weight",
+      "description": "Inverse error variance",
+      "unit": "inverse outcome units squared",
+      "missing": 0
+    }
+  ]
+}

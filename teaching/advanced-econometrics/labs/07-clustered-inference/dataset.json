@@ -1,0 +1,39 @@
+{
+  "filename": "clustered_inference.xlsx",
+  "description": "Clustered Errors and the Sampling Unit; original synthetic teaching data.",
+  "observation_unit": "One synthetic observation within an independent cluster of six rows.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 730007,
+  "columns": [
+    {
+      "name": "row_id",
+      "description": "Stable record identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "x",
+      "description": "Exposure or predictor X",
+      "unit": "centered units",
+      "missing": 0
+    },
+    {
+      "name": "z",
+      "description": "Observed covariate Z",
+      "unit": "centered units",
+      "missing": 0
+    },
+    {
+      "name": "y",
+      "description": "Outcome",
+      "unit": "outcome units",
+      "missing": 0
+    },
+    {
+      "name": "group",
+      "description": "Independent cluster identifier",
+      "unit": "integer group ID",
+      "missing": 0
+    }
+  ]
+}

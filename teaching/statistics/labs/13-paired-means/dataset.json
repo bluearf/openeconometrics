@@ -1,0 +1,27 @@
+{
+  "filename": "worker_before_after.xlsx",
+  "description": "The Same Workers Before and After; original synthetic teaching data.",
+  "observation_unit": "One synthetic worker observed twice.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710013,
+  "columns": [
+    {
+      "name": "worker_id",
+      "description": "Worker identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "before",
+      "description": "Baseline completed tasks",
+      "unit": "tasks/day",
+      "missing": 0
+    },
+    {
+      "name": "after",
+      "description": "Follow-up completed tasks",
+      "unit": "tasks/day",
+      "missing": 1
+    }
+  ]
+}

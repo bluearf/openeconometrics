@@ -1,0 +1,92 @@
+{
+  "metadata": {
+    "lab": "11-one-proportion",
+    "title": "How Uncertain Is an Opt-In Rate?",
+    "synthetic": true,
+    "data_file": "app_opt_in.xlsx",
+    "raw_rows": 400
+  },
+  "summary": {
+    "users": 400,
+    "opt_ins": 137,
+    "sample_proportion": 0.3425,
+    "null_proportion": 0.4,
+    "null_se": 0.02449489742783178,
+    "z": -2.3474276701672125,
+    "two_sided_p": 0.018903543011121352,
+    "wald_low": 0.2959953626693346,
+    "wald_high": 0.3890046373306654,
+    "wilson_low": 0.29769101850421636,
+    "wilson_high": 0.3903053542110871
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "index": [
+        "opt_in"
+      ],
+      "columns": [
+        "n",
+        "proportion",
+        "std_error",
+        "ci_low",
+        "ci_high",
+        "z",
+        "p_value"
+      ],
+      "values": [
+        [
+          400.0,
+          0.3425,
+          0.023727291775506112,
+          0.2959953626693346,
+          0.3890046373306654,
+          -2.3474276701672125,
+          0.018903543011121352
+        ]
+      ],
+      "attrs": {
+        "n": 400,
+        "proportion": 0.3425,
+        "p": 0.4,
+        "z": -2.3474276701672125,
+        "p_value": 0.018903543011121352,
+        "p_lower": 0.009451771505560676,
+        "p_upper": 0.9905482284944394,
+        "std_error_null": 0.02449489742783178,
+        "alpha": 0.05,
+        "positive": 1,
+        "n_dropped": 0,
+        "label": "One-sample test of proportion: opt_in = 0.4"
+      }
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "bar",
+        "title": "How Uncertain Is an Opt-In Rate?",
+        "xlabel": "Response",
+        "ylabel": "Users",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              "No opt-in",
+              "Opt-in"
+            ],
+            "y": [
+              263,
+              137
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "native_z_uses_null_variance": true,
+    "wilson_interval_inside_probability_support": true,
+    "binary_coding_preserved": true
+  }
+}

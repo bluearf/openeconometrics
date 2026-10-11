@@ -1,0 +1,26 @@
+{
+  "filename": "class_size.xlsx",
+  "description": "Fixed school-level average class sizes and test scores for simple OLS and uncertainty comparisons.",
+  "observation_unit": "One synthetic school observed once.",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "school_id",
+      "description": "School identifier from 1 to 240; a label, not a predictor.",
+      "unit": "Identifier",
+      "missing": "No missing values."
+    },
+    {
+      "name": "class_size",
+      "description": "Average students per class; fractional averages are valid.",
+      "unit": "Students per class",
+      "missing": "No missing values."
+    },
+    {
+      "name": "test_score",
+      "description": "Average test score on an artificial teaching scale.",
+      "unit": "Score points",
+      "missing": "No missing values."
+    }
+  ]
+}

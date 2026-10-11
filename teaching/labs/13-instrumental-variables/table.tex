@@ -1,0 +1,44 @@
+\begin{table}[htbp]
+\centering
+\caption{Estimating Effects with an Instrument: original synthetic data}
+\label{tab:13-instrumental-variables}
+\begingroup
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+Dependent variable: & log\_earnings & log\_earnings & log\_earnings & log\_earnings & schooling \\
+ & (1) & (2) & (3) & (4) & (5) \\
+ & OLS descriptive & Strong valid IV & Weak valid IV & Invalid exclusion IV & Strong first stage \\
+\midrule
+background & $0.0399$ & $0.0728$ & $0.0424$ & $0.0345$ & $0.3971$ \\
+ & $(0.0116)$ & $(0.0141)$ & $(0.1151)$ & $(0.0118)$ & $(0.0509)$ \\[0.35em]
+schooling & $0.1715$ & $0.0839$ & $0.1605$ & $0.1803$ &  \\
+ & $(0.0072)$ & $(0.0156)$ & $(0.2893)$ & $(0.0137)$ &  \\[0.35em]
+offer &  &  &  &  & $1.5547$ \\
+ &  &  &  &  & $(0.0995)$ \\[0.35em]
+Constant & $-0.1485$ & $0.9764$ & $0.0507$ & $-0.1897$ & $12.0853$ \\
+ & $(0.0924)$ & $(0.1995)$ & $(3.5057)$ & $(0.1754)$ & $(0.0706)$ \\[0.35em]
+\midrule
+Observations & 700 & 700 & 700 & 700 & 700 \\
+$R^{2}$ & 0.4844 & 0.3748 & 0.4923 & 0.5583 & 0.3000 \\
+$\text{Adjusted }R^{2}$ & 0.4829 & 0.3730 & 0.4909 & 0.5571 & 0.2980 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\par\smallskip
+\begin{minipage}{\linewidth}
+\footnotesize
+\raggedright
+\textit{Notes:} Standard errors are in parentheses.\par
+(1) OLS: HC1 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1.0043; Student t inference (df = 697); 95\% confidence level (alpha = 0.05); estimation sample 700 of 700 observations; model F(2, 697) = 336.925, p = 4.22334e-103.\par
+(2) IVREGRESS: Huber-White robust standard errors; Student t inference (df = 697); 95\% confidence level (alpha = 0.05); estimation sample 700 of 700 observations; covariance correction: HC1: N/(N-K); finite-sample covariance factor: 1.0043; residual df: 697; R-squared definition: centered; method: 2sls.\par
+(3) IVREGRESS: Huber-White robust standard errors; Student t inference (df = 697); 95\% confidence level (alpha = 0.05); estimation sample 700 of 700 observations; covariance correction: HC1: N/(N-K); finite-sample covariance factor: 1.0043; residual df: 697; R-squared definition: centered; method: 2sls.\par
+(4) IVREGRESS: Huber-White robust standard errors; Student t inference (df = 697); 95\% confidence level (alpha = 0.05); estimation sample 700 of 700 observations; covariance correction: HC1: N/(N-K); finite-sample covariance factor: 1.0043; residual df: 697; R-squared definition: centered; method: 2sls.\par
+(5) OLS: HC1 heteroskedasticity-robust standard errors; finite-sample covariance factor = 1.0043; Student t inference (df = 697); 95\% confidence level (alpha = 0.05); estimation sample 700 of 700 observations; model F(2, 697) = 148.937, p = 1.39463e-54.\par
+Original synthetic observations. Inference conventions and exact estimation samples are retained in the model notes; no empirical policy claim.\par
+\end{minipage}
+\endgroup
+\end{table}

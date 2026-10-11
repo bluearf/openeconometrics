@@ -1,0 +1,21 @@
+{
+  "filename": "production_frontier.xlsx",
+  "description": "Scarcity and Increasing Opportunity Cost; original synthetic teaching data.",
+  "observation_unit": "One feasible production plan.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720001,
+  "columns": [
+    {
+      "name": "x",
+      "description": "Good X output",
+      "unit": "units X",
+      "missing": 0
+    },
+    {
+      "name": "y",
+      "description": "Frontier output of good Y",
+      "unit": "units Y",
+      "missing": 0
+    }
+  ]
+}

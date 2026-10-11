@@ -1,0 +1,26 @@
+{
+  "filename": "trending_series.xlsx",
+  "description": "Two original synthetic independent random walks with drift, observed over 240 quarters.",
+  "observation_unit": "One quarter.",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "quarter",
+      "description": "Consecutive time index preserving the order of observations.",
+      "unit": "Quarter index 1–240",
+      "missing": 0
+    },
+    {
+      "name": "index_x",
+      "description": "First independently constructed random walk with drift.",
+      "unit": "Index points",
+      "missing": 0
+    },
+    {
+      "name": "index_y",
+      "description": "Second independently constructed random walk with drift.",
+      "unit": "Index points",
+      "missing": 0
+    }
+  ]
+}

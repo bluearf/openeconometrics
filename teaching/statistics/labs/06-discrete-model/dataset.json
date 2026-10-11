@@ -1,0 +1,21 @@
+{
+  "filename": "ten_offer_orders.xlsx",
+  "description": "How Many Orders Arrive in Ten Offers?; original synthetic teaching data.",
+  "observation_unit": "One synthetic batch of ten independent offers.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 710006,
+  "columns": [
+    {
+      "name": "batch_id",
+      "description": "Batch identifier",
+      "unit": "integer ID",
+      "missing": 0
+    },
+    {
+      "name": "orders",
+      "description": "Orders from ten Bernoulli offers with p=0.3",
+      "unit": "orders, integer 0\u201310",
+      "missing": 0
+    }
+  ]
+}

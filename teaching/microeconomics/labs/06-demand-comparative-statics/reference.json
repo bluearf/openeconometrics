@@ -1,0 +1,97 @@
+{
+  "metadata": {
+    "lab": "06-demand-comparative-statics",
+    "title": "Income and Price Comparative Statics",
+    "synthetic": true,
+    "data_file": "demand_comparative_statics.xlsx",
+    "raw_rows": 5
+  },
+  "summary": {
+    "base_x": 16.0,
+    "base_y": 36.0,
+    "high_income_x": 20.0,
+    "high_income_y": 45.0,
+    "dearer_x": 8.0,
+    "dearer_y": 36.0,
+    "income_elasticity_x": 1.0,
+    "own_price_elasticity_x": -1.0
+  },
+  "models": {},
+  "tables": {
+    "native": {
+      "index": [
+        "base_x",
+        "base_y",
+        "high_income_x",
+        "high_income_y",
+        "dearer_x",
+        "dearer_y",
+        "income_elasticity_x",
+        "own_price_elasticity_x"
+      ],
+      "columns": [
+        "value"
+      ],
+      "values": [
+        [
+          16.0
+        ],
+        [
+          36.0
+        ],
+        [
+          20.0
+        ],
+        [
+          45.0
+        ],
+        [
+          8.0
+        ],
+        [
+          36.0
+        ],
+        [
+          1.0
+        ],
+        [
+          -1.0
+        ]
+      ],
+      "attrs": {}
+    }
+  },
+  "chart_data": {
+    "panels": [
+      {
+        "kind": "bar",
+        "title": "Income and Price Comparative Statics",
+        "xlabel": "Scenario",
+        "ylabel": "Optimal X (units)",
+        "series": [
+          {
+            "label": "Computed values",
+            "x": [
+              "base",
+              "income_low",
+              "income_high",
+              "x_cheaper",
+              "x_dearer"
+            ],
+            "y": [
+              16.0,
+              12.0,
+              20.0,
+              24.0,
+              8.0
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "checks": {
+    "all_budgets_exhausted": true,
+    "homogeneous_demand": true
+  }
+}

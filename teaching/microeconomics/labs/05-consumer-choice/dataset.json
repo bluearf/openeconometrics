@@ -1,0 +1,45 @@
+{
+  "filename": "consumer_choice.xlsx",
+  "description": "A Budget Line and Cobb\u2013Douglas Choice; original synthetic teaching data.",
+  "observation_unit": "One candidate bundle on a budget line.",
+  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
+  "generation_seed": 720005,
+  "columns": [
+    {
+      "name": "x",
+      "description": "Candidate X consumption",
+      "unit": "units X",
+      "missing": 0
+    },
+    {
+      "name": "y",
+      "description": "Affordable Y consumption",
+      "unit": "units Y",
+      "missing": 0
+    },
+    {
+      "name": "income",
+      "description": "Budget",
+      "unit": "currency",
+      "missing": 0
+    },
+    {
+      "name": "px",
+      "description": "Price X",
+      "unit": "currency/X",
+      "missing": 0
+    },
+    {
+      "name": "py",
+      "description": "Price Y",
+      "unit": "currency/Y",
+      "missing": 0
+    },
+    {
+      "name": "alpha",
+      "description": "X expenditure share parameter",
+      "unit": "fraction",
+      "missing": 0
+    }
+  ]
+}

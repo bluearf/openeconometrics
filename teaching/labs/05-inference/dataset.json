@@ -1,0 +1,20 @@
+{
+  "filename": "wage_inference.xlsx",
+  "description": "Fixed education and hourly wages for confidence intervals, hypothesis tests and linear contrasts.",
+  "observation_unit": "One synthetic worker observed once.",
+  "source": "Original synthetic OpenEconometrics teaching data; not real observations.",
+  "columns": [
+    {
+      "name": "education",
+      "description": "Completed years of schooling between 10 and 18.",
+      "unit": "Years",
+      "missing": "No missing values."
+    },
+    {
+      "name": "hourly_wage",
+      "description": "Recorded hourly pay.",
+      "unit": "Hypothetical currency units per hour",
+      "missing": "No missing values."
+    }
+  ]
+}
