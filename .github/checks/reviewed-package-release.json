@@ -1,68 +1,72 @@
 {
   "assets": {
     "MACOS-PACKAGE-ACCEPTANCE.json": {
-      "bytes": 8645,
-      "sha256": "a286bebef716413e8d77f46f4e48596ddf4f8e54129baa6509d8cac06fbcfbf5"
+      "bytes": 261429,
+      "sha256": "6edc4db744c0f5474198e1e069712fcf695189850a62027c54a93e54c9115a21"
     },
     "MACOS-REGULARIZED-PACKAGE-ACCEPTANCE.json": {
-      "bytes": 5281,
-      "sha256": "d7b47227faba402351e24e5754d955f3abcb4737f138a7d9dc3478514df4ff44"
+      "bytes": 635,
+      "sha256": "cedbd6275d6e72155b2f85e3188973881d374ea4c8c4c941c64e3a0849ebb662"
     },
     "PACKAGE-PAIR-PROVENANCE.json": {
-      "bytes": 117929,
-      "sha256": "045f48d90266d04f67254fccad17592989761928355f6142acc36d288a0a2df6"
+      "bytes": 134804,
+      "sha256": "39a37b5987e49808d867bbab65038786f637da7aa2a72b6229e5a54d758ced33"
     },
     "RELEASE-PROVENANCE.json": {
-      "bytes": 10937,
-      "sha256": "26975f921b1f250620eb14e6d616077f6e45b8ffcbb2817fad2801772fb1f998"
+      "bytes": 15586,
+      "sha256": "daf2d19623d529e407929463f11492446fffb4527bf546166b7ea74b330fdef5"
+    },
+    "SCIENTIFIC-GATE.json": {
+      "bytes": 214592,
+      "sha256": "6dfac82aeec07d1b5e9cffc019107d5af40bc00d9dddea82ef6f52402170405f"
     },
     "linux-package-3.11-evidence.zip": {
-      "bytes": 139049,
-      "sha256": "b97a2c23e597a44015702d43b208ffd1e46b4940bbed7d573454507754e47802"
+      "bytes": 158105,
+      "sha256": "2d57fbf9259142d6f4e21acc9711784aa4748ccedc9734b72b6a82cb6bcda9eb"
     },
     "linux-package-3.13-evidence.zip": {
-      "bytes": 139126,
-      "sha256": "efd02d93ac72a436b3dc466c703378d2563ce6e339129e0f53ed597dcb271b55"
+      "bytes": 158147,
+      "sha256": "32bc3cee3a03363274584c0985309418597256bcf40aff02463dc7e4822352fa"
     },
-    "openecon-0.3.19a1-py3-none-any.whl": {
-      "bytes": 5669381,
-      "sha256": "09377fe0220c4c35ff27289236fa29f63666684ba72edb4de82ae89b4cbdc85a"
+    "openecon-0.3.20a1-py3-none-any.whl": {
+      "bytes": 7160314,
+      "sha256": "9629cd441637ac73129ae31a2ef53cfc0569f90092309ca7a6fe953c4c7ab7b3"
     },
-    "openecon-0.3.19a1.tar.gz": {
-      "bytes": 11233675,
-      "sha256": "98bbbea50d7225788dd72413d1ecda85ef025e05c80b41353284f84727ab54c7"
+    "openecon-0.3.20a1.tar.gz": {
+      "bytes": 42823650,
+      "sha256": "062817805a59f289a769c9f0b07d973911dd590442c74eb502b7eeaf9f78bb59"
     },
-    "openecon_charts-0.3.1a1-py3-none-any.whl": {
-      "bytes": 440214,
-      "sha256": "4badfb26cbb1860dbb266d59cc726ad0057b640b007c9cbfb673bf95108ae4b4"
+    "openecon_charts-0.3.2a1-py3-none-any.whl": {
+      "bytes": 442571,
+      "sha256": "94d629b56040e2b6f4a32bbda6b2fbd3a79af516c0c6ef38ace7e8e5776814fd"
     },
-    "openecon_charts-0.3.1a1.tar.gz": {
-      "bytes": 475337,
-      "sha256": "9b053443ebca72332b8da7d7d45548654e742d303073e1e5b398399331fa0e3c"
+    "openecon_charts-0.3.2a1.tar.gz": {
+      "bytes": 481077,
+      "sha256": "b8f022c22b5108235532b5584cf194e17ee2539c3dd934664f8420ec1b5d981d"
     },
-    "openeconometrics-source-a8eb8799-public.tar.gz": {
-      "bytes": 11719833,
-      "sha256": "11e92922b7b398aadc2d52437c7a427dc733b1060fa25cb9b6bd81323fcbc780"
+    "openeconometrics-source-a805870d-public.tar.gz": {
+      "bytes": 43447988,
+      "sha256": "25bcf8515ea1cc0c8fdcae801cfa2e86e9478e3532a59aa72092f094b0888a8b"
     }
   },
-  "release": "python-v0.3.19a1",
+  "release": "python-v0.3.20a1",
   "release_provenance": {
     "distributions": {
-      "openecon-0.3.19a1-py3-none-any.whl": {
-        "bytes": 5669381,
-        "sha256": "09377fe0220c4c35ff27289236fa29f63666684ba72edb4de82ae89b4cbdc85a"
+      "openecon-0.3.20a1-py3-none-any.whl": {
+        "bytes": 7160314,
+        "sha256": "9629cd441637ac73129ae31a2ef53cfc0569f90092309ca7a6fe953c4c7ab7b3"
       },
-      "openecon-0.3.19a1.tar.gz": {
-        "bytes": 11233675,
-        "sha256": "98bbbea50d7225788dd72413d1ecda85ef025e05c80b41353284f84727ab54c7"
+      "openecon-0.3.20a1.tar.gz": {
+        "bytes": 42823650,
+        "sha256": "062817805a59f289a769c9f0b07d973911dd590442c74eb502b7eeaf9f78bb59"
       },
-      "openecon_charts-0.3.1a1-py3-none-any.whl": {
-        "bytes": 440214,
-        "sha256": "4badfb26cbb1860dbb266d59cc726ad0057b640b007c9cbfb673bf95108ae4b4"
+      "openecon_charts-0.3.2a1-py3-none-any.whl": {
+        "bytes": 442571,
+        "sha256": "94d629b56040e2b6f4a32bbda6b2fbd3a79af516c0c6ef38ace7e8e5776814fd"
       },
-      "openecon_charts-0.3.1a1.tar.gz": {
-        "bytes": 475337,
-        "sha256": "9b053443ebca72332b8da7d7d45548654e742d303073e1e5b398399331fa0e3c"
+      "openecon_charts-0.3.2a1.tar.gz": {
+        "bytes": 481077,
+        "sha256": "b8f022c22b5108235532b5584cf194e17ee2539c3dd934664f8420ec1b5d981d"
       }
     },
     "limits": {
@@ -75,293 +79,347 @@
       "records": [
         {
           "four_distributions_identical": true,
-          "installed": {
-            "charts-sdist": {
-              "openecon-charts": {
-                "files": 23,
-                "version": "0.3.1a1"
-              }
-            },
-            "charts-wheel": {
-              "openecon-charts": {
-                "files": 23,
-                "version": "0.3.1a1"
-              }
-            },
-            "sdk-sdist": {
-              "openecon": {
-                "files": 814,
-                "version": "0.3.19a1"
-              },
-              "openecon-charts": {
-                "files": 23,
-                "version": "0.3.1a1"
-              }
-            },
-            "sdk-wheel": {
-              "openecon": {
-                "files": 814,
-                "version": "0.3.19a1"
-              },
-              "openecon-charts": {
-                "files": 23,
-                "version": "0.3.1a1"
-              }
-            }
-          },
-          "python": "311",
-          "readme_and_smoke_all_passed": true,
+          "public_checkout_commit": "fd258ad568597219013bb6a43851a8f9f2688118",
+          "python": "3.11",
           "tests": {
             "installed-inventory-guards": 33,
-            "network-export-sdist": 53,
-            "network-export-wheel": 53,
+            "network-export-sdist": 88,
+            "network-export-wheel": 88,
             "sdk-regressions": 290
           }
         },
         {
           "four_distributions_identical": true,
-          "installed": {
-            "charts-sdist": {
-              "openecon-charts": {
-                "files": 23,
-                "version": "0.3.1a1"
-              }
-            },
-            "charts-wheel": {
-              "openecon-charts": {
-                "files": 23,
-                "version": "0.3.1a1"
-              }
-            },
-            "sdk-sdist": {
-              "openecon": {
-                "files": 814,
-                "version": "0.3.19a1"
-              },
-              "openecon-charts": {
-                "files": 23,
-                "version": "0.3.1a1"
-              }
-            },
-            "sdk-wheel": {
-              "openecon": {
-                "files": 814,
-                "version": "0.3.19a1"
-              },
-              "openecon-charts": {
-                "files": 23,
-                "version": "0.3.1a1"
-              }
-            }
-          },
-          "python": "313",
-          "readme_and_smoke_all_passed": true,
+          "public_checkout_commit": "fd258ad568597219013bb6a43851a8f9f2688118",
+          "python": "3.13",
           "tests": {
             "installed-inventory-guards": 33,
-            "network-export-sdist": 53,
-            "network-export-wheel": 53,
+            "network-export-sdist": 88,
+            "network-export-wheel": 88,
             "sdk-regressions": 290
           }
         }
       ],
       "run_attempt": "1",
-      "run_id": "37894416408",
-      "tested_public_merge_commit": "fa2c18a80c8daac07449b266913a19ea29fd36cd",
-      "url": "https://github.com/bluearf/openeconometrics/actions/runs/37894416408",
-      "whole_artifact_sha256": {
-        "public-accepted-fixed-pair.zip": "1b3d88578190f6a00c008f525fc8c4d3682aa7482a89b6bb7bcf7e1afc636b50",
-        "public-accepted-py311.zip": "b97a2c23e597a44015702d43b208ffd1e46b4940bbed7d573454507754e47802",
-        "public-accepted-py313.zip": "efd02d93ac72a436b3dc466c703378d2563ce6e339129e0f53ed597dcb271b55"
-      }
+      "run_id": "38160252640",
+      "tested_public_merge_commit": "fd258ad568597219013bb6a43851a8f9f2688118",
+      "url": "https://github.com/bluearf/openeconometrics/actions/runs/38160252640"
     },
     "macos_package_acceptance": {
-      "cuda_acceptance": false,
-      "native_desktop_acceptance": false,
       "receipt": "MACOS-PACKAGE-ACCEPTANCE.json",
-      "sha256": "a286bebef716413e8d77f46f4e48596ddf4f8e54129baa6509d8cac06fbcfbf5",
+      "sha256": "6edc4db744c0f5474198e1e069712fcf695189850a62027c54a93e54c9115a21",
       "status": "passed"
     },
     "macos_regularized_package_acceptance": {
-      "frozen_binary_acceptance": false,
-      "native_window_acceptance": false,
       "receipt": "MACOS-REGULARIZED-PACKAGE-ACCEPTANCE.json",
-      "selected_model_inference": false,
-      "sha256": "d7b47227faba402351e24e5754d955f3abcb4737f138a7d9dc3478514df4ff44",
+      "sha256": "cedbd6275d6e72155b2f85e3188973881d374ea4c8c4c941c64e3a0849ebb662",
       "status": "passed"
     },
-    "prepared_at": "2026-10-09T08:38:51.947373+00:00",
     "private_current_source_validation": {
-      "authenticated_source_artifacts": [
-        {
-          "archive": "source-6aaf-py311-shard2.zip",
-          "artifact_id": 11604200153,
-          "bytes": 23035099,
-          "label": "py311-shard2",
-          "sha256": "f5f55ee7e6e64cb02e4383228c35fff5869d60395f35cc884422275b4517a359"
-        },
-        {
-          "archive": "source-6aaf-py311-shard1.zip",
-          "artifact_id": 11604145545,
-          "bytes": 22975277,
-          "label": "py311-shard1",
-          "sha256": "da6f73dec6f7fb616a811526e4fba7bcb90719948946561cfeeb98d77b221bc8"
-        },
-        {
-          "archive": "source-6aaf-py311-shard0.zip",
-          "artifact_id": 11603547942,
-          "bytes": 22186207,
-          "label": "py311-shard0",
-          "sha256": "74c993dde48c8ee1697c134cbf32fdeed28df906453b9a2e0ddcaa0442729226"
-        },
-        {
-          "archive": "source-6aaf-py313-shard2.zip",
-          "artifact_id": 11603537182,
-          "bytes": 23034873,
-          "label": "py313-shard2",
-          "sha256": "731b43a6ebf475115c2d69998856457128ed89c829728ecb0a623ec359662ce5"
-        },
-        {
-          "archive": "source-6aaf-py313-shard0.zip",
-          "artifact_id": 11603303613,
-          "bytes": 22186227,
-          "label": "py313-shard0",
-          "sha256": "68815590a3d679de5aa8845faa6700dda9f4da4570c158349bfd487d0c9aa19b"
-        },
-        {
-          "archive": "source-6aaf-py313-shard3.zip",
-          "artifact_id": 11603289026,
-          "bytes": 22985440,
-          "label": "py313-shard3",
-          "sha256": "6162e366f670bf5e3481d99f94b2f32818f48565b06533de98b0419ed91f3788"
-        },
-        {
-          "archive": "source-6aaf-py311-shard3.zip",
-          "artifact_id": 11603242270,
-          "bytes": 22978199,
-          "label": "py311-shard3",
-          "sha256": "730e4b36901b2fc796e570341752f0218986739dbab39c4bedb62c0991f3845e"
-        },
-        {
-          "archive": "source-6aaf-py313-shard1.zip",
-          "artifact_id": 11603222222,
-          "bytes": 22970424,
-          "label": "py313-shard1",
-          "sha256": "54752fc84b46525342c1a1880fb01675112d87a6b6e2ebd2e01f0ed9bb639b57"
-        },
-        {
-          "archive": "source-6aaf-aggregate.zip",
-          "artifact_id": 11603189474,
-          "bytes": 2042060,
-          "label": "aggregate",
-          "sha256": "1a77d5fc5e4e0f4a327a11c61784f03f02c4b335b215599548af2fcf16a9064d"
-        }
-      ],
-      "base_commit": "ddb8f7625f3e3263e009d6e3a80a20243476442e",
+      "aggregate_report_sha256": "6dfac82aeec07d1b5e9cffc019107d5af40bc00d9dddea82ef6f52402170405f",
       "complete_sdk_unions": [
         {
-          "JUnit_sha256": "7359c5b95fd0a5001c9ea962da3bc92e310b6a47c47cbd7bb05c8313af6720a9",
+          "JUnit_sha256": "760631353cf168f251e9f4e4cb1985aaed0c087e783d74de51651e8abc2f199a",
           "errors": 0,
           "failures": 0,
-          "full_collection_sha256": "155b689fa93bcbefff1a863e8c5951e7297ff6bc2d9d0fa4f7864cb2d2103036",
-          "partition_plan_digest": "0c60874bb0329f73b891b28b676f30e1f7a4b698972451840d0391d671f4a359",
-          "phase_records": 30840,
-          "phase_sha256": "32f75b77bdc0a793de6e2abad5e2d8e4747720e3528d1a1a48ddf8e30e93e6f6",
+          "full_collection_sha256": "b152bff93e27ec0f132591b83e7af089b8686aa8353e398b6936464cf8602b23",
+          "partition_plan_digest": "2733ff553d674514d984dcbbd4535b46e9c3e157ff2ac9441e70443db5ee1067",
+          "phase_records": 44026,
+          "phase_report_protocol": 2,
+          "phase_sha256": "71c8cbcd140973ffa494c0341da1b3c53ab28495c3fbbdeddd83676ccf54d7fd",
+          "report_collection": "pytest-3.11-timings.jsonl.report-collection.jsonl",
+          "report_collection_sha256": "b152bff93e27ec0f132591b83e7af089b8686aa8353e398b6936464cf8602b23",
+          "report_counts": {
+            "XML_testcase_elements": 14667,
+            "all_phase_records": 44026,
+            "collected_cases": 14667,
+            "native_JUnit_reported_tests": 14692,
+            "nested_reports": 25,
+            "outer_phase_records": 44001
+          },
+          "report_ledger": "pytest-3.11-timings.jsonl.report-ledger.jsonl",
+          "report_ledger_sha256": "3ea0bfaa4d765fd2e8ff8fc360294a2361a4a2a125aee2f7f2e9cac51e4efb04",
+          "report_terminal": "pytest-3.11-timings.jsonl.report-terminal.json",
+          "report_terminal_sha256": "ec427dd11f3f682c725fdb555266b8835c56febf5cab4c689fa61da6cfd6c728",
           "skipped": 0,
-          "tests": 10280,
+          "tests": 14667,
           "version": "3.11"
         },
         {
-          "JUnit_sha256": "66509d3c5cf8089ec096acf0ce574a8191336d55d7ec54a9720d06d2091f4485",
+          "JUnit_sha256": "4e4dcd49e324e22fe91b0dcc59c1e4f336393b1b55252d32569a914dcf26ebed",
           "errors": 0,
           "failures": 0,
-          "full_collection_sha256": "155b689fa93bcbefff1a863e8c5951e7297ff6bc2d9d0fa4f7864cb2d2103036",
-          "partition_plan_digest": "0c60874bb0329f73b891b28b676f30e1f7a4b698972451840d0391d671f4a359",
-          "phase_records": 30840,
-          "phase_sha256": "79c248cf9f76da048bea5a80c7b9a9d10520b414e0cf1a2ca77667e417c5d39d",
+          "full_collection_sha256": "b152bff93e27ec0f132591b83e7af089b8686aa8353e398b6936464cf8602b23",
+          "partition_plan_digest": "2733ff553d674514d984dcbbd4535b46e9c3e157ff2ac9441e70443db5ee1067",
+          "phase_records": 44026,
+          "phase_report_protocol": 2,
+          "phase_sha256": "bda9aac3a9a210b683cc7a3bd5755538f017f7a80653a3a5da1b3bce4b54fcf1",
+          "report_collection": "pytest-3.13-timings.jsonl.report-collection.jsonl",
+          "report_collection_sha256": "b152bff93e27ec0f132591b83e7af089b8686aa8353e398b6936464cf8602b23",
+          "report_counts": {
+            "XML_testcase_elements": 14667,
+            "all_phase_records": 44026,
+            "collected_cases": 14667,
+            "native_JUnit_reported_tests": 14692,
+            "nested_reports": 25,
+            "outer_phase_records": 44001
+          },
+          "report_ledger": "pytest-3.13-timings.jsonl.report-ledger.jsonl",
+          "report_ledger_sha256": "51e8c53afbe4dc8cfef8cf45c97992d793bfabbd6e0226a951b5b80b4cc2a079",
+          "report_terminal": "pytest-3.13-timings.jsonl.report-terminal.json",
+          "report_terminal_sha256": "372b8a2ac9aaa3ce6997aea9ac760489f102227119e0d45bafccd7275b0b21cd",
           "skipped": 0,
-          "tests": 10280,
+          "tests": 14667,
           "version": "3.13"
         }
       ],
-      "head_commit": "6aafb5c31a6af3bf62ec3ba89e60e179ded927dc",
       "job_result": "success",
-      "merged_main_commit": "99d530614aff4fc6abbbb2b2b52d94751630c1cf",
-      "original_aggregate_report_sha256": "894bc3ad9af6eb1b536e68421786e80b7dda99d40005c2cb949c44c07a8cf1a8",
+      "job_results": {
+        "3.11:0": "success",
+        "3.11:1": "success",
+        "3.11:2": "success",
+        "3.11:3": "success",
+        "3.13:0": "success",
+        "3.13:1": "success",
+        "3.13:2": "success",
+        "3.13:3": "success"
+      },
       "production_bridge": {
-        "complete_changed_paths": [
-          ".github/workflows/ci.yml",
-          "scripts/run_parallel_sdk_groups.py",
-          "scripts/verify_merge_candidate.py",
-          "scripts/verify_parallel_merge_gate.py",
-          "tests/test_merge_gate.py",
-          "tests/test_parallel_merge_gate.py",
-          "tests/test_parallel_sdk_groups.py"
-        ],
-        "package_source_commit": "a8eb8799ca46e00ebedd362ad6c69461a172a8ca",
-        "package_web_native_and_numerical_production_byte_identical": true,
-        "private_merge_candidate": "6aafb5c31a6af3bf62ec3ba89e60e179ded927dc",
-        "private_merged_main": "99d530614aff4fc6abbbb2b2b52d94751630c1cf",
-        "scope": "Complete Git source bridge plus actual accepted current source gate and merged main tree readback",
-        "status": "passed_complete_git_diff_only_ci_validation_and_scheduling_controls"
+        "package_source_commit": "a805870d971c0d571f6d5dec79e914b91d6479aa",
+        "scientific_source_commit": "a805870d971c0d571f6d5dec79e914b91d6479aa",
+        "status": "exact_same_tested_and_packaged_source"
       },
       "run_attempt": "1",
-      "run_id": "37903102191",
+      "run_id": "38158545101",
       "sdk_cohorts": [
         {
-          "finished_utc": 1791534079.3249915,
-          "seconds": 613.1367962360382,
-          "started_utc": 1791533466.1881952,
+          "finished_utc": 1791739739.0580068,
+          "seconds": 852.1435532569885,
+          "started_utc": 1791738886.9144535,
           "version": "3.11"
         },
         {
-          "finished_utc": 1791534079.3249915,
-          "seconds": 604.7278575897217,
-          "started_utc": 1791533474.5971339,
+          "finished_utc": 1791739739.0580068,
+          "seconds": 868.9236121177673,
+          "started_utc": 1791738870.1343946,
           "version": "3.13"
         }
       ],
+      "selected_tests": [
+        "tests/test_sequential_kernels.py",
+        "tests/test_sequential_oracles.py",
+        "tests/test_sequential_contracts.py",
+        "tests/test_mprobit.py",
+        "tests/test_mprobit_postestimation.py",
+        "tests/test_mprobit_independent.py",
+        "tests/test_survey_four_stage_oracles.py",
+        "tests/test_survey_four_stage_design.py",
+        "tests/test_survey_four_stage_review.py",
+        "tests/test_survey_four_stage_safety.py",
+        "tests/test_survey_four_stage_regression.py",
+        "tests/test_survey_four_stage_regression_state.py",
+        "tests/test_categorical_spline_regression.py",
+        "tests/test_categorical_spline_pca.py",
+        "tests/test_categorical_frequency_rotation.py",
+        "tests/test_categorical_frequency_bootstrap.py",
+        "tests/test_causal_assignment_extensions.py",
+        "tests/test_causal_neyman.py",
+        "tests/test_causal_identification_extensions.py",
+        "tests/test_causal_assignment_delivery.py",
+        "tests/test_causal_confidence_sets.py",
+        "tests/test_causal_multiarm_neyman.py",
+        "tests/test_causal_effect_distribution.py",
+        "tests/test_causal_confidence_delivery.py",
+        "tests/test_repeated_gls_kernels.py",
+        "tests/test_repeated_gls_oracles.py",
+        "tests/test_categorical_frequency_admission.py",
+        "tests/test_categorical_frequency_regression.py",
+        "tests/test_categorical_frequency_pca.py",
+        "tests/test_categorical_frequency_scaling.py",
+        "tests/test_nonlinear_sur.py",
+        "tests/test_nonlinear_sur_postestimation.py",
+        "tests/test_nonlinear_sur_independent.py",
+        "tests/test_dependent_meta.py",
+        "tests/test_dependent_meta_oracles.py",
+        "tests/test_public_package_pair_metadata.py",
+        "tests/test_deploy_build_metadata.py",
+        "tests/test_regularized_extended.py",
+        "tests/test_regularized_contracts.py",
+        "tests/test_regularized_runtime_acceptance.py",
+        "tests/test_regularized_glm_contracts.py",
+        "tests/test_regularized_glm_design.py",
+        "tests/test_regularized_glm_oracles.py",
+        "tests/test_merge_gate.py",
+        "tests/test_priority_release_verifier.py",
+        "tests/test_physical_acceptance_guards.py",
+        "tests/test_analysis.py",
+        "tests/test_dataset.py",
+        "tests/test_streaming_analysis.py",
+        "tests/test_streaming_ols_engine.py",
+        "tests/test_streaming_binary.py",
+        "tests/test_econ_saved_prediction_linear.py",
+        "tests/test_control_function_common_prediction.py",
+        "tests/test_control_function_state.py",
+        "tests/test_control_function_api.py",
+        "tests/test_control_function_kernels.py",
+        "tests/test_streaming_control_function_engine.py",
+        "tests/test_control_function_stream_state.py",
+        "tests/test_control_stream_acceptance.py",
+        "tests/test_multivariate_pca_uncertainty.py",
+        "tests/test_multivariate_factor_uncertainty.py",
+        "tests/test_manova_factorial_moments.py",
+        "tests/test_rm_moment_methods.py",
+        "tests/test_moment_admission.py",
+        "tests/test_survey_fully_stratified_three_stage_oracles.py",
+        "tests/test_survey_fully_stratified_three_stage_design.py",
+        "tests/test_survey_fully_stratified_three_stage_regression_state.py",
+        "tests/test_survey_fully_stratified_three_stage_review.py",
+        "tests/test_nested_logit.py",
+        "tests/test_nested_logit_postestimation.py",
+        "tests/test_nested_logit_independent.py",
+        "tests/test_nested_logit_delivery.py",
+        "tests/test_desktop_econometrics_packaging.py",
+        "tests/test_desktop_runtime.py",
+        "tests/test_survey_stratified_three_stage_oracles.py",
+        "tests/test_survey_stratified_three_stage_design.py",
+        "tests/test_survey_stratified_three_stage_regression_state.py",
+        "tests/test_survey_stratified_three_stage_review.py",
+        "tests/test_pca_subspace_uncertainty.py",
+        "tests/test_canon_uncertainty.py",
+        "tests/test_ca_uncertainty.py",
+        "tests/test_pca_score_uncertainty.py",
+        "tests/test_frequency_bootstrap_admission.py",
+        "tests/test_pca_frequency_uncertainty.py",
+        "tests/test_canon_frequency_uncertainty.py",
+        "tests/test_factor_frequency_uncertainty.py",
+        "tests/test_survey_three_stage_oracles.py",
+        "tests/test_survey_three_stage_safety.py",
+        "tests/test_survey_three_stage_regression_state.py",
+        "tests/test_survey_three_stage_review.py",
+        "tests/test_bayesian_conjugate_oracles.py",
+        "tests/test_bayesian_conjugate_state.py",
+        "tests/test_foundations_state_lifecycle.py",
+        "tests/test_cfa.py",
+        "tests/test_ivquantile.py",
+        "tests/test_ivquantile_oracles.py",
+        "tests/test_sspace_diffuse.py",
+        "tests/test_sspace_diffuse_kfas.py",
+        "tests/test_lazy_console_display.py",
+        "tests/test_editor_parameter_templates.py",
+        "tests/test_econ_streaming_prediction.py",
+        "tests/test_prediction_capabilities.py",
+        "tests/test_capability_docs.py",
+        "tests/test_econ_postest_suest.py",
+        "tests/test_econ_suest_extended.py",
+        "tests/test_econ_suest_binomial_commands.py",
+        "tests/test_editor_api_catalog.py",
+        "tests/test_editor_api_preservation.py",
+        "tests/test_latex.py",
+        "tests/test_output_latex.py",
+        "tests/test_script_packages.py",
+        "tests/test_uv_script_packages.py",
+        "packages/openecon-charts/tests",
+        "tests/test_parallel_merge_gate.py",
+        "tests/test_parallel_sdk_groups.py",
+        "tests/test_pytest_gate_timings.py",
+        "tests/test_sdist_packaging.py",
+        "tests/test_verify_team_cleanup.py",
+        "tests/test_verify_windows_cloud_ui_fixture.py",
+        "tests/test_twostep_kernel.py",
+        "tests/test_twostep_reference.py",
+        "tests/test_twostep_contract.py",
+        "tests/test_twostep_scale.py",
+        "tests/test_twostep_adaptive_reference.py",
+        "tests/test_survey_deff.py",
+        "tests/test_survey_inference.py",
+        "tests/test_bayesian_hypothesis_oracles.py",
+        "tests/test_bayesian_hypothesis_state.py",
+        "tests/test_latent_sem_lifecycle.py",
+        "tests/test_latent_sem_math.py",
+        "tests/test_latent_sem_state.py",
+        "tests/test_dynamic_factor.py",
+        "tests/test_finite_mixture.py",
+        "tests/test_weakiv_clr_math.py",
+        "tests/test_weakiv_clr_state.py",
+        "tests/test_supervised.py",
+        "tests/test_supervised_integration_lifecycle.py",
+        "tests/test_five_model_public_integration.py",
+        "tests/test_weighted_binary.py",
+        "tests/test_econ_glm.py",
+        "tests/test_econ_glm_oracle.py",
+        "tests/test_econ_saved_prediction_categories.py",
+        "tests/test_survey_fully_stratified_four_stage.py",
+        "tests/test_survey_fully_stratified_four_stage_safety.py",
+        "tests/test_confidence_sequences.py",
+        "tests/test_multivariate_score_uncertainty.py",
+        "tests/test_bayesian_var_conjugate.py",
+        "tests/test_bayesian_var_sbc_protocol.py",
+        "tests/test_bayesian_var_public_integration.py",
+        "tests/test_bayesian_var_public_admission_v2.py",
+        "tests/test_editor_catalog_intern_v2.py",
+        "tests/test_bayesian_bma_oracles.py",
+        "tests/test_bayesian_bma_state.py",
+        "tests/test_econ_conjoint.py",
+        "tests/test_econ_conjoint_robust.py",
+        "tests/test_multivariate_score_contrasts.py",
+        "tests/test_interval_weibull_regression_oracles.py",
+        "tests/test_interval_weibull_regression_state.py",
+        "tests/test_interval_weibull_publication.py",
+        "tests/test_econ_conjoint_bootstrap.py",
+        "tests/test_rdlocrand_kernels.py",
+        "tests/test_rdlocrand_procedures.py",
+        "tests/test_rdlocrand_reference.py",
+        "tests/test_rdlocrand_review.py",
+        "tests/test_survey_calib_calibration.py",
+        "tests/test_survey_calib_estimation.py",
+        "tests/test_survey_calib_pps.py",
+        "tests/test_survey_calib_review.py",
+        "tests/test_multivariate_extraction_additional.py",
+        "tests/test_multivariate_complete_oblique_target.py",
+        "tests/test_multivariate_extraction_uncertainty.py"
+      ],
       "shard_count": 4,
-      "source_commit": "5b8d5002510ab0f3a1ac3dcfacdf0a95713e4674",
+      "source_commit": "a805870d971c0d571f6d5dec79e914b91d6479aa",
       "status": "passed",
       "timeout_seconds": 900,
-      "url": "https://github.com/bluearf/openecon/actions/runs/37903102191",
+      "url": "https://github.com/bluearf/openecon/actions/runs/38158545101",
       "verified_git": {
-        "PR_head_tree": "f1d0ade24da8b2bfdaa1dffa88600ab41cb70692",
+        "PR_head_tree": null,
         "parents": [
-          "ddb8f7625f3e3263e009d6e3a80a20243476442e",
-          "6aafb5c31a6af3bf62ec3ba89e60e179ded927dc"
+          "c348ec519e63ee15ca52c114e2693b13d8d7ae9f"
         ],
-        "source_commit": "5b8d5002510ab0f3a1ac3dcfacdf0a95713e4674",
-        "source_tree": "f1d0ade24da8b2bfdaa1dffa88600ab41cb70692"
+        "source_commit": "a805870d971c0d571f6d5dec79e914b91d6479aa",
+        "source_tree": "877dc7bd27de679cecdf3b5800e1a3ceadbac2df"
       }
     },
-    "private_package_source_commit": "a8eb8799ca46e00ebedd362ad6c69461a172a8ca",
+    "private_package_source_commit": "a805870d971c0d571f6d5dec79e914b91d6479aa",
     "public_delivery": {
-      "base": "75f60a28aca55867c456c113ec803412310e1737",
-      "main_commit": "2060fb8ef4ea9c6e8a4371cef3de42c63d9f2b31",
-      "parents": [
-        "75f60a28aca55867c456c113ec803412310e1737",
-        "dbe9d5b82903692ad7020ecf002fd65d3b21b556"
-      ],
-      "status": "passed",
-      "tested_head": "dbe9d5b82903692ad7020ecf002fd65d3b21b556",
-      "tree": "25e15397ab8e1ffb19cb00482692fabc1b8be1df"
+      "base": "8f7f02823e6cfa9675bec83935d5746f6c4bc418",
+      "preserved_public_only_files": 745,
+      "preserved_teaching_files": 737,
+      "status": "reviewed PR snapshot; package publication requires protected main",
+      "tested_head": "d11ed130feb4ad8e6e990e61bb0bd8a9101cb981"
     },
-    "release": "python-v0.3.19a1",
+    "public_source_archive": {
+      "members": 3468,
+      "name": "openeconometrics-source-a805870d-public.tar.gz",
+      "uncompressed_bytes": 101524128
+    },
+    "release": "python-v0.3.20a1",
     "repository": "bluearf/openeconometrics",
-    "schema_version": 3,
-    "source_files_sha256": "0b9c5d741ee15397f0b0db157d812a7bd49f5371cde6fcc5d59dd25663424c29",
-    "source_manifest_sha256": "07c11d245f852f6c5466b774ace789e4e8df3e3e0d1725e0ffabf57b3b53d4cb",
-    "status": "passed_reviewed_release_delivery",
+    "schema_version": 4,
+    "source_files_sha256": "a9c7fcfb9c3f780eef212b2bde169a7c7870f17beda866bc6a883ee93662ab28",
+    "source_manifest_sha256": "a290c6ddd2e47e60452b43a49c05d3dbfc68cc3fea6c2e5a5b78a3bbe85ede32",
+    "status": "passed_reviewed_package_acceptance",
     "versions": {
-      "charts": "0.3.1a1",
-      "sdk": "0.3.19a1"
+      "charts": "0.3.2a1",
+      "sdk": "0.3.20a1"
     }
   },
   "repository": "bluearf/openeconometrics",
-  "schema_version": 3,
+  "schema_version": 4,
   "versions": {
-    "charts": "0.3.1a1",
-    "sdk": "0.3.19a1"
+    "charts": "0.3.2a1",
+    "sdk": "0.3.20a1"
   }
 }

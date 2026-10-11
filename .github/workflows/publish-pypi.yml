@@ -54,23 +54,23 @@ jobs:
           retention-days: 7
 
   publish-charts:
-    name: Publish openecon-charts 0.3.1a1
+    name: Publish openecon-charts 0.3.2a1
     needs: verify
     if: github.repository == 'bluearf/openeconometrics' && github.event_name == 'workflow_dispatch' && inputs.publish && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/openecon-charts/0.3.1a1/
+      url: https://pypi.org/project/openecon-charts/0.3.2a1/
     permissions:
       contents: read
       id-token: write
     env:
       PROJECT: openecon-charts
-      VERSION: 0.3.1a1
-      WHEEL: openecon_charts-0.3.1a1-py3-none-any.whl
-      WHEEL_SHA256: 4badfb26cbb1860dbb266d59cc726ad0057b640b007c9cbfb673bf95108ae4b4
-      SDIST: openecon_charts-0.3.1a1.tar.gz
-      SDIST_SHA256: 9b053443ebca72332b8da7d7d45548654e742d303073e1e5b398399331fa0e3c
+      VERSION: 0.3.2a1
+      WHEEL: openecon_charts-0.3.2a1-py3-none-any.whl
+      WHEEL_SHA256: 94d629b56040e2b6f4a32bbda6b2fbd3a79af516c0c6ef38ace7e8e5776814fd
+      SDIST: openecon_charts-0.3.2a1.tar.gz
+      SDIST_SHA256: b8f022c22b5108235532b5584cf194e17ee2539c3dd934664f8420ec1b5d981d
     steps:
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
         with:
@@ -176,23 +176,23 @@ jobs:
               time.sleep(5)
 
   publish-sdk:
-    name: Publish openecon 0.3.19a1
+    name: Publish openecon 0.3.20a1
     needs: [verify, publish-charts]
     if: github.repository == 'bluearf/openeconometrics' && github.event_name == 'workflow_dispatch' && inputs.publish && inputs.publish_sdk && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/openecon/0.3.19a1/
+      url: https://pypi.org/project/openecon/0.3.20a1/
     permissions:
       contents: read
       id-token: write
     env:
       PROJECT: openecon
-      VERSION: 0.3.19a1
-      WHEEL: openecon-0.3.19a1-py3-none-any.whl
-      WHEEL_SHA256: 09377fe0220c4c35ff27289236fa29f63666684ba72edb4de82ae89b4cbdc85a
-      SDIST: openecon-0.3.19a1.tar.gz
-      SDIST_SHA256: 98bbbea50d7225788dd72413d1ecda85ef025e05c80b41353284f84727ab54c7
+      VERSION: 0.3.20a1
+      WHEEL: openecon-0.3.20a1-py3-none-any.whl
+      WHEEL_SHA256: 9629cd441637ac73129ae31a2ef53cfc0569f90092309ca7a6fe953c4c7ab7b3
+      SDIST: openecon-0.3.20a1.tar.gz
+      SDIST_SHA256: 062817805a59f289a769c9f0b07d973911dd590442c74eb502b7eeaf9f78bb59
     steps:
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
         with:
