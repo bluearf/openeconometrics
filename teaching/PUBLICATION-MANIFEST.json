@@ -1,9 +1,10 @@
 {
-  "private_source_commit": "6768c16e9ac6e32d31176d0dd24c1c0932921218",
+  "private_source_commit": "7242d51865260cf2987f22003eb34478adc20cbd",
   "course_count": 4,
   "chapters": 80,
   "prepared_workbooks": 79,
   "data_origin": "Original synthetic teaching data; simulation is retained in Econometrics Lab 03.",
+  "publication_layout": "Standalone teaching directory; the fixed SDK source inventory and production files remain unchanged.",
   "files": [
     {
       "path": "teaching/BACKLOG.md",
@@ -15,9 +16,9 @@
     {
       "path": "teaching/COURSES.md",
       "source_path": "docs/teaching/COURSES.md",
-      "source_sha256": "3bb0599aac30bdb38ba6bbbaf38d5d9f2433c0dab13abcde3bbf981690d99b91",
-      "sha256": "5f196efcfe9e2096900ae9576ea2d778033c31c5cffd763f56b171fbacf33835",
-      "transformation": "Standalone public entry files use index.md; method-document links use the public docs directory; the download link selects teaching patch v0.1.1."
+      "source_sha256": "71e96bb48a4e920fca2cca74d6048eff5ab5dc9a9844435aa1d6eb205df0898b",
+      "sha256": "40b7c67a54167d38fbd771e1bf264c79f334eba0653ffcc99dc4b7a051d1f88c",
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/INSTRUCTORS.md",
@@ -50,8 +51,8 @@
     {
       "path": "teaching/advanced-econometrics/index.md",
       "source_path": "docs/teaching/advanced-econometrics/README.md",
-      "source_sha256": "0a765ef7f209eab9f049ade866d0ae56051144d1810c5fbe208868588c218170",
-      "sha256": "68dcd0e04b44d9d96970ba73e7ceda0dee3d49bef78b041e8192d7e1c0e26f13",
+      "source_sha256": "79c7145be2d53821da3691978fa82cba1ca7dc1b1ec0d500909866d41c189a21",
+      "sha256": "8afef9c501708654a11311208eaf6351eec64aafb141b734a6bd0c7474563566",
       "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
@@ -71,141 +72,141 @@
     {
       "path": "teaching/advanced-econometrics/instructors/01-partialling-out.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/01-partialling-out.md",
-      "source_sha256": "30ab74744d44a122d602d8459015ed3e26e843bbf7fc4314481cec2548682a55",
-      "sha256": "30ab74744d44a122d602d8459015ed3e26e843bbf7fc4314481cec2548682a55",
+      "source_sha256": "e9568fc138ed8ba8f06fc9e19d98339edb041ed5658753c861996b18bd7aac10",
+      "sha256": "e9568fc138ed8ba8f06fc9e19d98339edb041ed5658753c861996b18bd7aac10",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/02-omitted-variable-bias.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/02-omitted-variable-bias.md",
-      "source_sha256": "45688d9c12de8c00a8204468c4972e5bd40c4d2c56a8152b388f1884939dd5bb",
-      "sha256": "45688d9c12de8c00a8204468c4972e5bd40c4d2c56a8152b388f1884939dd5bb",
+      "source_sha256": "d3ac40173f7371cd545a33a95ac3199b3b478609a33ed15157ad5ca1054fe3da",
+      "sha256": "d3ac40173f7371cd545a33a95ac3199b3b478609a33ed15157ad5ca1054fe3da",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/03-measurement-error.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/03-measurement-error.md",
-      "source_sha256": "31f6b29a7277f82276b6d35b7aa124ba1fbc883c3c6b281c230df2d1123a912e",
-      "sha256": "31f6b29a7277f82276b6d35b7aa124ba1fbc883c3c6b281c230df2d1123a912e",
+      "source_sha256": "6961aea5161f707de7144189beb8edea8968f00c8cd8b4285420ab0c18f2aa96",
+      "sha256": "6961aea5161f707de7144189beb8edea8968f00c8cd8b4285420ab0c18f2aa96",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/04-collinearity.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/04-collinearity.md",
-      "source_sha256": "f3e1356e6a343650f05c80ed2a1093d4756fef668b9e3b3abb5300119028ef8b",
-      "sha256": "f3e1356e6a343650f05c80ed2a1093d4756fef668b9e3b3abb5300119028ef8b",
+      "source_sha256": "244163fd9e6827c7194309bc06aaeef14bf5d3f9826a999f832a6b035557f26e",
+      "sha256": "244163fd9e6827c7194309bc06aaeef14bf5d3f9826a999f832a6b035557f26e",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/05-leverage-influence.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/05-leverage-influence.md",
-      "source_sha256": "e42d1d1eee1200882279ad8d27effb83f7578baaac0551e1863df39694834bc4",
-      "sha256": "e42d1d1eee1200882279ad8d27effb83f7578baaac0551e1863df39694834bc4",
+      "source_sha256": "3085c4b0227da35526b9d3d811ce5f34a185e068a2648b31bbe34566b0cae634",
+      "sha256": "3085c4b0227da35526b9d3d811ce5f34a185e068a2648b31bbe34566b0cae634",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/06-weighted-least-squares.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/06-weighted-least-squares.md",
-      "source_sha256": "44c5fc87cc41545da63a4f428258c570a6a4cd68306689572d66a1efe9351478",
-      "sha256": "44c5fc87cc41545da63a4f428258c570a6a4cd68306689572d66a1efe9351478",
+      "source_sha256": "4b8eedfac4517e0f13709bc72196e3a6a49f9a4a236be59682392bc7f5a711c0",
+      "sha256": "4b8eedfac4517e0f13709bc72196e3a6a49f9a4a236be59682392bc7f5a711c0",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/07-clustered-inference.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/07-clustered-inference.md",
-      "source_sha256": "4242ee37ccbe053f9e0fd9703df2744990617aed4ef91629c1dc2c2ebc6c9463",
-      "sha256": "4242ee37ccbe053f9e0fd9703df2744990617aed4ef91629c1dc2c2ebc6c9463",
+      "source_sha256": "a0ab39ece96875b184f5061dc1ebd62159fc409ce0624f03972e8d0d2f009f8d",
+      "sha256": "a0ab39ece96875b184f5061dc1ebd62159fc409ce0624f03972e8d0d2f009f8d",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/08-hac-inference.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/08-hac-inference.md",
-      "source_sha256": "606adf4a5c32e8dff45da89c125651edd8d0fc46115c0d55e5a7f9c7d4b58702",
-      "sha256": "606adf4a5c32e8dff45da89c125651edd8d0fc46115c0d55e5a7f9c7d4b58702",
+      "source_sha256": "3118a095edc510489440d4fc51095f9d7d04bc3e510e7654d7b46bf9f6835857",
+      "sha256": "3118a095edc510489440d4fc51095f9d7d04bc3e510e7654d7b46bf9f6835857",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/09-joint-restrictions.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/09-joint-restrictions.md",
-      "source_sha256": "8a9ad1cc93e9c135fdca115eb74801abd87225b56451415ba3c4e0f3a3f66d59",
-      "sha256": "8a9ad1cc93e9c135fdca115eb74801abd87225b56451415ba3c4e0f3a3f66d59",
+      "source_sha256": "b381b50404987fa8ff3709b54843fd0f1e0bf317415ea78ef54f54194655d4a4",
+      "sha256": "b381b50404987fa8ff3709b54843fd0f1e0bf317415ea78ef54f54194655d4a4",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/10-nonlinear-delta.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/10-nonlinear-delta.md",
-      "source_sha256": "d7b92ded0b98de81464043ae38339d0c5b5929d9ddecf75ff5e17dc5471c4af7",
-      "sha256": "d7b92ded0b98de81464043ae38339d0c5b5929d9ddecf75ff5e17dc5471c4af7",
+      "source_sha256": "623a5b90ed5dc7145875ebd175e146012cd71be6e4bf23c1cd9847529ded5fb6",
+      "sha256": "623a5b90ed5dc7145875ebd175e146012cd71be6e4bf23c1cd9847529ded5fb6",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/11-common-sample.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/11-common-sample.md",
-      "source_sha256": "f412c66ebb8fbf479beb6d5b1aa1bc40a5ab172ddcff5384e74c00e0c69b0c20",
-      "sha256": "f412c66ebb8fbf479beb6d5b1aa1bc40a5ab172ddcff5384e74c00e0c69b0c20",
+      "source_sha256": "71cdf86ffc5725e5f7253bfce42423eee4a7cb0bf685092e50699e7354640f3a",
+      "sha256": "71cdf86ffc5725e5f7253bfce42423eee4a7cb0bf685092e50699e7354640f3a",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/12-polynomial-centering.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/12-polynomial-centering.md",
-      "source_sha256": "d020f9a54e3e5d47c94a788ae57fac66b20de84da6035825e6a049a2472de1f3",
-      "sha256": "d020f9a54e3e5d47c94a788ae57fac66b20de84da6035825e6a049a2472de1f3",
+      "source_sha256": "fe14b84594717458cfaa7a5e436171c359a71991cee4dca80553759109f22a5b",
+      "sha256": "fe14b84594717458cfaa7a5e436171c359a71991cee4dca80553759109f22a5b",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/13-fixed-effects-algebra.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/13-fixed-effects-algebra.md",
-      "source_sha256": "d5fc0bfd00bb4f6148a7aeb5e845dee4c532341faf2f4dcac0e8d09c91ba1889",
-      "sha256": "d5fc0bfd00bb4f6148a7aeb5e845dee4c532341faf2f4dcac0e8d09c91ba1889",
+      "source_sha256": "43ce19c7f1b64a96e5830d61e7d4936791982630fbf4941e4b5f2f5445258ca7",
+      "sha256": "43ce19c7f1b64a96e5830d61e7d4936791982630fbf4941e4b5f2f5445258ca7",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/14-first-differences.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/14-first-differences.md",
-      "source_sha256": "7c9551b4ca75a8ed9856f8f10cd01228597913a7e957aaaf85882235876d9681",
-      "sha256": "7c9551b4ca75a8ed9856f8f10cd01228597913a7e957aaaf85882235876d9681",
+      "source_sha256": "3b2f30f6b85a79df068f91df9382a44a99790042af148b9867d38b4f052841ae",
+      "sha256": "3b2f30f6b85a79df068f91df9382a44a99790042af148b9867d38b4f052841ae",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/15-iv-moment-condition.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/15-iv-moment-condition.md",
-      "source_sha256": "85c68ecff58c6389515f31876ee481de2535baf1b9f64924855787c8d9587fd4",
-      "sha256": "85c68ecff58c6389515f31876ee481de2535baf1b9f64924855787c8d9587fd4",
+      "source_sha256": "df1d8a94cb5301def016436743567c94a076f3822e1fc075cda835e419dc0151",
+      "sha256": "df1d8a94cb5301def016436743567c94a076f3822e1fc075cda835e419dc0151",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/16-weak-instruments.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/16-weak-instruments.md",
-      "source_sha256": "a09967344c565910431215159659f2d98488cce38d4338da6b28f1ca3eafb868",
-      "sha256": "a09967344c565910431215159659f2d98488cce38d4338da6b28f1ca3eafb868",
+      "source_sha256": "6b1b08aaa69d66f96fd64c36be17cbcd94b44721d94de5062d00a043b8c18a28",
+      "sha256": "6b1b08aaa69d66f96fd64c36be17cbcd94b44721d94de5062d00a043b8c18a28",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/17-logit-marginal-effects.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/17-logit-marginal-effects.md",
-      "source_sha256": "9e2d6afb0cbd5f987abfdb8380205705dd36ef4fbc44f9413a95d888c9353ac7",
-      "sha256": "9e2d6afb0cbd5f987abfdb8380205705dd36ef4fbc44f9413a95d888c9353ac7",
+      "source_sha256": "021f4116ebd741196b6b7a5e23b51ebc418c40b9a8ebc2423f43d4c35d5249b8",
+      "sha256": "021f4116ebd741196b6b7a5e23b51ebc418c40b9a8ebc2423f43d4c35d5249b8",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/18-poisson-exposure.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/18-poisson-exposure.md",
-      "source_sha256": "f5d5961790f3d154967a300e13c53fb8a0f901d49d8e4a18634bbd0591dc04ca",
-      "sha256": "f5d5961790f3d154967a300e13c53fb8a0f901d49d8e4a18634bbd0591dc04ca",
+      "source_sha256": "d635c601085aa4764991753918ac5a8bf4eed0fd2703d7b5b7f8d691b6db6439",
+      "sha256": "d635c601085aa4764991753918ac5a8bf4eed0fd2703d7b5b7f8d691b6db6439",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/19-local-projections.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/19-local-projections.md",
-      "source_sha256": "411ff7d6f6bf7f89fee6adc501f5e1070c1e6c1d07f7349ddc0e08283d0beaae",
-      "sha256": "411ff7d6f6bf7f89fee6adc501f5e1070c1e6c1d07f7349ddc0e08283d0beaae",
+      "source_sha256": "0d8171a6c6cde292d3ac1ef61167d9c2aef4e91794ec5311c3eb3037ba23d84d",
+      "sha256": "0d8171a6c6cde292d3ac1ef61167d9c2aef4e91794ec5311c3eb3037ba23d84d",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/instructors/20-specification-report.md",
       "source_path": "docs/teaching/advanced-econometrics/instructors/20-specification-report.md",
-      "source_sha256": "4bb8348f08e07981e00eb9a1b6cdcfaf379bdda228f6895e246705e890060bd8",
-      "sha256": "4bb8348f08e07981e00eb9a1b6cdcfaf379bdda228f6895e246705e890060bd8",
+      "source_sha256": "c3d5b46485b273491a3b1fd99f40faabb25068f7412700a4ba091d9d9b3582cb",
+      "sha256": "c3d5b46485b273491a3b1fd99f40faabb25068f7412700a4ba091d9d9b3582cb",
       "transformation": null
     },
     {
@@ -351,8 +352,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/01-partialling-out/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/01-partialling-out/README.md",
-      "source_sha256": "98d6ea2f68e3fd2d3a1c7345d69a382769dcfcae89b202db28c01b2cc6d929b3",
-      "sha256": "98d6ea2f68e3fd2d3a1c7345d69a382769dcfcae89b202db28c01b2cc6d929b3",
+      "source_sha256": "ecd956b1efe77eff4d2c1dc3553b630c38305e346b6cdcdbca20f5955b6e277a",
+      "sha256": "ecd956b1efe77eff4d2c1dc3553b630c38305e346b6cdcdbca20f5955b6e277a",
       "transformation": null
     },
     {
@@ -365,15 +366,15 @@
     {
       "path": "teaching/advanced-econometrics/labs/01-partialling-out/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/01-partialling-out/figure.svg",
-      "source_sha256": "3b64d9e3e47db4147d9c1239e1e7c78456f8886024cd8fc6fa89d95403e37786",
-      "sha256": "3b64d9e3e47db4147d9c1239e1e7c78456f8886024cd8fc6fa89d95403e37786",
+      "source_sha256": "d126d4bbf8d635064a0cb28113f1d05df35a75dd2d1cd326f1cbcb4274ac3d82",
+      "sha256": "d126d4bbf8d635064a0cb28113f1d05df35a75dd2d1cd326f1cbcb4274ac3d82",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/01-partialling-out/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/01-partialling-out/lab.py",
-      "source_sha256": "78a79aeb77993e1fd161052ee8b1ee8e0e3b7b3274bc9775f4234544e22be772",
-      "sha256": "78a79aeb77993e1fd161052ee8b1ee8e0e3b7b3274bc9775f4234544e22be772",
+      "source_sha256": "908f4a8d88a7a1b07fd6be2bcc1526f3d0a0e59071591f18f1c1a67d292377c4",
+      "sha256": "908f4a8d88a7a1b07fd6be2bcc1526f3d0a0e59071591f18f1c1a67d292377c4",
       "transformation": null
     },
     {
@@ -386,8 +387,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/01-partialling-out/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/01-partialling-out/reference.json",
-      "source_sha256": "60f0dffaf48204a3ece2e1d54c4b77c68381d660bc318d0e1d940bd1b3d566b9",
-      "sha256": "60f0dffaf48204a3ece2e1d54c4b77c68381d660bc318d0e1d940bd1b3d566b9",
+      "source_sha256": "6381afd670af1063564beb6493674ec574e85829f759fbff22ece5053c4ff786",
+      "sha256": "6381afd670af1063564beb6493674ec574e85829f759fbff22ece5053c4ff786",
       "transformation": null
     },
     {
@@ -400,8 +401,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/02-omitted-variable-bias/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/02-omitted-variable-bias/README.md",
-      "source_sha256": "62b9b23439c0eea8eec4c969fba9130cf4bfb0d05b5d3fa4ad06ded2a5306bd9",
-      "sha256": "62b9b23439c0eea8eec4c969fba9130cf4bfb0d05b5d3fa4ad06ded2a5306bd9",
+      "source_sha256": "71f992b6f475a695b97f4c83edbc8055653973f36c4e750c34eda5901bd0a98b",
+      "sha256": "71f992b6f475a695b97f4c83edbc8055653973f36c4e750c34eda5901bd0a98b",
       "transformation": null
     },
     {
@@ -414,15 +415,15 @@
     {
       "path": "teaching/advanced-econometrics/labs/02-omitted-variable-bias/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/02-omitted-variable-bias/figure.svg",
-      "source_sha256": "2cdb38350db33ab004fa179a6ed7e9294348e7152ada7e1af4632769374010a2",
-      "sha256": "2cdb38350db33ab004fa179a6ed7e9294348e7152ada7e1af4632769374010a2",
+      "source_sha256": "692ccdc89909afaf276371fd91af2774640b8382fc9c4358c821c4fea2a470dd",
+      "sha256": "692ccdc89909afaf276371fd91af2774640b8382fc9c4358c821c4fea2a470dd",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/02-omitted-variable-bias/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/02-omitted-variable-bias/lab.py",
-      "source_sha256": "0ae8268090f8707adb4b1a656a7c4c83e1ced8c2c449d9771fd84e9282f322ea",
-      "sha256": "0ae8268090f8707adb4b1a656a7c4c83e1ced8c2c449d9771fd84e9282f322ea",
+      "source_sha256": "63de731d4cbb18a1cff193e5270f1fdfb04983b65610904e0464abbaa9e79a3e",
+      "sha256": "63de731d4cbb18a1cff193e5270f1fdfb04983b65610904e0464abbaa9e79a3e",
       "transformation": null
     },
     {
@@ -435,8 +436,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/02-omitted-variable-bias/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/02-omitted-variable-bias/reference.json",
-      "source_sha256": "f8524f8afa15103763a28cb717a2b99d20302c17e035c748eb6366841179291b",
-      "sha256": "f8524f8afa15103763a28cb717a2b99d20302c17e035c748eb6366841179291b",
+      "source_sha256": "cb6ecc97bc97d7b6f0aa49d8cf90e035c4b0d260ad47675f71b0edfe05483f72",
+      "sha256": "cb6ecc97bc97d7b6f0aa49d8cf90e035c4b0d260ad47675f71b0edfe05483f72",
       "transformation": null
     },
     {
@@ -449,8 +450,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/03-measurement-error/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/03-measurement-error/README.md",
-      "source_sha256": "97894489824fe2f22d2e4ae41656c296120b75d702e44cd73f9415adea8f4546",
-      "sha256": "97894489824fe2f22d2e4ae41656c296120b75d702e44cd73f9415adea8f4546",
+      "source_sha256": "e8929a3a13ab8ef521718ccdbcbb8f889661ce40ac096c9354596123fa38f5c9",
+      "sha256": "e8929a3a13ab8ef521718ccdbcbb8f889661ce40ac096c9354596123fa38f5c9",
       "transformation": null
     },
     {
@@ -463,15 +464,15 @@
     {
       "path": "teaching/advanced-econometrics/labs/03-measurement-error/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/03-measurement-error/figure.svg",
-      "source_sha256": "e3ab8f4b08f9da7d967ad439079fd9625e563126833c5c83daa3d013f5cefc07",
-      "sha256": "e3ab8f4b08f9da7d967ad439079fd9625e563126833c5c83daa3d013f5cefc07",
+      "source_sha256": "c7a8d07158dcdd6a200b8d6bbe21bbbdd582a9e9bdb7ed7a3142727e344aa7f9",
+      "sha256": "c7a8d07158dcdd6a200b8d6bbe21bbbdd582a9e9bdb7ed7a3142727e344aa7f9",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/03-measurement-error/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/03-measurement-error/lab.py",
-      "source_sha256": "de1c9b01253b2fbf4732b2498cd2c954a7e90dec0dca1b9a474ef731a54da473",
-      "sha256": "de1c9b01253b2fbf4732b2498cd2c954a7e90dec0dca1b9a474ef731a54da473",
+      "source_sha256": "09c4f552d68a64f8cd2bd38aac2bede3ad94c4a712db56367c6a980cf0934e34",
+      "sha256": "09c4f552d68a64f8cd2bd38aac2bede3ad94c4a712db56367c6a980cf0934e34",
       "transformation": null
     },
     {
@@ -484,8 +485,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/03-measurement-error/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/03-measurement-error/reference.json",
-      "source_sha256": "5f62602255881c9414114be0e83514e9cfbaf2ef062ee991c881bd013cc60c1b",
-      "sha256": "5f62602255881c9414114be0e83514e9cfbaf2ef062ee991c881bd013cc60c1b",
+      "source_sha256": "c84cbcda91a3c22e1f36a363c1c7bca324511269175fea0095b2e263aa0ef931",
+      "sha256": "c84cbcda91a3c22e1f36a363c1c7bca324511269175fea0095b2e263aa0ef931",
       "transformation": null
     },
     {
@@ -498,8 +499,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/04-collinearity/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/04-collinearity/README.md",
-      "source_sha256": "3d6fae51ae1d3518e2d80c446c6867b882b27cabf9bda760f9fb1246b00abf90",
-      "sha256": "3d6fae51ae1d3518e2d80c446c6867b882b27cabf9bda760f9fb1246b00abf90",
+      "source_sha256": "33d19da6bbe02af1d693bb232f34dc882dd39da7aa4180911d6b7e549903ddda",
+      "sha256": "33d19da6bbe02af1d693bb232f34dc882dd39da7aa4180911d6b7e549903ddda",
       "transformation": null
     },
     {
@@ -519,22 +520,22 @@
     {
       "path": "teaching/advanced-econometrics/labs/04-collinearity/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/04-collinearity/figure.svg",
-      "source_sha256": "6f3e8fc9bcba3b1d6ff588baf07ac0a87bcb4f99f6a046de50877ca4b304aabd",
-      "sha256": "6f3e8fc9bcba3b1d6ff588baf07ac0a87bcb4f99f6a046de50877ca4b304aabd",
+      "source_sha256": "8d9757b68b42cc8a0063028851d7d72fc85dbbd70a6d7d28915b9f93d3016ded",
+      "sha256": "8d9757b68b42cc8a0063028851d7d72fc85dbbd70a6d7d28915b9f93d3016ded",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/04-collinearity/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/04-collinearity/lab.py",
-      "source_sha256": "6db0a609c7e620cfbc91d18279cfb9f3aaa2f0cb5a5b143c4a7d39ca135ebd17",
-      "sha256": "6db0a609c7e620cfbc91d18279cfb9f3aaa2f0cb5a5b143c4a7d39ca135ebd17",
+      "source_sha256": "4f3de23814f44a594c2f7f57a7bf299e1adf01a6cd2f33dec7404caae6aacf37",
+      "sha256": "4f3de23814f44a594c2f7f57a7bf299e1adf01a6cd2f33dec7404caae6aacf37",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/04-collinearity/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/04-collinearity/reference.json",
-      "source_sha256": "01aadcac0e7855889b0f591276869b94145b72e219ae7ac7e118747e1da821ae",
-      "sha256": "01aadcac0e7855889b0f591276869b94145b72e219ae7ac7e118747e1da821ae",
+      "source_sha256": "5a3960525582ec2a79531bd02dcfc3d63fa815dd63e9a7e874a642d7b92a97f5",
+      "sha256": "5a3960525582ec2a79531bd02dcfc3d63fa815dd63e9a7e874a642d7b92a97f5",
       "transformation": null
     },
     {
@@ -547,8 +548,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/05-leverage-influence/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/05-leverage-influence/README.md",
-      "source_sha256": "b165bde4793ebe6b1c8ab127fe54d22752498272516678916d2a5d29d463b0f9",
-      "sha256": "b165bde4793ebe6b1c8ab127fe54d22752498272516678916d2a5d29d463b0f9",
+      "source_sha256": "b744f3b6db7e05198bdf7ac969a727df48518ecc3077d591149e648fdd8d46e9",
+      "sha256": "b744f3b6db7e05198bdf7ac969a727df48518ecc3077d591149e648fdd8d46e9",
       "transformation": null
     },
     {
@@ -561,15 +562,15 @@
     {
       "path": "teaching/advanced-econometrics/labs/05-leverage-influence/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/05-leverage-influence/figure.svg",
-      "source_sha256": "a7012314a99756804c8643eb9d14b7b7034ac9a5ce7e69bece9e4f8f7d7f60cb",
-      "sha256": "a7012314a99756804c8643eb9d14b7b7034ac9a5ce7e69bece9e4f8f7d7f60cb",
+      "source_sha256": "bed0a74c8d80e3312a7ea8406864151c3127770ee5460195adde2109fe36125c",
+      "sha256": "bed0a74c8d80e3312a7ea8406864151c3127770ee5460195adde2109fe36125c",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/05-leverage-influence/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/05-leverage-influence/lab.py",
-      "source_sha256": "46c29a3182aac97105be2895933b06cc6e4809bb0d7e96d95b69e591e88e86d1",
-      "sha256": "46c29a3182aac97105be2895933b06cc6e4809bb0d7e96d95b69e591e88e86d1",
+      "source_sha256": "613dfff1bd1b27234d72487928036c05f73629226b63afbd378c2bb16dabd0b1",
+      "sha256": "613dfff1bd1b27234d72487928036c05f73629226b63afbd378c2bb16dabd0b1",
       "transformation": null
     },
     {
@@ -582,8 +583,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/05-leverage-influence/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/05-leverage-influence/reference.json",
-      "source_sha256": "29d4c5b939311d4bbde96abf751e3b48e5abcd8b0be5ddd568706bc468d5cd0c",
-      "sha256": "29d4c5b939311d4bbde96abf751e3b48e5abcd8b0be5ddd568706bc468d5cd0c",
+      "source_sha256": "756a3ec70a7c0423118c9d5ee7521b63448b98b4dcf84a95775d0dcaa650cb2d",
+      "sha256": "756a3ec70a7c0423118c9d5ee7521b63448b98b4dcf84a95775d0dcaa650cb2d",
       "transformation": null
     },
     {
@@ -596,8 +597,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/06-weighted-least-squares/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/06-weighted-least-squares/README.md",
-      "source_sha256": "498296966587ffbed4b5a5801503c1f2cf83695c1cc432a74c3daa1ca0f4627e",
-      "sha256": "498296966587ffbed4b5a5801503c1f2cf83695c1cc432a74c3daa1ca0f4627e",
+      "source_sha256": "231e0506aad7c138000e0740eb08893e0ec24620843a5d818b2070ab8a05d204",
+      "sha256": "231e0506aad7c138000e0740eb08893e0ec24620843a5d818b2070ab8a05d204",
       "transformation": null
     },
     {
@@ -610,22 +611,22 @@
     {
       "path": "teaching/advanced-econometrics/labs/06-weighted-least-squares/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/06-weighted-least-squares/figure.svg",
-      "source_sha256": "4b58ae1971f9db5691224f5b44f7cae86d00da27556c140497a88d8e0676e2d2",
-      "sha256": "4b58ae1971f9db5691224f5b44f7cae86d00da27556c140497a88d8e0676e2d2",
+      "source_sha256": "909b69723b27f2574e6312ccd59e112eb0f7fdf2e0a3f2082d3281513c5a4e3f",
+      "sha256": "909b69723b27f2574e6312ccd59e112eb0f7fdf2e0a3f2082d3281513c5a4e3f",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/06-weighted-least-squares/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/06-weighted-least-squares/lab.py",
-      "source_sha256": "8fe013b204ce4db572f1ce1fc54a0673c360e99a1787652b6ef9844c5321bb0c",
-      "sha256": "8fe013b204ce4db572f1ce1fc54a0673c360e99a1787652b6ef9844c5321bb0c",
+      "source_sha256": "2320a3038a6aecf1db7fc5a11b0bff348e55cda8e0a2bd43edd05239c07efa2b",
+      "sha256": "2320a3038a6aecf1db7fc5a11b0bff348e55cda8e0a2bd43edd05239c07efa2b",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/06-weighted-least-squares/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/06-weighted-least-squares/reference.json",
-      "source_sha256": "ae2f0824ce2033bfdc405072e14971e24720f50070164bc91af579862918e347",
-      "sha256": "ae2f0824ce2033bfdc405072e14971e24720f50070164bc91af579862918e347",
+      "source_sha256": "65c453bcdbd0b851af3f0cc9acd16dfc4b0107ff0f2065e9e07d8a87d47487ef",
+      "sha256": "65c453bcdbd0b851af3f0cc9acd16dfc4b0107ff0f2065e9e07d8a87d47487ef",
       "transformation": null
     },
     {
@@ -645,8 +646,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/07-clustered-inference/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/07-clustered-inference/README.md",
-      "source_sha256": "c16de609059c273386d13eba68df9389f8a2e922a54d6754913725e759ff756c",
-      "sha256": "c16de609059c273386d13eba68df9389f8a2e922a54d6754913725e759ff756c",
+      "source_sha256": "22692a16414c286eed0e0340c525f55a42ddfc763ed78db6aad04486c374ee30",
+      "sha256": "22692a16414c286eed0e0340c525f55a42ddfc763ed78db6aad04486c374ee30",
       "transformation": null
     },
     {
@@ -666,22 +667,22 @@
     {
       "path": "teaching/advanced-econometrics/labs/07-clustered-inference/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/07-clustered-inference/figure.svg",
-      "source_sha256": "c3e70040623d5e5a2b66a265f4b4cff09f0d005742bef2691dec0fb5dfbdd347",
-      "sha256": "c3e70040623d5e5a2b66a265f4b4cff09f0d005742bef2691dec0fb5dfbdd347",
+      "source_sha256": "b8b6756e451940e8d699cdbcd635e384c0c958991681d96d5d698a3db408b993",
+      "sha256": "b8b6756e451940e8d699cdbcd635e384c0c958991681d96d5d698a3db408b993",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/07-clustered-inference/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/07-clustered-inference/lab.py",
-      "source_sha256": "47b681f0ae8e8766eb47a0f43bf40d284087ecd70292b29150a8bdffc98e135f",
-      "sha256": "47b681f0ae8e8766eb47a0f43bf40d284087ecd70292b29150a8bdffc98e135f",
+      "source_sha256": "45cf7b74d60731c985f775c5d92343c65533397bbf34f9713ba1afcca45981dc",
+      "sha256": "45cf7b74d60731c985f775c5d92343c65533397bbf34f9713ba1afcca45981dc",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/07-clustered-inference/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/07-clustered-inference/reference.json",
-      "source_sha256": "d2ca3ff0e3158ff8f8bef503e270a6d0ddd509f7a11fb8e91ac11a78a2d4019f",
-      "sha256": "d2ca3ff0e3158ff8f8bef503e270a6d0ddd509f7a11fb8e91ac11a78a2d4019f",
+      "source_sha256": "7013e065194c8044a7f329606dbca1b5db7a4f488c324061e8f0a703a88cf899",
+      "sha256": "7013e065194c8044a7f329606dbca1b5db7a4f488c324061e8f0a703a88cf899",
       "transformation": null
     },
     {
@@ -694,8 +695,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/08-hac-inference/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/08-hac-inference/README.md",
-      "source_sha256": "c43e73e0761494c5dae28cc32e44c60741b40af12b3d257ed78a22e4e327b08e",
-      "sha256": "c43e73e0761494c5dae28cc32e44c60741b40af12b3d257ed78a22e4e327b08e",
+      "source_sha256": "a281804f60db3cf8c7f8717fbfae35e2d21dab7dca3a8c9467e332de594352ee",
+      "sha256": "a281804f60db3cf8c7f8717fbfae35e2d21dab7dca3a8c9467e332de594352ee",
       "transformation": null
     },
     {
@@ -708,8 +709,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/08-hac-inference/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/08-hac-inference/figure.svg",
-      "source_sha256": "c9cbc42d76e41b212803a0c7bc1e67787f51be5a750be673a1b68ae8436ba698",
-      "sha256": "c9cbc42d76e41b212803a0c7bc1e67787f51be5a750be673a1b68ae8436ba698",
+      "source_sha256": "80da81ff5729bdf2b241c74f256c3d9a503c64103aab05b52f2b5964cd37ab26",
+      "sha256": "80da81ff5729bdf2b241c74f256c3d9a503c64103aab05b52f2b5964cd37ab26",
       "transformation": null
     },
     {
@@ -722,15 +723,15 @@
     {
       "path": "teaching/advanced-econometrics/labs/08-hac-inference/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/08-hac-inference/lab.py",
-      "source_sha256": "0de0250e3dd350860bb03bfe37ad1ad3d984f7bc6a304515e288e5c4b7792b96",
-      "sha256": "0de0250e3dd350860bb03bfe37ad1ad3d984f7bc6a304515e288e5c4b7792b96",
+      "source_sha256": "4624abd5a4a8ec3df91e14d4cb35c02ccf9756c5c6d19beddbae4319d535ea58",
+      "sha256": "4624abd5a4a8ec3df91e14d4cb35c02ccf9756c5c6d19beddbae4319d535ea58",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/08-hac-inference/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/08-hac-inference/reference.json",
-      "source_sha256": "038ebfc2f57b2d2fc855c2b517c1460ee28012440efedd11c6aea69923483399",
-      "sha256": "038ebfc2f57b2d2fc855c2b517c1460ee28012440efedd11c6aea69923483399",
+      "source_sha256": "f2695bb9be4f589ca5d561534547d025986e563c4980cabcef537cb249816dc7",
+      "sha256": "f2695bb9be4f589ca5d561534547d025986e563c4980cabcef537cb249816dc7",
       "transformation": null
     },
     {
@@ -743,8 +744,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/09-joint-restrictions/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/09-joint-restrictions/README.md",
-      "source_sha256": "1ed3dbf9743d779c4e614c2c7ff4015326dd05605439782a7bb052fe7fb2abca",
-      "sha256": "1ed3dbf9743d779c4e614c2c7ff4015326dd05605439782a7bb052fe7fb2abca",
+      "source_sha256": "ddaec75fdd239ef2fa3ab3f8c87a7b1a2c27999571c66705b3ae6caf62258702",
+      "sha256": "ddaec75fdd239ef2fa3ab3f8c87a7b1a2c27999571c66705b3ae6caf62258702",
       "transformation": null
     },
     {
@@ -757,8 +758,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/09-joint-restrictions/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/09-joint-restrictions/figure.svg",
-      "source_sha256": "287a2a2501533752b4a0a5a04b376fe338a30c490828defc500098ab634c5b35",
-      "sha256": "287a2a2501533752b4a0a5a04b376fe338a30c490828defc500098ab634c5b35",
+      "source_sha256": "c9cbdd4dacb23e8f03d6536450c7e989c72bdb99784c5af74e834909206dd6ca",
+      "sha256": "c9cbdd4dacb23e8f03d6536450c7e989c72bdb99784c5af74e834909206dd6ca",
       "transformation": null
     },
     {
@@ -771,15 +772,15 @@
     {
       "path": "teaching/advanced-econometrics/labs/09-joint-restrictions/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/09-joint-restrictions/lab.py",
-      "source_sha256": "6faa33209f0ebeb8755f36b1ef117e6eda776c8dd5f6814abbee129d8a666ff2",
-      "sha256": "6faa33209f0ebeb8755f36b1ef117e6eda776c8dd5f6814abbee129d8a666ff2",
+      "source_sha256": "bcc59576d99acd4b24b9f507b73573402a86d47b46aed6a871d63756e61f26f4",
+      "sha256": "bcc59576d99acd4b24b9f507b73573402a86d47b46aed6a871d63756e61f26f4",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/09-joint-restrictions/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/09-joint-restrictions/reference.json",
-      "source_sha256": "435ce38e16cee52b28353990ae2a050050b55dd8b274a5063efe18886eb52101",
-      "sha256": "435ce38e16cee52b28353990ae2a050050b55dd8b274a5063efe18886eb52101",
+      "source_sha256": "33e59bab4104d76829c80dcf53eff82058c2d6b9a4f08fc0e0eeda6ddc473c38",
+      "sha256": "33e59bab4104d76829c80dcf53eff82058c2d6b9a4f08fc0e0eeda6ddc473c38",
       "transformation": null
     },
     {
@@ -792,8 +793,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/10-nonlinear-delta/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/10-nonlinear-delta/README.md",
-      "source_sha256": "d522f5359beac9d46b0f5ebd9f7b0e158e6da1898aaa1acaf9dbea5e49f02475",
-      "sha256": "d522f5359beac9d46b0f5ebd9f7b0e158e6da1898aaa1acaf9dbea5e49f02475",
+      "source_sha256": "7bb4d368f481486633790be52333f44e1f4afd42453e84b2ea0b4885a8da80a2",
+      "sha256": "7bb4d368f481486633790be52333f44e1f4afd42453e84b2ea0b4885a8da80a2",
       "transformation": null
     },
     {
@@ -806,15 +807,15 @@
     {
       "path": "teaching/advanced-econometrics/labs/10-nonlinear-delta/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/10-nonlinear-delta/figure.svg",
-      "source_sha256": "c8a2e5247e84df7f779d334755629acff09b180fb253a4d61411bd47159d9969",
-      "sha256": "c8a2e5247e84df7f779d334755629acff09b180fb253a4d61411bd47159d9969",
+      "source_sha256": "abe332c308b62d3c414ce3b3beb0f12d4da51b7bd7612c892315c7bb3ab6fb49",
+      "sha256": "abe332c308b62d3c414ce3b3beb0f12d4da51b7bd7612c892315c7bb3ab6fb49",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/10-nonlinear-delta/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/10-nonlinear-delta/lab.py",
-      "source_sha256": "44a889ae62a4f9279707d5c010c2b53bac2c9e834ef4f1d0f9a3f1319d58cbdb",
-      "sha256": "44a889ae62a4f9279707d5c010c2b53bac2c9e834ef4f1d0f9a3f1319d58cbdb",
+      "source_sha256": "f05fab68239fadd001e740329e7b8e369340b42f756df9ac40b3d72b6ffbda6a",
+      "sha256": "f05fab68239fadd001e740329e7b8e369340b42f756df9ac40b3d72b6ffbda6a",
       "transformation": null
     },
     {
@@ -827,8 +828,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/10-nonlinear-delta/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/10-nonlinear-delta/reference.json",
-      "source_sha256": "6f07105616f304b71781bc27fd1f01aa69e4b9a4cc11f000c0f99a2ef77a7b28",
-      "sha256": "6f07105616f304b71781bc27fd1f01aa69e4b9a4cc11f000c0f99a2ef77a7b28",
+      "source_sha256": "e2dda0732370d6c22e0db67318d0c4fe1a1e8d9e89d98c75102379353d1a0a8c",
+      "sha256": "e2dda0732370d6c22e0db67318d0c4fe1a1e8d9e89d98c75102379353d1a0a8c",
       "transformation": null
     },
     {
@@ -841,8 +842,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/11-common-sample/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/11-common-sample/README.md",
-      "source_sha256": "51a9971f2bef58cfa38dccf27746ae2f5ce2ffe9ecb79a211e3a4d8ca518be19",
-      "sha256": "51a9971f2bef58cfa38dccf27746ae2f5ce2ffe9ecb79a211e3a4d8ca518be19",
+      "source_sha256": "316f9233abf59e28bdb5976de112e5981d924a7e33b08e6742453035f5c223e1",
+      "sha256": "316f9233abf59e28bdb5976de112e5981d924a7e33b08e6742453035f5c223e1",
       "transformation": null
     },
     {
@@ -862,22 +863,22 @@
     {
       "path": "teaching/advanced-econometrics/labs/11-common-sample/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/11-common-sample/figure.svg",
-      "source_sha256": "e1d8b1cba79be68d1241d8b46b5cef48379d928c6a2bc6e104e8f25432625cd5",
-      "sha256": "e1d8b1cba79be68d1241d8b46b5cef48379d928c6a2bc6e104e8f25432625cd5",
+      "source_sha256": "366fd8af5e4e925734ae86d270b9cae8fa3285267f9a9d67fb470fa2f676d960",
+      "sha256": "366fd8af5e4e925734ae86d270b9cae8fa3285267f9a9d67fb470fa2f676d960",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/11-common-sample/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/11-common-sample/lab.py",
-      "source_sha256": "f5f5292ec0a586f69e7c71429f018b0164b25db5c7c544b0a4f92e40ee2ee09e",
-      "sha256": "f5f5292ec0a586f69e7c71429f018b0164b25db5c7c544b0a4f92e40ee2ee09e",
+      "source_sha256": "fe8a9714eaec70f99d9894b59808934128e9e84bbca2cefcaf1d70dd2247e62a",
+      "sha256": "fe8a9714eaec70f99d9894b59808934128e9e84bbca2cefcaf1d70dd2247e62a",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/11-common-sample/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/11-common-sample/reference.json",
-      "source_sha256": "820e2383be1c3bac6b9a7862ad3132f5a88ae069d76f739f41196537156e27dc",
-      "sha256": "820e2383be1c3bac6b9a7862ad3132f5a88ae069d76f739f41196537156e27dc",
+      "source_sha256": "7afa9c0b4476f0dc80da581121ea37d7e4dab659594ff342596595ad2bba0197",
+      "sha256": "7afa9c0b4476f0dc80da581121ea37d7e4dab659594ff342596595ad2bba0197",
       "transformation": null
     },
     {
@@ -890,43 +891,43 @@
     {
       "path": "teaching/advanced-econometrics/labs/12-polynomial-centering/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/12-polynomial-centering/README.md",
-      "source_sha256": "3ab161318e6b3e114541e38c329229b70b2ce044ac73a69dbc336035e9819395",
-      "sha256": "3ab161318e6b3e114541e38c329229b70b2ce044ac73a69dbc336035e9819395",
+      "source_sha256": "f37171286cabd759bd862be7f5fd5f23a7e8826c6727326f12ed32a3a1767a2a",
+      "sha256": "f37171286cabd759bd862be7f5fd5f23a7e8826c6727326f12ed32a3a1767a2a",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/12-polynomial-centering/dataset.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/12-polynomial-centering/dataset.json",
-      "source_sha256": "30b723cae4d77550f3d8cb2fa9ad6b6980eb1b85674f11966207b9ebae4eb7b6",
-      "sha256": "30b723cae4d77550f3d8cb2fa9ad6b6980eb1b85674f11966207b9ebae4eb7b6",
+      "source_sha256": "727f21034f470a89c6a06703aadd8d2baf8854e20312d63a170538fe8c679e3d",
+      "sha256": "727f21034f470a89c6a06703aadd8d2baf8854e20312d63a170538fe8c679e3d",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/12-polynomial-centering/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/12-polynomial-centering/figure.svg",
-      "source_sha256": "a2ccf6e23a44a9c92207b264bbf3255abda1e2a0cbb4b613dd9625d6ff21b6bd",
-      "sha256": "a2ccf6e23a44a9c92207b264bbf3255abda1e2a0cbb4b613dd9625d6ff21b6bd",
+      "source_sha256": "00d96781a2a960fa0666cdeb815c3186f74e3bc29ac0dbb3450e14b2d3fef1cc",
+      "sha256": "00d96781a2a960fa0666cdeb815c3186f74e3bc29ac0dbb3450e14b2d3fef1cc",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/12-polynomial-centering/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/12-polynomial-centering/lab.py",
-      "source_sha256": "8f0eafbe894355cb70856a6ea59069263ffe3bb7df1d5db7e29eb90524402780",
-      "sha256": "8f0eafbe894355cb70856a6ea59069263ffe3bb7df1d5db7e29eb90524402780",
+      "source_sha256": "f58bcc03d51125f2abb46ab2e2b81e238356abdce6a448893862f9970a51f30c",
+      "sha256": "f58bcc03d51125f2abb46ab2e2b81e238356abdce6a448893862f9970a51f30c",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/12-polynomial-centering/polynomial_centering.xlsx",
       "source_path": "docs/teaching/advanced-econometrics/labs/12-polynomial-centering/polynomial_centering.xlsx",
-      "source_sha256": "cb11fc2d1882585596ad893618cd67218ee0ee760cba71e4ce688dcb355e1732",
-      "sha256": "cb11fc2d1882585596ad893618cd67218ee0ee760cba71e4ce688dcb355e1732",
+      "source_sha256": "920b70f7eb8cc3af3fac8974a0235ef5a3d24d26225289816c014fc6ce618a47",
+      "sha256": "920b70f7eb8cc3af3fac8974a0235ef5a3d24d26225289816c014fc6ce618a47",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/12-polynomial-centering/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/12-polynomial-centering/reference.json",
-      "source_sha256": "9eb2992b8d2e51eaf76166e6cfbaeca8e1b4c6e325aaf223084a59f43f0dcaad",
-      "sha256": "9eb2992b8d2e51eaf76166e6cfbaeca8e1b4c6e325aaf223084a59f43f0dcaad",
+      "source_sha256": "06513a4436b1adfbeb12a007a92ab98d3e1b962b1132c57032864a2316728be6",
+      "sha256": "06513a4436b1adfbeb12a007a92ab98d3e1b962b1132c57032864a2316728be6",
       "transformation": null
     },
     {
@@ -939,8 +940,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/13-fixed-effects-algebra/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/13-fixed-effects-algebra/README.md",
-      "source_sha256": "2adaa26b697a41ad7a227aace287c0221171ebf2dbde999d7b74ca360231fbd7",
-      "sha256": "2adaa26b697a41ad7a227aace287c0221171ebf2dbde999d7b74ca360231fbd7",
+      "source_sha256": "b3abfdb9b05fd05971fad589720f5b1be48dad5c0ef365ad409413bf963b9410",
+      "sha256": "b3abfdb9b05fd05971fad589720f5b1be48dad5c0ef365ad409413bf963b9410",
       "transformation": null
     },
     {
@@ -953,8 +954,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/13-fixed-effects-algebra/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/13-fixed-effects-algebra/figure.svg",
-      "source_sha256": "901b6d318fd98d03c1de22dbc70280280889e17c5f35155d4c82547891eab722",
-      "sha256": "901b6d318fd98d03c1de22dbc70280280889e17c5f35155d4c82547891eab722",
+      "source_sha256": "567f10fac615ac8a5b37aa0149beecb5ecbf9fe54ba24094cd5d936fa25e6627",
+      "sha256": "567f10fac615ac8a5b37aa0149beecb5ecbf9fe54ba24094cd5d936fa25e6627",
       "transformation": null
     },
     {
@@ -967,15 +968,15 @@
     {
       "path": "teaching/advanced-econometrics/labs/13-fixed-effects-algebra/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/13-fixed-effects-algebra/lab.py",
-      "source_sha256": "eea3fef92fb096d6d323058f2f35f34391e6ccefe63f2badb8831cb6e5903b4f",
-      "sha256": "eea3fef92fb096d6d323058f2f35f34391e6ccefe63f2badb8831cb6e5903b4f",
+      "source_sha256": "10d2c7f575f9bbefff68785017e8c6fcaac11a2a3e89556ddc170d8a6a2e49cf",
+      "sha256": "10d2c7f575f9bbefff68785017e8c6fcaac11a2a3e89556ddc170d8a6a2e49cf",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/13-fixed-effects-algebra/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/13-fixed-effects-algebra/reference.json",
-      "source_sha256": "ef8f61d4b0ebef4b885de167e9bc030cea914700b8b64d586f8f8c1bfc1db5f1",
-      "sha256": "ef8f61d4b0ebef4b885de167e9bc030cea914700b8b64d586f8f8c1bfc1db5f1",
+      "source_sha256": "f73943c0cbdb97db599945b6c077733ae0fbe95b769ab51261d7cea0e4499e76",
+      "sha256": "f73943c0cbdb97db599945b6c077733ae0fbe95b769ab51261d7cea0e4499e76",
       "transformation": null
     },
     {
@@ -988,8 +989,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/14-first-differences/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/14-first-differences/README.md",
-      "source_sha256": "d9a98714685390f6765d486b838f40c8fbef05d0294228a24a4b9985cdbfd2bd",
-      "sha256": "d9a98714685390f6765d486b838f40c8fbef05d0294228a24a4b9985cdbfd2bd",
+      "source_sha256": "5f48d90665df88872d12082549b3a024f59b098558d6e84963de154fdcbdd254",
+      "sha256": "5f48d90665df88872d12082549b3a024f59b098558d6e84963de154fdcbdd254",
       "transformation": null
     },
     {
@@ -1002,8 +1003,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/14-first-differences/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/14-first-differences/figure.svg",
-      "source_sha256": "b8f18f9bfd4ff0d74adb672c41da4baf609b468b2f77f3d9295217a38e34c263",
-      "sha256": "b8f18f9bfd4ff0d74adb672c41da4baf609b468b2f77f3d9295217a38e34c263",
+      "source_sha256": "e7003f7f932a507b7c1d8f788e921bc4582c93109d5b2b34e5433a113b21d2a4",
+      "sha256": "e7003f7f932a507b7c1d8f788e921bc4582c93109d5b2b34e5433a113b21d2a4",
       "transformation": null
     },
     {
@@ -1016,15 +1017,15 @@
     {
       "path": "teaching/advanced-econometrics/labs/14-first-differences/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/14-first-differences/lab.py",
-      "source_sha256": "48b5050a2817a1ad5958d64d16a1ba7551859bc4def2e2256edc92727b0aba6f",
-      "sha256": "48b5050a2817a1ad5958d64d16a1ba7551859bc4def2e2256edc92727b0aba6f",
+      "source_sha256": "7d3966eab6258b80ed4ae5ce5eb8b3cb9fe16d8d1006f855c2d7864b659abb42",
+      "sha256": "7d3966eab6258b80ed4ae5ce5eb8b3cb9fe16d8d1006f855c2d7864b659abb42",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/14-first-differences/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/14-first-differences/reference.json",
-      "source_sha256": "57653d275c75fc4bab9d5c08280bb8dbd729bc7c360a308f24f5018a6141dd23",
-      "sha256": "57653d275c75fc4bab9d5c08280bb8dbd729bc7c360a308f24f5018a6141dd23",
+      "source_sha256": "d25d2833979dd426e2993d1d1783b5ce21e5d385f9d7a53116a538d21f36e450",
+      "sha256": "d25d2833979dd426e2993d1d1783b5ce21e5d385f9d7a53116a538d21f36e450",
       "transformation": null
     },
     {
@@ -1037,8 +1038,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/15-iv-moment-condition/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/15-iv-moment-condition/README.md",
-      "source_sha256": "288f53082fea92b2c07111c78a412b12b36dbec423cf9f17cee9fe4811b7c64b",
-      "sha256": "288f53082fea92b2c07111c78a412b12b36dbec423cf9f17cee9fe4811b7c64b",
+      "source_sha256": "497de971e4b2c8fedce8aecdcf62cf6bf56334db754811c20d5bc8b524f4dd12",
+      "sha256": "497de971e4b2c8fedce8aecdcf62cf6bf56334db754811c20d5bc8b524f4dd12",
       "transformation": null
     },
     {
@@ -1051,8 +1052,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/15-iv-moment-condition/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/15-iv-moment-condition/figure.svg",
-      "source_sha256": "834295b85c679e134dbb320acfbaf5b0d3b51dbe073b159d7b19862d7f19df1d",
-      "sha256": "834295b85c679e134dbb320acfbaf5b0d3b51dbe073b159d7b19862d7f19df1d",
+      "source_sha256": "0a55d98f229615de8ab0eaecf1f3e40399726bdaa61aa1a63efd2b58c68ded83",
+      "sha256": "0a55d98f229615de8ab0eaecf1f3e40399726bdaa61aa1a63efd2b58c68ded83",
       "transformation": null
     },
     {
@@ -1065,15 +1066,15 @@
     {
       "path": "teaching/advanced-econometrics/labs/15-iv-moment-condition/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/15-iv-moment-condition/lab.py",
-      "source_sha256": "1456ee9942825594e99004607f3e07c522d26e5a6b1a18dfab46358ab9d67eb4",
-      "sha256": "1456ee9942825594e99004607f3e07c522d26e5a6b1a18dfab46358ab9d67eb4",
+      "source_sha256": "782894df70288433a60c0a1489a7d437e4e8baee6eb3b8c998580564346038c1",
+      "sha256": "782894df70288433a60c0a1489a7d437e4e8baee6eb3b8c998580564346038c1",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/15-iv-moment-condition/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/15-iv-moment-condition/reference.json",
-      "source_sha256": "9a6202d96ce71c37bf3158d58e901fd9058afc74b6ac78d0026b1af5393f772b",
-      "sha256": "9a6202d96ce71c37bf3158d58e901fd9058afc74b6ac78d0026b1af5393f772b",
+      "source_sha256": "76badf07091a4e5df0f36dbf2adf4f2bbbc21723d5926403d844deb2f9ecadf9",
+      "sha256": "76badf07091a4e5df0f36dbf2adf4f2bbbc21723d5926403d844deb2f9ecadf9",
       "transformation": null
     },
     {
@@ -1086,8 +1087,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/16-weak-instruments/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/16-weak-instruments/README.md",
-      "source_sha256": "cef189ad9323f274a695ee03dfb01cd0eb3768fffcc7bd975fad1d5614b0f7ce",
-      "sha256": "cef189ad9323f274a695ee03dfb01cd0eb3768fffcc7bd975fad1d5614b0f7ce",
+      "source_sha256": "6681ff9feed441c9695ee528f99c5c706bcd6d938a9d3449b187513bfdc04594",
+      "sha256": "6681ff9feed441c9695ee528f99c5c706bcd6d938a9d3449b187513bfdc04594",
       "transformation": null
     },
     {
@@ -1100,22 +1101,22 @@
     {
       "path": "teaching/advanced-econometrics/labs/16-weak-instruments/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/16-weak-instruments/figure.svg",
-      "source_sha256": "76d429184c1f345b8e52176429c97af7a63f52d023619dba0b814b4cfa910484",
-      "sha256": "76d429184c1f345b8e52176429c97af7a63f52d023619dba0b814b4cfa910484",
+      "source_sha256": "7135866af7c3a5ed55d06f4e9143dfa3c886970bd04ac982b47e5f130be4f308",
+      "sha256": "7135866af7c3a5ed55d06f4e9143dfa3c886970bd04ac982b47e5f130be4f308",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/16-weak-instruments/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/16-weak-instruments/lab.py",
-      "source_sha256": "a05b2e3bb72648ebcf761b1ee83216b6822c0b5f73f2b0cb80919097f34967d6",
-      "sha256": "a05b2e3bb72648ebcf761b1ee83216b6822c0b5f73f2b0cb80919097f34967d6",
+      "source_sha256": "5b68db80ff165d5d9b906779b963ee7218c67367a6412065deef569c80c04e20",
+      "sha256": "5b68db80ff165d5d9b906779b963ee7218c67367a6412065deef569c80c04e20",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/16-weak-instruments/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/16-weak-instruments/reference.json",
-      "source_sha256": "3064bef745c46c3e25a8fc63c5cb039202c98e99968cd0f28c7a84dcf939ff98",
-      "sha256": "3064bef745c46c3e25a8fc63c5cb039202c98e99968cd0f28c7a84dcf939ff98",
+      "source_sha256": "fa96c5f3985d0e05d7234bfa1a13b3896335d52147a30a331c4d76badec461d1",
+      "sha256": "fa96c5f3985d0e05d7234bfa1a13b3896335d52147a30a331c4d76badec461d1",
       "transformation": null
     },
     {
@@ -1135,8 +1136,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/17-logit-marginal-effects/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/17-logit-marginal-effects/README.md",
-      "source_sha256": "a65b0735352b616dbb76faa4ae73e6d96f03ee2277f30318cc025616ffc5a9de",
-      "sha256": "a65b0735352b616dbb76faa4ae73e6d96f03ee2277f30318cc025616ffc5a9de",
+      "source_sha256": "f67aa3158f6471e3122881abd9e5e0ab8e3ba44646c9c04daf4c02ff3fd0104c",
+      "sha256": "f67aa3158f6471e3122881abd9e5e0ab8e3ba44646c9c04daf4c02ff3fd0104c",
       "transformation": null
     },
     {
@@ -1149,15 +1150,15 @@
     {
       "path": "teaching/advanced-econometrics/labs/17-logit-marginal-effects/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/17-logit-marginal-effects/figure.svg",
-      "source_sha256": "f98ef7ce5ab75cc3a49bb59b146e8d01514bfc77ecbe16de8c48b2ab4b6b3a50",
-      "sha256": "f98ef7ce5ab75cc3a49bb59b146e8d01514bfc77ecbe16de8c48b2ab4b6b3a50",
+      "source_sha256": "3f56ab5e04c7761ed13c5cf13c779bceac53e7eee39f8c7b03e00254180f1676",
+      "sha256": "3f56ab5e04c7761ed13c5cf13c779bceac53e7eee39f8c7b03e00254180f1676",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/17-logit-marginal-effects/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/17-logit-marginal-effects/lab.py",
-      "source_sha256": "096181108a3da0243521bea77bdf5cbff9c5848db7bcb68154473e3fbf56e88b",
-      "sha256": "096181108a3da0243521bea77bdf5cbff9c5848db7bcb68154473e3fbf56e88b",
+      "source_sha256": "26bcef9153927a98fc1cdbc1e45026812b339d57d733545a99f0dd02d21a1cf1",
+      "sha256": "26bcef9153927a98fc1cdbc1e45026812b339d57d733545a99f0dd02d21a1cf1",
       "transformation": null
     },
     {
@@ -1170,8 +1171,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/17-logit-marginal-effects/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/17-logit-marginal-effects/reference.json",
-      "source_sha256": "753149dbd0b902c5e4f1cfb99091822eb1265d7b8c8ce06d13b982bd9a288a6a",
-      "sha256": "753149dbd0b902c5e4f1cfb99091822eb1265d7b8c8ce06d13b982bd9a288a6a",
+      "source_sha256": "dbaadc05768079b6fc773303dc3f28d3a57b072a7af9cc030a0718104223b053",
+      "sha256": "dbaadc05768079b6fc773303dc3f28d3a57b072a7af9cc030a0718104223b053",
       "transformation": null
     },
     {
@@ -1184,8 +1185,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/18-poisson-exposure/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/18-poisson-exposure/README.md",
-      "source_sha256": "bca85a36e58bb1e95ed4328401f8c90e8d1fef802941dc7801c9e197eb933113",
-      "sha256": "bca85a36e58bb1e95ed4328401f8c90e8d1fef802941dc7801c9e197eb933113",
+      "source_sha256": "068162e0b91e7c0272d0bc1456c274f6a379cc84a0a5280dc9a786526e4c7774",
+      "sha256": "068162e0b91e7c0272d0bc1456c274f6a379cc84a0a5280dc9a786526e4c7774",
       "transformation": null
     },
     {
@@ -1198,15 +1199,15 @@
     {
       "path": "teaching/advanced-econometrics/labs/18-poisson-exposure/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/18-poisson-exposure/figure.svg",
-      "source_sha256": "2db115e1b6bf751e6f4606fee72ad30a066e1ff1976dec40f58c0896ecb31f59",
-      "sha256": "2db115e1b6bf751e6f4606fee72ad30a066e1ff1976dec40f58c0896ecb31f59",
+      "source_sha256": "c733c66de39f3acaa63ddcdf56b4751fa74a5bff6880e36148f4778cba1c654b",
+      "sha256": "c733c66de39f3acaa63ddcdf56b4751fa74a5bff6880e36148f4778cba1c654b",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/18-poisson-exposure/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/18-poisson-exposure/lab.py",
-      "source_sha256": "d4af5dd8c239bc8fc5fc18a19ca130fdc215bad5594ac31b724304cb538c0c59",
-      "sha256": "d4af5dd8c239bc8fc5fc18a19ca130fdc215bad5594ac31b724304cb538c0c59",
+      "source_sha256": "dd4241d7f11024ce46a03c7514a59a803944c3116ab5955fc415cede27ae04c3",
+      "sha256": "dd4241d7f11024ce46a03c7514a59a803944c3116ab5955fc415cede27ae04c3",
       "transformation": null
     },
     {
@@ -1219,8 +1220,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/18-poisson-exposure/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/18-poisson-exposure/reference.json",
-      "source_sha256": "f48b48873eab361693195b281034170149ff1904fbff3c075e155dd0c80dd6c3",
-      "sha256": "f48b48873eab361693195b281034170149ff1904fbff3c075e155dd0c80dd6c3",
+      "source_sha256": "66b57da762648b5c9b34947367a9c09eedd4b3534dc02e0dd004e76bf7e89e2d",
+      "sha256": "66b57da762648b5c9b34947367a9c09eedd4b3534dc02e0dd004e76bf7e89e2d",
       "transformation": null
     },
     {
@@ -1233,8 +1234,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/19-local-projections/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/19-local-projections/README.md",
-      "source_sha256": "475ffdcc2a60051c3108f70da6229c7e657ffa49a6980aa12a86ca91947ae50e",
-      "sha256": "475ffdcc2a60051c3108f70da6229c7e657ffa49a6980aa12a86ca91947ae50e",
+      "source_sha256": "74cc308a7a40fdd2058859bdd53430c5ba1f30e3f333b2dd07deac53d836f26b",
+      "sha256": "74cc308a7a40fdd2058859bdd53430c5ba1f30e3f333b2dd07deac53d836f26b",
       "transformation": null
     },
     {
@@ -1247,15 +1248,15 @@
     {
       "path": "teaching/advanced-econometrics/labs/19-local-projections/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/19-local-projections/figure.svg",
-      "source_sha256": "e6531561fa8baeb13c5b0171559d6db9187e355fea738654cfc5a0a503777ed2",
-      "sha256": "e6531561fa8baeb13c5b0171559d6db9187e355fea738654cfc5a0a503777ed2",
+      "source_sha256": "c717b9bf2091892af7de6619eaa3fdc98280069c4b5c699df6cf26e5f4a5fc08",
+      "sha256": "c717b9bf2091892af7de6619eaa3fdc98280069c4b5c699df6cf26e5f4a5fc08",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/19-local-projections/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/19-local-projections/lab.py",
-      "source_sha256": "8ce83b5e73449ab4a3137a592530d3e7505c9739eb21fa31bb1cfd1f5dfbf828",
-      "sha256": "8ce83b5e73449ab4a3137a592530d3e7505c9739eb21fa31bb1cfd1f5dfbf828",
+      "source_sha256": "667c5bd11dd702b76958c8559559257d5a7fa91d772b80ca4c23587ca77b8e37",
+      "sha256": "667c5bd11dd702b76958c8559559257d5a7fa91d772b80ca4c23587ca77b8e37",
       "transformation": null
     },
     {
@@ -1268,8 +1269,8 @@
     {
       "path": "teaching/advanced-econometrics/labs/19-local-projections/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/19-local-projections/reference.json",
-      "source_sha256": "e84808885695a2823ff35f4cf602e662fc715e66b9c05351dcaa3ac6e0095a8d",
-      "sha256": "e84808885695a2823ff35f4cf602e662fc715e66b9c05351dcaa3ac6e0095a8d",
+      "source_sha256": "5f6f4ede8669e6f3372b14a6631037140e30a9286222fdf302666775fd540523",
+      "sha256": "5f6f4ede8669e6f3372b14a6631037140e30a9286222fdf302666775fd540523",
       "transformation": null
     },
     {
@@ -1282,43 +1283,43 @@
     {
       "path": "teaching/advanced-econometrics/labs/20-specification-report/index.md",
       "source_path": "docs/teaching/advanced-econometrics/labs/20-specification-report/README.md",
-      "source_sha256": "aaf823766fc5f182c91a85043de63a00435c3d3848d2779e553f66febbd1ed32",
-      "sha256": "aaf823766fc5f182c91a85043de63a00435c3d3848d2779e553f66febbd1ed32",
+      "source_sha256": "c252c4c90aa89ae94fa1dbb2171148b1f7ba991ff517b1334f3f67f42bc83e86",
+      "sha256": "c252c4c90aa89ae94fa1dbb2171148b1f7ba991ff517b1334f3f67f42bc83e86",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/20-specification-report/dataset.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/20-specification-report/dataset.json",
-      "source_sha256": "c560e707dee8e915c529022eff62aebcd4b895f3683344917559bc65c49c3d41",
-      "sha256": "c560e707dee8e915c529022eff62aebcd4b895f3683344917559bc65c49c3d41",
+      "source_sha256": "ba5f374fd4bed50f3c579a8aa7d43c2067e10cf94dbca1f602eb40248f70f645",
+      "sha256": "ba5f374fd4bed50f3c579a8aa7d43c2067e10cf94dbca1f602eb40248f70f645",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/20-specification-report/figure.svg",
       "source_path": "docs/teaching/advanced-econometrics/labs/20-specification-report/figure.svg",
-      "source_sha256": "aacd588d61bc5ea3ebf3f671cc94a383ef764b12184d8fa7d7c45baf1d93844c",
-      "sha256": "aacd588d61bc5ea3ebf3f671cc94a383ef764b12184d8fa7d7c45baf1d93844c",
+      "source_sha256": "5c16d8b1b475123b0c64c6093dad1948d41da279e58af9fb0ebb9945168eeb71",
+      "sha256": "5c16d8b1b475123b0c64c6093dad1948d41da279e58af9fb0ebb9945168eeb71",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/20-specification-report/lab.py",
       "source_path": "docs/teaching/advanced-econometrics/labs/20-specification-report/lab.py",
-      "source_sha256": "dc0e4eb5fa8ea46e985095a50b0bf09340ffe14ee6d82ca3ac0d71d88b600f6f",
-      "sha256": "dc0e4eb5fa8ea46e985095a50b0bf09340ffe14ee6d82ca3ac0d71d88b600f6f",
+      "source_sha256": "43103a14d88753e541f9c5d6d6066ceeb654488c47da137ebe42f916b020efea",
+      "sha256": "43103a14d88753e541f9c5d6d6066ceeb654488c47da137ebe42f916b020efea",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/20-specification-report/reference.json",
       "source_path": "docs/teaching/advanced-econometrics/labs/20-specification-report/reference.json",
-      "source_sha256": "6d6e7e1ccdd18a031f096e0f3a2724d22519fd80101eacad56692189e030a54c",
-      "sha256": "6d6e7e1ccdd18a031f096e0f3a2724d22519fd80101eacad56692189e030a54c",
+      "source_sha256": "20d8d5090db086e91b9c93ae138503b067c0b24ebca9997bb9a4b78dd6c3c822",
+      "sha256": "20d8d5090db086e91b9c93ae138503b067c0b24ebca9997bb9a4b78dd6c3c822",
       "transformation": null
     },
     {
       "path": "teaching/advanced-econometrics/labs/20-specification-report/specification_report.xlsx",
       "source_path": "docs/teaching/advanced-econometrics/labs/20-specification-report/specification_report.xlsx",
-      "source_sha256": "5425660c2381c63f09e2c728a208881ca20f0e982c7b9885611f22fe9ffc822d",
-      "sha256": "5425660c2381c63f09e2c728a208881ca20f0e982c7b9885611f22fe9ffc822d",
+      "source_sha256": "b85511afcdc45ee25b20e8179ba0490d453d30b1512f3112859f959f34ee6d6b",
+      "sha256": "b85511afcdc45ee25b20e8179ba0490d453d30b1512f3112859f959f34ee6d6b",
       "transformation": null
     },
     {
@@ -1345,8 +1346,8 @@
     {
       "path": "teaching/instructors/02-wage-distributions.md",
       "source_path": "docs/teaching/instructors/02-wage-distributions.md",
-      "source_sha256": "137d6b4cf647abd05f845f005256509c44e73ac07bd58211fec4162c4d8e1449",
-      "sha256": "137d6b4cf647abd05f845f005256509c44e73ac07bd58211fec4162c4d8e1449",
+      "source_sha256": "5e1428b4dacea701b0bcbea25ce7ee20e325f73c5c0b757b0438fe431b1bb4cc",
+      "sha256": "5e1428b4dacea701b0bcbea25ce7ee20e325f73c5c0b757b0438fe431b1bb4cc",
       "transformation": null
     },
     {
@@ -1424,7 +1425,7 @@
       "source_path": "docs/teaching/instructors/13-instrumental-variables.md",
       "source_sha256": "3093f11d73047aaebb6e9307e2086801d09e61a1e76c7f24e81dcfe1d29e9406",
       "sha256": "bf197050a4207f0e41790ad179f5be86579ff4be8466c161bb28d6ff294567d0",
-      "transformation": "Standalone public entry files use index.md; method-document links use the public docs directory; the download link selects teaching patch v0.1.1."
+      "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
       "path": "teaching/instructors/14-randomized-program.md",
@@ -1681,15 +1682,15 @@
     {
       "path": "teaching/labs/02-wage-distributions/lab.py",
       "source_path": "docs/teaching/labs/02-wage-distributions/lab.py",
-      "source_sha256": "ee82f47917ea4c4c07b14e7d02ebcfe01431cdf8f7a32521932ece5c22d65810",
-      "sha256": "ee82f47917ea4c4c07b14e7d02ebcfe01431cdf8f7a32521932ece5c22d65810",
+      "source_sha256": "fd3609859c7e21277adb617e0460bc6721c1f405eb6df1a10e3de8424b40b2d7",
+      "sha256": "fd3609859c7e21277adb617e0460bc6721c1f405eb6df1a10e3de8424b40b2d7",
       "transformation": null
     },
     {
       "path": "teaching/labs/02-wage-distributions/reference.json",
       "source_path": "docs/teaching/labs/02-wage-distributions/reference.json",
-      "source_sha256": "b8ffb62ac690db90fa0722cb0fdcbb0339d5c39ee414d90e419ce55807ca3550",
-      "sha256": "b8ffb62ac690db90fa0722cb0fdcbb0339d5c39ee414d90e419ce55807ca3550",
+      "source_sha256": "23f564277be997a3f802ae59def9746b404c9e55774cfbb4503d5972f9b64dc4",
+      "sha256": "23f564277be997a3f802ae59def9746b404c9e55774cfbb4503d5972f9b64dc4",
       "transformation": null
     },
     {
@@ -1779,8 +1780,8 @@
     {
       "path": "teaching/labs/04-class-size/reference.json",
       "source_path": "docs/teaching/labs/04-class-size/reference.json",
-      "source_sha256": "b75f5a7a3ec93c906e9e1d35bffc5bc9e1cfc25d6cd22c22708fd013ac552d80",
-      "sha256": "b75f5a7a3ec93c906e9e1d35bffc5bc9e1cfc25d6cd22c22708fd013ac552d80",
+      "source_sha256": "fb1f4fdc41a180c48596e917cf05b121d96095629b3916c72df365ac91adb8be",
+      "sha256": "fb1f4fdc41a180c48596e917cf05b121d96095629b3916c72df365ac91adb8be",
       "transformation": null
     },
     {
@@ -1821,8 +1822,8 @@
     {
       "path": "teaching/labs/05-inference/reference.json",
       "source_path": "docs/teaching/labs/05-inference/reference.json",
-      "source_sha256": "00c4c795572ebd8f5f29cd5081136f8b0690a78152dd4a8fb7aaf85b04c796e0",
-      "sha256": "00c4c795572ebd8f5f29cd5081136f8b0690a78152dd4a8fb7aaf85b04c796e0",
+      "source_sha256": "1c489714fa073c9c6b7297d28fae57ea147bce67cc4086f40f3c269ce2549fd6",
+      "sha256": "1c489714fa073c9c6b7297d28fae57ea147bce67cc4086f40f3c269ce2549fd6",
       "transformation": null
     },
     {
@@ -1870,8 +1871,8 @@
     {
       "path": "teaching/labs/06-controls/reference.json",
       "source_path": "docs/teaching/labs/06-controls/reference.json",
-      "source_sha256": "a6656f93339c35bd3c4d95a845febf0f8c930afbdcb59ef87394fe872c9b2bdd",
-      "sha256": "a6656f93339c35bd3c4d95a845febf0f8c930afbdcb59ef87394fe872c9b2bdd",
+      "source_sha256": "888b2fa8cbeb045b04c4773a41dd0a495d44e7b00fa300f5f20547914ce86d77",
+      "sha256": "888b2fa8cbeb045b04c4773a41dd0a495d44e7b00fa300f5f20547914ce86d77",
       "transformation": null
     },
     {
@@ -1919,8 +1920,8 @@
     {
       "path": "teaching/labs/07-interactions/reference.json",
       "source_path": "docs/teaching/labs/07-interactions/reference.json",
-      "source_sha256": "46992b6081312ef8eb8c73440843831ebbd34b73f2d3dbf633790805ade70f4a",
-      "sha256": "46992b6081312ef8eb8c73440843831ebbd34b73f2d3dbf633790805ade70f4a",
+      "source_sha256": "edcea5af2fa4e4df6d01dfcb5e4b5509a5ff8a826ea04c70310090eff57b8a49",
+      "sha256": "edcea5af2fa4e4df6d01dfcb5e4b5509a5ff8a826ea04c70310090eff57b8a49",
       "transformation": null
     },
     {
@@ -1968,8 +1969,8 @@
     {
       "path": "teaching/labs/08-functional-form/reference.json",
       "source_path": "docs/teaching/labs/08-functional-form/reference.json",
-      "source_sha256": "fc11ff52e75f870f722d82b9158e89cbb3e4533f41db34d21497b7eb01a03dbc",
-      "sha256": "fc11ff52e75f870f722d82b9158e89cbb3e4533f41db34d21497b7eb01a03dbc",
+      "source_sha256": "4eaaf4a281213776ee873a76b9d3354ade75a9e0b99f565bba90b3d18b497546",
+      "sha256": "4eaaf4a281213776ee873a76b9d3354ade75a9e0b99f565bba90b3d18b497546",
       "transformation": null
     },
     {
@@ -2024,8 +2025,8 @@
     {
       "path": "teaching/labs/09-robust-uncertainty/reference.json",
       "source_path": "docs/teaching/labs/09-robust-uncertainty/reference.json",
-      "source_sha256": "266fcfd1430c0341d49396d43f6bc469d8a582ce8267d528c0b476a7407dd6d2",
-      "sha256": "266fcfd1430c0341d49396d43f6bc469d8a582ce8267d528c0b476a7407dd6d2",
+      "source_sha256": "ab153b982941ba2bb4f585ad700c668c6699f91bb8b4080604c6d67353a1cdee",
+      "sha256": "ab153b982941ba2bb4f585ad700c668c6699f91bb8b4080604c6d67353a1cdee",
       "transformation": null
     },
     {
@@ -2073,8 +2074,8 @@
     {
       "path": "teaching/labs/10-joint-tests/reference.json",
       "source_path": "docs/teaching/labs/10-joint-tests/reference.json",
-      "source_sha256": "d183edffdbdfa01721cd1b14c5cde61c9b1d105cf0fe0d2a89cf748693a654a3",
-      "sha256": "d183edffdbdfa01721cd1b14c5cde61c9b1d105cf0fe0d2a89cf748693a654a3",
+      "source_sha256": "4134be43e61d57f1b268681b7b1042672b0b816237d4e4a1c39f2d40209e2d02",
+      "sha256": "4134be43e61d57f1b268681b7b1042672b0b816237d4e4a1c39f2d40209e2d02",
       "transformation": null
     },
     {
@@ -2122,8 +2123,8 @@
     {
       "path": "teaching/labs/11-panel-fixed-effects/reference.json",
       "source_path": "docs/teaching/labs/11-panel-fixed-effects/reference.json",
-      "source_sha256": "1283c0a65c035433821c593a793885c29f96d9cb6e983b5f2e066cf28e4e563e",
-      "sha256": "1283c0a65c035433821c593a793885c29f96d9cb6e983b5f2e066cf28e4e563e",
+      "source_sha256": "3816b9db3854daaf261ffbecb07ef74c42c269b22b95ef36415e5ced590a42f4",
+      "sha256": "3816b9db3854daaf261ffbecb07ef74c42c269b22b95ef36415e5ced590a42f4",
       "transformation": null
     },
     {
@@ -2136,8 +2137,8 @@
     {
       "path": "teaching/labs/12-binary-outcomes/index.md",
       "source_path": "docs/teaching/labs/12-binary-outcomes/README.md",
-      "source_sha256": "064a15e21c756bbb26ea19d688f9fbb197d9c1d7923ed1a2febcef1f93d37363",
-      "sha256": "064a15e21c756bbb26ea19d688f9fbb197d9c1d7923ed1a2febcef1f93d37363",
+      "source_sha256": "c0853068c719646f6cc07fa1a6179b59285c96aeb4aa3a3949a71254e5dba5f9",
+      "sha256": "c0853068c719646f6cc07fa1a6179b59285c96aeb4aa3a3949a71254e5dba5f9",
       "transformation": null
     },
     {
@@ -2171,8 +2172,8 @@
     {
       "path": "teaching/labs/12-binary-outcomes/reference.json",
       "source_path": "docs/teaching/labs/12-binary-outcomes/reference.json",
-      "source_sha256": "0c2b00cbfe4427369c8fb7843adfda92632d7a3329915033ca63f7fecb5e472d",
-      "sha256": "0c2b00cbfe4427369c8fb7843adfda92632d7a3329915033ca63f7fecb5e472d",
+      "source_sha256": "cd2d386408921f399c5f6dcde4a8c874db043cffc364d00560bbeacb89f1417f",
+      "sha256": "cd2d386408921f399c5f6dcde4a8c874db043cffc364d00560bbeacb89f1417f",
       "transformation": null
     },
     {
@@ -2213,8 +2214,8 @@
     {
       "path": "teaching/labs/13-instrumental-variables/reference.json",
       "source_path": "docs/teaching/labs/13-instrumental-variables/reference.json",
-      "source_sha256": "50c139d00dc4f2bb022fdfe49fecf9a75efc20f22ce34c28147147d0ab85327c",
-      "sha256": "50c139d00dc4f2bb022fdfe49fecf9a75efc20f22ce34c28147147d0ab85327c",
+      "source_sha256": "cb8ef18f8d258345033f21ccdbfc3932479b90dc9623c5114763a53b4224fdf6",
+      "sha256": "cb8ef18f8d258345033f21ccdbfc3932479b90dc9623c5114763a53b4224fdf6",
       "transformation": null
     },
     {
@@ -2262,8 +2263,8 @@
     {
       "path": "teaching/labs/14-randomized-program/reference.json",
       "source_path": "docs/teaching/labs/14-randomized-program/reference.json",
-      "source_sha256": "410468bf10aaa9b6fdf9f8cdb731501f7f4b7c5632a0173a353950ae8dd2790a",
-      "sha256": "410468bf10aaa9b6fdf9f8cdb731501f7f4b7c5632a0173a353950ae8dd2790a",
+      "source_sha256": "d105b25d04d81daa28a9eb1b46eeda2c252697df70e284b60b0fe7673ab2773f",
+      "sha256": "d105b25d04d81daa28a9eb1b46eeda2c252697df70e284b60b0fe7673ab2773f",
       "transformation": null
     },
     {
@@ -2318,8 +2319,8 @@
     {
       "path": "teaching/labs/15-difference-in-differences/reference.json",
       "source_path": "docs/teaching/labs/15-difference-in-differences/reference.json",
-      "source_sha256": "59c45f78c6f6791ef908866041e9b9b94b7208548b7d7d31b6a6bd0f63f8be42",
-      "sha256": "59c45f78c6f6791ef908866041e9b9b94b7208548b7d7d31b6a6bd0f63f8be42",
+      "source_sha256": "cd3628594156938545b885ab8ea157a12ad28289b16d07175e5cf824e38ec98e",
+      "sha256": "cd3628594156938545b885ab8ea157a12ad28289b16d07175e5cf824e38ec98e",
       "transformation": null
     },
     {
@@ -2360,8 +2361,8 @@
     {
       "path": "teaching/labs/16-regression-discontinuity/reference.json",
       "source_path": "docs/teaching/labs/16-regression-discontinuity/reference.json",
-      "source_sha256": "92c2ad798369d8295385531a5aa33e44a664e09030a392bb663e9e7af67c9ae6",
-      "sha256": "92c2ad798369d8295385531a5aa33e44a664e09030a392bb663e9e7af67c9ae6",
+      "source_sha256": "dcdf32c712d574f43a0c7284b3eb62e055a197ad5efbfdc021a193d68edf53f2",
+      "sha256": "dcdf32c712d574f43a0c7284b3eb62e055a197ad5efbfdc021a193d68edf53f2",
       "transformation": null
     },
     {
@@ -2409,8 +2410,8 @@
     {
       "path": "teaching/labs/17-trending-series/reference.json",
       "source_path": "docs/teaching/labs/17-trending-series/reference.json",
-      "source_sha256": "96ec662579edcfd724a6635f7858e9e2225dd13ed7a4ee82ea83f28317f8ed54",
-      "sha256": "96ec662579edcfd724a6635f7858e9e2225dd13ed7a4ee82ea83f28317f8ed54",
+      "source_sha256": "e855ddb41505ec26107b10f2440dd82bc07f95c84011e0476474ba3fb9744cce",
+      "sha256": "e855ddb41505ec26107b10f2440dd82bc07f95c84011e0476474ba3fb9744cce",
       "transformation": null
     },
     {
@@ -2465,8 +2466,8 @@
     {
       "path": "teaching/labs/18-serial-correlation/reference.json",
       "source_path": "docs/teaching/labs/18-serial-correlation/reference.json",
-      "source_sha256": "64075dafc97ca751d62c64853b62d80d25d81cb51d91141557ce2cb1257bcaed",
-      "sha256": "64075dafc97ca751d62c64853b62d80d25d81cb51d91141557ce2cb1257bcaed",
+      "source_sha256": "684a181586e1394c2158a67189796b5038766da9dc080d0de6b1f39746aea9ab",
+      "sha256": "684a181586e1394c2158a67189796b5038766da9dc080d0de6b1f39746aea9ab",
       "transformation": null
     },
     {
@@ -2514,15 +2515,15 @@
     {
       "path": "teaching/labs/19-forecasting/reference.json",
       "source_path": "docs/teaching/labs/19-forecasting/reference.json",
-      "source_sha256": "f649688dc7bc603da87e7080309d4478983e4cea62ebba71e583e27c7ce8644d",
-      "sha256": "f649688dc7bc603da87e7080309d4478983e4cea62ebba71e583e27c7ce8644d",
+      "source_sha256": "cb32a8fff870cd66f6e471861e5222fa5bd7f4a1fcf59bc62e7aca8ceabf9221",
+      "sha256": "cb32a8fff870cd66f6e471861e5222fa5bd7f4a1fcf59bc62e7aca8ceabf9221",
       "transformation": null
     },
     {
       "path": "teaching/labs/19-forecasting/table.tex",
       "source_path": "docs/teaching/labs/19-forecasting/table.tex",
-      "source_sha256": "d895ee39d8890e59b10cfacf2e027c35b9dc8cfa74191ff759ef9faa42c36c73",
-      "sha256": "d895ee39d8890e59b10cfacf2e027c35b9dc8cfa74191ff759ef9faa42c36c73",
+      "source_sha256": "ab304b89b2dfabc786575bf42095c467849f3720ed1dde79d41f553d4f7b7604",
+      "sha256": "ab304b89b2dfabc786575bf42095c467849f3720ed1dde79d41f553d4f7b7604",
       "transformation": null
     },
     {
@@ -2556,8 +2557,8 @@
     {
       "path": "teaching/labs/20-research-report/reference.json",
       "source_path": "docs/teaching/labs/20-research-report/reference.json",
-      "source_sha256": "dce72a26b8e8326fcb919d8729ef20b3edc5cc6b877fe031ef568220f6bd6cc4",
-      "sha256": "dce72a26b8e8326fcb919d8729ef20b3edc5cc6b877fe031ef568220f6bd6cc4",
+      "source_sha256": "fd0af81d31092fb4da12e892f27afcd4bec019a9850ad61b3fe2e043ff183ff6",
+      "sha256": "fd0af81d31092fb4da12e892f27afcd4bec019a9850ad61b3fe2e043ff183ff6",
       "transformation": null
     },
     {
@@ -2584,8 +2585,8 @@
     {
       "path": "teaching/microeconomics/index.md",
       "source_path": "docs/teaching/microeconomics/README.md",
-      "source_sha256": "9cefe30bc5e8f2c42c9a175bb95975cc7ba8f5b356acb5b9b729c7a549f76ed4",
-      "sha256": "93106d3bf0fd4cf80e0fb00d697636e62c06fea6c930da3534b866b93622f89a",
+      "source_sha256": "2db3558814545ca2ab9a4d5c1b569002c9f181ecfa0987107bf726854cd2d6aa",
+      "sha256": "b068c1068b849c4dcdf6e45e76cd93301bf867d47da8007e51dbaff40fb00bc2",
       "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
@@ -2605,141 +2606,141 @@
     {
       "path": "teaching/microeconomics/instructors/01-production-frontier.md",
       "source_path": "docs/teaching/microeconomics/instructors/01-production-frontier.md",
-      "source_sha256": "e72fc94318c8fcaa0bec5a3c69579485e679cedc434fb51ebe3dcd987f5d4bd3",
-      "sha256": "e72fc94318c8fcaa0bec5a3c69579485e679cedc434fb51ebe3dcd987f5d4bd3",
+      "source_sha256": "90bfe909f5350116f9a4d88d7474c22d9a6d8353f1a0f81f4ff78255b69e3b30",
+      "sha256": "90bfe909f5350116f9a4d88d7474c22d9a6d8353f1a0f81f4ff78255b69e3b30",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/02-comparative-advantage.md",
       "source_path": "docs/teaching/microeconomics/instructors/02-comparative-advantage.md",
-      "source_sha256": "3b1a11aaf6096f2132dd1793241a4f7ef087e46b582c2bba1fdf0e6f6bc23080",
-      "sha256": "3b1a11aaf6096f2132dd1793241a4f7ef087e46b582c2bba1fdf0e6f6bc23080",
+      "source_sha256": "e0974a912fce32e6bd9f2d1e2a93175e06b481268542e8f41161316e3a6c25d8",
+      "sha256": "e0974a912fce32e6bd9f2d1e2a93175e06b481268542e8f41161316e3a6c25d8",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/03-market-equilibrium.md",
       "source_path": "docs/teaching/microeconomics/instructors/03-market-equilibrium.md",
-      "source_sha256": "06d47a6c9a63935468605e2831a8b981c3865a9d21e15abff04e0c15fb929ff6",
-      "sha256": "06d47a6c9a63935468605e2831a8b981c3865a9d21e15abff04e0c15fb929ff6",
+      "source_sha256": "24aeb8904be618449573903b9d9c4b303116008fb1f1e0a35602550ea0d149a6",
+      "sha256": "24aeb8904be618449573903b9d9c4b303116008fb1f1e0a35602550ea0d149a6",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/04-elasticity-revenue.md",
       "source_path": "docs/teaching/microeconomics/instructors/04-elasticity-revenue.md",
-      "source_sha256": "d9666d26150c7a2832bb3ad088502b9af64f59dfd34ccc139715608f117b934d",
-      "sha256": "d9666d26150c7a2832bb3ad088502b9af64f59dfd34ccc139715608f117b934d",
+      "source_sha256": "fbd3d3fb17e0cb94653fd56e5ad7e4357ffcc08e28c8b9520f6225b04a441dd4",
+      "sha256": "fbd3d3fb17e0cb94653fd56e5ad7e4357ffcc08e28c8b9520f6225b04a441dd4",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/05-consumer-choice.md",
       "source_path": "docs/teaching/microeconomics/instructors/05-consumer-choice.md",
-      "source_sha256": "23152dff0521751664367e79a0257b91e5b0a16f69ca7935829da3cb5a6f241e",
-      "sha256": "23152dff0521751664367e79a0257b91e5b0a16f69ca7935829da3cb5a6f241e",
+      "source_sha256": "88f7c72fd98d0fe2f50ec0dd6907bab93167c9db980d692babdbde4e38bb012b",
+      "sha256": "88f7c72fd98d0fe2f50ec0dd6907bab93167c9db980d692babdbde4e38bb012b",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/06-demand-comparative-statics.md",
       "source_path": "docs/teaching/microeconomics/instructors/06-demand-comparative-statics.md",
-      "source_sha256": "c4f35018ccd4a7e09338b56cb98bb7d9cf8a4d8a8b90b1eb37ae97a6a1c0c7ac",
-      "sha256": "c4f35018ccd4a7e09338b56cb98bb7d9cf8a4d8a8b90b1eb37ae97a6a1c0c7ac",
+      "source_sha256": "2281dddd470d490ef4d525007807c6cf1ddf1c81ac2b2549a3eeeda3f73a4583",
+      "sha256": "2281dddd470d490ef4d525007807c6cf1ddf1c81ac2b2549a3eeeda3f73a4583",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/07-substitution-income.md",
       "source_path": "docs/teaching/microeconomics/instructors/07-substitution-income.md",
-      "source_sha256": "1d4df1cd812cd50a729065fdcac322d72852ab13aac7ece80a688c1011ecee0b",
-      "sha256": "1d4df1cd812cd50a729065fdcac322d72852ab13aac7ece80a688c1011ecee0b",
+      "source_sha256": "9f80514416c7cc3a4aa7fa8a7aa3a44b0f7cba39ce66855b7b12b7303effd9da",
+      "sha256": "9f80514416c7cc3a4aa7fa8a7aa3a44b0f7cba39ce66855b7b12b7303effd9da",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/08-revealed-preference.md",
       "source_path": "docs/teaching/microeconomics/instructors/08-revealed-preference.md",
-      "source_sha256": "9085095abb5a5288f7b8d3c2d6324cf913c97e5a9f56e8dc0460a27ddb07c2ad",
-      "sha256": "9085095abb5a5288f7b8d3c2d6324cf913c97e5a9f56e8dc0460a27ddb07c2ad",
+      "source_sha256": "1525ca37fc12c9d94164364f552702841dd47ca219caf8b0ceb1cf2716577e42",
+      "sha256": "1525ca37fc12c9d94164364f552702841dd47ca219caf8b0ceb1cf2716577e42",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/09-production-input.md",
       "source_path": "docs/teaching/microeconomics/instructors/09-production-input.md",
-      "source_sha256": "32475114864775c9dcdaeb69e910c5041325c4d1afde9819b9f841c9f932cb04",
-      "sha256": "32475114864775c9dcdaeb69e910c5041325c4d1afde9819b9f841c9f932cb04",
+      "source_sha256": "37715fd10a75550e238626c54c685760d86d5c5d09b3b40917c2e4fb107e043b",
+      "sha256": "37715fd10a75550e238626c54c685760d86d5c5d09b3b40917c2e4fb107e043b",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/10-cost-curves.md",
       "source_path": "docs/teaching/microeconomics/instructors/10-cost-curves.md",
-      "source_sha256": "d8e19999d36be2fb1ac592d4a19343c6043e644d2836a13883f3cd99a0d9bb9b",
-      "sha256": "d8e19999d36be2fb1ac592d4a19343c6043e644d2836a13883f3cd99a0d9bb9b",
+      "source_sha256": "4f6ebfa5efde36cb54a4f0263285b6137cc7624dd0a3c91684444c55faad9740",
+      "sha256": "4f6ebfa5efde36cb54a4f0263285b6137cc7624dd0a3c91684444c55faad9740",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/11-conditional-inputs.md",
       "source_path": "docs/teaching/microeconomics/instructors/11-conditional-inputs.md",
-      "source_sha256": "705f6af68e54f28fa07e4ddf656dddf0eb8a476829b97b2d3e9b07022d0cb42c",
-      "sha256": "705f6af68e54f28fa07e4ddf656dddf0eb8a476829b97b2d3e9b07022d0cb42c",
+      "source_sha256": "43d37369ed144d4cca6a995c92b2e5970d1eb5208c1228320d5f303cd92e2df0",
+      "sha256": "43d37369ed144d4cca6a995c92b2e5970d1eb5208c1228320d5f303cd92e2df0",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/12-competitive-supply.md",
       "source_path": "docs/teaching/microeconomics/instructors/12-competitive-supply.md",
-      "source_sha256": "1f6d80f07ef987bf52e70e3176ab189e94b7f9e8ac2daabc298221e2e3b8a15b",
-      "sha256": "1f6d80f07ef987bf52e70e3176ab189e94b7f9e8ac2daabc298221e2e3b8a15b",
+      "source_sha256": "bd458325bece7953ebf0d90d65eb3b8523bf9fdae51e4f068705e7b583dd2cbf",
+      "sha256": "bd458325bece7953ebf0d90d65eb3b8523bf9fdae51e4f068705e7b583dd2cbf",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/13-monopoly-welfare.md",
       "source_path": "docs/teaching/microeconomics/instructors/13-monopoly-welfare.md",
-      "source_sha256": "b0d4cedab2cc7a44c109d05e26679f44516a6f2f5a01ee0675410bbe0d1e6405",
-      "sha256": "b0d4cedab2cc7a44c109d05e26679f44516a6f2f5a01ee0675410bbe0d1e6405",
+      "source_sha256": "72085b954837b2ddb384029fc4945b15cffc45f5cd78383b01083c1329d0030e",
+      "sha256": "72085b954837b2ddb384029fc4945b15cffc45f5cd78383b01083c1329d0030e",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/14-price-ceiling.md",
       "source_path": "docs/teaching/microeconomics/instructors/14-price-ceiling.md",
-      "source_sha256": "5798908a154025e3984433487d86ade8e372ebe4a74f03c005ad55105faf1bd1",
-      "sha256": "5798908a154025e3984433487d86ade8e372ebe4a74f03c005ad55105faf1bd1",
+      "source_sha256": "9dcf2e2b3c7ebd7e8735c8df9316792214545aa72c06219a0a67f7d52b3c21c5",
+      "sha256": "9dcf2e2b3c7ebd7e8735c8df9316792214545aa72c06219a0a67f7d52b3c21c5",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/15-tax-incidence.md",
       "source_path": "docs/teaching/microeconomics/instructors/15-tax-incidence.md",
-      "source_sha256": "7432cb99f089846f66eb8793b4d88ab39910ad0d8c9baa2963d6b8da36f53f4e",
-      "sha256": "7432cb99f089846f66eb8793b4d88ab39910ad0d8c9baa2963d6b8da36f53f4e",
+      "source_sha256": "2244476328dee866254e3b8a994b011c8f64770dc6ee3e190a106eda3349e92a",
+      "sha256": "2244476328dee866254e3b8a994b011c8f64770dc6ee3e190a106eda3349e92a",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/16-subsidy-welfare.md",
       "source_path": "docs/teaching/microeconomics/instructors/16-subsidy-welfare.md",
-      "source_sha256": "655e5afdf2b4208c57e1bf21f6ccd27d2bf6c7d2ee4b17e9f68cd139ad22ef93",
-      "sha256": "655e5afdf2b4208c57e1bf21f6ccd27d2bf6c7d2ee4b17e9f68cd139ad22ef93",
+      "source_sha256": "81955b4c24c4373ec49a738deba14ec426450d26bff7b6a2c217b4633f46456b",
+      "sha256": "81955b4c24c4373ec49a738deba14ec426450d26bff7b6a2c217b4633f46456b",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/17-external-cost.md",
       "source_path": "docs/teaching/microeconomics/instructors/17-external-cost.md",
-      "source_sha256": "12a4449da96d0b601904f5eadd32dd3be2281d438ab0700e4c390e89dc1aef9b",
-      "sha256": "12a4449da96d0b601904f5eadd32dd3be2281d438ab0700e4c390e89dc1aef9b",
+      "source_sha256": "f8218fabeeed778dcfcdc76f3efd466a54e460bf8f54ecb4304144020bbac83d",
+      "sha256": "f8218fabeeed778dcfcdc76f3efd466a54e460bf8f54ecb4304144020bbac83d",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/18-public-good.md",
       "source_path": "docs/teaching/microeconomics/instructors/18-public-good.md",
-      "source_sha256": "011f68d7c1c112f2acd97db835d84396aeb945cc12e1066357f1e7bb501a1ae7",
-      "sha256": "011f68d7c1c112f2acd97db835d84396aeb945cc12e1066357f1e7bb501a1ae7",
+      "source_sha256": "a5ac4dc16f383d2959145fa699d4177d03fce0a050d8b1554e90fa374c009d69",
+      "sha256": "a5ac4dc16f383d2959145fa699d4177d03fce0a050d8b1554e90fa374c009d69",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/19-cournot-competition.md",
       "source_path": "docs/teaching/microeconomics/instructors/19-cournot-competition.md",
-      "source_sha256": "c25c542236644df22bbf1270239e02c681dab4845798b551d983dbed1bd7d06d",
-      "sha256": "c25c542236644df22bbf1270239e02c681dab4845798b551d983dbed1bd7d06d",
+      "source_sha256": "cd9af712c0682dbcc8ad3ee05cbcab05b2834a51db8c50506ea1ce3bcbbefe9d",
+      "sha256": "cd9af712c0682dbcc8ad3ee05cbcab05b2834a51db8c50506ea1ce3bcbbefe9d",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/instructors/20-estimated-demand.md",
       "source_path": "docs/teaching/microeconomics/instructors/20-estimated-demand.md",
-      "source_sha256": "da2cc3e1c3d6164a092c8e7192f3b67741a047ed26d70e42f07b0cc619cef422",
-      "sha256": "da2cc3e1c3d6164a092c8e7192f3b67741a047ed26d70e42f07b0cc619cef422",
+      "source_sha256": "0dc68ff04a7f193e65133b26d842bda2861113e5baf34e6557fd4316921bfcde",
+      "sha256": "0dc68ff04a7f193e65133b26d842bda2861113e5baf34e6557fd4316921bfcde",
       "transformation": null
     },
     {
@@ -2885,8 +2886,8 @@
     {
       "path": "teaching/microeconomics/labs/01-production-frontier/index.md",
       "source_path": "docs/teaching/microeconomics/labs/01-production-frontier/README.md",
-      "source_sha256": "e7199952b612da68f503892070ec47b270e6cd9584b393b6194a7965e6f3af71",
-      "sha256": "e7199952b612da68f503892070ec47b270e6cd9584b393b6194a7965e6f3af71",
+      "source_sha256": "95cc4fa4146aed96b5da797b08398b921f791a34d6a4725775bd81e158fd597a",
+      "sha256": "95cc4fa4146aed96b5da797b08398b921f791a34d6a4725775bd81e158fd597a",
       "transformation": null
     },
     {
@@ -2899,8 +2900,8 @@
     {
       "path": "teaching/microeconomics/labs/01-production-frontier/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/01-production-frontier/figure.svg",
-      "source_sha256": "ca4e224c00ef4e4e4ae0d4486973fd947ad84474900dafac6ecbbf06fd7748d3",
-      "sha256": "ca4e224c00ef4e4e4ae0d4486973fd947ad84474900dafac6ecbbf06fd7748d3",
+      "source_sha256": "c5eb76d130c5d062d6f528867e7b5ee7eaa9140d42a0123268419f661d9630cb",
+      "sha256": "c5eb76d130c5d062d6f528867e7b5ee7eaa9140d42a0123268419f661d9630cb",
       "transformation": null
     },
     {
@@ -2934,8 +2935,8 @@
     {
       "path": "teaching/microeconomics/labs/02-comparative-advantage/index.md",
       "source_path": "docs/teaching/microeconomics/labs/02-comparative-advantage/README.md",
-      "source_sha256": "11dde36ea61035a380a8e39159c96c866d4f12f80a7361c2784249f7b571bc6e",
-      "sha256": "11dde36ea61035a380a8e39159c96c866d4f12f80a7361c2784249f7b571bc6e",
+      "source_sha256": "91b208aa6c3576d7440db84709b66e5d02575c6cb0c8efe5cc9047b88aed5e19",
+      "sha256": "91b208aa6c3576d7440db84709b66e5d02575c6cb0c8efe5cc9047b88aed5e19",
       "transformation": null
     },
     {
@@ -2955,8 +2956,8 @@
     {
       "path": "teaching/microeconomics/labs/02-comparative-advantage/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/02-comparative-advantage/figure.svg",
-      "source_sha256": "d62a3c151a970d30b9aae5a3619b1e1737044013296b6ed002d362336b30b6ec",
-      "sha256": "d62a3c151a970d30b9aae5a3619b1e1737044013296b6ed002d362336b30b6ec",
+      "source_sha256": "08ec780171defd68ad25aa4deacb0032500b91a862741c6c235607ad593f48dd",
+      "sha256": "08ec780171defd68ad25aa4deacb0032500b91a862741c6c235607ad593f48dd",
       "transformation": null
     },
     {
@@ -2983,8 +2984,8 @@
     {
       "path": "teaching/microeconomics/labs/03-market-equilibrium/index.md",
       "source_path": "docs/teaching/microeconomics/labs/03-market-equilibrium/README.md",
-      "source_sha256": "5be590157538a0642f0cf7310e82750f7023ffcf01c342bf75a82728e466ec20",
-      "sha256": "5be590157538a0642f0cf7310e82750f7023ffcf01c342bf75a82728e466ec20",
+      "source_sha256": "12332471f6167418ba0130a4d88c3ab80a3bb810d730e3cb96b086cb402c76ed",
+      "sha256": "12332471f6167418ba0130a4d88c3ab80a3bb810d730e3cb96b086cb402c76ed",
       "transformation": null
     },
     {
@@ -2997,8 +2998,8 @@
     {
       "path": "teaching/microeconomics/labs/03-market-equilibrium/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/03-market-equilibrium/figure.svg",
-      "source_sha256": "7cf70508ac73a9cd73d4067a8afd48374f3f2ca298479c21e8dae8c218d42a25",
-      "sha256": "7cf70508ac73a9cd73d4067a8afd48374f3f2ca298479c21e8dae8c218d42a25",
+      "source_sha256": "7601b3584e03ed914a667925a6589e2e279b2b3df24799c4850cff68ca4072a1",
+      "sha256": "7601b3584e03ed914a667925a6589e2e279b2b3df24799c4850cff68ca4072a1",
       "transformation": null
     },
     {
@@ -3032,8 +3033,8 @@
     {
       "path": "teaching/microeconomics/labs/04-elasticity-revenue/index.md",
       "source_path": "docs/teaching/microeconomics/labs/04-elasticity-revenue/README.md",
-      "source_sha256": "7c513f0f8338ca9953387d1c473c10ce9431191ad3f529aa3ab9ce75449de795",
-      "sha256": "7c513f0f8338ca9953387d1c473c10ce9431191ad3f529aa3ab9ce75449de795",
+      "source_sha256": "ce8e71a5f72093eb74c5d0cf09ea0c397f5d6fe77e1d701f9dcde128e32114c6",
+      "sha256": "ce8e71a5f72093eb74c5d0cf09ea0c397f5d6fe77e1d701f9dcde128e32114c6",
       "transformation": null
     },
     {
@@ -3053,8 +3054,8 @@
     {
       "path": "teaching/microeconomics/labs/04-elasticity-revenue/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/04-elasticity-revenue/figure.svg",
-      "source_sha256": "67498af56ff0a6264851b240658edd3500c38d16e7b4d8e29d89746de00ebf60",
-      "sha256": "67498af56ff0a6264851b240658edd3500c38d16e7b4d8e29d89746de00ebf60",
+      "source_sha256": "13e83110e351034013a95e178de0ef8824282daec44e1460a0bff99a97d72cac",
+      "sha256": "13e83110e351034013a95e178de0ef8824282daec44e1460a0bff99a97d72cac",
       "transformation": null
     },
     {
@@ -3081,8 +3082,8 @@
     {
       "path": "teaching/microeconomics/labs/05-consumer-choice/index.md",
       "source_path": "docs/teaching/microeconomics/labs/05-consumer-choice/README.md",
-      "source_sha256": "3e41c1d80d97d7d5de74c80de10a3387a89ef44b91f53e15d1deb7dfb8131add",
-      "sha256": "3e41c1d80d97d7d5de74c80de10a3387a89ef44b91f53e15d1deb7dfb8131add",
+      "source_sha256": "c9e007957393f6fdee274dfe4c9db128a7ef6153c624d5334765aec79a29ba09",
+      "sha256": "c9e007957393f6fdee274dfe4c9db128a7ef6153c624d5334765aec79a29ba09",
       "transformation": null
     },
     {
@@ -3102,8 +3103,8 @@
     {
       "path": "teaching/microeconomics/labs/05-consumer-choice/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/05-consumer-choice/figure.svg",
-      "source_sha256": "490272e2e6069ae541761f69f08cd2bee5bc73f2b08b686df6bec830b2c53380",
-      "sha256": "490272e2e6069ae541761f69f08cd2bee5bc73f2b08b686df6bec830b2c53380",
+      "source_sha256": "11e3e3593e9f15b4907ee74ef4dcc51b6fcd92bf2dab818b831ee10497693c17",
+      "sha256": "11e3e3593e9f15b4907ee74ef4dcc51b6fcd92bf2dab818b831ee10497693c17",
       "transformation": null
     },
     {
@@ -3130,8 +3131,8 @@
     {
       "path": "teaching/microeconomics/labs/06-demand-comparative-statics/index.md",
       "source_path": "docs/teaching/microeconomics/labs/06-demand-comparative-statics/README.md",
-      "source_sha256": "053b90d4fa0242be6b37a8a9612b15d14b1e5391ab3371ed85a9a8d2d3629339",
-      "sha256": "053b90d4fa0242be6b37a8a9612b15d14b1e5391ab3371ed85a9a8d2d3629339",
+      "source_sha256": "7c83955409a0abd0a6f5a4314f0440c59359fe0633a9090bc9abcff218dca637",
+      "sha256": "7c83955409a0abd0a6f5a4314f0440c59359fe0633a9090bc9abcff218dca637",
       "transformation": null
     },
     {
@@ -3151,8 +3152,8 @@
     {
       "path": "teaching/microeconomics/labs/06-demand-comparative-statics/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/06-demand-comparative-statics/figure.svg",
-      "source_sha256": "77d526dd66a950b060b6df3c817d21ad03aae8e62953dd268c3d64c8c600c8a0",
-      "sha256": "77d526dd66a950b060b6df3c817d21ad03aae8e62953dd268c3d64c8c600c8a0",
+      "source_sha256": "b2f2a751f2e4f7120d633dac4374700798444380c7d0962a37409459c9732511",
+      "sha256": "b2f2a751f2e4f7120d633dac4374700798444380c7d0962a37409459c9732511",
       "transformation": null
     },
     {
@@ -3179,8 +3180,8 @@
     {
       "path": "teaching/microeconomics/labs/07-substitution-income/index.md",
       "source_path": "docs/teaching/microeconomics/labs/07-substitution-income/README.md",
-      "source_sha256": "f5a4d58554b9001d221d58e7a7e880f3d6108b6f283758f06d244750b5aedcc7",
-      "sha256": "f5a4d58554b9001d221d58e7a7e880f3d6108b6f283758f06d244750b5aedcc7",
+      "source_sha256": "3f34b27c66b95e2da15f23e8137de47e82412e646bbe82333756b7c5d1eb7380",
+      "sha256": "3f34b27c66b95e2da15f23e8137de47e82412e646bbe82333756b7c5d1eb7380",
       "transformation": null
     },
     {
@@ -3193,8 +3194,8 @@
     {
       "path": "teaching/microeconomics/labs/07-substitution-income/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/07-substitution-income/figure.svg",
-      "source_sha256": "8ffeb21a613ee8723b66912d03261c8033d10127b1e81a87f85cc39a31659d4d",
-      "sha256": "8ffeb21a613ee8723b66912d03261c8033d10127b1e81a87f85cc39a31659d4d",
+      "source_sha256": "03d581bdc9f6b8fef19ffc3ada03a960e46f0e96a4945225fbedd0f782bc631c",
+      "sha256": "03d581bdc9f6b8fef19ffc3ada03a960e46f0e96a4945225fbedd0f782bc631c",
       "transformation": null
     },
     {
@@ -3228,8 +3229,8 @@
     {
       "path": "teaching/microeconomics/labs/08-revealed-preference/index.md",
       "source_path": "docs/teaching/microeconomics/labs/08-revealed-preference/README.md",
-      "source_sha256": "bcd44fc7876185fb9d12eaee4e62a7f43cff549ec54893e61812b8ee5ff8ec74",
-      "sha256": "bcd44fc7876185fb9d12eaee4e62a7f43cff549ec54893e61812b8ee5ff8ec74",
+      "source_sha256": "b68c26e21c350477b110f99000f1b93046620ba5842d34d065c6d3247fb05121",
+      "sha256": "b68c26e21c350477b110f99000f1b93046620ba5842d34d065c6d3247fb05121",
       "transformation": null
     },
     {
@@ -3242,8 +3243,8 @@
     {
       "path": "teaching/microeconomics/labs/08-revealed-preference/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/08-revealed-preference/figure.svg",
-      "source_sha256": "1500b76f1fd719f9326fb67033adaf849438bdeade49d14fae41975b1e5e57a4",
-      "sha256": "1500b76f1fd719f9326fb67033adaf849438bdeade49d14fae41975b1e5e57a4",
+      "source_sha256": "af1fe4ce52fa9748f749ce078caf0f52dad406c39d9bac6ff816c87f1f09891b",
+      "sha256": "af1fe4ce52fa9748f749ce078caf0f52dad406c39d9bac6ff816c87f1f09891b",
       "transformation": null
     },
     {
@@ -3277,8 +3278,8 @@
     {
       "path": "teaching/microeconomics/labs/09-production-input/index.md",
       "source_path": "docs/teaching/microeconomics/labs/09-production-input/README.md",
-      "source_sha256": "6b07d46ac4ee4973daa7dc833ff090ff2ed160905ec29c617080e9713a0aaf02",
-      "sha256": "6b07d46ac4ee4973daa7dc833ff090ff2ed160905ec29c617080e9713a0aaf02",
+      "source_sha256": "6af4fc5b1325bb2fdfdd2899b7d8d270ca946fb79fa7970a5868d37029c1f402",
+      "sha256": "6af4fc5b1325bb2fdfdd2899b7d8d270ca946fb79fa7970a5868d37029c1f402",
       "transformation": null
     },
     {
@@ -3291,15 +3292,15 @@
     {
       "path": "teaching/microeconomics/labs/09-production-input/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/09-production-input/figure.svg",
-      "source_sha256": "2a7ce032fde98f2d7598e535df5b50f9e83c5373bc2a252183cbb4981480d555",
-      "sha256": "2a7ce032fde98f2d7598e535df5b50f9e83c5373bc2a252183cbb4981480d555",
+      "source_sha256": "042fe387d36ea6f2b4035c91a91a59efde0d618d14f9055c8abb84190e50a6fa",
+      "sha256": "042fe387d36ea6f2b4035c91a91a59efde0d618d14f9055c8abb84190e50a6fa",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/labs/09-production-input/lab.py",
       "source_path": "docs/teaching/microeconomics/labs/09-production-input/lab.py",
-      "source_sha256": "c1405df204105f3c4da4734d751398a8c16f233ed4bb24a04096b9ea0920f37f",
-      "sha256": "c1405df204105f3c4da4734d751398a8c16f233ed4bb24a04096b9ea0920f37f",
+      "source_sha256": "35a9596af564e1e1d86391489795cb015494d90787de9408a8af74e49111f749",
+      "sha256": "35a9596af564e1e1d86391489795cb015494d90787de9408a8af74e49111f749",
       "transformation": null
     },
     {
@@ -3312,8 +3313,8 @@
     {
       "path": "teaching/microeconomics/labs/09-production-input/reference.json",
       "source_path": "docs/teaching/microeconomics/labs/09-production-input/reference.json",
-      "source_sha256": "b6f8be85e6415a8c1caccd3906a924cf19f80e02d1ef801ffcc902dde5f9d8e9",
-      "sha256": "b6f8be85e6415a8c1caccd3906a924cf19f80e02d1ef801ffcc902dde5f9d8e9",
+      "source_sha256": "83b29a84f8c33a207ea252de17f8ac75ab414986da7292917e6e95b5b86b6f65",
+      "sha256": "83b29a84f8c33a207ea252de17f8ac75ab414986da7292917e6e95b5b86b6f65",
       "transformation": null
     },
     {
@@ -3326,8 +3327,8 @@
     {
       "path": "teaching/microeconomics/labs/10-cost-curves/index.md",
       "source_path": "docs/teaching/microeconomics/labs/10-cost-curves/README.md",
-      "source_sha256": "edc03ad6f7d39b94df3b46e07096e739e5e30e3c122fb448fce7b89fca6bbfb6",
-      "sha256": "edc03ad6f7d39b94df3b46e07096e739e5e30e3c122fb448fce7b89fca6bbfb6",
+      "source_sha256": "0a02149a3b3280433338c93e891a8f015d0353f45b651c8bff067695d565183e",
+      "sha256": "0a02149a3b3280433338c93e891a8f015d0353f45b651c8bff067695d565183e",
       "transformation": null
     },
     {
@@ -3347,22 +3348,22 @@
     {
       "path": "teaching/microeconomics/labs/10-cost-curves/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/10-cost-curves/figure.svg",
-      "source_sha256": "f07fdf29a621d8a1d92d91f74989639b6a00846ac460e06ce49f3cd92bc1a430",
-      "sha256": "f07fdf29a621d8a1d92d91f74989639b6a00846ac460e06ce49f3cd92bc1a430",
+      "source_sha256": "f6c7beb025fd2c959350775c17fd03e4c8caf4840d5a704cf577f35f6106ab38",
+      "sha256": "f6c7beb025fd2c959350775c17fd03e4c8caf4840d5a704cf577f35f6106ab38",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/labs/10-cost-curves/lab.py",
       "source_path": "docs/teaching/microeconomics/labs/10-cost-curves/lab.py",
-      "source_sha256": "06bd29ec3332efa9efe12c7345cd47de31bdb22370fdaa96d81774569fc710ce",
-      "sha256": "06bd29ec3332efa9efe12c7345cd47de31bdb22370fdaa96d81774569fc710ce",
+      "source_sha256": "d0de30693ce7677ddc2c690bd0aa5d795d909594780f3204e2be7c635aeb7200",
+      "sha256": "d0de30693ce7677ddc2c690bd0aa5d795d909594780f3204e2be7c635aeb7200",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/labs/10-cost-curves/reference.json",
       "source_path": "docs/teaching/microeconomics/labs/10-cost-curves/reference.json",
-      "source_sha256": "12bf0bd1c8cc32a3d00eca0cbbf65c3967bb428f72bf4d3f03a5e6a6d84035dd",
-      "sha256": "12bf0bd1c8cc32a3d00eca0cbbf65c3967bb428f72bf4d3f03a5e6a6d84035dd",
+      "source_sha256": "0418c6b7fa3bb8d200b2beb7bd0509d84366526c37001ee37043d83192958eaf",
+      "sha256": "0418c6b7fa3bb8d200b2beb7bd0509d84366526c37001ee37043d83192958eaf",
       "transformation": null
     },
     {
@@ -3375,8 +3376,8 @@
     {
       "path": "teaching/microeconomics/labs/11-conditional-inputs/index.md",
       "source_path": "docs/teaching/microeconomics/labs/11-conditional-inputs/README.md",
-      "source_sha256": "1df524c7041afdaf041bb4a72a31b1ee86ddc9d2c66b9d19e666d49408e7c128",
-      "sha256": "1df524c7041afdaf041bb4a72a31b1ee86ddc9d2c66b9d19e666d49408e7c128",
+      "source_sha256": "cf403185a401fedbfb07d3ac24ff0843040b3eb56fc944f580e835185e31aa72",
+      "sha256": "cf403185a401fedbfb07d3ac24ff0843040b3eb56fc944f580e835185e31aa72",
       "transformation": null
     },
     {
@@ -3396,8 +3397,8 @@
     {
       "path": "teaching/microeconomics/labs/11-conditional-inputs/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/11-conditional-inputs/figure.svg",
-      "source_sha256": "bdfa7737f1218333f0fe2e5d2c837bd8d9abef5121c75f5ddea7aea6885a7ca2",
-      "sha256": "bdfa7737f1218333f0fe2e5d2c837bd8d9abef5121c75f5ddea7aea6885a7ca2",
+      "source_sha256": "95f2edead64af61dd843ef1840877cab43e3f51e6fcfebf51e60de59312aa0f4",
+      "sha256": "95f2edead64af61dd843ef1840877cab43e3f51e6fcfebf51e60de59312aa0f4",
       "transformation": null
     },
     {
@@ -3424,8 +3425,8 @@
     {
       "path": "teaching/microeconomics/labs/12-competitive-supply/index.md",
       "source_path": "docs/teaching/microeconomics/labs/12-competitive-supply/README.md",
-      "source_sha256": "6ab9aff991b0a4c41bec469c685d323e236a059051d83a7464b481268295e7a6",
-      "sha256": "6ab9aff991b0a4c41bec469c685d323e236a059051d83a7464b481268295e7a6",
+      "source_sha256": "67c595651e6c217c61d6cdd212cd33ae5a62c40159271a67d27d7d216d870690",
+      "sha256": "67c595651e6c217c61d6cdd212cd33ae5a62c40159271a67d27d7d216d870690",
       "transformation": null
     },
     {
@@ -3445,8 +3446,8 @@
     {
       "path": "teaching/microeconomics/labs/12-competitive-supply/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/12-competitive-supply/figure.svg",
-      "source_sha256": "7d8a624aee48795c58a864df9940f0a2b8d893b4265feffc492940bf7f917d27",
-      "sha256": "7d8a624aee48795c58a864df9940f0a2b8d893b4265feffc492940bf7f917d27",
+      "source_sha256": "31ee5232f423718b7a59d2f34ab36e005b25a4c954b8163a7a11715b5aa2be2a",
+      "sha256": "31ee5232f423718b7a59d2f34ab36e005b25a4c954b8163a7a11715b5aa2be2a",
       "transformation": null
     },
     {
@@ -3473,8 +3474,8 @@
     {
       "path": "teaching/microeconomics/labs/13-monopoly-welfare/index.md",
       "source_path": "docs/teaching/microeconomics/labs/13-monopoly-welfare/README.md",
-      "source_sha256": "5cc929dec88bc937f7ae7d880a4bf273f5ec51961f1a25938d8e675315f4cd85",
-      "sha256": "5cc929dec88bc937f7ae7d880a4bf273f5ec51961f1a25938d8e675315f4cd85",
+      "source_sha256": "76d887a6678dab2e9cfa62bb595636752fc2997d3f7d684321d8da0d71d9d903",
+      "sha256": "76d887a6678dab2e9cfa62bb595636752fc2997d3f7d684321d8da0d71d9d903",
       "transformation": null
     },
     {
@@ -3487,8 +3488,8 @@
     {
       "path": "teaching/microeconomics/labs/13-monopoly-welfare/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/13-monopoly-welfare/figure.svg",
-      "source_sha256": "7eb99355c3090de8813eeaee47cb6445fbd35863c7efa7837b2af49ab8cb3818",
-      "sha256": "7eb99355c3090de8813eeaee47cb6445fbd35863c7efa7837b2af49ab8cb3818",
+      "source_sha256": "253173a1e202021aa494889dd2b00d127c0e25f24c18dafdff87dfbf14ab3f39",
+      "sha256": "253173a1e202021aa494889dd2b00d127c0e25f24c18dafdff87dfbf14ab3f39",
       "transformation": null
     },
     {
@@ -3522,8 +3523,8 @@
     {
       "path": "teaching/microeconomics/labs/14-price-ceiling/index.md",
       "source_path": "docs/teaching/microeconomics/labs/14-price-ceiling/README.md",
-      "source_sha256": "c3fd50b4b4205ca5d649291ebc645282c690c593a748560381f132d1ab79cdfc",
-      "sha256": "c3fd50b4b4205ca5d649291ebc645282c690c593a748560381f132d1ab79cdfc",
+      "source_sha256": "80094727f10311e32014bfafb9dce8dedea6539bad21d1c4f685e0c6af77db6d",
+      "sha256": "80094727f10311e32014bfafb9dce8dedea6539bad21d1c4f685e0c6af77db6d",
       "transformation": null
     },
     {
@@ -3536,8 +3537,8 @@
     {
       "path": "teaching/microeconomics/labs/14-price-ceiling/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/14-price-ceiling/figure.svg",
-      "source_sha256": "51a88b3741defecff479ba0ce9c13c847c54f77da0b5ddb0c97fe8b5101d6296",
-      "sha256": "51a88b3741defecff479ba0ce9c13c847c54f77da0b5ddb0c97fe8b5101d6296",
+      "source_sha256": "e9ff5167c32dc00af28ce1fb58e58d55932c05ab0538c275715b4c2703eb1fb5",
+      "sha256": "e9ff5167c32dc00af28ce1fb58e58d55932c05ab0538c275715b4c2703eb1fb5",
       "transformation": null
     },
     {
@@ -3571,8 +3572,8 @@
     {
       "path": "teaching/microeconomics/labs/15-tax-incidence/index.md",
       "source_path": "docs/teaching/microeconomics/labs/15-tax-incidence/README.md",
-      "source_sha256": "706db25fa8e980a7bbadb175fab5499d335497c3eff376d1b0e503fd88d17a7f",
-      "sha256": "706db25fa8e980a7bbadb175fab5499d335497c3eff376d1b0e503fd88d17a7f",
+      "source_sha256": "0ef81148beafc2b6a2870751c182d1d9a7cdcf502df1fc130d11f70184f4a3f0",
+      "sha256": "0ef81148beafc2b6a2870751c182d1d9a7cdcf502df1fc130d11f70184f4a3f0",
       "transformation": null
     },
     {
@@ -3585,8 +3586,8 @@
     {
       "path": "teaching/microeconomics/labs/15-tax-incidence/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/15-tax-incidence/figure.svg",
-      "source_sha256": "daa311319ca093f014ec5b83c7c5d88856e9f3248205365230553875fba5d159",
-      "sha256": "daa311319ca093f014ec5b83c7c5d88856e9f3248205365230553875fba5d159",
+      "source_sha256": "d44956f85a1135e51029beabe906b3d1cd57e29c197143b4949cbb90e499372d",
+      "sha256": "d44956f85a1135e51029beabe906b3d1cd57e29c197143b4949cbb90e499372d",
       "transformation": null
     },
     {
@@ -3620,8 +3621,8 @@
     {
       "path": "teaching/microeconomics/labs/16-subsidy-welfare/index.md",
       "source_path": "docs/teaching/microeconomics/labs/16-subsidy-welfare/README.md",
-      "source_sha256": "9ce7459e053a35d64096725aaf627dba41acb4089c818653bae627feace7d731",
-      "sha256": "9ce7459e053a35d64096725aaf627dba41acb4089c818653bae627feace7d731",
+      "source_sha256": "35c5d3b5bfed2bb35aebc7ff1ab1cf0036fea660d11f21f76230893919209e7f",
+      "sha256": "35c5d3b5bfed2bb35aebc7ff1ab1cf0036fea660d11f21f76230893919209e7f",
       "transformation": null
     },
     {
@@ -3634,8 +3635,8 @@
     {
       "path": "teaching/microeconomics/labs/16-subsidy-welfare/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/16-subsidy-welfare/figure.svg",
-      "source_sha256": "83afa287d8ec5c06b59742094508696d9108a708d4ab4154262bc90d13a760ad",
-      "sha256": "83afa287d8ec5c06b59742094508696d9108a708d4ab4154262bc90d13a760ad",
+      "source_sha256": "a9ce9fa17ce7c2b4e5e780513ac9d49755cd968b563b7a8aef406120439418a3",
+      "sha256": "a9ce9fa17ce7c2b4e5e780513ac9d49755cd968b563b7a8aef406120439418a3",
       "transformation": null
     },
     {
@@ -3669,8 +3670,8 @@
     {
       "path": "teaching/microeconomics/labs/17-external-cost/index.md",
       "source_path": "docs/teaching/microeconomics/labs/17-external-cost/README.md",
-      "source_sha256": "0e00fddbf50fd7458793806e09f359f4637fb9be62671967d3cf4f82ebdd7fc3",
-      "sha256": "0e00fddbf50fd7458793806e09f359f4637fb9be62671967d3cf4f82ebdd7fc3",
+      "source_sha256": "485099dd5b484060eeaf81a5a4ca0a29bc529fe3e4ac0743c8741fc4c767d41c",
+      "sha256": "485099dd5b484060eeaf81a5a4ca0a29bc529fe3e4ac0743c8741fc4c767d41c",
       "transformation": null
     },
     {
@@ -3690,8 +3691,8 @@
     {
       "path": "teaching/microeconomics/labs/17-external-cost/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/17-external-cost/figure.svg",
-      "source_sha256": "34d18f36a3a9ca076c474e96d0b7c639ceb662aa0ffb0166d1cbfa564ef1c1dc",
-      "sha256": "34d18f36a3a9ca076c474e96d0b7c639ceb662aa0ffb0166d1cbfa564ef1c1dc",
+      "source_sha256": "38a6a63f814ac9244d3379881ab21cce29d4ec4d14df0b1566ac789937a8e71c",
+      "sha256": "38a6a63f814ac9244d3379881ab21cce29d4ec4d14df0b1566ac789937a8e71c",
       "transformation": null
     },
     {
@@ -3718,8 +3719,8 @@
     {
       "path": "teaching/microeconomics/labs/18-public-good/index.md",
       "source_path": "docs/teaching/microeconomics/labs/18-public-good/README.md",
-      "source_sha256": "297b23562c5fb6169722425f6fa85d9cbfc9b85638990244a86205876f82180e",
-      "sha256": "297b23562c5fb6169722425f6fa85d9cbfc9b85638990244a86205876f82180e",
+      "source_sha256": "4382884d3bce7f7042b5779021438842139d71dc5d84aeb8f2f14f47a0c8bad0",
+      "sha256": "4382884d3bce7f7042b5779021438842139d71dc5d84aeb8f2f14f47a0c8bad0",
       "transformation": null
     },
     {
@@ -3732,15 +3733,15 @@
     {
       "path": "teaching/microeconomics/labs/18-public-good/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/18-public-good/figure.svg",
-      "source_sha256": "77ae086dfa77c37d5aba4edeb6b046850f11f2ff50b3c2a881d6cc2dc7722767",
-      "sha256": "77ae086dfa77c37d5aba4edeb6b046850f11f2ff50b3c2a881d6cc2dc7722767",
+      "source_sha256": "e6b52b110aa751b5d5f35ddaf7cdb15b25c709487b986a5f77513b89a05ddf03",
+      "sha256": "e6b52b110aa751b5d5f35ddaf7cdb15b25c709487b986a5f77513b89a05ddf03",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/labs/18-public-good/lab.py",
       "source_path": "docs/teaching/microeconomics/labs/18-public-good/lab.py",
-      "source_sha256": "59ae51b6dc5e6a4a6c347ffeff42f3c22d9c0413bdc7d4d7d782f7c4c55edc99",
-      "sha256": "59ae51b6dc5e6a4a6c347ffeff42f3c22d9c0413bdc7d4d7d782f7c4c55edc99",
+      "source_sha256": "5db6b0fe9cf6515d9ec3eb2d9c824bac117676ea057552de62142b97a4b42323",
+      "sha256": "5db6b0fe9cf6515d9ec3eb2d9c824bac117676ea057552de62142b97a4b42323",
       "transformation": null
     },
     {
@@ -3753,8 +3754,8 @@
     {
       "path": "teaching/microeconomics/labs/18-public-good/reference.json",
       "source_path": "docs/teaching/microeconomics/labs/18-public-good/reference.json",
-      "source_sha256": "da6fa45bc25bdef0602644d39f774273b60af4eaf95b58b963e94b6903b5aa7e",
-      "sha256": "da6fa45bc25bdef0602644d39f774273b60af4eaf95b58b963e94b6903b5aa7e",
+      "source_sha256": "c783967154fa5e516acdf879e94125a27f2b903128a4a7ac647ff256646625ba",
+      "sha256": "c783967154fa5e516acdf879e94125a27f2b903128a4a7ac647ff256646625ba",
       "transformation": null
     },
     {
@@ -3767,8 +3768,8 @@
     {
       "path": "teaching/microeconomics/labs/19-cournot-competition/index.md",
       "source_path": "docs/teaching/microeconomics/labs/19-cournot-competition/README.md",
-      "source_sha256": "c240690cc65c976644a7a7b4a336d47142c6fbcf91a9919b9e4e0e615d503ca8",
-      "sha256": "c240690cc65c976644a7a7b4a336d47142c6fbcf91a9919b9e4e0e615d503ca8",
+      "source_sha256": "0730fe4af9fb138445b09c6ae99936afd9f543f5df41e0c623669e77088cc5dc",
+      "sha256": "0730fe4af9fb138445b09c6ae99936afd9f543f5df41e0c623669e77088cc5dc",
       "transformation": null
     },
     {
@@ -3788,22 +3789,22 @@
     {
       "path": "teaching/microeconomics/labs/19-cournot-competition/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/19-cournot-competition/figure.svg",
-      "source_sha256": "4ed1324d5d5c391bdeda4c1a956fc7b41e1baf698c3d351a852ef237e32fc1af",
-      "sha256": "4ed1324d5d5c391bdeda4c1a956fc7b41e1baf698c3d351a852ef237e32fc1af",
+      "source_sha256": "35c3a8aaae9676425f845102e9676f667dab54ee41a7825bafdc688e8b0c5485",
+      "sha256": "35c3a8aaae9676425f845102e9676f667dab54ee41a7825bafdc688e8b0c5485",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/labs/19-cournot-competition/lab.py",
       "source_path": "docs/teaching/microeconomics/labs/19-cournot-competition/lab.py",
-      "source_sha256": "a7795a9c828a187bfb5cb86037b7faeb6ff3ee021a717e92333238a0dbc8de55",
-      "sha256": "a7795a9c828a187bfb5cb86037b7faeb6ff3ee021a717e92333238a0dbc8de55",
+      "source_sha256": "54a0c258c4697be73c90238496f7c2a1de459aca09965b76dfbf21b0937642d9",
+      "sha256": "54a0c258c4697be73c90238496f7c2a1de459aca09965b76dfbf21b0937642d9",
       "transformation": null
     },
     {
       "path": "teaching/microeconomics/labs/19-cournot-competition/reference.json",
       "source_path": "docs/teaching/microeconomics/labs/19-cournot-competition/reference.json",
-      "source_sha256": "5836770b1ae2be2a271b6885b4cc6c1c707802455ade9c7b7cf2feaacb38ad4f",
-      "sha256": "5836770b1ae2be2a271b6885b4cc6c1c707802455ade9c7b7cf2feaacb38ad4f",
+      "source_sha256": "92bf4b6f37edc80f16a9a43bbb3ebfad92348e42bfac4a987ee202f7d62a4d24",
+      "sha256": "92bf4b6f37edc80f16a9a43bbb3ebfad92348e42bfac4a987ee202f7d62a4d24",
       "transformation": null
     },
     {
@@ -3816,8 +3817,8 @@
     {
       "path": "teaching/microeconomics/labs/20-estimated-demand/index.md",
       "source_path": "docs/teaching/microeconomics/labs/20-estimated-demand/README.md",
-      "source_sha256": "e6cd8c73467ff01a4cd6af449ec38cc4aab64cf6faccab24f9da71369aa9e7a7",
-      "sha256": "e6cd8c73467ff01a4cd6af449ec38cc4aab64cf6faccab24f9da71369aa9e7a7",
+      "source_sha256": "60830b8522e4dc30512e069bdae1e9f6028f167824058b9c68c8aaf65efa09ee",
+      "sha256": "60830b8522e4dc30512e069bdae1e9f6028f167824058b9c68c8aaf65efa09ee",
       "transformation": null
     },
     {
@@ -3837,8 +3838,8 @@
     {
       "path": "teaching/microeconomics/labs/20-estimated-demand/figure.svg",
       "source_path": "docs/teaching/microeconomics/labs/20-estimated-demand/figure.svg",
-      "source_sha256": "6b3d4d632bcd9e1796491ce284cfcf26b7658945ac08c8c3049b78d554639c81",
-      "sha256": "6b3d4d632bcd9e1796491ce284cfcf26b7658945ac08c8c3049b78d554639c81",
+      "source_sha256": "897bb22748a456ba9a0e355f3338bce7d0ef408320b413f347ab7f67d735956c",
+      "sha256": "897bb22748a456ba9a0e355f3338bce7d0ef408320b413f347ab7f67d735956c",
       "transformation": null
     },
     {
@@ -3851,8 +3852,8 @@
     {
       "path": "teaching/microeconomics/labs/20-estimated-demand/reference.json",
       "source_path": "docs/teaching/microeconomics/labs/20-estimated-demand/reference.json",
-      "source_sha256": "bcf4cb873164ca6b84682d50649d36606153be3d9cc86d2688b4bc7866f7e0ee",
-      "sha256": "bcf4cb873164ca6b84682d50649d36606153be3d9cc86d2688b4bc7866f7e0ee",
+      "source_sha256": "acae7903eea1799f88da062f6d676e390b1a749c0e6fe2a4766b2b8dd15316ad",
+      "sha256": "acae7903eea1799f88da062f6d676e390b1a749c0e6fe2a4766b2b8dd15316ad",
       "transformation": null
     },
     {
@@ -3879,8 +3880,8 @@
     {
       "path": "teaching/statistics/index.md",
       "source_path": "docs/teaching/statistics/README.md",
-      "source_sha256": "1efcc60cb542ffe127b86f8a1840525a38fbf6e8a0e6b0fa3c457b4fadc4a69f",
-      "sha256": "7d98ecf917599c9eabaa63c1976189808e2cde0a9053d502c643b9b7e486f1ba",
+      "source_sha256": "0bfdcf952797efd117e6f1687369f5476037d31ddd05347539eae9dfbb9b890d",
+      "sha256": "be7f12ad044dda68810ef2cd677ee04348a088046041077c76dc9f57f9ed0913",
       "transformation": "Public entry files use index.md and corresponding relative links, outside the fixed SDK sdist README pattern; links to method docs are adjusted for the standalone directory."
     },
     {
@@ -3900,141 +3901,141 @@
     {
       "path": "teaching/statistics/instructors/01-measurement.md",
       "source_path": "docs/teaching/statistics/instructors/01-measurement.md",
-      "source_sha256": "d6b9a2e967f3bb40d19858805b8b4bc2982db1ca3389b8583753513d233b615e",
-      "sha256": "d6b9a2e967f3bb40d19858805b8b4bc2982db1ca3389b8583753513d233b615e",
+      "source_sha256": "bb0791721ffeb0ac1026867b4a8376037c556450d34896d6c228447b22b79f43",
+      "sha256": "bb0791721ffeb0ac1026867b4a8376037c556450d34896d6c228447b22b79f43",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/02-center.md",
       "source_path": "docs/teaching/statistics/instructors/02-center.md",
-      "source_sha256": "0201f4faa2fe8b8bbbf90be1b02afff1547b82792be383a4f43fccd7979265f9",
-      "sha256": "0201f4faa2fe8b8bbbf90be1b02afff1547b82792be383a4f43fccd7979265f9",
+      "source_sha256": "ed7f84891f3e4f28a68ee99ac14a3b1010f6c2bca78699ca72eb16ce4e1c5183",
+      "sha256": "ed7f84891f3e4f28a68ee99ac14a3b1010f6c2bca78699ca72eb16ce4e1c5183",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/03-spread.md",
       "source_path": "docs/teaching/statistics/instructors/03-spread.md",
-      "source_sha256": "fee8f56a7a7a7b30847a7500e3edd36a1e71699d40843b4567c007f8645bea71",
-      "sha256": "fee8f56a7a7a7b30847a7500e3edd36a1e71699d40843b4567c007f8645bea71",
+      "source_sha256": "1391290bc3eac89394ac66ef125f8a99472e401f3df572c6075e8f6575123617",
+      "sha256": "1391290bc3eac89394ac66ef125f8a99472e401f3df572c6075e8f6575123617",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/04-conditional-probability.md",
       "source_path": "docs/teaching/statistics/instructors/04-conditional-probability.md",
-      "source_sha256": "77e44757c5343c485b0ef809972ca69cd72d6f03dbfb45c8d669e0b9f66b6505",
-      "sha256": "77e44757c5343c485b0ef809972ca69cd72d6f03dbfb45c8d669e0b9f66b6505",
+      "source_sha256": "837e3faffc7575f6a662817119d93d4edfc19e86b1bd91f739d2141ce7a476e3",
+      "sha256": "837e3faffc7575f6a662817119d93d4edfc19e86b1bd91f739d2141ce7a476e3",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/05-bayes.md",
       "source_path": "docs/teaching/statistics/instructors/05-bayes.md",
-      "source_sha256": "3239d84af95eea1137e3b226a1a7ca8ac37b3b9cc9c86bc199ad9beb355d7440",
-      "sha256": "3239d84af95eea1137e3b226a1a7ca8ac37b3b9cc9c86bc199ad9beb355d7440",
+      "source_sha256": "4fb673911d867212abe0547b491124edee2bbfe84d12686ec576c47871e085ef",
+      "sha256": "4fb673911d867212abe0547b491124edee2bbfe84d12686ec576c47871e085ef",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/06-discrete-model.md",
       "source_path": "docs/teaching/statistics/instructors/06-discrete-model.md",
-      "source_sha256": "29fcae47570ac2fe14574c399d61b5a17ad6ffb00129a502534436c94b0e748e",
-      "sha256": "29fcae47570ac2fe14574c399d61b5a17ad6ffb00129a502534436c94b0e748e",
+      "source_sha256": "4667acdc9dcb57b426abdcc348d5d108bd6275cb25e4c2234f6c47b6b9d2dd02",
+      "sha256": "4667acdc9dcb57b426abdcc348d5d108bd6275cb25e4c2234f6c47b6b9d2dd02",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/07-normal-model.md",
       "source_path": "docs/teaching/statistics/instructors/07-normal-model.md",
-      "source_sha256": "57638e469ae3fa2b5f1d93ef360e2869b27084ea43de96c28fd47ec4710ad568",
-      "sha256": "57638e469ae3fa2b5f1d93ef360e2869b27084ea43de96c28fd47ec4710ad568",
+      "source_sha256": "9e9d29db5f6f9cb8c9c1a6e23a7388ac0e4e44019ee4b02f16daa674f5bb3e97",
+      "sha256": "9e9d29db5f6f9cb8c9c1a6e23a7388ac0e4e44019ee4b02f16daa674f5bb3e97",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/08-sampling-means.md",
       "source_path": "docs/teaching/statistics/instructors/08-sampling-means.md",
-      "source_sha256": "aac51c3df3c590aab6bed4272799d3b06c4d307c661cebe64fc9be0d4feb2bed",
-      "sha256": "aac51c3df3c590aab6bed4272799d3b06c4d307c661cebe64fc9be0d4feb2bed",
+      "source_sha256": "8b83f2e542c0384623a4a4d60681ef978cd1b0bfdac9b12de643b4242e0185a6",
+      "sha256": "8b83f2e542c0384623a4a4d60681ef978cd1b0bfdac9b12de643b4242e0185a6",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/09-confidence-intervals.md",
       "source_path": "docs/teaching/statistics/instructors/09-confidence-intervals.md",
-      "source_sha256": "89feceda75586fd613f8cccecc3c7e2c729ef6b5d387cb602e65c67c1e279436",
-      "sha256": "89feceda75586fd613f8cccecc3c7e2c729ef6b5d387cb602e65c67c1e279436",
+      "source_sha256": "4bcb72f1e36482ed05feb19b97c234f83a5000db3899cd6fa4329d38d2aa5f66",
+      "sha256": "4bcb72f1e36482ed05feb19b97c234f83a5000db3899cd6fa4329d38d2aa5f66",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/10-mean-test.md",
       "source_path": "docs/teaching/statistics/instructors/10-mean-test.md",
-      "source_sha256": "81eb46a36dfeb1c8a2d6bb11766a131f8ed1b7392b0475322ce45986eec5a6ae",
-      "sha256": "81eb46a36dfeb1c8a2d6bb11766a131f8ed1b7392b0475322ce45986eec5a6ae",
+      "source_sha256": "fec7755fdaa68eedf9fba861abb67d8ce6da9aa59ebeb1bb4e5295e8b4fa3d60",
+      "sha256": "fec7755fdaa68eedf9fba861abb67d8ce6da9aa59ebeb1bb4e5295e8b4fa3d60",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/11-one-proportion.md",
       "source_path": "docs/teaching/statistics/instructors/11-one-proportion.md",
-      "source_sha256": "8798ba701d6d49de0a71dcfaf28a9c3e98084296ffad2d19c32ba4a3dd3591b9",
-      "sha256": "8798ba701d6d49de0a71dcfaf28a9c3e98084296ffad2d19c32ba4a3dd3591b9",
+      "source_sha256": "4a62539242a807e0ca5fe45da78fe7c7cba4dccddbcf35cadd0a5d399476d64e",
+      "sha256": "4a62539242a807e0ca5fe45da78fe7c7cba4dccddbcf35cadd0a5d399476d64e",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/12-independent-means.md",
       "source_path": "docs/teaching/statistics/instructors/12-independent-means.md",
-      "source_sha256": "65f1d608a5f289ae93b90e0b07602da6dabaf667470c89d871a8f2320243ddcf",
-      "sha256": "65f1d608a5f289ae93b90e0b07602da6dabaf667470c89d871a8f2320243ddcf",
+      "source_sha256": "34786ca3f45767b30e7f8f14fcafb79c8d424f0de333fe44b07c604d01bd36fc",
+      "sha256": "34786ca3f45767b30e7f8f14fcafb79c8d424f0de333fe44b07c604d01bd36fc",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/13-paired-means.md",
       "source_path": "docs/teaching/statistics/instructors/13-paired-means.md",
-      "source_sha256": "17be87d57f28b6e9f726e425226e8d877650a1e3dcbefa12a5fdee9f5b27dd72",
-      "sha256": "17be87d57f28b6e9f726e425226e8d877650a1e3dcbefa12a5fdee9f5b27dd72",
+      "source_sha256": "8f7a1123a8a12d2067f8b62807e16ef189504f8c649b3d47aecbc78c2359c7cf",
+      "sha256": "8f7a1123a8a12d2067f8b62807e16ef189504f8c649b3d47aecbc78c2359c7cf",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/14-two-proportions.md",
       "source_path": "docs/teaching/statistics/instructors/14-two-proportions.md",
-      "source_sha256": "d60f39a1e9a05ff67642d9a396ab902a85865d0ded43077e397dfbc50c251cb6",
-      "sha256": "d60f39a1e9a05ff67642d9a396ab902a85865d0ded43077e397dfbc50c251cb6",
+      "source_sha256": "d126f0d4e9e5abdb39e566cec7d8718b4b1a55160deb4f0e2a858aaa3d5f4f17",
+      "sha256": "d126f0d4e9e5abdb39e566cec7d8718b4b1a55160deb4f0e2a858aaa3d5f4f17",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/15-correlation.md",
       "source_path": "docs/teaching/statistics/instructors/15-correlation.md",
-      "source_sha256": "e89f613293d58ccf9e4e09a0a95b47aea51cd4ef5b82665dc412013e2e5da1d0",
-      "sha256": "e89f613293d58ccf9e4e09a0a95b47aea51cd4ef5b82665dc412013e2e5da1d0",
+      "source_sha256": "fd6f6bb950aab382ae8d590690cfb205d948a0394d7b7d5772dcb41e5570da73",
+      "sha256": "fd6f6bb950aab382ae8d590690cfb205d948a0394d7b7d5772dcb41e5570da73",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/16-categorical-independence.md",
       "source_path": "docs/teaching/statistics/instructors/16-categorical-independence.md",
-      "source_sha256": "c7e7523f1dac5d68a7b2b1e7cb0efc4072d120fcda72364efb6e27d5d1bb7cd5",
-      "sha256": "c7e7523f1dac5d68a7b2b1e7cb0efc4072d120fcda72364efb6e27d5d1bb7cd5",
+      "source_sha256": "66270206cdb3ca7e4987a956dad07db1297d8a39deafb23aba47edd0ebcce6d3",
+      "sha256": "66270206cdb3ca7e4987a956dad07db1297d8a39deafb23aba47edd0ebcce6d3",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/17-anova.md",
       "source_path": "docs/teaching/statistics/instructors/17-anova.md",
-      "source_sha256": "059d59f87f3a2275b6e89697b324764549663e4f31fda6bb7bbe0f2beec391c9",
-      "sha256": "059d59f87f3a2275b6e89697b324764549663e4f31fda6bb7bbe0f2beec391c9",
+      "source_sha256": "ed57fa0218bb4cbd447bb1234326e0194f3accf10568b3522e3e5848c559a8b3",
+      "sha256": "ed57fa0218bb4cbd447bb1234326e0194f3accf10568b3522e3e5848c559a8b3",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/18-rank-comparisons.md",
       "source_path": "docs/teaching/statistics/instructors/18-rank-comparisons.md",
-      "source_sha256": "103d1c8f827dbb235cf491941f7230e4f0e46da020b9ba3182e5c6719a63537a",
-      "sha256": "103d1c8f827dbb235cf491941f7230e4f0e46da020b9ba3182e5c6719a63537a",
+      "source_sha256": "06d1f45fff48f44662b09a79f5a56f78ee2c17383d56f710a4281b041f82c3a3",
+      "sha256": "06d1f45fff48f44662b09a79f5a56f78ee2c17383d56f710a4281b041f82c3a3",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/19-bootstrap.md",
       "source_path": "docs/teaching/statistics/instructors/19-bootstrap.md",
-      "source_sha256": "9466776d23ee912a52e30ef5040e03365f0b45ff8c0055d4c694c92318daebd9",
-      "sha256": "9466776d23ee912a52e30ef5040e03365f0b45ff8c0055d4c694c92318daebd9",
+      "source_sha256": "5a66b41760e1376659d9f237ded83f62ccb814c6b5249c697c93fa0ae6e06185",
+      "sha256": "5a66b41760e1376659d9f237ded83f62ccb814c6b5249c697c93fa0ae6e06185",
       "transformation": null
     },
     {
       "path": "teaching/statistics/instructors/20-statistical-report.md",
       "source_path": "docs/teaching/statistics/instructors/20-statistical-report.md",
-      "source_sha256": "99ea6092466f132989d78c2e853e5718bd6d24be2855f1a12205b00410761f42",
-      "sha256": "99ea6092466f132989d78c2e853e5718bd6d24be2855f1a12205b00410761f42",
+      "source_sha256": "c492b03b715e887a9ac770cbab3cf4e6f310d16e98e986c3bb0d540d2d609fbd",
+      "sha256": "c492b03b715e887a9ac770cbab3cf4e6f310d16e98e986c3bb0d540d2d609fbd",
       "transformation": null
     },
     {
@@ -4180,8 +4181,8 @@
     {
       "path": "teaching/statistics/labs/01-measurement/index.md",
       "source_path": "docs/teaching/statistics/labs/01-measurement/README.md",
-      "source_sha256": "5f1af65fce94e15b1ebcb7dac410efdee2b2cd46403d860d3f2d0b7f6d2e37d2",
-      "sha256": "5f1af65fce94e15b1ebcb7dac410efdee2b2cd46403d860d3f2d0b7f6d2e37d2",
+      "source_sha256": "e07fd360203aacc9dd50bb5cc6288eca9970c9d91b0d57c33de88565a0a58797",
+      "sha256": "e07fd360203aacc9dd50bb5cc6288eca9970c9d91b0d57c33de88565a0a58797",
       "transformation": null
     },
     {
@@ -4194,8 +4195,8 @@
     {
       "path": "teaching/statistics/labs/01-measurement/figure.svg",
       "source_path": "docs/teaching/statistics/labs/01-measurement/figure.svg",
-      "source_sha256": "0bf23909a14be2aac3dd700e40e227f9c306d189aa2601ec06b9ee905d25c2d8",
-      "sha256": "0bf23909a14be2aac3dd700e40e227f9c306d189aa2601ec06b9ee905d25c2d8",
+      "source_sha256": "84f9740a4d89f1bfc001645823f526a04dbbcb1c84d99233e00fd9277d29890b",
+      "sha256": "84f9740a4d89f1bfc001645823f526a04dbbcb1c84d99233e00fd9277d29890b",
       "transformation": null
     },
     {
@@ -4215,8 +4216,8 @@
     {
       "path": "teaching/statistics/labs/01-measurement/reference.json",
       "source_path": "docs/teaching/statistics/labs/01-measurement/reference.json",
-      "source_sha256": "97e7139a53e954a1afb865bbde9378790739081957a0342199d2ef57b1773d7b",
-      "sha256": "97e7139a53e954a1afb865bbde9378790739081957a0342199d2ef57b1773d7b",
+      "source_sha256": "83e91a7ba41bda0e8c0c6404babb25d3e1854da68c2eaf2a27eadf5ce9917221",
+      "sha256": "83e91a7ba41bda0e8c0c6404babb25d3e1854da68c2eaf2a27eadf5ce9917221",
       "transformation": null
     },
     {
@@ -4229,8 +4230,8 @@
     {
       "path": "teaching/statistics/labs/02-center/index.md",
       "source_path": "docs/teaching/statistics/labs/02-center/README.md",
-      "source_sha256": "f246a3bd37b00f4545b6cc26477a14f814e19a156a6dc9de5888b20ef7ced95a",
-      "sha256": "f246a3bd37b00f4545b6cc26477a14f814e19a156a6dc9de5888b20ef7ced95a",
+      "source_sha256": "f8841f06c4f4d727ed8c52493f79e5d7fe08ecb37592169490e8cd3ec39a3d13",
+      "sha256": "f8841f06c4f4d727ed8c52493f79e5d7fe08ecb37592169490e8cd3ec39a3d13",
       "transformation": null
     },
     {
@@ -4243,8 +4244,8 @@
     {
       "path": "teaching/statistics/labs/02-center/figure.svg",
       "source_path": "docs/teaching/statistics/labs/02-center/figure.svg",
-      "source_sha256": "7594433c8dfe2e411a4c4f18861671092de1d79210ad766db76f0fb8b6af918f",
-      "sha256": "7594433c8dfe2e411a4c4f18861671092de1d79210ad766db76f0fb8b6af918f",
+      "source_sha256": "7dde2c83d52343c3f396f88a06e943170966536d2c455dcc1ab32dbe418e09fd",
+      "sha256": "7dde2c83d52343c3f396f88a06e943170966536d2c455dcc1ab32dbe418e09fd",
       "transformation": null
     },
     {
@@ -4257,8 +4258,8 @@
     {
       "path": "teaching/statistics/labs/02-center/reference.json",
       "source_path": "docs/teaching/statistics/labs/02-center/reference.json",
-      "source_sha256": "f1bef46d778a9765ab74b28d4a62fe67de8a99ba6cf1c25d168fadf52eda8552",
-      "sha256": "f1bef46d778a9765ab74b28d4a62fe67de8a99ba6cf1c25d168fadf52eda8552",
+      "source_sha256": "ddb0cd67f6a13dda17cc7fc1268365b0c15fcb85db3f80e7b938ad9c27d8aa35",
+      "sha256": "ddb0cd67f6a13dda17cc7fc1268365b0c15fcb85db3f80e7b938ad9c27d8aa35",
       "transformation": null
     },
     {
@@ -4278,8 +4279,8 @@
     {
       "path": "teaching/statistics/labs/03-spread/index.md",
       "source_path": "docs/teaching/statistics/labs/03-spread/README.md",
-      "source_sha256": "c694a830ff2681568340672fa35571ef6d8fc5316b0691566be46588b331f96c",
-      "sha256": "c694a830ff2681568340672fa35571ef6d8fc5316b0691566be46588b331f96c",
+      "source_sha256": "8c4fb1b0efd7a355babc6741903621bc4750dfa21cb6d5f82c6ef4b6b67d9ae3",
+      "sha256": "8c4fb1b0efd7a355babc6741903621bc4750dfa21cb6d5f82c6ef4b6b67d9ae3",
       "transformation": null
     },
     {
@@ -4299,8 +4300,8 @@
     {
       "path": "teaching/statistics/labs/03-spread/figure.svg",
       "source_path": "docs/teaching/statistics/labs/03-spread/figure.svg",
-      "source_sha256": "fcea8143cf45c70f46a698c0993a86b392a3ac82d64cc0bb69118d9434dda6a8",
-      "sha256": "fcea8143cf45c70f46a698c0993a86b392a3ac82d64cc0bb69118d9434dda6a8",
+      "source_sha256": "f815db5342320b436d8410c0ed930ef4c408bbae4c6905163a6cc0c35f7d4926",
+      "sha256": "f815db5342320b436d8410c0ed930ef4c408bbae4c6905163a6cc0c35f7d4926",
       "transformation": null
     },
     {
@@ -4313,8 +4314,8 @@
     {
       "path": "teaching/statistics/labs/03-spread/reference.json",
       "source_path": "docs/teaching/statistics/labs/03-spread/reference.json",
-      "source_sha256": "a5599876ca4597f2703ba7b0f688ed6e01fd1d6a0b7aeefdb0635f5d81a0d0ca",
-      "sha256": "a5599876ca4597f2703ba7b0f688ed6e01fd1d6a0b7aeefdb0635f5d81a0d0ca",
+      "source_sha256": "e77a5c2e280994c3f027c4de34118c11df766526742c46d80f6d080f1b6bfc67",
+      "sha256": "e77a5c2e280994c3f027c4de34118c11df766526742c46d80f6d080f1b6bfc67",
       "transformation": null
     },
     {
@@ -4327,8 +4328,8 @@
     {
       "path": "teaching/statistics/labs/04-conditional-probability/index.md",
       "source_path": "docs/teaching/statistics/labs/04-conditional-probability/README.md",
-      "source_sha256": "7b9a85bc87c162e73fccf78ac2c61e5b881c3994a3efe19dc14ff24dd995991d",
-      "sha256": "7b9a85bc87c162e73fccf78ac2c61e5b881c3994a3efe19dc14ff24dd995991d",
+      "source_sha256": "f6cf97a6cdec16b309a944a531a5f63205de4cc60decb0112a23df1bc2a3ce11",
+      "sha256": "f6cf97a6cdec16b309a944a531a5f63205de4cc60decb0112a23df1bc2a3ce11",
       "transformation": null
     },
     {
@@ -4348,8 +4349,8 @@
     {
       "path": "teaching/statistics/labs/04-conditional-probability/figure.svg",
       "source_path": "docs/teaching/statistics/labs/04-conditional-probability/figure.svg",
-      "source_sha256": "7d7fbcf4a6ebdadc914a1cbb68e92e9db7059aa1f8e30aa592a4d05166695b6e",
-      "sha256": "7d7fbcf4a6ebdadc914a1cbb68e92e9db7059aa1f8e30aa592a4d05166695b6e",
+      "source_sha256": "c030c46c8ac6b2bcbb036454323a0d7c6bf89335ee4b6a917296cdf9a4c4a86b",
+      "sha256": "c030c46c8ac6b2bcbb036454323a0d7c6bf89335ee4b6a917296cdf9a4c4a86b",
       "transformation": null
     },
     {
@@ -4376,8 +4377,8 @@
     {
       "path": "teaching/statistics/labs/05-bayes/index.md",
       "source_path": "docs/teaching/statistics/labs/05-bayes/README.md",
-      "source_sha256": "bb8dc7ebbeea39776f39db12cacd2e76fee06a2daba82959fed8328eba8af1a2",
-      "sha256": "bb8dc7ebbeea39776f39db12cacd2e76fee06a2daba82959fed8328eba8af1a2",
+      "source_sha256": "da9932ecc85c2f1169eb2648847bba905cbc65acc42bed2c318d8fe7b13f77dd",
+      "sha256": "da9932ecc85c2f1169eb2648847bba905cbc65acc42bed2c318d8fe7b13f77dd",
       "transformation": null
     },
     {
@@ -4390,8 +4391,8 @@
     {
       "path": "teaching/statistics/labs/05-bayes/figure.svg",
       "source_path": "docs/teaching/statistics/labs/05-bayes/figure.svg",
-      "source_sha256": "fc24f25ece8fe532fae8bda9401c9cce3fd4b68bc343611a0cbf77329fabdf41",
-      "sha256": "fc24f25ece8fe532fae8bda9401c9cce3fd4b68bc343611a0cbf77329fabdf41",
+      "source_sha256": "5d914eb32ed03864ddc822491d3ef91138be972d96b12ab5def9406b807a6dee",
+      "sha256": "5d914eb32ed03864ddc822491d3ef91138be972d96b12ab5def9406b807a6dee",
       "transformation": null
     },
     {
@@ -4425,8 +4426,8 @@
     {
       "path": "teaching/statistics/labs/06-discrete-model/index.md",
       "source_path": "docs/teaching/statistics/labs/06-discrete-model/README.md",
-      "source_sha256": "13f41f98b7efef48a70eee8c6a43d292443c4a9823c6cfa3b2201e25409e5ee5",
-      "sha256": "13f41f98b7efef48a70eee8c6a43d292443c4a9823c6cfa3b2201e25409e5ee5",
+      "source_sha256": "50ae6bed81cee941b3abed0911ca6d12a5f566fb25ec4d2154879c985141171d",
+      "sha256": "50ae6bed81cee941b3abed0911ca6d12a5f566fb25ec4d2154879c985141171d",
       "transformation": null
     },
     {
@@ -4439,8 +4440,8 @@
     {
       "path": "teaching/statistics/labs/06-discrete-model/figure.svg",
       "source_path": "docs/teaching/statistics/labs/06-discrete-model/figure.svg",
-      "source_sha256": "2a81d02a7f769ab8193364d7d94b5d56b0133f0fb721857243c142016c9ae98f",
-      "sha256": "2a81d02a7f769ab8193364d7d94b5d56b0133f0fb721857243c142016c9ae98f",
+      "source_sha256": "b62fa079a26df1f805aa531c1548389a6532cc3f44ef19976e27369854f0e854",
+      "sha256": "b62fa079a26df1f805aa531c1548389a6532cc3f44ef19976e27369854f0e854",
       "transformation": null
     },
     {
@@ -4453,8 +4454,8 @@
     {
       "path": "teaching/statistics/labs/06-discrete-model/reference.json",
       "source_path": "docs/teaching/statistics/labs/06-discrete-model/reference.json",
-      "source_sha256": "4254ca6fc9c7dab18d961722b3cb15673e76895e564265172f3e897d2cf41e89",
-      "sha256": "4254ca6fc9c7dab18d961722b3cb15673e76895e564265172f3e897d2cf41e89",
+      "source_sha256": "bb6a4a7463818e2585aa13b9918b65dbd0b0e626cec248b4be320df7d0458018",
+      "sha256": "bb6a4a7463818e2585aa13b9918b65dbd0b0e626cec248b4be320df7d0458018",
       "transformation": null
     },
     {
@@ -4474,8 +4475,8 @@
     {
       "path": "teaching/statistics/labs/07-normal-model/index.md",
       "source_path": "docs/teaching/statistics/labs/07-normal-model/README.md",
-      "source_sha256": "13aa5d047c033ad7cef0e382dfc91ae479c4fa7245be5d7ae475544659e8961e",
-      "sha256": "13aa5d047c033ad7cef0e382dfc91ae479c4fa7245be5d7ae475544659e8961e",
+      "source_sha256": "e1fadc122e2302a909cca9943cc5c3f2f0e727c2382a2edca2322d01c3c30649",
+      "sha256": "e1fadc122e2302a909cca9943cc5c3f2f0e727c2382a2edca2322d01c3c30649",
       "transformation": null
     },
     {
@@ -4488,8 +4489,8 @@
     {
       "path": "teaching/statistics/labs/07-normal-model/figure.svg",
       "source_path": "docs/teaching/statistics/labs/07-normal-model/figure.svg",
-      "source_sha256": "7abd3e43746d511fc754203d88b210b8555ed5f773af31728a1ff665171c4d0b",
-      "sha256": "7abd3e43746d511fc754203d88b210b8555ed5f773af31728a1ff665171c4d0b",
+      "source_sha256": "78a1d87e93ecceaf902bd182f848a9446acffe522c188022b8155a6e19c1904e",
+      "sha256": "78a1d87e93ecceaf902bd182f848a9446acffe522c188022b8155a6e19c1904e",
       "transformation": null
     },
     {
@@ -4509,8 +4510,8 @@
     {
       "path": "teaching/statistics/labs/07-normal-model/reference.json",
       "source_path": "docs/teaching/statistics/labs/07-normal-model/reference.json",
-      "source_sha256": "439de61896b6b3300da03cbb7d1005c64f3a5fc3fa43e3f74779a33728d193f8",
-      "sha256": "439de61896b6b3300da03cbb7d1005c64f3a5fc3fa43e3f74779a33728d193f8",
+      "source_sha256": "1287195ce50fc7f3fb65a923123a2927b598db42a63f5d897a0d12e8502fd818",
+      "sha256": "1287195ce50fc7f3fb65a923123a2927b598db42a63f5d897a0d12e8502fd818",
       "transformation": null
     },
     {
@@ -4523,8 +4524,8 @@
     {
       "path": "teaching/statistics/labs/08-sampling-means/index.md",
       "source_path": "docs/teaching/statistics/labs/08-sampling-means/README.md",
-      "source_sha256": "1b848b2a360fa049ee11237a9b366cb3969c344bdf0547853441af61e48cc41c",
-      "sha256": "1b848b2a360fa049ee11237a9b366cb3969c344bdf0547853441af61e48cc41c",
+      "source_sha256": "40589e7134bca14c934a372a62ccfbe3aed62499ecd1892d00bf0caf78183ea1",
+      "sha256": "40589e7134bca14c934a372a62ccfbe3aed62499ecd1892d00bf0caf78183ea1",
       "transformation": null
     },
     {
@@ -4537,8 +4538,8 @@
     {
       "path": "teaching/statistics/labs/08-sampling-means/figure.svg",
       "source_path": "docs/teaching/statistics/labs/08-sampling-means/figure.svg",
-      "source_sha256": "c392731afab32f1e65bedae59e9c14e0b00fe93ac21f61b4997a9eacbd302802",
-      "sha256": "c392731afab32f1e65bedae59e9c14e0b00fe93ac21f61b4997a9eacbd302802",
+      "source_sha256": "9d6b79028e79961bc0f358e9e8909f69906966b8e269b2c8ec1cbc2ff82923ad",
+      "sha256": "9d6b79028e79961bc0f358e9e8909f69906966b8e269b2c8ec1cbc2ff82923ad",
       "transformation": null
     },
     {
@@ -4572,8 +4573,8 @@
     {
       "path": "teaching/statistics/labs/09-confidence-intervals/index.md",
       "source_path": "docs/teaching/statistics/labs/09-confidence-intervals/README.md",
-      "source_sha256": "8ef533079c222a9321298006f52167114e48b0cd71f15a9628e1248ea5194775",
-      "sha256": "8ef533079c222a9321298006f52167114e48b0cd71f15a9628e1248ea5194775",
+      "source_sha256": "7cf1e0054ad6d36b7979b90e6b9d4ae106c23b461ccafde813edb13151139ed1",
+      "sha256": "7cf1e0054ad6d36b7979b90e6b9d4ae106c23b461ccafde813edb13151139ed1",
       "transformation": null
     },
     {
@@ -4586,8 +4587,8 @@
     {
       "path": "teaching/statistics/labs/09-confidence-intervals/figure.svg",
       "source_path": "docs/teaching/statistics/labs/09-confidence-intervals/figure.svg",
-      "source_sha256": "adab68880b18bad9189ab20b290a6139db6cff2aa514c7317111c75385747324",
-      "sha256": "adab68880b18bad9189ab20b290a6139db6cff2aa514c7317111c75385747324",
+      "source_sha256": "61ae3aa6828f8a30a762e4987e2a9b21f9bf934f8d765fcdbea8c5e0c9fd283d",
+      "sha256": "61ae3aa6828f8a30a762e4987e2a9b21f9bf934f8d765fcdbea8c5e0c9fd283d",
       "transformation": null
     },
     {
@@ -4621,8 +4622,8 @@
     {
       "path": "teaching/statistics/labs/10-mean-test/index.md",
       "source_path": "docs/teaching/statistics/labs/10-mean-test/README.md",
-      "source_sha256": "da6e16b4d5a13339833634a9c647e41b86745b7cd3ec4f826666988b326b3f79",
-      "sha256": "da6e16b4d5a13339833634a9c647e41b86745b7cd3ec4f826666988b326b3f79",
+      "source_sha256": "deb06648282bb670a74a4db228f45517b2f17ae7122560b782b018350ba24e71",
+      "sha256": "deb06648282bb670a74a4db228f45517b2f17ae7122560b782b018350ba24e71",
       "transformation": null
     },
     {
@@ -4635,8 +4636,8 @@
     {
       "path": "teaching/statistics/labs/10-mean-test/figure.svg",
       "source_path": "docs/teaching/statistics/labs/10-mean-test/figure.svg",
-      "source_sha256": "d6aff55631a5163b2dd9fdee8d890491f9d5fd32fcf1ca02bf74e3c9762f6008",
-      "sha256": "d6aff55631a5163b2dd9fdee8d890491f9d5fd32fcf1ca02bf74e3c9762f6008",
+      "source_sha256": "69f9f60adf4aecef1b46b96bbb75ca613b5cf8b5723a15afb9544fe87051d4b8",
+      "sha256": "69f9f60adf4aecef1b46b96bbb75ca613b5cf8b5723a15afb9544fe87051d4b8",
       "transformation": null
     },
     {
@@ -4670,8 +4671,8 @@
     {
       "path": "teaching/statistics/labs/11-one-proportion/index.md",
       "source_path": "docs/teaching/statistics/labs/11-one-proportion/README.md",
-      "source_sha256": "bb513cdaf7025ff53c76eac1c0e479a69e730bc66350e405a705dcff7ffe79fa",
-      "sha256": "bb513cdaf7025ff53c76eac1c0e479a69e730bc66350e405a705dcff7ffe79fa",
+      "source_sha256": "f354c75747b0624b1b8be5e20439a38bf9e052e078cc95b434696656bb5b5fbf",
+      "sha256": "f354c75747b0624b1b8be5e20439a38bf9e052e078cc95b434696656bb5b5fbf",
       "transformation": null
     },
     {
@@ -4691,8 +4692,8 @@
     {
       "path": "teaching/statistics/labs/11-one-proportion/figure.svg",
       "source_path": "docs/teaching/statistics/labs/11-one-proportion/figure.svg",
-      "source_sha256": "cc178c9cbe09a75fba0c48474bbd4d1bbd6d6f97b4040263c1350d6b428a0a67",
-      "sha256": "cc178c9cbe09a75fba0c48474bbd4d1bbd6d6f97b4040263c1350d6b428a0a67",
+      "source_sha256": "62e2ae9efcf2c94e3f48287557f7f37e73bc04f34832287559453d9851298844",
+      "sha256": "62e2ae9efcf2c94e3f48287557f7f37e73bc04f34832287559453d9851298844",
       "transformation": null
     },
     {
@@ -4719,8 +4720,8 @@
     {
       "path": "teaching/statistics/labs/12-independent-means/index.md",
       "source_path": "docs/teaching/statistics/labs/12-independent-means/README.md",
-      "source_sha256": "0bcd4ad1af9d15cad4679979a4a5f8fff67fcd500d68e8b27f595e1071604957",
-      "sha256": "0bcd4ad1af9d15cad4679979a4a5f8fff67fcd500d68e8b27f595e1071604957",
+      "source_sha256": "435e4cb807853fff46d575773ccdfc2cf8017a790e88101e7c6043bc079645f4",
+      "sha256": "435e4cb807853fff46d575773ccdfc2cf8017a790e88101e7c6043bc079645f4",
       "transformation": null
     },
     {
@@ -4740,8 +4741,8 @@
     {
       "path": "teaching/statistics/labs/12-independent-means/figure.svg",
       "source_path": "docs/teaching/statistics/labs/12-independent-means/figure.svg",
-      "source_sha256": "b963e62e93633df95c23f2e0f33359ff756e0b3cbc5aeb52bf502ce0914fe0fa",
-      "sha256": "b963e62e93633df95c23f2e0f33359ff756e0b3cbc5aeb52bf502ce0914fe0fa",
+      "source_sha256": "71f0b8ab73bfdb0e46bdebce18b16228391ef2bb9726c5737b1898c6471f7527",
+      "sha256": "71f0b8ab73bfdb0e46bdebce18b16228391ef2bb9726c5737b1898c6471f7527",
       "transformation": null
     },
     {
@@ -4768,8 +4769,8 @@
     {
       "path": "teaching/statistics/labs/13-paired-means/index.md",
       "source_path": "docs/teaching/statistics/labs/13-paired-means/README.md",
-      "source_sha256": "5dceee9dae4e5613eb7ead11cbaf9d5a7ab730876cd9f8151946119001d59b03",
-      "sha256": "5dceee9dae4e5613eb7ead11cbaf9d5a7ab730876cd9f8151946119001d59b03",
+      "source_sha256": "e95caa406bd0308d322120df72f65e4cc88cd1299d10132419ce9f7f60942325",
+      "sha256": "e95caa406bd0308d322120df72f65e4cc88cd1299d10132419ce9f7f60942325",
       "transformation": null
     },
     {
@@ -4782,8 +4783,8 @@
     {
       "path": "teaching/statistics/labs/13-paired-means/figure.svg",
       "source_path": "docs/teaching/statistics/labs/13-paired-means/figure.svg",
-      "source_sha256": "7953ef1e39d5ed0fe4a19e0f9e8271161569cb609aba2f91038a77a24f07d812",
-      "sha256": "7953ef1e39d5ed0fe4a19e0f9e8271161569cb609aba2f91038a77a24f07d812",
+      "source_sha256": "3b460ec0eff62de3a3fc44cc8991521d30b3a331533de802ac9e045ecb230316",
+      "sha256": "3b460ec0eff62de3a3fc44cc8991521d30b3a331533de802ac9e045ecb230316",
       "transformation": null
     },
     {
@@ -4817,8 +4818,8 @@
     {
       "path": "teaching/statistics/labs/14-two-proportions/index.md",
       "source_path": "docs/teaching/statistics/labs/14-two-proportions/README.md",
-      "source_sha256": "53010998b650233cbcf0fb977f2de838e1288d853813e0e2d6f5003ed096e9de",
-      "sha256": "53010998b650233cbcf0fb977f2de838e1288d853813e0e2d6f5003ed096e9de",
+      "source_sha256": "336d167b00019f70f9b238eb6d9be096744ed58718a76192c426aeb91e40ae45",
+      "sha256": "336d167b00019f70f9b238eb6d9be096744ed58718a76192c426aeb91e40ae45",
       "transformation": null
     },
     {
@@ -4831,8 +4832,8 @@
     {
       "path": "teaching/statistics/labs/14-two-proportions/figure.svg",
       "source_path": "docs/teaching/statistics/labs/14-two-proportions/figure.svg",
-      "source_sha256": "2c2d192edff002d4f320b5352c4fa1fd666b7faddd614b780a9d8cd10e3fd8b2",
-      "sha256": "2c2d192edff002d4f320b5352c4fa1fd666b7faddd614b780a9d8cd10e3fd8b2",
+      "source_sha256": "e92da32219526199909ac81a87a69ce403d3ebce5f0461aec35c5532232f8768",
+      "sha256": "e92da32219526199909ac81a87a69ce403d3ebce5f0461aec35c5532232f8768",
       "transformation": null
     },
     {
@@ -4866,8 +4867,8 @@
     {
       "path": "teaching/statistics/labs/15-correlation/index.md",
       "source_path": "docs/teaching/statistics/labs/15-correlation/README.md",
-      "source_sha256": "52d3a1a18eb66ef7406cf1b88f54e8b801e19038ecf18b019b64492f8056adb0",
-      "sha256": "52d3a1a18eb66ef7406cf1b88f54e8b801e19038ecf18b019b64492f8056adb0",
+      "source_sha256": "29d3c00d621fc33436aeef572c019b8949ddc0167b3c26c9da261d85565524a2",
+      "sha256": "29d3c00d621fc33436aeef572c019b8949ddc0167b3c26c9da261d85565524a2",
       "transformation": null
     },
     {
@@ -4880,8 +4881,8 @@
     {
       "path": "teaching/statistics/labs/15-correlation/figure.svg",
       "source_path": "docs/teaching/statistics/labs/15-correlation/figure.svg",
-      "source_sha256": "df684566db712e3e61c12fd0bb433a014723df96748625267d8133192917959f",
-      "sha256": "df684566db712e3e61c12fd0bb433a014723df96748625267d8133192917959f",
+      "source_sha256": "08d53518e57ac6d2ac269f22df7139bf4c38775ad256f4e1963aa2359a1b9740",
+      "sha256": "08d53518e57ac6d2ac269f22df7139bf4c38775ad256f4e1963aa2359a1b9740",
       "transformation": null
     },
     {
@@ -4915,8 +4916,8 @@
     {
       "path": "teaching/statistics/labs/16-categorical-independence/index.md",
       "source_path": "docs/teaching/statistics/labs/16-categorical-independence/README.md",
-      "source_sha256": "bc199cf573777783f6a88963d965aa82a978895d87a5b160874e7cd1367bd761",
-      "sha256": "bc199cf573777783f6a88963d965aa82a978895d87a5b160874e7cd1367bd761",
+      "source_sha256": "7b2c71f40f42e78f3b1fc9931bb594bd1222ca26ef6475a25666984db36ab4f8",
+      "sha256": "7b2c71f40f42e78f3b1fc9931bb594bd1222ca26ef6475a25666984db36ab4f8",
       "transformation": null
     },
     {
@@ -4929,8 +4930,8 @@
     {
       "path": "teaching/statistics/labs/16-categorical-independence/figure.svg",
       "source_path": "docs/teaching/statistics/labs/16-categorical-independence/figure.svg",
-      "source_sha256": "f6bbe70467f04bfbbb1b165a18b5192bd2b8888a94f74a81ae45ca249239583e",
-      "sha256": "f6bbe70467f04bfbbb1b165a18b5192bd2b8888a94f74a81ae45ca249239583e",
+      "source_sha256": "159a9c70f4dff6dc1362f8be32b68953b89c31c8da71e7e4d98ba35cf80762b3",
+      "sha256": "159a9c70f4dff6dc1362f8be32b68953b89c31c8da71e7e4d98ba35cf80762b3",
       "transformation": null
     },
     {
@@ -4964,8 +4965,8 @@
     {
       "path": "teaching/statistics/labs/17-anova/index.md",
       "source_path": "docs/teaching/statistics/labs/17-anova/README.md",
-      "source_sha256": "b442fd1a7d5e49cc0283cae32b56d2056f5479ba03f4791654c0a63291a512ad",
-      "sha256": "b442fd1a7d5e49cc0283cae32b56d2056f5479ba03f4791654c0a63291a512ad",
+      "source_sha256": "a415f77cc96b990403b696b9ea89e47b154336f4748f08ccb3c2f6d1a3d06bbf",
+      "sha256": "a415f77cc96b990403b696b9ea89e47b154336f4748f08ccb3c2f6d1a3d06bbf",
       "transformation": null
     },
     {
@@ -4978,22 +4979,22 @@
     {
       "path": "teaching/statistics/labs/17-anova/figure.svg",
       "source_path": "docs/teaching/statistics/labs/17-anova/figure.svg",
-      "source_sha256": "0debdb7b20daaaab823390b21b92d7ed089cb73a29a2cd8d4a01ec9abef3119b",
-      "sha256": "0debdb7b20daaaab823390b21b92d7ed089cb73a29a2cd8d4a01ec9abef3119b",
+      "source_sha256": "b5b4ad4469162bb869fcbc55935bc82e46f1b1d4de96f024d4ff57543ed7cf88",
+      "sha256": "b5b4ad4469162bb869fcbc55935bc82e46f1b1d4de96f024d4ff57543ed7cf88",
       "transformation": null
     },
     {
       "path": "teaching/statistics/labs/17-anova/lab.py",
       "source_path": "docs/teaching/statistics/labs/17-anova/lab.py",
-      "source_sha256": "32c40902d657a9cccadd297e454a544bb94e515ece40c6459d50c72b2d2efa38",
-      "sha256": "32c40902d657a9cccadd297e454a544bb94e515ece40c6459d50c72b2d2efa38",
+      "source_sha256": "10a58a0ca5b652b273eec9cbdc5c02bad45f6c689698add2c7c123e5ec96f8f1",
+      "sha256": "10a58a0ca5b652b273eec9cbdc5c02bad45f6c689698add2c7c123e5ec96f8f1",
       "transformation": null
     },
     {
       "path": "teaching/statistics/labs/17-anova/reference.json",
       "source_path": "docs/teaching/statistics/labs/17-anova/reference.json",
-      "source_sha256": "c83340a84442214eacec6276370692707a1d78bfab57e45d6338f4e3b8e162b3",
-      "sha256": "c83340a84442214eacec6276370692707a1d78bfab57e45d6338f4e3b8e162b3",
+      "source_sha256": "51460b6b3bb30ad959ee705b15e945fc5d79ef464bcde5684371729e0787aacb",
+      "sha256": "51460b6b3bb30ad959ee705b15e945fc5d79ef464bcde5684371729e0787aacb",
       "transformation": null
     },
     {
@@ -5013,8 +5014,8 @@
     {
       "path": "teaching/statistics/labs/18-rank-comparisons/index.md",
       "source_path": "docs/teaching/statistics/labs/18-rank-comparisons/README.md",
-      "source_sha256": "85fb27cee7c9d7ddf1a4199906fe043a1e5732d9ceb930a8632e670a03c1d6d1",
-      "sha256": "85fb27cee7c9d7ddf1a4199906fe043a1e5732d9ceb930a8632e670a03c1d6d1",
+      "source_sha256": "c366a36f05c3b3e71c3d24a5f5758af60d07a34a15107c7803b8c76382dca9e9",
+      "sha256": "c366a36f05c3b3e71c3d24a5f5758af60d07a34a15107c7803b8c76382dca9e9",
       "transformation": null
     },
     {
@@ -5034,22 +5035,22 @@
     {
       "path": "teaching/statistics/labs/18-rank-comparisons/figure.svg",
       "source_path": "docs/teaching/statistics/labs/18-rank-comparisons/figure.svg",
-      "source_sha256": "8ba3f1cc72d5fd28bcef4d61eaa58df874546adbe9d6149f2be41434bb21fa02",
-      "sha256": "8ba3f1cc72d5fd28bcef4d61eaa58df874546adbe9d6149f2be41434bb21fa02",
+      "source_sha256": "b8109e5862ac08e19122fda407295ffd9ba2ba6494b0a50878ceda22bf92787c",
+      "sha256": "b8109e5862ac08e19122fda407295ffd9ba2ba6494b0a50878ceda22bf92787c",
       "transformation": null
     },
     {
       "path": "teaching/statistics/labs/18-rank-comparisons/lab.py",
       "source_path": "docs/teaching/statistics/labs/18-rank-comparisons/lab.py",
-      "source_sha256": "976b528f2ed957d078b143d1aa0ad1efd3b39609938fdf55d157e1add2071a9e",
-      "sha256": "976b528f2ed957d078b143d1aa0ad1efd3b39609938fdf55d157e1add2071a9e",
+      "source_sha256": "e0980fc67d0e807992ce0815356c8fafc41cc0fd0b11c632c043f86a057fef61",
+      "sha256": "e0980fc67d0e807992ce0815356c8fafc41cc0fd0b11c632c043f86a057fef61",
       "transformation": null
     },
     {
       "path": "teaching/statistics/labs/18-rank-comparisons/reference.json",
       "source_path": "docs/teaching/statistics/labs/18-rank-comparisons/reference.json",
-      "source_sha256": "db4688293cab159ebf57ab2783e53d59e7533367a7ddc63c3dc74dcb0a9f578d",
-      "sha256": "db4688293cab159ebf57ab2783e53d59e7533367a7ddc63c3dc74dcb0a9f578d",
+      "source_sha256": "56174dc6df3b665c7c9c0f74a4f3b8adbcb611fa8e545abfda1cde620057789b",
+      "sha256": "56174dc6df3b665c7c9c0f74a4f3b8adbcb611fa8e545abfda1cde620057789b",
       "transformation": null
     },
     {
@@ -5062,8 +5063,8 @@
     {
       "path": "teaching/statistics/labs/19-bootstrap/index.md",
       "source_path": "docs/teaching/statistics/labs/19-bootstrap/README.md",
-      "source_sha256": "630c812fec79f3cd80f68695c04f6776f720c04cca0a21fa792f331415d7d725",
-      "sha256": "630c812fec79f3cd80f68695c04f6776f720c04cca0a21fa792f331415d7d725",
+      "source_sha256": "736f7ff13c22631d5db895c10751884bee0497e0f598240d84310f27a0ca04cc",
+      "sha256": "736f7ff13c22631d5db895c10751884bee0497e0f598240d84310f27a0ca04cc",
       "transformation": null
     },
     {
@@ -5083,8 +5084,8 @@
     {
       "path": "teaching/statistics/labs/19-bootstrap/figure.svg",
       "source_path": "docs/teaching/statistics/labs/19-bootstrap/figure.svg",
-      "source_sha256": "be5152203c50843c187b19a1c2f668b9422d85f3383eb0e59956347fc7e301db",
-      "sha256": "be5152203c50843c187b19a1c2f668b9422d85f3383eb0e59956347fc7e301db",
+      "source_sha256": "b5a86450e0b5cf88c3269a16af48b0a4a41ccd9412f41d83b1d2da378add7389",
+      "sha256": "b5a86450e0b5cf88c3269a16af48b0a4a41ccd9412f41d83b1d2da378add7389",
       "transformation": null
     },
     {
@@ -5111,8 +5112,8 @@
     {
       "path": "teaching/statistics/labs/20-statistical-report/index.md",
       "source_path": "docs/teaching/statistics/labs/20-statistical-report/README.md",
-      "source_sha256": "b87ee61dab58ea825ebe26e7a12323e00a17a68e71d11035a46cbab55fb2b66f",
-      "sha256": "b87ee61dab58ea825ebe26e7a12323e00a17a68e71d11035a46cbab55fb2b66f",
+      "source_sha256": "feb3e246ba2c06c2dca04c9ea36dd619379202e0872973e85d74284e392857f5",
+      "sha256": "feb3e246ba2c06c2dca04c9ea36dd619379202e0872973e85d74284e392857f5",
       "transformation": null
     },
     {
@@ -5132,8 +5133,8 @@
     {
       "path": "teaching/statistics/labs/20-statistical-report/figure.svg",
       "source_path": "docs/teaching/statistics/labs/20-statistical-report/figure.svg",
-      "source_sha256": "e796825d894018ff4787e20650e68032204a9e7eef1ea2e3aaee7c59bda083df",
-      "sha256": "e796825d894018ff4787e20650e68032204a9e7eef1ea2e3aaee7c59bda083df",
+      "source_sha256": "59acac5523c9dfc074a21bfb00c6f8228bc03998e442fc2e881d8c5799f5452f",
+      "sha256": "59acac5523c9dfc074a21bfb00c6f8228bc03998e442fc2e881d8c5799f5452f",
       "transformation": null
     },
     {
@@ -5157,6 +5158,5 @@
       "sha256": "65c86a24931be70d6fe857f21147ea3077f40b9874089ae3a76342ed7081db4a",
       "transformation": null
     }
-  ],
-  "publication_layout": "Standalone teaching directory; the fixed SDK source inventory and production files remain unchanged."
+  ]
 }

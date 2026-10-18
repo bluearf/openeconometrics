@@ -2,19 +2,23 @@
 
 ## Teaching sequence
 
-Fix A−B on the board and trace the same sign through the table, interval and words.
+Write A − B on the board before anything runs and trace that sign through the estimate, the t statistic, the interval and the final sentence. Have students read the group standard deviations before the test, so the size of method B's variance term in the standard error is expected rather than surprising.
 
-Before running, ask students to define the observational unit and predict the comparison. Connect the code to the equation before interpreting the output.
+Use the slight overlap of the two single-group intervals as a deliberate trap, then show why the standard error of a difference is smaller than the sum of the two standard errors. Present the pooled row as a design choice made before looking at p values, and close by separating the mean comparison from claims about individual deliveries and about causation.
 
 ## Worked exercise answers
 
-**A.** A−B = -2.92812 minutes. Negative means A is faster on average in this sample.
+**1.** For B − A the estimate is +2.93 minutes, t = +2.398 and the 95% interval is 0.51 to 5.35 minutes (the A − B endpoints negated and swapped). The standard error 1.221, the Welch degrees of freedom 108.4 and the two-sided p value 0.0182 do not change; the two one-sided p values exchange their labels. The substantive sentence (A's mean is lower) is unchanged.
 
-**B.** -2.92812/1.22106 = -2.39802.
+**2.** `oe.ttest(raw, "minutes", by="method", alpha=0.01, missing="raise")` gives a 99% Welch interval of −6.13 to 0.27 minutes, using the critical value 2.622 with 108.4 degrees of freedom. It contains zero while the 95% interval does not, because the two-sided p value 0.0182 is below 0.05 but above 0.01. The point estimate is the same; only the critical value changed.
 
-**C.** Satterthwaite matches an estimated variance distribution; df need not equal nA+nB−2.
+**3.** With 170 B deliveries, $v_B = 109.88/170 = 0.646$, so SE = √(0.198 + 0.646) = 0.919 and t = −2.928/0.919 = −3.19 (Welch df 231.2). Doubling A to 130 instead gives $v_A = 12.89/130 = 0.099$, SE = √(0.099 + 1.293) = 1.180 and t = −2.48. Adding B deliveries helps far more because B's term is about 87% of the variance of the difference; shrinking A's already small term barely moves the standard error.
 
-**D.** No. Those measurements are dependent pairs; analyze within-pair differences.
+**4.** If $v_A = 0$, Satterthwaite's formula reduces to $v_B^2/(v_B^2/84) = 84 = n_B - 1$: the uncertainty of the standard error would come only from B's 85 deliveries. A's term is small but not zero, so it adds some information and ν rises above 84; it stays well below 148 because ν reaches the pooled count only when each term is proportional to its group's degrees of freedom ($v_A/64 = v_B/84$), and here B's term is far larger. ν is noninteger because it is an approximation matched to the variance of an estimated quantity, not a count of observations.
+
+**5.** The pooled variance is $s_p^2 = (64 \times 12.89 + 84 \times 109.88)/148 = 67.94$, so the pooled SE² is $67.94/65 + 67.94/85 = 1.045 + 0.799 = 1.844$ and SE = 1.358. Welch's terms are 0.198 and 1.293, summing to 1.491. Pooling assigns a variance dominated by B to group A, inflating A's term more than it deflates B's, because the inflated term is divided by the smaller n. When the larger group has the larger variance, the pooled test is conservative. If the 65-delivery group had been the noisy one (same two standard deviations swapped), the pooled SE would be 1.220 against Welch's 1.357, so pooling would understate the uncertainty.
+
+**6.** `(raw.loc[raw.method == "B", "minutes"] < raw.loc[raw.method == "A", "minutes"].mean()).sum()` gives 34: 34 of 85 method B deliveries (40%) took less time than method A's mean of 33.45 minutes. A lower mean is a statement about averages; many individual B deliveries still beat a typical A delivery because B is so variable. A supported rewrite: "In these 150 synthetic deliveries, method A's mean time was 2.93 minutes shorter than method B's (Welch 95% interval 0.51 to 5.35 minutes shorter, p = 0.018). The file does not record how deliveries were allocated to methods, so this is a descriptive difference in averages, not evidence that switching to A would shorten deliveries."
 
 ## Reproduction and verification evidence
 

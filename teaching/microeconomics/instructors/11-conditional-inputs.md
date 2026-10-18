@@ -2,19 +2,23 @@
 
 ## Teaching sequence
 
-Ask students to solve the defining condition algebraically before running the complete file. Compare that solution with the plotted scenarios and the numerical table. Discuss why the model assumptions matter for the final exercise.
+Ask students to sketch the 60-unit isoquant and one isocost line before running anything, and to say in words why a bundle with MRTS above w/r cannot be the cheapest. Then derive the conditional demands together and check them on the base scenario by hand.
 
-Before running, ask students to define the observational unit and predict the comparison. Connect the code to the equation before interpreting the output.
+Before running, ask students to identify what each row of the workbook is (a scenario at which the model is solved, not an observed firm) and to predict K/L for every row. Connect the two formulas in the code to the derivation in Section 4 before interpreting the table, and keep the high-wage comparison at fixed output.
 
 ## Worked exercise answers
 
-**A.** 4, equal to w/r=4.
+**1.** Output: $2\sqrt{10\times 90}=2\sqrt{900}=60$. At (10, 90), $MP_L=\sqrt{90/10}=3$ units of output per unit of labor and $MP_K=\sqrt{10/90}=1/3\approx0.333$ units of output per unit of capital, so $MRTS=3/(1/3)=9=K/L=w/r=9/1$. Equivalently $MP_L/w=3/9=1/3=MP_K/r$, so the last currency unit buys the same extra output from either input.
 
-**B.** 2 sqrt(15 × 60)=60.
+**2.** The old bundle at the new wage costs $9\times15+1\times60=135+60=195$ currency per day, which is 15 more than the minimum of 180. The 15 is the saving from substitution: by moving along the 60-unit isoquant from (15, 60) to (10, 90), the firm avoids part of the cost increase that keeping the old input mix would impose.
 
-**C.** Labor falls to 10 and capital rises to 90, holding output fixed.
+**3.** Base: $4\times15/120=60/120=0.5$. High wage: $9\times10/180=90/180=0.5$. With $q=2\sqrt{LK}$, each input's cost is $wL^c=rK^c=(q/2)\sqrt{wr}=C/2$, so the labor share is one half at any prices. A higher wage lowers labor use by exactly the proportion needed to keep the labor bill a constant share; this is a property of the equal-exponent Cobb–Douglas technology, not a general result.
 
-**D.** No. Output is a constraint in this problem; profit maximization adds demand/revenue.
+**4.** With $w/r=4/4=1$, the predicted ratio is $K/L=1$. Then $L^c=30\sqrt{4/4}=30$, $K^c=30$, and minimum cost is $4\times30+4\times30=240$ (equivalently $60\sqrt{16}=240$). Minimum cost per unit of output doubles from 2 to 4.
+
+**5.** $\partial C/\partial w=q\sqrt r/(2\sqrt w)=\tfrac q2\sqrt{r/w}=L^c$. At the base scenario this is $60\times1/(2\times2)=15$, equal to conditional labor demand (Shephard's lemma). For a small wage increase, the first-order cost increase is the amount of labor already in use times the wage change; the induced reallocation of inputs has no first-order effect on cost because the bundle was already cost-minimizing (the envelope argument).
+
+**6.** With $q=\min\{4L,K\}$, producing 60 units efficiently requires $4L=K=60$, so $L=15$ and $K=60$ at any positive prices; extra units of either input alone add nothing. Cost is $4\times15+60=120$ at the base wage and $9\times15+60=195$ at the high wage, an increase of 75 rather than the 60 in Section 6. The fixed-proportions firm cannot substitute capital for labor, so it pays the full wage increase on its unchanged labor input; its cost at the high wage equals the old-bundle cost from Exercise 2.
 
 ## Reproduction and verification evidence
 

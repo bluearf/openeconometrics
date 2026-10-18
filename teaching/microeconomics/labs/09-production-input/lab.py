@@ -62,6 +62,55 @@ def panel(x, y, *, kind="line", title=TITLE, xlabel="Observation", ylabel="Value
     }
 
 
+def chart(panel):
+    """Draw a chart_data panel with OpenEconometrics Charts, as the handout figure does."""
+    series = panel["series"]
+    first = series[0]
+    options = {"title": panel["title"]}
+    if panel.get("value_limits"):
+        options["xlim" if "low" in first else "ylim"] = list(panel["value_limits"])
+    if panel.get("segments"):
+        options["annotations"] = [
+            {
+                "type": "segment",
+                "text": g["label"],
+                **{k: g[k] for k in ("x0", "y0", "x1", "y1", "color", "align", "dx", "dy") if k in g},
+            }
+            for g in panel["segments"]
+        ]
+    if "low" in first:
+        records = [
+            {"term": str(term), "estimate": estimate, "ci_low": low, "ci_high": high}
+            for term, estimate, low, high in zip(first["x"], first["y"], first["low"], first["high"])
+        ]
+        plot = oe.plot.coefficients(
+            {"coefficients": records}, x_label=panel["ylabel"], y_label=panel["xlabel"], **options
+        )
+    elif panel["kind"] == "bar":
+        frame = {panel["xlabel"]: [str(v) for v in first["x"]], **{s["label"]: s["y"] for s in series}}
+        plot = oe.plot.bar(
+            data=frame,
+            x=panel["xlabel"],
+            y=[s["label"] for s in series],
+            legend=len(series) > 1,
+            y_label=panel["ylabel"],
+            **options,
+        )
+    else:
+        plotter = oe.plot.scatter if panel["kind"] == "scatter" else oe.plot.line
+        plot = plotter(
+            data={"x": first["x"], "y": first["y"]},
+            x="x",
+            y="y",
+            x_label=panel["xlabel"],
+            y_label=panel["ylabel"],
+            **options,
+        )
+    for line in panel.get("reference_lines", []):
+        plot = (plot.hline if line["axis"] == "y" else plot.vline)(line["value"], text=line["label"])
+    return plot
+
+
 def clean(value):
     if isinstance(value, dict):
         return {str(k): clean(v) for k, v in value.items()}
@@ -107,7 +156,21 @@ def analyze(raw):
         "grid_profit_maximum": float(profits.max()),
     }
     native = oe.DataFrame({"value": list(summary.values())}, index=list(summary))
+    shown = raw.labor <= 16
+    demand = {
+        **panel(
+            raw.labor[shown].tolist(),
+            (price * 5 / raw.labor[shown] ** 0.5).tolist(),
+            xlabel="Labor (worker-days)",
+            ylabel="Value of marginal product (currency/worker-day)",
+        ),
+        "reference_lines": [
+            {"axis": "y", "value": wage, "label": f"Wage = {wage:g}"},
+            {"axis": "x", "value": labor, "label": f"Profit-maximizing labor = {labor:g}"},
+        ],
+    }
     checks = {
+        "workbook_output_is_ten_root_labor": max(abs(raw.output - 10 * raw.labor**0.5)) < 1e-9,
         "value_marginal_product_equals_wage": abs(price * 5 / math.sqrt(labor) - wage) < 1e-12,
         "analytic_matches_grid": abs(
             summary["grid_profit_maximum"] - summary["profit_after_fixed_cost"]
@@ -117,14 +180,7 @@ def analyze(raw):
     return (
         summary,
         native,
-        [
-            panel(
-                raw.labor.tolist(),
-                profits.tolist(),
-                xlabel="Labor (worker-days)",
-                ylabel="Profit (currency/day)",
-            )
-        ],
+        [demand],
         checks,
         {},
     )
@@ -162,11 +218,7 @@ def run_lab(output_dir=None, display_callback=None, data_path=None):
             if isinstance(native, dict)
             else native
         )
-        first = panels[0]
-        series = first["series"][0]
-        chart_frame = oe.DataFrame({"x": series["x"], "y": series["y"]})
-        plotter = getattr(oe.plot, {"hist": "bar"}.get(first["kind"], first["kind"]))
-        display_callback(plotter(data=chart_frame, x="x", y="y", title=first["title"]))
+        display_callback(chart(panels[0]))
         display_callback(table)
     if output_dir is not None:
         target = Path(output_dir)

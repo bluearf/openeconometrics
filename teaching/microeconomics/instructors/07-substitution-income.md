@@ -2,19 +2,23 @@
 
 ## Teaching sequence
 
-Ask students to solve the defining condition algebraically before running the complete file. Compare that solution with the plotted scenarios and the numerical table. Discuss why the model assumptions matter for the final exercise.
+Start from the Lab 06 result that doubling $p_x$ cuts X from 16 to 8, and ask students to name the two forces behind the fall. Draw the original indifference curve, the old and new budget lines and the compensated tangency $C$ before any formula. Pose the pause question (signs and relative size of the two effects), derive $m^c$ from the expenditure function, then run the file.
 
-Before running, ask students to define the observational unit and predict the comparison. Connect the code to the equation before interpreting the output.
+Stress that the effects summing to the total is an identity; the meaningful check is equal utility at $A$ and $C$. Finish with the Hicks–Slutsky contrast in Exercises 1 and 4.
 
 ## Worked exercise answers
 
-**A.** -5.44394 + -2.55606 = -8.
+**1.** Slutsky income is the cost of $A=(16,36)$ at new prices: $6\times16+2\times36=168$. Then $x_S=0.4\times168/6=11.2$, so the Slutsky substitution effect is $11.2-16=-4.8$ and the income effect $8-11.2=-3.2$, still totaling −8. Compared with Hicks (−5.44 and −2.56), Slutsky assigns less to substitution and more to income. Slutsky compensation (168) exceeds Hicks compensation (158.34) because $A$ is affordable but not optimal at the new prices; the Slutsky bundle reaches utility 27.62, above the original 26.03.
 
-**B.** Utility, verified as 26.0273 before and 26.0273 after compensation.
+**2.** $y_C=0.6\times158.34/2=47.50$, while $y_A=y_B=36$. The substitution effect on Y is $+11.50$ units (toward the relatively cheaper good) and the income effect is $-11.50$ units, for a total of 0. Lab 06's zero cross-price response is two equal and opposite effects, not an absence of any effect.
 
-**C.** That would be Slutsky compensation. Hicks compensation minimizes spending needed for original utility.
+**3.** At old prices, the income giving the post-rise utility is $120\times(3/6)^{0.4}=120/1.3195=90.94$, a money loss of $120-90.94=29.06$ (the equivalent variation). The Hicks compensation implies a loss of 38.34 (the compensating variation). They differ because each values the same utility loss at different prices: at the new, higher price of X money buys less, so more is needed. With a large price change and a nonzero income effect the two measures need not agree.
 
-**D.** X is normal and becomes relatively dearer; lower real income further reduces its demand.
+**4.** At $p_x=3.3$, $x_B=0.4\times120/3.3=14.545$, a total of −1.455. Hicks: $m^c=120\times1.1^{0.4}=124.66$, $x_C=15.111$, substitution −0.889, income −0.565. Slutsky: $m^S=3.3\times16+72=124.8$, $x_S=15.127$, substitution −0.873, income −0.582. The gap between substitution effects is 0.017 units (about 1.9% of the Hicks value), against 0.644 units (about 11.8%) for the doubling. The gap shrinks about 39 times for a price change 10 times smaller, consistent with the two concepts agreeing to first order.
+
+**5.** Total $=-5.44+2.00=-3.44$ units; X still falls when its price rises, so demand slopes downward. X would be a Giffen good if the positive income effect exceeded 5.44 units, making the total positive.
+
+**6.** For example: "In this model, doubling the price of X from 3 to 6 lowers one synthetic Cobb–Douglas consumer's X from 16 to 8 units. Under Hicks compensation, which keeps the original utility attainable, −5.44 units are the substitution effect and −2.56 units the income effect. The split depends on the compensation concept (Slutsky gives −4.8 and −3.2) and describes the model, not observed people."
 
 ## Reproduction and verification evidence
 

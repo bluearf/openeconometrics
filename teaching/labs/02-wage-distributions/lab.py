@@ -132,7 +132,7 @@ def run_lab(output_dir=None, display_callback=None, data_path=None):
             "title": "A First Look at Wages",
             "seed": SEED,
             "synthetic": True,
-            "percentile_rule": "Stata empirical percentile: ceiling np; average adjacent order statistics when np integer",
+            "percentile_rule": "Reference empirical percentile: ceiling np; average adjacent order statistics when np integer",
             "wage_unit": "hypothetical currency/hour",
             "missing_rule": "exclude five missing wages explicitly",
         },

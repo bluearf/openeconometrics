@@ -38,8 +38,8 @@
         ]
       ],
       "attrs": {
-        "percentile_method": "stata",
-        "moments": "spss",
+        "percentile_method": "raw",
+        "moments": "bias_corrected",
         "alpha": 0.05,
         "missing": "variable-wise",
         "n": 500

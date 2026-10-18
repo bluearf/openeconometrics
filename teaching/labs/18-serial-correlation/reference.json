@@ -1541,7 +1541,7 @@
         "sample_positions_omitted": false,
         "sample_position_count": 197,
         "categorical_encoding": {},
-        "stata_parity_validated": false
+        "external_compatibility_validated": false
       },
       "inference": {
         "covariance": "HC1",
@@ -3093,7 +3093,7 @@
         "sample_positions_omitted": false,
         "sample_position_count": 197,
         "categorical_encoding": {},
-        "stata_parity_validated": false
+        "external_compatibility_validated": false
       },
       "inference": {
         "covariance": "hac",
@@ -4653,7 +4653,7 @@
         "sample_positions_omitted": false,
         "sample_position_count": 197,
         "categorical_encoding": {},
-        "stata_parity_validated": false
+        "external_compatibility_validated": false
       },
       "inference": {
         "covariance": "hac",

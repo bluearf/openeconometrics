@@ -2,19 +2,23 @@
 
 ## Teaching sequence
 
-Ask students to solve the defining condition algebraically before running the complete file. Compare that solution with the plotted scenarios and the numerical table. Discuss why the model assumptions matter for the final exercise.
+Have students write one firm's profit with rivals' output held fixed and derive the best response before any symmetry is imposed; the "Pause before running" question asks them to solve the duopoly by hand. Emphasize the $2b$ term (a unit sold lowers the price on all of a firm's units) and the check that $n=1$ reproduces monopoly.
 
-Before running, ask students to define the observational unit and predict the comparison. Connect the code to the equation before interpreting the output.
+After running, read the scenario table column by column: per-firm output falls, total output rises, and the markup shrinks as $1/(n+1)$. Exercises 2 and 5 contrast the Cournot outcome with collusion and with price competition, so students see which conclusions depend on quantity competition.
 
 ## Worked exercise answers
 
-**A.** (100−20)/(2+1)=26.6667.
+**1.** With $n=3$, a firm's best response to two rivals producing $q$ each is $q=40-2q/2$, so $2q=40$ and $q=20$; total output is 60 and the price $100-60=40$, matching the three-firm row. Profit per firm is $(40-20)\times20=400$. Industry profit is 1,600 with one firm, $2\times711.11=1{,}422.22$ with two and $3\times400=1{,}200$ with three. It falls as firms are added because total output rises and the price falls toward cost; each firm ignores the price reduction its output imposes on rivals.
 
-**B.** Monopoly output 40 from the same demand and marginal cost.
+**2.** Splitting the monopoly output gives each firm 20 units at a price of 60, a profit of $(60-20)\times20=800$, more than the Cournot 711.11. If firm 1 deviates while firm 2 keeps 20, its best response is $40-20/2=30$; total output is 50, the price 50, and firm 1 earns $(50-20)\times30=900$ while firm 2's profit drops to $(50-20)\times20=600$. Each firm gains by breaking the agreement, so it is not self-enforcing in a one-shot game; sustaining it would need repeated interaction or enforcement.
 
-**C.** No. Individual output falls, while aggregate output rises.
+**3.** The markup is $P^*-c=80/(n+1)$. It is at most 5 when $n+1\ge16$, so 15 firms are needed: with 15 firms the price is exactly 25 and each firm produces 5 units. With 14 firms the price is 25.33.
 
-**D.** No. Under standard unconstrained homogeneous-good assumptions, price competition can produce marginal-cost pricing with two firms.
+**4.** With two firms, $Q=53.33$, consumer surplus is $\tfrac12\times53.33^2=1{,}422.22$, total profit is 1,422.22 and total surplus 2,844.44. The competitive outcome ($Q=80$, $P=20$) yields $\tfrac12\times80\times80=3{,}200$, so the deadweight loss is 355.56, equal to $\tfrac12(46.67-20)(80-53.33)$. With ten firms, consumer surplus is 2,644.63, total profit 528.93, total surplus 3,173.55 and the deadweight loss 26.45 currency.
+
+**5.** With identical constant costs, no capacity limits and a homogeneous product, Bertrand price competition drives the price to marginal cost, 20, even with two firms: any price above 20 can be undercut slightly to capture the whole market. Total output is 80, split 40 and 40, and profit is zero, compared with the Cournot duopoly price of 46.67 and profit of 711.11 per firm.
+
+**6.** For example: "In the stipulated Cournot duopoly, each firm independently chooses 26.67 units as its best response to the other, and the price of 46.67 exceeds marginal cost of 20 without any agreement, because each firm restricts output to protect the price on its own units. Collusion would instead restrict output to the monopoly 40 units and raise the price to 60."
 
 ## Reproduction and verification evidence
 

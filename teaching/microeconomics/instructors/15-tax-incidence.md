@@ -2,19 +2,23 @@
 
 ## Teaching sequence
 
-Ask students to solve the defining condition algebraically before running the complete file. Compare that solution with the plotted scenarios and the numerical table. Discuss why the model assumptions matter for the final exercise.
+Start from the untaxed equilibrium in row 50 and ask who "pays" a tax that sellers remit before doing any algebra. Write the wedge condition, solve for the taxed quantity, and read both prices off the original schedules; then separate the legal remitter from the change in each side's price.
 
-Before running, ask students to define the observational unit and predict the comparison. Connect the code to the equation before interpreting the output.
+Before running, ask students what one row is (a potential unit of trade on stipulated schedules, not an observed transaction) and to verify the wedge at the taxed quantity. Connect the row search on `gap == tax` to the wedge equation, and require revenue to appear in the surplus accounting before the deadweight loss is computed.
 
 ## Worked exercise answers
 
-**A.** 40−30=10.
+**1.** On $Q_D=2(60-P)$ and $Q_S=2(P-10)$, $dQ_D/dP=-2$ and $dQ_S/dP=2$. At $(Q,P)=(50,35)$: $\varepsilon_D=-2\times35/50=-1.4$ and $\varepsilon_S=2\times35/50=1.4$. The buyers' share is $\varepsilon_S/(\varepsilon_S-\varepsilon_D)=1.4/2.8=0.5$, so buyers bear $0.5\times10=5$ per unit, matching the computed buyer burden.
 
-**B.** 10×40=400.
+**2.** With $t=20$: quantity 30, buyer price 45, seller net price 25, each burden 10, revenue $20\times30=600$, consumer and producer surplus 225 each, deadweight loss $\tfrac12\times20\times20=200$. Doubling the tax raises revenue by half (400 to 600) but quadruples the deadweight loss (50 to 200). The loss triangle has base and height both proportional to $t$, so it grows with $t^2$, while revenue $t(50-t)$ grows less than proportionally because the tax base shrinks.
 
-**C.** 0.5×10×(50−40)=50.
+**3.** With inverse supply $10+1.5q$, the untaxed point is $q=25$, $P=47.5$. With the 10-unit tax, $60-0.5q-(10+1.5q)=10$ gives $q=20$, buyer price 50 and seller net price 40. Buyers bear $50-47.5=2.5$ and sellers $47.5-40=7.5$ per unit. Revenue is 200, consumer surplus 100, producer surplus 300 and deadweight loss 25. Sellers bear three quarters because supply is now steeper (less responsive) than demand: $b_S/(b_D+b_S)=1.5/2=0.75$.
 
-**D.** No. With the same enforceable wedge and schedules, equilibrium economic incidence is unchanged.
+**4.** If buyers remit, sellers face buyers' willingness to pay net of the tax, $60-0.5q-10=50-0.5q$. Setting this equal to $10+0.5q$ gives $q=40$ and a price to sellers of 30. Buyers hand over $30+10=40$ per unit in total. Quantity, buyer cost and seller net price are identical to the seller-remitted case: the wedge, not the remitter, determines incidence.
+
+**5.** Without the tax, $CS=PS=\tfrac12\times25\times50=625$. Consumer surplus falls by $625-400=225$: buyers pay $5\times40=200$ of the tax on the units still traded and lose $\tfrac12\times10\times5=25$ on units 41 to 50. Producer surplus falls by the same 225, split into 200 of tax and 25 of loss. Revenue is $200+200=400$, and the deadweight loss is $25+25=50$.
+
+**6.** For example: "The tax lowered buyers' and sellers' combined surplus by 450 a day, from 1,250 to 800. Of that, 400 went to the government as revenue and is a transfer; the remaining 50 is a deadweight loss from the ten units no longer traded."
 
 ## Reproduction and verification evidence
 

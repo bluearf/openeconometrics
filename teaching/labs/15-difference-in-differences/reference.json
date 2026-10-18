@@ -478,7 +478,7 @@
         "device": "cpu",
         "estimator": "didregress",
         "family": "teffects",
-        "stata_equivalent": [
+        "command_aliases": [
           "didregress",
           "xtdidregress",
           "estat ptrends",
@@ -510,7 +510,7 @@
         "sample_order": "input row order",
         "prediction_sample": null,
         "prediction_limit": 400,
-        "stata_parity_validated": false,
+        "external_compatibility_validated": false,
         "solver": "absorb_twfe_qr",
         "solver_diagnostics": {},
         "optimizer": null,
@@ -3313,7 +3313,7 @@
         "sample_positions_omitted": false,
         "sample_position_count": 360,
         "categorical_encoding": {},
-        "stata_parity_validated": false
+        "external_compatibility_validated": false
       },
       "inference": {
         "covariance": "cluster",
@@ -3776,7 +3776,7 @@
         "device": "cpu",
         "estimator": "didregress",
         "family": "teffects",
-        "stata_equivalent": [
+        "command_aliases": [
           "didregress",
           "xtdidregress",
           "estat ptrends",
@@ -3808,7 +3808,7 @@
         "sample_order": "input row order",
         "prediction_sample": null,
         "prediction_limit": 400,
-        "stata_parity_validated": false,
+        "external_compatibility_validated": false,
         "solver": "absorb_twfe_qr",
         "solver_diagnostics": {},
         "optimizer": null,
@@ -4314,7 +4314,7 @@
         "device": "cpu",
         "estimator": "didregress",
         "family": "teffects",
-        "stata_equivalent": [
+        "command_aliases": [
           "didregress",
           "xtdidregress",
           "estat ptrends",
@@ -4346,7 +4346,7 @@
         "sample_order": "input row order",
         "prediction_sample": null,
         "prediction_limit": 400,
-        "stata_parity_validated": false,
+        "external_compatibility_validated": false,
         "solver": "absorb_twfe_qr",
         "solver_diagnostics": {},
         "optimizer": null,

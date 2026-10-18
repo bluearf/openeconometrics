@@ -296,22 +296,32 @@
   "chart_data": {
     "panels": [
       {
-        "kind": "bar",
-        "title": "Comparing Three Training Formats",
-        "xlabel": "Training format",
-        "ylabel": "Mean score (points)",
+        "kind": "line",
+        "title": "Pairwise Differences with Bonferroni 95% Intervals",
+        "xlabel": "Comparison",
+        "ylabel": "Difference in mean score (points)",
         "series": [
           {
-            "label": "Computed values",
+            "label": "Difference and Bonferroni interval",
             "x": [
-              "A",
-              "B",
-              "C"
+              "A \u2212 B",
+              "A \u2212 C",
+              "B \u2212 C"
             ],
             "y": [
-              66.50710235875705,
-              67.79975334037876,
-              70.07039118844071
+              -1.292650981621693,
+              -3.5632888296836516,
+              -2.2706378480619582
+            ],
+            "low": [
+              -4.124735842031454,
+              -6.395373690093413,
+              -5.102722708471719
+            ],
+            "high": [
+              1.539433878788068,
+              -0.7312039692738908,
+              0.5614470123478026
             ]
           }
         ]
@@ -322,6 +332,7 @@
     "sum_of_squares_decomposition": true,
     "native_F_matches_mean_square_ratio": true,
     "native_eta_squared_matches_ss_ratio": true,
-    "between_df_plus_within_df": true
+    "between_df_plus_within_df": true,
+    "native_group_means_match": true
   }
 }

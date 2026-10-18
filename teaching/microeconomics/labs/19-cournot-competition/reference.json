@@ -96,12 +96,24 @@
               27.27272727272728
             ]
           }
+        ],
+        "reference_lines": [
+          {
+            "axis": "y",
+            "value": 20.0,
+            "label": "Marginal cost = 20"
+          }
+        ],
+        "value_limits": [
+          0,
+          65
         ]
       }
     ]
   },
   "checks": {
     "symmetric_best_response": true,
-    "more_firms_lower_price": true
+    "more_firms_lower_price": true,
+    "common_marginal_cost": true
   }
 }

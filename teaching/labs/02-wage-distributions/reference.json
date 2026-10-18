@@ -4,7 +4,7 @@
     "title": "A First Look at Wages",
     "seed": 2022026,
     "synthetic": true,
-    "percentile_rule": "Stata empirical percentile: ceiling np; average adjacent order statistics when np integer",
+    "percentile_rule": "Reference empirical percentile: ceiling np; average adjacent order statistics when np integer",
     "wage_unit": "hypothetical currency/hour",
     "missing_rule": "exclude five missing wages explicitly"
   },

@@ -13,7 +13,7 @@ Use the distribution question to motivate each statistic. Ask students to distin
 
 ## Scientific and reproduction notes
 
-Native `oe.describe` uses the stated Stata empirical percentile convention. The script checks its mean against a direct sum, SD against centered squared deviations, and quartiles against independently ordered observations. Both native histograms use every observed wage; missing reports are explicitly excluded once before both transformations. The mean-without-maximum calculation is sensitivity analysis, not a declared replacement sample.
+Native `oe.describe` uses the stated Reference empirical percentile convention. The script checks its mean against a direct sum, SD against centered squared deviations, and quartiles against independently ordered observations. Both native histograms use every observed wage; missing reports are explicitly excluded once before both transformations. The mean-without-maximum calculation is sensitivity analysis, not a declared replacement sample.
 
 The [full reference](../labs/02-wage-distributions/reference.json) records all summaries, binned figure data and independent checks. Native output order is table, plot, plot. `models` is empty because this is descriptive analysis. Default complete-file execution writes no exports; explicit `run_lab(output_dir="docs/teaching/labs/02-wage-distributions")` writes and reads back the full JSON plus LaTeX table. Neither the student packet nor the student handout contains this companion or the reference receipt.
 

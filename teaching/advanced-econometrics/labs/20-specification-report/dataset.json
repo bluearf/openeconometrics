@@ -37,8 +37,8 @@
     },
     {
       "name": "interaction",
-      "description": "Treatment times centered baseline",
-      "unit": "treat \u00d7 baseline",
+      "description": "Treatment times the raw baseline covariate x",
+      "unit": "treat × x",
       "missing": 0
     }
   ]

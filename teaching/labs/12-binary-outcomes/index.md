@@ -162,6 +162,10 @@ The result is **0.051300**, SE **0.005802**, with 95% interval **[0.039929, 0.06
 
 The AME averages over the dataset's observed age, education and child-count distribution. It is not necessarily the marginal effect at the mean covariate vector. Those are different summaries of a nonlinear function. It also need not apply to another population with a different covariate distribution.
 
+The appropriate marginal comparison also depends on the kind of predictor. Education is treated numerically here, so the smooth derivative is a useful summary, with the whole-year qualification already stated. For the child count, a question such as “one child versus two” is naturally answered by comparing two valid covariate profiles. For a categorical group, changing the category is a discrete comparison rather than a derivative with respect to an arbitrary numeric code. Choosing the comparison first prevents software defaults from deciding the economic question.
+
+For example, duplicate the age-35, education-14 profile and change children from one to two; subtract the two fitted response probabilities. Keep both profiles within the observed support and state what remains fixed. A different age or schooling level can produce a different probability difference despite the same child-count index coefficient. This is a property of the nonlinear response function, not inconsistent model output.
+
 ## 8. Understand the uncertainty of a nonlinear summary
 
 The marginal effect depends on several fitted coefficients through both the index and the education slope. Its standard error therefore uses the gradient of the **aggregate effect** with respect to the whole coefficient vector:
@@ -185,10 +189,6 @@ Classification accuracy is another separate question. A threshold of 0.5 can lab
 Run the complete [Python document](lab.py) after importing the supplied workbook for the actual models and native marginal-effects table. The [LaTeX publication table](table.tex) presents the same fitted coefficients and declared covariance conventions. Copying a coefficient table into a report is only the beginning: the report should translate the relevant model into a probability-scale comparison with units, evaluation population and assumptions intact.
 
 ## Student exercises
-
-The appropriate marginal comparison also depends on the kind of predictor. Education is treated numerically here, so the smooth derivative is a useful summary, with the whole-year qualification already stated. For the child count, a question such as “one child versus two” is naturally answered by comparing two valid covariate profiles. For a categorical group, changing the category is a discrete comparison rather than a derivative with respect to an arbitrary numeric code. Choosing the comparison first prevents software defaults from deciding the economic question.
-
-For example, duplicate the age-35, education-14 profile and change children from one to two; subtract the two fitted response probabilities. Keep both profiles within the observed support and state what remains fixed. A different age or schooling level can produce a different probability difference despite the same child-count index coefficient. This is a property of the nonlinear response function, not inconsistent model output.
 
 1. Explain why a participation outcome of one, a predicted probability of 0.33 and a threshold-based classification are three different objects.
 2. Interpret the LPM education coefficient in percentage points. Explain why it is not a 5.176% proportional increase for every person.
