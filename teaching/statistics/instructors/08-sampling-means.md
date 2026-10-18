@@ -2,19 +2,23 @@
 
 ## Teaching sequence
 
-Use separate labels for population size N, sample size n and replications B. Students often confuse all three.
+Use separate labels for population size $N$, sample size $n$ and replications $B$ from the start; students often confuse all three. Show the skewed population first (SD 34.90 above a mean of 31.25; only 322 of 1,000 people spend more than the mean) so that the later symmetry of the $n=40$ means is visibly a property of averages, not of people.
 
-Before running, ask students to define the observational unit and predict the comparison. Connect the code to the equation before interpreting the output.
+Derive $\operatorname{Var}(\bar X)=\sigma^2/n$ from the sum of independent variances before running, then collect predictions for the pause question. After running, read the table in pairs (centers, then spreads) and separate sampling error, which depends on $n$, from Monte Carlo error, which depends on $B$. Point out that the two histogram panels have different horizontal scales.
 
 ## Worked exercise answers
 
-**A.** Use denominator N=1000 for the exact finite-population variance. The sample SD of the 1600 replicated means uses its own sample convention; the two roles should not be mixed.
+**1.** With divisor $N=1000$, $\sigma = 34.9047$; with divisor $N-1=999$, the value is 34.9222. The ratio is $\sqrt{1000/999}=1.0005$, a difference of 0.017 currency units. Divisor $N$ is correct because the file is the whole population. The choice matters more when the number of values is small, for example a sample of 5, where $\sqrt{5/4}=1.118$.
 
-**B.** They are 15.6099 and 5.51892 currency. The former divided by sqrt(8) equals the latter.
+**2.** $34.9047/\sqrt{10} = 11.04$ and $34.9047/\sqrt{160} = 2.76$ currency units per day. A standard error of at most 2 requires $n \ge (34.9047/2)^2 = 304.6$, so $n = 305$.
 
-**C.** Monte Carlo precision of the estimated sampling distribution improves. The theoretical standard error of each sample mean remains sigma/sqrt(n). The Monte Carlo standard error of the average of replicated means halves.
+**3.** Empirical over theoretical: $15.0153/15.6099 = 0.962$ at $n=5$ and $5.5149/5.5189 = 0.999$ at $n=40$. The empirical ratio $15.0153/5.5149 = 2.723$ compares with $\sqrt8 = 2.828$. The discrepancies are Monte Carlo error from using 1,600 replications; the estimated standard deviation of a skewed sampling distribution (as at $n=5$) is itself relatively noisy, so the larger gap appears there.
 
-**D.** A finite population correction would multiply the with-replacement SE by $\sqrt{(N-n)/(N-1)}$ when sigma uses denominator N. This experiment samples with replacement, so that correction is not applied.
+**4.** Monte Carlo standard errors are $34.9047/\sqrt{5\times1600}=0.390$ for $n=5$ and $34.9047/\sqrt{40\times1600}=0.138$ for $n=40$. The gaps are $31.1490-31.2451=-0.096$, or $-0.25$ Monte Carlo standard errors, and $31.4171-31.2451=+0.172$, or $+1.25$. Neither is larger than Monte Carlo error would readily produce. With $B=6400$ the Monte Carlo standard errors halve to 0.195 and 0.069; the standard error of an individual sample mean, $\sigma/\sqrt n$, does not change.
+
+**5.** The correction is $\sqrt{995/999}=0.998$ for $n=5$, giving 15.58, and $\sqrt{960/999}=0.980$ for $n=40$, giving 5.41 currency units. A 10% reduction requires $\sqrt{(1000-n)/999}=0.9$, so $1000-n = 0.81 \times 999 = 809.2$ and $n \approx 191$, about 19% of the population. The correction is small here because both sample sizes are tiny fractions of $N$.
+
+**6.** The population did not change; only the distribution of sample means narrowed. For example: "The spending of individual people is unchanged (population SD 34.90). Means of samples of 40 vary less across samples (SD 5.51) than means of samples of 5 (SD 15.02), because averaging more independent draws lets high and low values offset each other."
 
 ## Reproduction and verification evidence
 

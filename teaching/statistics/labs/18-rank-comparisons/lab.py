@@ -62,6 +62,55 @@ def panel(x, y, *, kind="line", title=TITLE, xlabel="Observation", ylabel="Value
     }
 
 
+def chart(panel):
+    """Draw a chart_data panel with OpenEconometrics Charts, as the handout figure does."""
+    series = panel["series"]
+    first = series[0]
+    options = {"title": panel["title"]}
+    if panel.get("value_limits"):
+        options["xlim" if "low" in first else "ylim"] = list(panel["value_limits"])
+    if panel.get("segments"):
+        options["annotations"] = [
+            {
+                "type": "segment",
+                "text": g["label"],
+                **{k: g[k] for k in ("x0", "y0", "x1", "y1", "color", "align", "dx", "dy") if k in g},
+            }
+            for g in panel["segments"]
+        ]
+    if "low" in first:
+        records = [
+            {"term": str(term), "estimate": estimate, "ci_low": low, "ci_high": high}
+            for term, estimate, low, high in zip(first["x"], first["y"], first["low"], first["high"])
+        ]
+        plot = oe.plot.coefficients(
+            {"coefficients": records}, x_label=panel["ylabel"], y_label=panel["xlabel"], **options
+        )
+    elif panel["kind"] == "bar":
+        frame = {panel["xlabel"]: [str(v) for v in first["x"]], **{s["label"]: s["y"] for s in series}}
+        plot = oe.plot.bar(
+            data=frame,
+            x=panel["xlabel"],
+            y=[s["label"] for s in series],
+            legend=len(series) > 1,
+            y_label=panel["ylabel"],
+            **options,
+        )
+    else:
+        plotter = oe.plot.scatter if panel["kind"] == "scatter" else oe.plot.line
+        plot = plotter(
+            data={"x": first["x"], "y": first["y"]},
+            x="x",
+            y="y",
+            x_label=panel["xlabel"],
+            y_label=panel["ylabel"],
+            **options,
+        )
+    for line in panel.get("reference_lines", []):
+        plot = (plot.hline if line["axis"] == "y" else plot.vline)(line["value"], text=line["label"])
+    return plot
+
+
 def clean(value):
     if isinstance(value, dict):
         return {str(k): clean(v) for k, v in value.items()}
@@ -115,18 +164,30 @@ def analyze(raw):
         < 1e-12,
         "all_ranks_sum_correctly": abs(float(ranks.sum()) - len(raw) * (len(raw) + 1) / 2) < 1e-12,
     }
-    counts = raw.rating.value_counts().sort_index()
+    ratings = list(range(1, 8))
+    by_service = {
+        name: raw.loc[raw.service == name, "rating"].value_counts().reindex(ratings, fill_value=0)
+        for name in ("A", "B")
+    }
+    checks["counts_cover_every_customer"] = sum(int(c.sum()) for c in by_service.values()) == len(raw)
     return (
         summary,
         native,
         [
-            panel(
-                counts.index.tolist(),
-                counts.tolist(),
-                kind="bar",
-                xlabel="Rating (ordered 1–7)",
-                ylabel="Customers",
-            )
+            {
+                **panel(
+                    ratings,
+                    by_service["A"].tolist(),
+                    kind="bar",
+                    title="Ratings by Service",
+                    xlabel="Rating (ordered 1–7)",
+                    ylabel="Customers",
+                ),
+                "series": [
+                    {"label": f"Service {name}", "x": ratings, "y": [int(v) for v in counts]}
+                    for name, counts in by_service.items()
+                ],
+            }
         ],
         checks,
         {},
@@ -165,11 +226,7 @@ def run_lab(output_dir=None, display_callback=None, data_path=None):
             if isinstance(native, dict)
             else native
         )
-        first = panels[0]
-        series = first["series"][0]
-        chart_frame = oe.DataFrame({"x": series["x"], "y": series["y"]})
-        plotter = getattr(oe.plot, {"hist": "bar"}.get(first["kind"], first["kind"]))
-        display_callback(plotter(data=chart_frame, x="x", y="y", title=first["title"]))
+        display_callback(chart(panels[0]))
         display_callback(table)
     if output_dir is not None:
         target = Path(output_dir)

@@ -62,6 +62,55 @@ def panel(x, y, *, kind="line", title=TITLE, xlabel="Observation", ylabel="Value
     }
 
 
+def chart(panel):
+    """Draw a chart_data panel with OpenEconometrics Charts, as the handout figure does."""
+    series = panel["series"]
+    first = series[0]
+    options = {"title": panel["title"]}
+    if panel.get("value_limits"):
+        options["xlim" if "low" in first else "ylim"] = list(panel["value_limits"])
+    if panel.get("segments"):
+        options["annotations"] = [
+            {
+                "type": "segment",
+                "text": g["label"],
+                **{k: g[k] for k in ("x0", "y0", "x1", "y1", "color", "align", "dx", "dy") if k in g},
+            }
+            for g in panel["segments"]
+        ]
+    if "low" in first:
+        records = [
+            {"term": str(term), "estimate": estimate, "ci_low": low, "ci_high": high}
+            for term, estimate, low, high in zip(first["x"], first["y"], first["low"], first["high"])
+        ]
+        plot = oe.plot.coefficients(
+            {"coefficients": records}, x_label=panel["ylabel"], y_label=panel["xlabel"], **options
+        )
+    elif panel["kind"] == "bar":
+        frame = {panel["xlabel"]: [str(v) for v in first["x"]], **{s["label"]: s["y"] for s in series}}
+        plot = oe.plot.bar(
+            data=frame,
+            x=panel["xlabel"],
+            y=[s["label"] for s in series],
+            legend=len(series) > 1,
+            y_label=panel["ylabel"],
+            **options,
+        )
+    else:
+        plotter = oe.plot.scatter if panel["kind"] == "scatter" else oe.plot.line
+        plot = plotter(
+            data={"x": first["x"], "y": first["y"]},
+            x="x",
+            y="y",
+            x_label=panel["xlabel"],
+            y_label=panel["ylabel"],
+            **options,
+        )
+    for line in panel.get("reference_lines", []):
+        plot = (plot.hline if line["axis"] == "y" else plot.vline)(line["value"], text=line["label"])
+    return plot
+
+
 def clean(value):
     if isinstance(value, dict):
         return {str(k): clean(v) for k, v in value.items()}
@@ -103,21 +152,46 @@ def analyze(raw):
         "net_total_surplus": 45 * q - 0.75 * q * q,
     }
     native = oe.DataFrame({"value": list(summary.values())}, index=list(summary))
+    first, last = raw.iloc[0], raw.iloc[-1]
+    summation = {
+        **panel(
+            raw.quantity.tolist(),
+            (raw.mb_a + raw.mb_b).tolist(),
+            xlabel="Shared provision (units)",
+            ylabel="Marginal benefit (currency/unit)",
+        ),
+        "segments": [
+            {
+                "x0": float(last.quantity),
+                "y0": float(last[name]),
+                "x1": float(first.quantity),
+                "y1": float(first[name]),
+                "label": label,
+                "dx": 8,
+                "dy": -6,
+                "color": "#b3541e",
+            }
+            for name, label in (("mb_a", "A's marginal benefit"), ("mb_b", "B's marginal benefit"))
+        ],
+        "reference_lines": [
+            {"axis": "y", "value": float(raw.mc.iloc[0]), "label": f"Marginal cost = {raw.mc.iloc[0]:g}"},
+            {"axis": "x", "value": q, "label": f"Efficient provision = {q:g}"},
+        ],
+        "value_limits": [0, 75],
+    }
     checks = {
+        "workbook_benefits_are_linear": all(
+            max(abs(raw[name].diff().dropna() - raw[name].diff().iloc[1])) < 1e-12
+            for name in ("mb_a", "mb_b")
+        ),
+        "workbook_marginal_cost_is_constant": raw.mc.nunique() == 1,
         "samuelson_condition": abs(a + b - 25) < 1e-12,
         "positive_individual_marginal_benefits": a > 0 and b > 0,
     }
     return (
         summary,
         native,
-        [
-            panel(
-                raw.quantity.tolist(),
-                (raw.mb_a + raw.mb_b).tolist(),
-                xlabel="Shared provision (units)",
-                ylabel="Summed marginal benefit (currency/unit)",
-            )
-        ],
+        [summation],
         checks,
         {},
     )
@@ -155,11 +229,7 @@ def run_lab(output_dir=None, display_callback=None, data_path=None):
             if isinstance(native, dict)
             else native
         )
-        first = panels[0]
-        series = first["series"][0]
-        chart_frame = oe.DataFrame({"x": series["x"], "y": series["y"]})
-        plotter = getattr(oe.plot, {"hist": "bar"}.get(first["kind"], first["kind"]))
-        display_callback(plotter(data=chart_frame, x="x", y="y", title=first["title"]))
+        display_callback(chart(panels[0]))
         display_callback(table)
     if output_dir is not None:
         target = Path(output_dir)

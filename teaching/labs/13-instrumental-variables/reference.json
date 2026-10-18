@@ -3296,7 +3296,7 @@
         "sample_positions_omitted": false,
         "sample_position_count": 700,
         "categorical_encoding": {},
-        "stata_parity_validated": false
+        "external_compatibility_validated": false
       },
       "inference": {
         "covariance": "HC1",
@@ -6529,7 +6529,7 @@
         "device": "cpu",
         "estimator": "ivregress",
         "family": "iv",
-        "stata_equivalent": [
+        "command_aliases": [
           "ivregress 2sls",
           "ivregress liml",
           "ivregress gmm",
@@ -6566,7 +6566,7 @@
         "sample_order": "input row order",
         "prediction_sample": "evenly spaced estimation-sample observations",
         "prediction_limit": 400,
-        "stata_parity_validated": false,
+        "external_compatibility_validated": false,
         "solver": "householder_qr_two_stage",
         "solver_diagnostics": {
           "first_stage_condition_number": 2.3766438786703032,
@@ -9923,7 +9923,7 @@
         "device": "cpu",
         "estimator": "ivregress",
         "family": "iv",
-        "stata_equivalent": [
+        "command_aliases": [
           "ivregress 2sls",
           "ivregress liml",
           "ivregress gmm",
@@ -9960,7 +9960,7 @@
         "sample_order": "input row order",
         "prediction_sample": "evenly spaced estimation-sample observations",
         "prediction_limit": 400,
-        "stata_parity_validated": false,
+        "external_compatibility_validated": false,
         "solver": "householder_qr_two_stage",
         "solver_diagnostics": {
           "first_stage_condition_number": 2.3766438786703032,
@@ -13317,7 +13317,7 @@
         "device": "cpu",
         "estimator": "ivregress",
         "family": "iv",
-        "stata_equivalent": [
+        "command_aliases": [
           "ivregress 2sls",
           "ivregress liml",
           "ivregress gmm",
@@ -13354,7 +13354,7 @@
         "sample_order": "input row order",
         "prediction_sample": "evenly spaced estimation-sample observations",
         "prediction_limit": 400,
-        "stata_parity_validated": false,
+        "external_compatibility_validated": false,
         "solver": "householder_qr_two_stage",
         "solver_diagnostics": {
           "first_stage_condition_number": 2.3766438786703032,
@@ -16762,7 +16762,7 @@
         "sample_positions_omitted": false,
         "sample_position_count": 700,
         "categorical_encoding": {},
-        "stata_parity_validated": false
+        "external_compatibility_validated": false
       },
       "inference": {
         "covariance": "HC1",

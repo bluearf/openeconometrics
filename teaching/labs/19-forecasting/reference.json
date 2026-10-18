@@ -1251,7 +1251,7 @@
         "device": "cpu",
         "estimator": "arima",
         "family": "arima",
-        "stata_equivalent": [
+        "command_aliases": [
           "arima"
         ],
         "versions": {
@@ -1280,7 +1280,7 @@
         "sample_order": "sorted by quarter",
         "prediction_sample": "evenly spaced estimation-sample observations",
         "prediction_limit": 400,
-        "stata_parity_validated": false,
+        "external_compatibility_validated": false,
         "solver": "bfgs_exact_arma_likelihood",
         "solver_diagnostics": {
           "converged": true,
@@ -1356,7 +1356,7 @@
         "intercept": true,
         "n_parameters": 3,
         "residual_definition": "observed minus fitted response",
-        "sigma": "/sigma is tested one-sided against zero and its confidence interval is truncated at zero, as in Stata"
+        "sigma": "/sigma is tested one-sided against zero and its confidence interval is truncated at zero, as in Reference"
       },
       "title": "ARIMA(1,0,0) regression",
       "tests": {

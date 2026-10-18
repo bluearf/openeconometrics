@@ -1997,7 +1997,7 @@
         "sample_positions_omitted": false,
         "sample_position_count": 259,
         "categorical_encoding": {},
-        "stata_parity_validated": false
+        "external_compatibility_validated": false
       },
       "inference": {
         "covariance": "hac",
@@ -4006,7 +4006,7 @@
         "sample_positions_omitted": false,
         "sample_position_count": 258,
         "categorical_encoding": {},
-        "stata_parity_validated": false
+        "external_compatibility_validated": false
       },
       "inference": {
         "covariance": "hac",
@@ -6008,7 +6008,7 @@
         "sample_positions_omitted": false,
         "sample_position_count": 257,
         "categorical_encoding": {},
-        "stata_parity_validated": false
+        "external_compatibility_validated": false
       },
       "inference": {
         "covariance": "hac",
@@ -8003,7 +8003,7 @@
         "sample_positions_omitted": false,
         "sample_position_count": 256,
         "categorical_encoding": {},
-        "stata_parity_validated": false
+        "external_compatibility_validated": false
       },
       "inference": {
         "covariance": "hac",
@@ -8045,7 +8045,7 @@
     "panels": [
       {
         "kind": "line",
-        "title": "Local Projections over Several Horizons",
+        "title": "Response of Y to a unit shock, with pointwise 95% intervals",
         "xlabel": "Horizon (periods)",
         "ylabel": "Outcome response per unit shock",
         "series": [
@@ -8062,6 +8062,18 @@
               0.47978208518031507,
               0.23912415718965582,
               0.2477139019398811
+            ],
+            "low": [
+              0.7716637555746957,
+              0.28195481695433455,
+              0.022659587213590848,
+              0.03806501226453862
+            ],
+            "high": [
+              1.0098270986451796,
+              0.6776093534062956,
+              0.4555887271657208,
+              0.4573627916152236
             ]
           }
         ]

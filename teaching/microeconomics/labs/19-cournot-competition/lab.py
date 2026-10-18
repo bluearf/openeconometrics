@@ -62,6 +62,55 @@ def panel(x, y, *, kind="line", title=TITLE, xlabel="Observation", ylabel="Value
     }
 
 
+def chart(panel):
+    """Draw a chart_data panel with OpenEconometrics Charts, as the handout figure does."""
+    series = panel["series"]
+    first = series[0]
+    options = {"title": panel["title"]}
+    if panel.get("value_limits"):
+        options["xlim" if "low" in first else "ylim"] = list(panel["value_limits"])
+    if panel.get("segments"):
+        options["annotations"] = [
+            {
+                "type": "segment",
+                "text": g["label"],
+                **{k: g[k] for k in ("x0", "y0", "x1", "y1", "color", "align", "dx", "dy") if k in g},
+            }
+            for g in panel["segments"]
+        ]
+    if "low" in first:
+        records = [
+            {"term": str(term), "estimate": estimate, "ci_low": low, "ci_high": high}
+            for term, estimate, low, high in zip(first["x"], first["y"], first["low"], first["high"])
+        ]
+        plot = oe.plot.coefficients(
+            {"coefficients": records}, x_label=panel["ylabel"], y_label=panel["xlabel"], **options
+        )
+    elif panel["kind"] == "bar":
+        frame = {panel["xlabel"]: [str(v) for v in first["x"]], **{s["label"]: s["y"] for s in series}}
+        plot = oe.plot.bar(
+            data=frame,
+            x=panel["xlabel"],
+            y=[s["label"] for s in series],
+            legend=len(series) > 1,
+            y_label=panel["ylabel"],
+            **options,
+        )
+    else:
+        plotter = oe.plot.scatter if panel["kind"] == "scatter" else oe.plot.line
+        plot = plotter(
+            data={"x": first["x"], "y": first["y"]},
+            x="x",
+            y="y",
+            x_label=panel["xlabel"],
+            y_label=panel["ylabel"],
+            **options,
+        )
+    for line in panel.get("reference_lines", []):
+        plot = (plot.hline if line["axis"] == "y" else plot.vline)(line["value"], text=line["label"])
+    return plot
+
+
 def clean(value):
     if isinstance(value, dict):
         return {str(k): clean(v) for k, v in value.items()}
@@ -110,17 +159,24 @@ def analyze(raw):
         "symmetric_best_response": max(abs(raw.intercept - raw.mc - raw.slope * (total + each)))
         < 1e-12,
         "more_firms_lower_price": all(p.diff().dropna() < 0),
+        "common_marginal_cost": raw.mc.nunique() == 1,
     }
     return (
         summary,
         native,
         [
-            panel(
-                raw.firms.tolist(),
-                p.tolist(),
-                xlabel="Number of firms",
-                ylabel="Equilibrium price (currency/unit)",
-            )
+            {
+                **panel(
+                    raw.firms.tolist(),
+                    p.tolist(),
+                    xlabel="Number of firms",
+                    ylabel="Equilibrium price (currency/unit)",
+                ),
+                "reference_lines": [
+                    {"axis": "y", "value": float(raw.mc.iloc[0]), "label": f"Marginal cost = {raw.mc.iloc[0]:g}"}
+                ],
+                "value_limits": [0, 65],
+            }
         ],
         checks,
         {},
@@ -159,11 +215,7 @@ def run_lab(output_dir=None, display_callback=None, data_path=None):
             if isinstance(native, dict)
             else native
         )
-        first = panels[0]
-        series = first["series"][0]
-        chart_frame = oe.DataFrame({"x": series["x"], "y": series["y"]})
-        plotter = getattr(oe.plot, {"hist": "bar"}.get(first["kind"], first["kind"]))
-        display_callback(plotter(data=chart_frame, x="x", y="y", title=first["title"]))
+        display_callback(chart(panels[0]))
         display_callback(table)
     if output_dir is not None:
         target = Path(output_dir)

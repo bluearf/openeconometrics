@@ -2,19 +2,23 @@
 
 ## Teaching sequence
 
-Start with two audiences: a shop accountant and a researcher describing a middle basket. Require students to choose a target before computing a statistic.
+Start with two audiences: a shop accountant who needs the till total and a store manager who wants a basket near the middle of the line. Require students to choose a target question before computing a statistic, and to say that every center here is per basket, not per customer.
 
-Before running, ask students to define the observational unit and predict the comparison. Connect the code to the equation before interpreting the output.
+Before running, use the pause question in Section 4: give the mean and median and ask where the geometric mean will fall. Connect each formula to the property it preserves (total, rank, ratio) before interpreting the output, then treat the largest basket as a sensitivity check rather than a deletion.
 
 ## Worked exercise answers
 
-**A.** Use the arithmetic mean: total revenue is 240 × 32.439 currency. The median and geometric mean do not satisfy this additive identity.
+**1.** Total observed spending is $240 \times 32.4390 = 7{,}785.36$ currency units. Removing the 320.00 basket leaves $7{,}465.36$, and $7{,}465.36/239 = 31.2358$, the sensitivity mean reported by the lab.
 
-**B.** The original mean is 32.439 and the sensitivity mean 31.2358. The 1.20318 gap reports the effect of removing one valid observation and changing the denominator from 240 to 239.
+**2.** The 120th and 121st ordered values are 24.6616 and 24.7198, and their average is the median 24.6907. They differ by only 0.058 units because baskets are densely packed near the middle of the distribution (the histogram bin containing the median holds 84 baskets), so neighboring order statistics are close.
 
-**C.** All three centers double: arithmetic means and order statistics scale linearly, while adding log(2) to every log spending value doubles the geometric mean after exponentiation.
+**3.** With 239 baskets the median is the 120th ordered value, 24.6616, a fall of 0.0291 units. The mean falls by 1.2032, about 41 times as much. Removing the top basket changes only which position is the middle, by half a step; the mean loses the full magnitude of a value 288.76 units above the other baskets' mean.
 
-**D.** A revenue total requires the additive arithmetic mean or direct sum. A separate description of a central customer's basket can use the median. Robustness does not authorize replacing the economic quantity of interest.
+**4.** The mean becomes 34.4390 and the median 26.6907, each exactly 2 higher, because adding a constant shifts every value and every order statistic by that constant. The geometric mean becomes 27.1392, an increase of 2.553, more than 2. A fixed fee is a large proportional increase for small baskets (the 2.80 basket rises by about 72%) and a small one for large baskets; the geometric mean averages proportional changes, so it rises by more than the fee. In general $g(x+c)\ge g(x)+c$ for positive data.
+
+**5.** 151 of the 240 baskets (62.9%) spend less than the mean of 32.44, and 89 spend more. Because the mean lies above the median, all 120 baskets in the lower half are below it, plus the 31 baskets between the median and the mean. A few large baskets raise the mean above most individual baskets.
+
+**6.** Reply: revenue per basket must add up to the till total, which only the arithmetic mean does. The 320.00 basket is valid revenue. Using the median would give $240 \times 24.6907 = 5{,}925.77$, understating actual revenue by 1,859.59 currency units. The median remains a good description of a middle basket. Example rewrites: for the accountant, "Mean spending is 32.44 currency units per basket across all 240 baskets, which multiplied by 240 gives total revenue"; for the manager, "Half of the 240 baskets spent 24.69 currency units or less."
 
 ## Reproduction and verification evidence
 

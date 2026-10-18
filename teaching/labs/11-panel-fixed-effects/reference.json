@@ -2726,7 +2726,7 @@
         "sample_positions_omitted": false,
         "sample_position_count": 360,
         "categorical_encoding": {},
-        "stata_parity_validated": false
+        "external_compatibility_validated": false
       },
       "inference": {
         "covariance": "cluster",
@@ -5392,7 +5392,7 @@
         "device": "cpu",
         "estimator": "xtreg",
         "family": "panel",
-        "stata_equivalent": [
+        "command_aliases": [
           "xtreg",
           "xtscc",
           "xttest0"
@@ -5426,7 +5426,7 @@
         "sample_order": "sorted by firm, year",
         "prediction_sample": "evenly spaced estimation-sample observations",
         "prediction_limit": 400,
-        "stata_parity_validated": false,
+        "external_compatibility_validated": false,
         "solver": "qr_within",
         "solver_diagnostics": {},
         "optimizer": null,

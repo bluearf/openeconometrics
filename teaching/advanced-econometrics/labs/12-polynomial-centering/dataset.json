@@ -13,8 +13,8 @@
     },
     {
       "name": "x",
-      "description": "Exposure or predictor X",
-      "unit": "centered units",
+      "description": "Regressor entering the polynomial (raw, not centered)",
+      "unit": "X units",
       "missing": 0
     },
     {

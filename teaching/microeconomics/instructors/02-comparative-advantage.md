@@ -2,19 +2,23 @@
 
 ## Teaching sequence
 
-Ask students to solve the defining condition algebraically before running the complete file. Compare that solution with the plotted scenarios and the numerical table. Discuss why the model assumptions matter for the final exercise.
+Have students write each economy's labor constraint and its two intercepts before computing anything. Then separate the absolute comparison (hours for the same good across economies) from the opportunity-cost comparison (the two goods within one economy).
 
-Before running, ask students to define the observational unit and predict the comparison. Connect the code to the equation before interpreting the output.
+Use the pause question before running: students should answer from the ratios 2/4 and 6/3, not from the hours alone. After the run, ask them to place the stipulated price of 1 on the bar chart and explain why any price between 0.5 and 2 divides the same gain of 1.5 units of Y per unit of X production moved from B to A.
 
 ## Worked exercise answers
 
-**A.** A, with cost 0.5 below B’s 2.
+**1.** The opportunity cost of Y is $a_Y/a_X$: 4/2 = 2 units of X per unit of Y for A and 3/6 = 0.5 units of X per unit of Y for B, so B has the comparative advantage in Y. Each number is the reciprocal of that economy's opportunity cost of X (0.5 and 2). The economy with the lower cost of X therefore has the higher cost of Y, so with two goods and unequal costs neither economy can have the comparative advantage in both.
 
-**B.** 0.5 < 1 < 2.
+**2.** With 60 hours on each good, A makes 60/2 = 30 units of X and 60/4 = 15 units of Y; B makes 60/6 = 10 units of X and 60/3 = 20 units of Y. World output is 40 units of X and 35 units of Y. Under specialization it is 60 units of X and 40 units of Y, so specialization adds 20 units of X and 5 units of Y with the same 240 hours.
 
-**C.** A retains 40 X and receives 20 Y; B retains 20 Y and receives 20 X. Both bundles exceed their own linear frontiers at those X levels.
+**3.** The price is 1 unit of Y per unit of X and the shipment is feasible (20 ≤ 60 and 20 ≤ 40). A consumes 40 units of X and 20 units of Y; alone, A could pair 40 units of X with only (120 − 80)/4 = 10 units of Y, so it gains 10 units of Y. B consumes 20 units of X and 20 units of Y; alone, 20 units of X would use all 120 of B's hours and leave 0 units of Y, so B gains 20 units of Y. These match $(p-0.5)T=10$ and $(2-p)T=20$ with $T=20$; both bundles lie outside their owners' own frontiers.
 
-**D.** No. Demand and feasible trade volumes must also determine terms of trade.
+**4.** At 0.4, A refuses: exporting a unit of X would bring 0.4 units of Y, while shifting the same 2 hours into Y at home gives 0.5, so A makes its own Y. At 1.5, both trade: A gains 1.5 − 0.5 = 1.0 unit of Y per unit of X exported and B saves 2 − 1.5 = 0.5 units of Y per unit imported, which again sum to 1.5. At 2.5, B refuses: buying X would cost 2.5 units of Y, while making it at home costs 2, so B makes its own X.
+
+**5.** With 5 hours per unit of Y in B, A has the absolute advantage in both goods (2 < 6 hours for X and 4 < 5 hours for Y). B's opportunity cost of X becomes 6/5 = 1.2 units of Y per unit of X, still above A's 0.5, so A keeps the comparative advantage in X and B in Y. The price 1 still lies between 0.5 and 1.2, so both gain: A's gain stays at 0.5 units of Y per unit exported, while B's saving falls to 0.2. Specialized B now makes 120/5 = 24 units of Y; both checks in `analyze` still pass.
+
+**6.** For example: "A needs fewer hours than B to make a unit of X (2 hours against 6), an absolute advantage. A should export X because its opportunity cost of X, 0.5 units of Y per unit of X, is below B's 2 units of Y per unit of X, a comparative advantage; absolute advantage alone would not settle the pattern of trade."
 
 ## Reproduction and verification evidence
 

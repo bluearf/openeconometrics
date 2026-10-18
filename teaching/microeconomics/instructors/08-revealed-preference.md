@@ -2,19 +2,23 @@
 
 ## Teaching sequence
 
-Ask students to solve the defining condition algebraically before running the complete file. Compare that solution with the plotted scenarios and the numerical table. Discuss why the model assumptions matter for the final exercise.
+Begin with the affordability idea before any notation: a bundle chosen when another was affordable is revealed preferred to it. Have students cost bundle 3 at choice 1's prices by hand, then pose the pause question about choice 2 and bundle 1, which lands on the exact tie at 120. Build the full cost matrix, read it row by row, and only then introduce the strict reverse condition and its difference from standard WARP and from GARP.
 
-Before running, ask students to define the observational unit and predict the comparison. Connect the code to the equation before interpreting the output.
+Emphasize that the lab's violation count uses a strict reverse inequality (the two-bundle GARP condition), which is slightly weaker than standard WARP. On the supplied data both give zero violations; Exercise 2 shows where they diverge.
 
 ## Worked exercise answers
 
-**A.** Use observation i’s price vector for every alternative bundle.
+**1.** The four direct relations and their reverse margins $p^j\cdot x^i-m_j$ are: choice 1 over bundle 3, $140-110=30$; choice 2 over bundle 1, $104-100=4$; choice 2 over bundle 3, $136-110=26$; choice 4 over bundle 3, $138-110=28$. The closest to a violation is choice 2 over bundle 1: bundle 2 would have been affordable on occasion 1 with 4 more currency units.
 
-**B.** 0 under tolerance 1e−10.
+**2.** With bundle 2 = (30, 15), the bundle-2 column of the cost matrix becomes 90, 120, 150 and 180. Direct comparisons rise to 5 (bundle 2 is now affordable on occasion 1 at 90). The lab reports 1 strict violation: on occasion 2 bundle 1 was affordable (120 of 120) while on occasion 1 bundle 2 was strictly affordable (90 of 100). Standard WARP reports 2 ordered pairs, because it also flags occasion 1 over bundle 2, whose reverse cost (bundle 1 at occasion 2's prices) equals the budget of 120 exactly. Either way the two choices contradict stable, monotone preferences.
 
-**C.** No. Finite choices can be rationalized by many preference structures.
+**3.** The direct relations are 1→3, 2→1, 2→3 and 4→3. The only chain is 2→1→3, which gives 2→3, already a direct relation. Bundle 3 has no outgoing relation and no relation points to 2 or 4, so there is no cycle. No contradiction appears, and these data satisfy GARP, although the lab does not compute this.
 
-**D.** No. The script tests direct two-choice WARP conditions; it does not calculate the transitive closure.
+**4.** The X budget shares are $40/100$, $48/120$, $44/110$ and $60/150$, all equal to 0.4. A constant expenditure share across different prices and budgets is what Cobb–Douglas preferences with $\alpha=0.4$ predict. Four choices still cannot prove it: other preferences whose indifference curves touch these four budget lines at the same points rationalize the same data, and choices at other prices could differ.
+
+**5.** Bundle 3 is ranked below every other bundle (by direct relations from 1, 2 and 4, and by dominance against 2 and 4), and bundle 2 is ranked above bundle 1. The pairs 1–4 and 2–4 remain unranked: neither dominates the other and neither was affordable when the other was chosen (bundle 4 costs 114 at occasion 1's prices and 126 at occasion 2's; bundles 1 and 2 cost 160 and 152 at occasion 4's). For example, at prices (3, 2) with budget 126, bundles 1, 2 and 4 cost 120, 120 and 126. A choice of bundle 4 there would reveal it preferred to both 1 and 2.
+
+**6.** For example: "The four synthetic choices, each spending its full budget, contain no strict two-bundle revealed-preference contradiction. They are consistent with maximizing some stable, monotone preference, but they do not prove utility maximization, because later choices could contradict them, and they do not identify a unique utility function."
 
 ## Reproduction and verification evidence
 

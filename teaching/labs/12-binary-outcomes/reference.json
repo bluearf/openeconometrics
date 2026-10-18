@@ -3333,7 +3333,7 @@
         "sample_positions_omitted": false,
         "sample_position_count": 720,
         "categorical_encoding": {},
-        "stata_parity_validated": false
+        "external_compatibility_validated": false
       },
       "inference": {
         "covariance": "HC1",
@@ -6625,7 +6625,7 @@
         "sample_position_base": 0,
         "prediction_sample": "evenly spaced positional observations",
         "prediction_limit": 400,
-        "stata_parity_validated": false,
+        "external_compatibility_validated": false,
         "solver": "torch_newton_cholesky_backtracking",
         "solver_diagnostics": {
           "condition_number_basis": "centered_and_scaled_design",
@@ -9952,7 +9952,7 @@
         "sample_position_base": 0,
         "prediction_sample": "evenly spaced positional observations",
         "prediction_limit": 400,
-        "stata_parity_validated": false,
+        "external_compatibility_validated": false,
         "solver": "torch_newton_cholesky_backtracking",
         "solver_diagnostics": {
           "condition_number_basis": "centered_and_scaled_design",
