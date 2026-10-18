@@ -60,17 +60,13 @@
     "panels": [
       {
         "kind": "line",
-        "title": "Total, Average and Marginal Cost",
+        "title": "Average Total Cost and Marginal Cost",
         "xlabel": "Output (units/day)",
-        "ylabel": "Average total cost (currency/unit)",
+        "ylabel": "Cost per unit (currency/unit)",
         "series": [
           {
             "label": "Computed values",
             "x": [
-              1,
-              2,
-              3,
-              4,
               5,
               6,
               7,
@@ -169,10 +165,6 @@
               100
             ],
             "y": [
-              102.1,
-              52.2,
-              35.63333333333333,
-              27.4,
               22.5,
               19.266666666666666,
               16.985714285714288,
@@ -271,11 +263,35 @@
               13.0
             ]
           }
+        ],
+        "segments": [
+          {
+            "x0": 5.0,
+            "y0": 3.0,
+            "x1": 100.0,
+            "y1": 22.0,
+            "label": "Marginal cost 2 + 0.2q",
+            "align": "right",
+            "dy": -8,
+            "color": "#b3541e"
+          }
+        ],
+        "reference_lines": [
+          {
+            "axis": "x",
+            "value": 31.622776601683793,
+            "label": "Minimum ATC at q = 31.6"
+          }
+        ],
+        "value_limits": [
+          0,
+          24
         ]
       }
     ]
   },
   "checks": {
+    "workbook_cost_steps_equal_marginal_cost": true,
     "mc_crosses_atc_at_minimum": true,
     "fixed_cost_per_unit_falls": true
   }

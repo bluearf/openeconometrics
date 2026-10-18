@@ -1,85 +1,169 @@
 # Lab 10 · Total, Average and Marginal Cost
 
-> Why does marginal cost cross average cost at its minimum?
+**Why marginal cost crosses average total cost at its minimum**
 
-## Start with the supplied observations
+## Start with the supplied workbook
 
-Download [cost_curves.xlsx](cost_curves.xlsx) and [the complete Python analysis](lab.py). Import the workbook into OpenEconometrics without renaming it. Open the complete Python file in an empty Python document and run the whole file. The first sheet, **Data**, contains the observations. **Dictionary** explains variables, coding, units and missing cells.
+1. Download [cost_curves.xlsx](cost_curves.xlsx) and the [Python lab](lab.py). The workbook holds the 100 points on the cost schedule used throughout this chapter.
+2. Import `cost_curves.xlsx` into OpenEconometrics and keep that file name as the dataset name. The `Data` sheet holds one row per output level; the `Dictionary` sheet explains each column and its unit.
+3. Open the complete `lab.py` in a new Python document and run the whole file. It reads the imported schedule and displays a table of seven reported quantities, a line chart of average total cost with the marginal cost line, and a final table that repeats the reported quantities.
 
-For ordinary Python, keep the workbook beside `lab.py`. For another location, use `from lab import run_lab`, then `run_lab(data_path="/path/to/cost_curves.xlsx")`. Keep the supplied workbook intact and use a copy for transformations. The [LaTeX result table](table.tex) accompanies the chapter.
+For ordinary Python, keep `lab.py` and the workbook in the same folder and run the script there, or call `from lab import run_lab` and then `run_lab(data_path="/path/to/cost_curves.xlsx")`. The workbook has no blank cells. To try a different cost schedule, work on a copy of the loaded table so the distributed workbook stays unchanged.
 
-The workbook contains **100 original synthetic observations**. Its observational unit is: One feasible output level. These are teaching observations, not an empirical estimate about an actual business, population or policy. Every student starts from the same stored values and missing cells.
+A firm's daily cost rises from 102.10 currency units when it makes one unit to 1,300 when it makes 100. Spread over output, that is 102.10 per unit at one unit and 13 per unit at 100. Somewhere in between, cost per unit is lowest. Where is that point, and why is it exactly where the cost of one more unit equals the cost per unit?
 
-| Variable | Meaning | Unit or coding | Missing cells |
-|---|---|---|---:|
-| `quantity` | Output | units/day | 0 |
-| `total_cost` | Cost 100+2q+.1q² | currency/day | 0 |
+Three cost measures answer different questions. **Total cost** asks what a day's production costs. **Average cost** asks what each unit costs on average. **Marginal cost** asks what one more unit adds. Confusing them is the most common error in reading cost data, and this lab keeps them apart.
 
-## 1. Build the comparison
+The workbook contains **100 points on a synthetic cost schedule**: output from 1 to 100 units per day and the total daily cost of each. The schedule is stipulated by a formula, not measured at a real firm. The [LaTeX table](table.tex) collects the reported numbers.
 
-Average total cost divides all costs by output. Average variable cost excludes fixed cost. Marginal cost differentiates total cost with respect to output; it describes a small expansion, not the average cost of all existing production.
+## 1. Read the cost schedule
 
-When marginal cost is below average cost, adding output pulls the average down. When marginal cost is above average cost, the average rises. At a smooth interior minimum, they coincide. The fixed-cost component is spread over output, generating a falling average fixed cost even when variable marginal cost rises.
+| Column | What it records | Unit |
+|---|---|---|
+| `quantity` | Output produced in one day, $q$, in whole units from 1 to 100 | units per day |
+| `total_cost` | Total cost of producing that output, $C(q)=100+2q+0.1q^2$ | currency per day |
+
+Each row is one feasible output level, not one unit sold. The dictionary gives the formula. It has three parts:
 
 $$
-C(q)=100+2q+.1q^2,\ ATC=100/q+2+.1q,\ AVC=2+.1q,\ MC=2+.2q.
+C(q)=\underbrace{100}_{\text{fixed cost}}+\underbrace{2q+0.1q^2}_{\text{variable cost}} .
 $$
 
-Differentiate ATC: −100/q²+.1=0 gives q=sqrt(100/.1). Substitute this output into MC and ATC to verify equality. The integer grid may choose 32 even though the continuous optimum is about 31.62; do not describe a grid maximum as an exact derivative solution.
+The **fixed cost**, 100 per day, is paid whatever the output, for example rent on equipment. The **variable cost** grows with output; its quadratic term means each extra unit costs a little more than the last, as a fixed plant becomes crowded. Output of zero is not on the schedule, and no average can be computed there because it would divide by zero.
 
-## 2. State the assumptions and sample
+## 2. Define the average and marginal measures
 
-Output is positive and divisible, the cost schedule is deterministic, and the 100 fixed cost is distinguished from variable costs. Values at q=0 are excluded because average cost is undefined there.
+Dividing each part by output gives three averages, in currency per unit:
 
-**Pause before running.** Calculate ATC at q=50.
+$$
+AFC=\frac{100}{q},\qquad AVC=2+0.1q,\qquad ATC=AFC+AVC=\frac{100}{q}+2+0.1q .
+$$
 
-## 3. Follow the application
+Average fixed cost falls without limit as the fixed 100 is spread over more units. Average variable cost rises steadily. Average total cost combines a falling part and a rising part, so it first falls and then rises.
 
-The complete file loads the supplied observations, applies the chapter's explicit sample rule, computes the procedure and displays the result, a chart and a compact numerical table. The following shortened call highlights the statistical operation. `load_data()` and the other chapter helpers are defined in the full file; run that file before using the snippet.
+**Marginal cost** is the derivative of total cost, the cost of a small increase in output:
+
+$$
+MC=\frac{dC}{dq}=2+0.2q\quad\text{currency per unit}.
+$$
+
+The fixed cost has no derivative, so it does not appear in marginal cost. Marginal cost describes the next unit, not the average of all units already produced.
+
+On a grid of whole units, the cost of the $q$-th unit is the step $C(q)-C(q-1)$. For this quadratic schedule that step equals $1.9+0.2q$, always 0.1 below the derivative at $q$. At 10 units the step is $130.0-126.1=3.9$, while the derivative is 4.
+
+## 3. Show why marginal cost crosses average cost at the minimum
+
+Differentiate average total cost with the quotient rule:
+
+$$
+\frac{d\,ATC}{dq}=\frac{d}{dq}\left(\frac{C(q)}{q}\right)=\frac{q\,C'(q)-C(q)}{q^2}=\frac{MC-ATC}{q}.
+$$
+
+Because $q>0$, the sign of the slope of ATC is the sign of $MC-ATC$. When the next unit costs less than the current average, adding it pulls the average down. When it costs more, adding it pulls the average up. The average can stop falling and start rising only where the two are equal. This is the same arithmetic as a class average: a new score below the average lowers it, and one above raises it.
+
+At the lowest point of ATC, therefore, $MC=ATC$. Solving directly,
+
+$$
+\frac{d\,ATC}{dq}=-\frac{100}{q^2}+0.1=0\quad\Longrightarrow\quad q^*=\sqrt{\frac{100}{0.1}}=\sqrt{1000}=31.62\ \text{units per day}.
+$$
+
+Substituting, $ATC(q^*)=100/31.62+2+0.1\times31.62=3.162+2+3.162=8.3246$ and $MC(q^*)=2+0.2\times31.62=8.3246$. The two agree, as the argument requires. The second derivative of ATC, $200/q^3$, is positive, so this is a minimum.
+
+**Pause before running.** Calculate ATC and MC at 50 units, and decide from their order whether ATC is rising or falling there.
+
+## 4. Separate the continuous minimum from the grid minimum
+
+The schedule only contains whole units, and 31.62 is not one of them. The lowest ATC in the workbook is at 32 units, where it equals $266.4/32=8.325$. That is slightly above the continuous minimum of 8.3246, as any grid value must be.
+
+Do not describe 32 as the solution of the derivative condition. It is the best whole-unit output on this schedule, found by comparing table entries. The continuous minimum comes from the formula. The two agree closely here because ATC is very flat near its minimum, so a small change in output barely changes cost per unit.
+
+## 5. Run the schedule
+
+The complete file computes ATC for every row, finds its smallest value and evaluates the formulas. A version that shows all the curves is:
 
 ```python
-import openecon as oe
-
-raw = load_data()
+raw = load_data()  # reader defined in the complete lab.py
 q = raw.quantity
-display(oe.DataFrame({"quantity": q, "ATC": raw.total_cost / q,
-                      "AVC": (raw.total_cost - 100) / q, "MC": 2 + .2*q}))
+fixed_cost = 100.0
+curves = oe.DataFrame({
+    "quantity": q,
+    "ATC": raw.total_cost / q,
+    "AFC": fixed_cost / q,
+    "AVC": (raw.total_cost - fixed_cost) / q,
+    "MC": 2 + 0.2 * q,
+    "step_cost": raw.total_cost.diff(),
+})
+display(curves[curves.quantity.isin([1, 10, 20, 32, 50, 100])])
 ```
 
-Read the output in this order: establish which observations were used, identify the quantity being compared, inspect the amount of variation or uncertainty, and then interpret the result in the units of the question. A large statistic without its denominator, sample and comparison cannot explain the result. The final numerical table puts the quantities used in the worked discussion together; the procedure output retains the fuller set of tables.
+The selected rows, in currency per unit:
 
-## 4. Interpret the executed example
+| Output (units/day) | ATC | AFC | AVC | MC (derivative) | Cost of the last whole unit |
+|---:|---:|---:|---:|---:|---:|
+| 1 | 102.10 | 100.00 | 2.10 | 2.20 | — |
+| 10 | 13.00 | 10.00 | 3.00 | 4.00 | 3.90 |
+| 20 | 9.00 | 5.00 | 4.00 | 6.00 | 5.90 |
+| 32 | 8.325 | 3.125 | 5.20 | 8.40 | 8.30 |
+| 50 | 9.00 | 2.00 | 7.00 | 12.00 | 11.90 |
+| 100 | 13.00 | 1.00 | 12.00 | 22.00 | 21.90 |
 
-| Quantity | Computed value |
-|---|---:|
-| Fixed cost | 100 |
-| Continuous min atc quantity | 31.6228 |
-| Continuous min atc | 8.32456 |
-| Mc at min atc | 8.32456 |
-| Grid min atc quantity | 32 |
-| Atc at 50 | 9 |
-| Mc at 50 | 12 |
+Read across a row. AFC plus AVC always equals ATC. Above 32 units MC exceeds ATC and ATC is rising; below it MC is less than ATC and ATC is falling. The same ATC can occur at two outputs, 9 at both 20 and 50 units, for different reasons: at 20 the fixed cost is still spread thinly, and at 50 rising marginal cost has taken over. The first row has no step cost because the schedule starts at one unit. To locate the minimum:
 
-Continuous minimum ATC occurs at q=31.6228 with ATC=8.32456 and matching MC=8.32456. The grid selects 32. At q=50, ATC=9 and MC=12.
+```python
+row = curves.loc[curves.ATC.idxmin()]
+q_star = (fixed_cost / 0.1) ** 0.5
+print(row.quantity, row.ATC, q_star, fixed_cost / q_star + 2 + 0.1 * q_star)
+```
 
-![Total, Average and Marginal Cost](figure.svg)
+It prints 32, 8.325, 31.62 and 8.3246: the grid minimum and the continuous minimum side by side. The lab's reported table reads:
 
-The chart is computed from the supplied scenarios using the stated equations. Its coordinates are retained with the numerical result. Read axis units before comparing its slopes; a change of scale can alter visual steepness without changing the underlying trade-off.
+| Reported quantity | Value | Unit |
+|---|---:|---|
+| Fixed cost | 100 | currency per day |
+| Output minimizing ATC (continuous) | 31.62 | units per day |
+| Minimum ATC | 8.3246 | currency per unit |
+| MC at that output | 8.3246 | currency per unit |
+| Whole-unit output with the lowest ATC | 32 | units per day |
+| ATC at 50 units | 9 | currency per unit |
+| MC at 50 units | 12 | currency per unit |
 
-## 5. Decide what the evidence supports
+The two values at 50 units are computed from the formulas, not read from the workbook rows.
 
-Cost curves describe a specified technology and input-price environment. They do not determine market demand or prove that a firm can sell output at a profitable price.
+## 6. Read the average and marginal cost chart
 
-## 6. Try it yourself
+![Average total cost and the marginal cost line from 5 to 100 units](figure.svg)
 
-**A.** Calculate ATC at q=50.
+The points are average total cost from the workbook, in currency per unit, for 5 to 100 units per day. The first four outputs are left out because ATC there is between 27 and 102 and would squeeze everything else against the bottom of the chart; the table has them. The dashed orange line is marginal cost, $2+0.2q$, rising from 3 at 5 units to 22 at 100 units. It is not an extra assumption: each one-unit step in the workbook's total cost equals this line at the midpoint of the step, and `lab.py` checks that. The dashed vertical line marks $q=\sqrt{1000}\approx 31.6$.
 
-**B.** Calculate MC at q=50.
+ATC falls steeply at first, as the fixed cost of 100 is spread, reaches its minimum of about 8.32 at 31.6 units and then rises gently to 13 at 100 units. Marginal cost is below ATC to the left of the vertical line, so each extra unit pulls the average down, and above it to the right, so each extra unit pulls the average up. The two meet exactly at the minimum, which is the result derived in Section 3.
 
-**C.** Why do grid and continuous minima differ?
+## A case from the literature
 
-**D.** Is ATC defined at zero output?
+Christensen and Greene (1976) measured the shape of a real average cost curve for U.S. firms producing electric power. Using cross-section data for 1955 and 1970, they estimated a translog cost function, fitted to data rather than stipulated as this lab's formula is. In 1955 significant economies of scale were available to nearly all firms, so those firms were on the falling part of the average cost curve. By 1970 the bulk of U.S. generation came from firms operating in the essentially flat area of the curve. The authors concluded that a small number of extremely large firms is not required for efficient production, and that policies designed to promote competition in generation cannot be faulted for sacrificing economies of scale.
+
+Their curve compares firms of different sizes, so it shows how cost per unit changes with the scale of the firm. This lab's curve belongs to one fixed plant. The arithmetic of section 3 applies to both: average cost falls wherever marginal cost lies below it. The flat area is also a reminder of section 4. Where average cost barely changes over a range of outputs, the exact minimum matters less than knowing which outputs come close to it. The study turns the lab's question around: the lab knows the formula and locates the minimum, while the study observes firms and asks where they sit. See also Viner (1932) on cost curves and supply curves, and the econometric survey of production and cost functions by Walters (1963).
+
+## 7. Decide what the schedule supports
+
+These curves describe one stipulated technology and set of input prices. They say what each output costs, not which output the firm should choose; that requires the price or demand the firm faces. A low minimum ATC does not show that the firm can sell at a price above it. The schedule also assumes that fixed and variable costs are cleanly separated, that cost is known with certainty and that output can be any whole number from 1 to 100.
+
+Because the schedule comes from a formula, the lab does not estimate a cost function or test the shape of real costs. It shows how the three measures relate once the cost schedule is known.
+
+## 8. State the cost result in full
+
+A complete statement for the worked example reads: "For daily cost $C(q)=100+2q+0.1q^2$, average total cost is lowest at $q=\sqrt{1000}=31.62$ units per day, where it equals 8.3246 currency per unit and marginal cost equals the same 8.3246. Among whole-unit outputs on the schedule, 32 units gives the lowest average cost, 8.325. At 50 units, average total cost is 9 and marginal cost is 12, so average cost is rising there."
+
+## Student exercises
+
+1. Use the slope formula from Section 3 to compute how fast ATC changes per extra unit at 20 units and at 50 units. Check each answer against the change in ATC from that row to the next row of the workbook.
+2. From the workbook, compute the step $C(51)-C(50)$ and average it with the step into 50 units shown in the table. Compare both steps and their average with the derivative MC of 12, and explain why the average matches it exactly for this schedule.
+3. Compute ATC at 31 and at 33 units. Use these values to explain why the grid chooses 32 even though the continuous minimum is 31.62.
+4. Suppose the fixed cost rose from 100 to 160 with variable cost unchanged. Find the new output that minimizes ATC, the minimum ATC and MC at that output. Does the marginal cost curve move?
+5. Where is average variable cost lowest, and what does marginal cost equal there? Relate your answer to the argument in Section 3 applied to AVC instead of ATC.
+6. Rewrite this sentence so that it is correct: "Marginal cost at 50 units is 12, so producing 50 units costs 12 per unit."
 
 ## Further reading
 
-[OpenStax, Principles of Microeconomics 3e](https://openstax.org/books/principles-microeconomics-3e/pages/1-introduction) is optional background reading. The models, scenarios, questions and analysis here are original; no textbook exercises or datasets are reproduced.
+- Christensen, L. R., and Greene, W. H. (1976). Economies of scale in U.S. electric power generation. *Journal of Political Economy*, 84(4, Part 1), 655–676. https://doi.org/10.1086/260470
+- Viner, J. (1932). Cost curves and supply curves. *Zeitschrift für Nationalökonomie*, 3(1), 23–46. https://doi.org/10.1007/bf01316299
+- Walters, A. A. (1963). Production and cost functions: An econometric survey. *Econometrica*, 31(1/2), 1. https://doi.org/10.2307/1910949

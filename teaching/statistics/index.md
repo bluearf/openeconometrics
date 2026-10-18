@@ -1,6 +1,6 @@
 # Statistics with OpenEconometrics
 
-Twenty English labs develop statistical questions through explanations, equations, complete application code, computed results, figures and student exercises. Each supplies a descriptively named Excel workbook with fixed original synthetic observations and a variable dictionary. Resampling appears only where it is the subject of the lesson.
+Twenty English labs each answer one statistical question about a small, fixed dataset. A handout names the unit and the sample, develops the method with the lab's own numbers, reads the output and the figure, and states what the evidence supports and what it does not. It then connects the question to a published study and ends with exercises. Each lab supplies a descriptively named Excel workbook with original synthetic observations and a variable dictionary. Resampling appears only where it is the subject of the lesson.
 
 ## Chapters
 
@@ -33,4 +33,4 @@ Import the named workbook into OpenEconometrics without renaming it. Open the co
 
 Read the handout on GitHub or in the separate offline student edition. Students receive explanations, worked analyses and unanswered exercises. Teaching notes, exercise solutions, original data mechanisms and numerical evidence are indexed separately in [the instructor guide](INSTRUCTORS.md) and excluded from the student archive.
 
-All observations, explanations and exercises are original synthetic teaching material under the repository's Apache-2.0 license. Results describe the supplied simulations. External readings provide conceptual background; their exercises and datasets are not reproduced.
+All observations, explanations and exercises are original synthetic teaching material under the repository's Apache-2.0 license. Results describe the supplied simulations. Each handout cites peer-reviewed journal articles, verified by DOI, for its method and for a published case; no textbook text, exercises or datasets are reproduced.

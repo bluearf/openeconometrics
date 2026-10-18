@@ -2,19 +2,23 @@
 
 ## Teaching sequence
 
-Ask students to solve the defining condition algebraically before running the complete file. Compare that solution with the plotted scenarios and the numerical table. Discuss why the model assumptions matter for the final exercise.
+Start by sorting the cost function into the part that varies with output and the part that does not, and ask students what the firm pays if it closes for the day. Derive the price-equals-marginal-cost condition from the profit derivative, then compare the best positive output with zero output so that the shutdown rule appears as a separate step rather than as a property of the first-order condition.
 
-Before running, ask students to define the observational unit and predict the comparison. Connect the code to the equation before interpreting the output.
+Before running, ask students what one row of the workbook is (a point on one firm's supply schedule, not an observed firm) and to predict output at prices 1, 2 and 12. Connect the `clip(lower=0)` in the code to the `max` in the supply rule before interpreting the table, and keep the three comparisons (P with MC, AVC and ATC) distinct.
 
 ## Worked exercise answers
 
-**A.** (12−2)/.2=50.
+**1.** Price 8: $q=5(8-2)=30$, revenue $240$, variable cost $2\times30+0.1\times900=150$, profit $240-150-100=-10$. Price 9: $q=35$, revenue $315$, variable cost $70+122.5=192.5$, profit $315-192.5-100=22.5$. Profit changes sign between prices 8 and 9.
 
-**B.** The fixed cost remains unavoidable, giving -100.
+**2.** $ATC(q)=100/q+2+0.1q$ is minimized where $-100/q^2+0.1=0$, so $q=\sqrt{1000}\approx31.62$ units per day. There $ATC=2+2\sqrt{10}\approx8.32$ currency per unit, and $MC=2+0.2\times31.62\approx8.32$, so $MC=ATC$ at the minimum of average total cost (marginal cost cuts average cost at its lowest point). At $P\approx8.32$ the supply rule gives $q=5(8.32-2)\approx31.62$ and profit is zero. If the fixed cost became avoidable, this is the lowest price at which the firm would choose to stay in the market: the long-run exit price.
 
-**C.** Yes, whenever revenue covers variable cost but not the fixed cost.
+**3.** Producing 5 units at price 1 gives revenue $5$, variable cost $10+2.5=12.5$ and profit $5-12.5-100=-107.5$, which is worse than the shutdown profit of $-100$. Because $AVC(q)=2+0.1q\ge2>1$ for every positive $q$, each unit produced costs more in variable cost than it earns, so any positive output adds to the loss.
 
-**D.** No. Convex costs and comparison with feasible boundaries are also needed.
+**4.** The supply schedule is unchanged: the fixed cost does not enter marginal cost or average variable cost, so output is still $\max\{0,5(P-2)\}$ and the shutdown price is still 2. Profit at every price falls by 100; at price 12 it becomes $600-350-200=50$. Shutdown profit becomes $-200$.
+
+**5.** Each firm supplies $\max\{0,5(P-2)\}$, so market supply is $Q^s(P)=40\times5(P-2)=200(P-2)$ for $P>2$ and zero otherwise. At price 12, market output is $200\times10=2000$ units per day. Horizontal summation multiplies quantities, not prices; the shutdown price for the market is still 2.
+
+**6.** At price 6 the firm produces $q=20$, earns revenue $120$, pays variable cost $40+40=80$ and has profit $120-80-100=-60$. Shutting down gives $-100$. A corrected sentence: "At a price of 6 the firm loses 60 a day by producing 20 units, but it would lose 100 by closing, because the fixed cost of 100 is unavoidable in the short run and revenue more than covers the variable cost of 80; it should keep producing in the short run."
 
 ## Reproduction and verification evidence
 

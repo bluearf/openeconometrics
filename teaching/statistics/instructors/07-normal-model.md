@@ -2,19 +2,23 @@
 
 ## Teaching sequence
 
-Keep the known population reference distinct from a sample-fitted z score. Ask students to translate points on both axes.
+Start by writing the model (mean 1,000 g, SD 12 g) and the batch summary (999.67 g, 11.51 g) side by side, and insist on separate symbols for each. Convert a few weights to standard scores and back before showing any probability, so students treat z as a position on a rescaled axis rather than a probability.
 
-Before running, ask students to define the observational unit and predict the comparison. Connect the code to the equation before interpreting the output.
+Before running, collect predictions for the pause question: should the mean of the population-standardized scores be exactly zero? Use the output (−0.028 and 0.959) to show the two linear relations from Section 3, then introduce $\Phi$ and the tail area. Finish by contrasting the model probability 0.1587 with the observed fraction 0.138 and asking what kind of variation separates them.
 
 ## Worked exercise answers
 
-**A.** The score is (1024−1000)/12 = 2. This calculation uses the known population mean and SD.
+**1.** $(1006-1000)/12 = 0.5$: half a model standard deviation above the mean. $(979-1000)/12 = -1.75$: one and three-quarter standard deviations below. A score of −1.5 corresponds to $1000 + 12(-1.5) = 982$ grams. None of these is a probability.
 
-**B.** The model fraction is 0.158655 and the observed fraction 0.138. Their difference is sampling variation relative to this model, rather than an arithmetic error.
+**2.** 478 of the 500 parcels weigh between 976 and 1,024 grams, an observed fraction of 0.956, against the model probability 0.9545. Eleven parcels weigh 976 grams or less and eleven weigh 1,024 grams or more. The agreement is close, but with only 22 parcels outside the range the tails are thinly observed.
 
-**C.** The divisor is the population SD of 12. The sample SD becomes 0.95949, equal to 11.5139 / 12, and varies across finite samples.
+**3.** By symmetry, $P(W<988) = P(Z<-1) = P(Z>1) = 0.1587$, and $P(988<W<1012) = 1 - 2(0.1587) = 0.6827$. In the batch, 76 parcels (0.152) weigh less than 988 grams and 355 (0.710) weigh between 988 and 1,012 grams; together with the 69 above 1,012 grams they account for all 500.
 
-**D.** Evidence should address measurement quality, process stability, independence or dependence, distributional shape and uncertainty about the population parameters. The synthetic mechanism alone supplies none of that empirical evidence.
+**4.** With the sample mean 999.67 g and sample SD 11.51 g, a sample-based score of 1 corresponds to $999.67 + 11.51 = 1011.18$ grams. These scores have mean 0 and SD 1 by construction (up to floating-point rounding). 77 parcels (0.154) exceed 1,011.18 grams, eight more than the 69 above 1,012 grams, because the threshold moved down by about 0.82 grams: the batch mean is 0.33 g below 1,000 and its SD is 0.49 g smaller than 12. The sample-based score answers "how unusual within this batch," not "how far from the stated process."
+
+**5.** The expected count is $500 \times 0.1587 = 79.33$ and its standard deviation is $\sqrt{500 \times 0.1587 \times 0.8413} = 8.17$ parcels. The observed 69 lies $(69-79.33)/8.17 = -1.26$ standard deviations from the expectation. Equivalently, the fraction 0.138 is 0.0207 below 0.1587 with a model standard error of 0.0163. A deviation of about 1.3 standard deviations is common under the model, so the shortfall is not surprising and gives no strong evidence against it.
+
+**6.** For example: "A weight of 1,012 grams is a standard score of 1 relative to the stated model (mean 1,000 g, SD 12 g). If that model holds, the probability that a parcel exceeds 1,012 grams is 0.159; in this batch, 69 of 500 parcels (0.138) did. A bell-shaped histogram is consistent with normality but does not establish it." Relevant evidence for a real line includes the distribution's shape in the tails (for example a large sample or a normal quantile plot), stability of the process over time (control charts, drift and shifts), scale calibration and resolution, and dependence between consecutive parcels.
 
 ## Reproduction and verification evidence
 

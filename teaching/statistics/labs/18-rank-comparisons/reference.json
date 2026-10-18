@@ -105,12 +105,12 @@
     "panels": [
       {
         "kind": "bar",
-        "title": "Comparing Ordinal Customer Ratings",
+        "title": "Ratings by Service",
         "xlabel": "Rating (ordered 1\u20137)",
         "ylabel": "Customers",
         "series": [
           {
-            "label": "Computed values",
+            "label": "Service A",
             "x": [
               1,
               2,
@@ -121,12 +121,33 @@
               7
             ],
             "y": [
-              4,
-              8,
-              13,
-              23,
-              19,
+              2,
+              5,
+              6,
               12,
+              10,
+              5,
+              0
+            ]
+          },
+          {
+            "label": "Service B",
+            "x": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7
+            ],
+            "y": [
+              2,
+              3,
+              7,
+              11,
+              9,
+              7,
               1
             ]
           }
@@ -138,6 +159,7 @@
     "native_U_matches_pair_enumeration": true,
     "rank_sum_identity": true,
     "native_probability_matches_pair_comparison": true,
-    "all_ranks_sum_correctly": true
+    "all_ranks_sum_correctly": true,
+    "counts_cover_every_customer": true
   }
 }

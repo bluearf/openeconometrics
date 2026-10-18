@@ -2,19 +2,23 @@
 
 ## Teaching sequence
 
-Put statistical and operational questions beside each other. Require units for the effect and a separate interpretation of its dimensionless test statistic.
+Put the statistical and operational questions side by side on the board before any calculation: "Is the process mean different from 500 ml?" and "Does the deviation matter?" Fix the two-sided alternative from the purpose of the check, then build the t statistic as a deviation in milliliters divided by a standard error in milliliters.
 
-Before running, ask students to define the observational unit and predict the comparison. Connect the code to the equation before interpreting the output.
+Before running, collect answers to the pause question about the two-sided test and the positive deviation. After running, insist that students report the deviation (0.755 ml) and its interval (0.35 to 1.16 ml) before the p value, and that they name a tolerance before calling the result important. Use the histogram to separate the process mean from individual containers.
 
 ## Worked exercise answers
 
-**A.** Compute (500.755−500)/0.204864 = 3.68705 up to displayed rounding. The ratio is dimensionless.
+**1.** $t = (500.755 - 501)/0.2049 = -1.19$ with 79 degrees of freedom, two-sided $p = 0.236$; `oe.ttest(raw, "milliliters", mu=501, missing="raise")` gives the same values. The data do not reject a process mean of 501 ml, consistent with 501 lying inside the 95% interval for the mean (500.35 to 501.16 ml). Failing to reject 501 does not show that the mean equals 501.
 
-**B.** Under the specified null sampling model, outcomes with |T| at least 3.68705 have probability 0.000414531. This conditions on H0; it is not a probability assigned to H0 after observing the data.
+**2.** For $H_1: \mu > 500$, the one-sided p value is `p_greater` = 0.000207, half the two-sided value because the deviation lies in the hypothesized direction. For $H_1: \mu < 500$, `p_less` = 0.99979: a sample mean above 500 provides no evidence at all of underfilling, and the two one-sided p values sum to one. The one-sided version is legitimate only if the direction was fixed before seeing the data.
 
-**C.** Divide the ml discrepancy and SE by 1000. Their ratio and p value do not change. The null becomes 0.5 liters.
+**3.** The deviation is 0.000755 liters and the standard error 0.000205 liters. Both change by the same factor of 1/1000, so $t = 3.69$, the 79 degrees of freedom and $p = 0.0004$ are unchanged; the null becomes 0.5 liters.
 
-**D.** No. Equality testing and equivalence within a margin answer different questions. A tolerance must be specified and an appropriate uncertainty-based equivalence assessment conducted.
+**4.** 28 of the 80 containers (0.35) hold less than 500 ml. Under a normal model with mean 500.76 ml and SD 1.83 ml, $z = (500 - 500.755)/1.832 = -0.41$ and $\Phi(-0.41) = 0.340$, or about 27 of 80 containers. The observed and model fractions agree closely. Neither contradicts the test, which concerns the process mean; a mean above target with a standard deviation of 1.83 ml still leaves about a third of containers below 500 ml.
+
+**5.** The 95% interval for the difference is 0.35 to 1.16 ml. With a 1 ml tolerance, the interval straddles the tolerance, so the data cannot tell whether the deviation is operationally important or not. With a 0.25 ml tolerance, the whole interval lies above the tolerance, so the data indicate a deviation that matters in practice. Only the second case supports that conclusion.
+
+**6.** For example: "The mean fill is 0.755 ml above the 500 ml target (95% interval 0.35 to 1.16 ml). If the process were centered on 500 ml, a sample of 80 containers would deviate this much in either direction with probability 0.0004, so the data are strong evidence that the process mean is not exactly 500 ml. The p value is not the probability that the machine is correctly calibrated, and whether a deviation of this size is large depends on a tolerance specified in advance."
 
 ## Reproduction and verification evidence
 

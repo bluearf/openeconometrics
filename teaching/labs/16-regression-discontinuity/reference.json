@@ -746,7 +746,7 @@
         "device": "cpu",
         "estimator": "rdrobust",
         "family": "teffects",
-        "stata_equivalent": [
+        "command_aliases": [
           "rdrobust",
           "rdbwselect"
         ],
@@ -776,7 +776,7 @@
         "sample_order": "input row order",
         "prediction_sample": null,
         "prediction_limit": 400,
-        "stata_parity_validated": false,
+        "external_compatibility_validated": false,
         "solver": "local_polynomial_qr",
         "solver_diagnostics": {},
         "optimizer": null,
@@ -1582,7 +1582,7 @@
         "device": "cpu",
         "estimator": "rdrobust",
         "family": "teffects",
-        "stata_equivalent": [
+        "command_aliases": [
           "rdrobust",
           "rdbwselect"
         ],
@@ -1612,7 +1612,7 @@
         "sample_order": "input row order",
         "prediction_sample": null,
         "prediction_limit": 400,
-        "stata_parity_validated": false,
+        "external_compatibility_validated": false,
         "solver": "local_polynomial_qr",
         "solver_diagnostics": {},
         "optimizer": null,
@@ -2418,7 +2418,7 @@
         "device": "cpu",
         "estimator": "rdrobust",
         "family": "teffects",
-        "stata_equivalent": [
+        "command_aliases": [
           "rdrobust",
           "rdbwselect"
         ],
@@ -2448,7 +2448,7 @@
         "sample_order": "input row order",
         "prediction_sample": null,
         "prediction_limit": 400,
-        "stata_parity_validated": false,
+        "external_compatibility_validated": false,
         "solver": "local_polynomial_qr",
         "solver_diagnostics": {},
         "optimizer": null,

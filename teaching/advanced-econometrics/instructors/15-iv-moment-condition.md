@@ -2,19 +2,23 @@
 
 ## Teaching sequence
 
-Derive the central comparison before execution. Inspect the full coefficient table and retained sample, then trace the chapter-specific arithmetic check. Require students to distinguish a point-estimate identity from an inference or identification claim.
+Before running, write the structural equation and the three moment conditions, and have students say which variables instrument themselves. Derive $(Z^\top X)^{-1}Z^\top y$, then the projection form, and show that $P_ZX$ leaves the intercept and control unchanged.
 
-Before running, ask students to define the observational unit and predict the comparison. Connect the code to the equation before interpreting the output.
+After the run, read the first stage before the 2SLS coefficients, confirm the projection formula reproduces the native estimate, and spend time on the residual that enters $\hat\sigma^2$. Close on what the data cannot show: exclusion.
 
 ## Worked exercise answers
 
-**A.** The control itself; Z is the excluded instrument.
+**1.** The reduced-form `z` coefficient is 0.9142 and the first-stage `z` coefficient is 0.8471; their ratio, 1.0792, equals the 2SLS slope (indirect least squares). With more excluded instruments than endogenous regressors there would be one ratio per instrument, generally different, and 2SLS would combine them; the single ratio is the IV estimator only in the exactly identified case.
 
-**B.** Native 1.07921 and matrix 1.07921 agree.
+**2.** The hand-run second stage gives the same slope, 1.0792, but a standard error of 0.1334 against 0.0807. Both use the same matrix $(\hat X^\top\hat X)^{-1}$; they differ only in $\hat\sigma$. The structural residuals give $\hat\sigma=1.219$ (residual sum of squares 470.80 over 317 degrees of freedom), while the fitted-$x$ residuals give 2.013 (1,284.89 over 317), so the standard-error ratio is $1.219/2.013=0.605$. Here the naive standard error is too large; in other data it can be too small.
 
-**C.** No. Relevance and orthogonality to the structural error are separate conditions.
+**3.** The first-stage $t$ statistic for `z` is 15.856, and $15.856^2=251.41$, the reported first-stage and Cragg–Donald F. With one excluded instrument and classical covariance these coincide. The number shows that Z strongly predicts X given the control; it says nothing about whether Z is correlated with the structural error.
 
-**D.** It uses fitted-exposure regression residuals instead of the correct structural IV covariance.
+**4.** If $y_i=\beta_0+\beta_cc_i+\beta_xx_i+\gamma z_i+u_i$, the reduced-form coefficient on `z` becomes $\beta_x\pi+\gamma$, where $\pi$ is the first-stage coefficient, so the IV slope converges to $\beta_x+\gamma/\pi$. With $\pi=0.8471$, $\gamma=0.1$ shifts the IV slope by $0.1/0.8471=0.118$. A stronger first stage (larger $\pi$) shrinks the shift but never removes it.
+
+**5.** With `covariance="robust"` the X standard error is 0.0830 against 0.0807 classical. The difference is small here, consistent with roughly homoskedastic structural errors. The robust version should be reported whenever the error variance may depend on the regressors or instruments, which is the usual situation in applied work.
+
+**6.** For example: "In 320 synthetic records, 2SLS with Z as the excluded instrument for X and the control instrumenting itself gives an X slope of 1.079 (classical standard error 0.081, 317 degrees of freedom), against 1.510 by OLS. The first stage is strong (F = 251). The Durbin and Wu–Hausman tests reject exogeneity of X, but only if Z is a valid instrument; the causal reading rests on the untestable assumption that Z affects Y only through X given the control."
 
 ## Reproduction and verification evidence
 

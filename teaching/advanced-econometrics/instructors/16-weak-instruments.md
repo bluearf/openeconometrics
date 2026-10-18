@@ -2,19 +2,23 @@
 
 ## Teaching sequence
 
-Derive the central comparison before execution. Inspect the full coefficient table and retained sample, then trace the chapter-specific arithmetic check. Require students to distinguish a point-estimate identity from an inference or identification claim.
+Start from the indirect-least-squares form $\hat\beta_{IV}=\hat\gamma/\hat\pi$ and have students derive the error identity $\hat\beta_{IV}-\beta=\hat\delta/\hat\pi$ before running anything. Then ask what the weak scenario holds fixed ($y-1.2x$, hence $\hat\delta$) and what it changes (only $\hat\pi$), and have them predict the weak-scenario estimate from the strong one.
 
-Before running, ask students to define the observational unit and predict the comparison. Connect the code to the equation before interpreting the output.
+After running, read the two first-stage rows together (same standard error, F = t²), then the two 2SLS columns, and finish by checking that error × $\hat\pi$ is 0.0482 in both scenarios. Keep the conventional t interval separate from a weak-instrument-robust confidence set; Exercise 5 makes the contrast concrete.
 
 ## Worked exercise answers
 
-**A.** The structural effect 1.2, exogenous control effect and structural disturbance.
+**1.** `weak_x - x` equals $-0.82z$ for every unit (largest deviation about $4\times10^{-16}$), matching $0.08-0.9$. Because $z$ is a regressor, the OLS fit of `weak_x` on intercept, control and $z$ is the strong fit with the $z$ coefficient lowered by exactly 0.82 (0.8966 to 0.0766); the residuals, $s^2$ and $(X'X)^{-1}$ are unchanged, so the standard error on $z$ (0.0527), the intercept (0.0059) and the control coefficient (0.3682) are identical. Hence $F_w=F_s(\hat\pi_w/\hat\pi_s)^2=289.97/137.12=2.115$.
 
-**B.** The weak first-stage F=2.11473 versus 289.966.
+**2.** Classical reduced-form slopes: strong 1.1241, weak 0.1401 (standard error 0.1161 in both). Ratios: 1.1241/0.8966 = 1.2538 and 0.1401/0.0766 = 1.8298, the two IV slopes. The reduced forms differ by $-0.984=-1.2\times0.82$, because $y^w=y-1.2x+1.2x^w=y-0.984z$.
 
-**C.** No. They retain conventional t inference and must be interpreted with that limitation.
+**3.** $\hat\delta=0.048218$. With $\hat\pi=0.0766/2=0.03828$, $\hat\beta=1.2+0.048218/0.03828=2.46$. The error equals 1.2 when $\hat\pi=0.048218/1.2=0.0402$.
 
-**D.** No. Exclusion and relevance strength are distinct requirements.
+**4.** OLS slopes (classical standard errors): strong 1.598 (0.048), weak 1.912 (0.061). Both exceed 1.2, consistent with positive correlation between $v$ and $u$. The strong 2SLS slope (1.254) removes most of that gap; the weak 2SLS slope (1.830) stays close to its OLS counterpart, illustrating the finite-sample pull of 2SLS toward OLS when the first stage is weak, because the first-stage sampling error (driven by $v$) is correlated with $\hat\delta$ (driven by $u$).
+
+**5.** Strong scenario: the retained grid values run from 1.10 to 1.39 (exact boundaries 1.0957 and 1.3940), close to the t interval 1.106 to 1.402. Weak scenario: all 1,301 grid values are retained. Over $[-200,200]$ the smallest p value is 0.146, and as $|b_0|\to\infty$ the test statistic approaches the first-stage t statistic for $z$ (p = 0.147), so the set is the whole real line: the data carry essentially no information about $\beta$. The conventional interval 0.340 to 3.319 looks bounded and informative only because it relies on an approximation that fails here.
+
+**6.** For example: "In the weak scenario the first stage cannot reject irrelevance (F = 2.11), so the 2SLS estimate of 1.83 and its conventional interval are not reliable. With the structural slope fixed at 1.2 in both designs, the larger estimate reflects estimation error amplified by the weak first stage, not a larger effect; a weak-instrument-robust confidence set is uninformative here."
 
 ## Reproduction and verification evidence
 

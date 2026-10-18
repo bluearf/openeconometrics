@@ -2,19 +2,23 @@
 
 ## Teaching sequence
 
-Derive the central comparison before execution. Inspect the full coefficient table and retained sample, then trace the chapter-specific arithmetic check. Require students to distinguish a point-estimate identity from an inference or identification claim.
+Before anyone runs the file, have students write the three regressions and the telescoping identity, and state what each bracket holds fixed. Then derive $b_{SC}-b_{LC}=\hat\gamma\hat\delta$ on the board from the orthogonality of the long-model residuals, and ask why the derivation needs a common sample.
 
-Before running, ask students to define the observational unit and predict the comparison. Connect the code to the equation before interpreting the output.
+After the run, read the Rows and residual df columns before any slope. Insist that the decomposition is a point-estimate identity with no standard error of its own, and that neither component is a causal or missingness-bias estimate.
 
 ## Worked exercise answers
 
-**A.** 240−237=3.
+**1.** The blank Z cells are in `row_id` 6, 36 and 66, with (`x`, `y`) = (1.0008, 5.0080), (−0.8636, −0.4386) and (−1.0965, −1.4367). Their residuals from the short fit on 240 rows are +1.439, −0.903 and −1.513, and their deviations from $\bar x=-0.111$ are +1.112, −0.753 and −0.986. Each product of residual and deviation is positive (1.60, 0.68, 1.49), so each row pulls the slope up; removing them lowers it. Dropping each alone lowers the slope by 0.0077, 0.0032 and 0.0071.
 
-**B.** Short and full models on the same common sample.
+**2.** On the 237 complete rows, the slope of `z` on `x` is $\hat\delta=0.6256$. Then $\hat\gamma\hat\delta=0.7745\times0.6256=0.4846$, equal to the control component to machine precision. The product cannot reconcile $b_{SA}$ with $b_{LC}$: that total is 0.5027, and the gap of 0.0181 is the sample component. The identity holds only when both regressions use the same rows, because it relies on the long-model residuals being orthogonal to `x` over exactly those rows.
 
-**C.** Yes. The middle common-sample short coefficient cancels.
+**3.** Without rows 1–3 the short slope is 1.6697, so the "sample component" is $1.6654-1.6697=-0.0043$: smaller and of the opposite sign. Removing an arbitrary set of three rows also moves the slope, so the sample component measures sensitivity to the row set, not bias caused by the missing controls.
 
-**D.** No. It invents observed control values and changes the design.
+**4.** With zeros in place of the blanks, the controlled X slope on 240 rows is 1.1972 (Z coefficient 0.7588), against 1.1627 on the complete rows. The fill asserts that three units have Z exactly zero, which the data do not say, so the estimate belongs to a model with three invented control values rather than to either sample in the lab.
+
+**5.** On the common rows, $R^2$ rises from 0.5116 to 0.6283, a change of 0.1166. Comparing 0.6283 with the short $R^2$ on 240 rows (0.5180) gives 0.1103. The second comparison divides by different total sums of squares (1,128.85 on 240 rows and 1,103.41 on 237 rows), so it mixes the change of sample with the contribution of Z.
+
+**6.** For example: "In 240 synthetic records, the HC3 slope of Y on X falls from 1.665 (all 240 rows) to 1.163 when Z is added on the 237 rows where Z is recorded, a drop of 0.503 or about 30%. Of that drop, 0.018 comes from losing three rows and 0.485 from adding Z on a fixed sample. The split is an arithmetic identity, not an estimate of missingness bias or of a causal effect of X."
 
 ## Reproduction and verification evidence
 

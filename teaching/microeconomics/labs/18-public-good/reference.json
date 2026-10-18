@@ -57,7 +57,7 @@
         "kind": "line",
         "title": "Vertical Summation for a Public Good",
         "xlabel": "Shared provision (units)",
-        "ylabel": "Summed marginal benefit (currency/unit)",
+        "ylabel": "Marginal benefit (currency/unit)",
         "series": [
           {
             "label": "Computed values",
@@ -148,11 +148,51 @@
               10.0
             ]
           }
+        ],
+        "segments": [
+          {
+            "x0": 40.0,
+            "y0": 0.0,
+            "x1": 0.0,
+            "y1": 40.0,
+            "label": "A's marginal benefit",
+            "dx": 8,
+            "dy": -6,
+            "color": "#b3541e"
+          },
+          {
+            "x0": 40.0,
+            "y0": 10.0,
+            "x1": 0.0,
+            "y1": 30.0,
+            "label": "B's marginal benefit",
+            "dx": 8,
+            "dy": -6,
+            "color": "#b3541e"
+          }
+        ],
+        "reference_lines": [
+          {
+            "axis": "y",
+            "value": 25.0,
+            "label": "Marginal cost = 25"
+          },
+          {
+            "axis": "x",
+            "value": 30.0,
+            "label": "Efficient provision = 30"
+          }
+        ],
+        "value_limits": [
+          0,
+          75
         ]
       }
     ]
   },
   "checks": {
+    "workbook_benefits_are_linear": true,
+    "workbook_marginal_cost_is_constant": true,
     "samuelson_condition": true,
     "positive_individual_marginal_benefits": true
   }

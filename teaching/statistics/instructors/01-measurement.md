@@ -4,17 +4,21 @@
 
 Ask students to mark the observational unit and classify every column before running a summary. Compare household-weighted and person-weighted questions verbally before writing either formula.
 
-Before running, ask students to define the observational unit and predict the comparison. Connect the code to the equation before interpreting the output.
+Before running, ask students to define the observational unit and predict which denominator each reported number uses. Connect the code to the two ratio formulas before interpreting the output.
 
 ## Worked exercise answers
 
-**A.** There are 180 raw households, 176 observed spending values and 4 missing reports. Their sum reconciles to the raw count.
+**1.** There are 180 raw households, 176 observed spending values and 4 missing reports; 176 + 4 = 180. Every number in the Section 4 table uses 176, including the household-size row, because the summary is computed on the observed-spending frame. The per-member mean 299.558 also uses 176.
 
-**B.** IDs distinguish records. The difference between IDs 10 and 20 is not a measured household characteristic. Relabeling IDs would change their average without changing any household.
+**2.** On the 176 observed households, total spending is 156,461.44 and total membership is 618 people, so $\sum C_i/\sum H_i = 253.17$ currency per person per month. This is the size-weighted mean of the household ratios $C_i/H_i$. It is lower than the equal-weight mean 299.558 because larger households tend to spend less per member, and person weighting gives those households more weight.
 
-**C.** On the observed households, use $\sum C_i/\sum H_i$. The displayed 299.558 instead gives each household equal weight after calculating $C_i/H_i$. Weighting those ratios by household size recovers the person-weighted ratio.
+**3.** The mean size is 3.5111 for all 180 households and 3.5114 for the 176 observed households. The four excluded households have sizes 6, 1, 1 and 6, which average 3.5, almost exactly the overall mean. The two means would differ noticeably if missing reports were concentrated among large or among small households.
 
-**D.** No. It would assert four zero-spending observations, enlarge the denominator and reduce the mean. Preserve unknown values and investigate their missingness mechanism.
+**4.** With North coded 0 and South coded 1, "mean region = 0.5" only restates that half of the households (90 of 180) are in the South. The codes have no distance, so the number is not an average location. Report counts and shares by region instead: 90 North and 90 South.
+
+**5.** Filling the blanks with zero gives a mean of 869.23 over 180 households, about 19.75 below the observed-case mean. It asserts that four households spent nothing, which the data do not say, enlarges the denominator and pulls the mean down. Preserve unknown values and investigate their missingness mechanism; here all four blanks are in the South.
+
+**6.** For example: "Among the 176 of 180 synthetic households that reported spending, mean monthly spending is 888.99 currency units per household; the four households without a report are excluded rather than counted as zero."
 
 ## Reproduction and verification evidence
 
