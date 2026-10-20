@@ -11383,10 +11383,10 @@
     },
     {
       "path": "scripts/verify_public_package_pair.py",
-      "bytes": 19346,
-      "sha256": "6ec6c998192fe5f75dd62f00076535c6db32d8e39c01cf6bf45fc70e8896caea",
+      "bytes": 26682,
+      "sha256": "d0c651840b356aea72f9973bb77fd4dd95049284943ed7411f42593f34852e9e",
       "original_sha256": "6ec6c998192fe5f75dd62f00076535c6db32d8e39c01cf6bf45fc70e8896caea",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "scripts/verify_publication.py",
@@ -22100,10 +22100,10 @@
     },
     {
       "path": "tests/test_public_package_pair_metadata.py",
-      "bytes": 14858,
-      "sha256": "7a1365a8db500f8432faa806165ac2b8790bd898ddf0fec9a542c4169643cd77",
+      "bytes": 23225,
+      "sha256": "d66da5a1ec38ea04fd5a0e6364db94923711b32dd145a3e076292cbcdfea0ace",
       "original_sha256": "7a1365a8db500f8432faa806165ac2b8790bd898ddf0fec9a542c4169643cd77",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "tests/test_publication_matrix.py",
@@ -32528,7 +32528,7 @@
     "tests/fixtures/unitroot_hegy/simulated_critical_values.json",
     "tests/fixtures/unitroot_hegy/uroot_reference.json"
   ],
-  "source_files_sha256": "4cd7be14ca27ad067429324355ad207e5123932000001eb327cd58adc3156d8e",
+  "source_files_sha256": "ae073265beffa83c1342605c5af2284e4d85fcb0eb7ac1e8b40c1d987694861c",
   "publication_documentation_transforms": [
     {
       "path": "README.md",
@@ -32562,7 +32562,7 @@
       "sdk": "0.3.20a2",
       "charts": "0.3.2a2"
     },
-    "scope": "Package descriptions, installation documentation and package version metadata; runtime source changes only the two exact __version__ literals.",
+    "scope": "Package descriptions, installation documentation, package version metadata and strict packaging-verification guards; runtime source changes only the two exact __version__ literals.",
     "runtime_identity_verifier": ".github/checks/verify_metadata_refresh_source.py",
     "runtime_identity_receipt": "source-identity.json",
     "baseline_runtime_inventory_sha256": "48685ba004b4a00c971583f1cbfe0d171ca4ce060150d9df783e0c7614fdfe35",
@@ -32572,9 +32572,9 @@
       {
         "path": "PUBLIC-SOURCE.md",
         "baseline_sha256": "fe4dabf4eca7b5cc724ce1ef2951e8c5ab88760b761db378da8fa7be1bc22cb6",
-        "refreshed_sha256": "4725de31cc9dc4585032993c493a26ada598773fd049a69266c0b62a9e3e1ce1",
+        "refreshed_sha256": "6692b16a480152154fd5a7d544be571f58e614c96cf7b5f9a4de4b769088d304",
         "baseline_bytes": 1967,
-        "refreshed_bytes": 2460
+        "refreshed_bytes": 2712
       },
       {
         "path": "PYPI-README.md",
@@ -32626,11 +32626,25 @@
         "refreshed_bytes": 2670
       },
       {
+        "path": "scripts/verify_public_package_pair.py",
+        "baseline_sha256": "6ec6c998192fe5f75dd62f00076535c6db32d8e39c01cf6bf45fc70e8896caea",
+        "refreshed_sha256": "d0c651840b356aea72f9973bb77fd4dd95049284943ed7411f42593f34852e9e",
+        "baseline_bytes": 19346,
+        "refreshed_bytes": 26682
+      },
+      {
         "path": "src/openecon/__init__.py",
         "baseline_sha256": "a1f1848e93b83ca0beceef8ef89fa9e497e684b0a7cce43743fdd6273059c0ef",
         "refreshed_sha256": "501030ba75dea2e87203184eec481e4614c3f07521ef13cdcf038caed1076836",
         "baseline_bytes": 19171,
         "refreshed_bytes": 19171
+      },
+      {
+        "path": "tests/test_public_package_pair_metadata.py",
+        "baseline_sha256": "7a1365a8db500f8432faa806165ac2b8790bd898ddf0fec9a542c4169643cd77",
+        "refreshed_sha256": "d66da5a1ec38ea04fd5a0e6364db94923711b32dd145a3e076292cbcdfea0ace",
+        "baseline_bytes": 14858,
+        "refreshed_bytes": 23225
       },
       {
         "path": "uv.lock",
@@ -32640,6 +32654,16 @@
         "refreshed_bytes": 423958
       }
     ],
-    "generated_documents": "PUBLIC-SOURCE.md and SOURCE-MANIFEST.json are generated provenance documents outside the inherited files inventory; PUBLIC-SOURCE.md hashes are recorded above. This manifest does not include a recursive hash of itself."
+    "generated_documents": "PUBLIC-SOURCE.md and SOURCE-MANIFEST.json are generated provenance documents outside the inherited files inventory; PUBLIC-SOURCE.md hashes are recorded above. This manifest does not include a recursive hash of itself.",
+    "packaging_verification_transforms": [
+      {
+        "path": "scripts/verify_public_package_pair.py",
+        "reason": "Require pinned complete before/after version-file bytes, manifest transformation records and the same checkout/run runtime-identity proof; retain rejection of all other production transformations."
+      },
+      {
+        "path": "tests/test_public_package_pair_metadata.py",
+        "reason": "Add 34 bounded acceptance and adversarial cases for the exact metadata-refresh allowance, proof/manifest tampering and unreviewed production changes."
+      }
+    ]
   }
 }

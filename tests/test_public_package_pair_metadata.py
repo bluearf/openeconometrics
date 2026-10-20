@@ -1,6 +1,7 @@
 """Distribution acceptance binds metadata and complete archives to frozen source."""
 
 import base64
+import copy
 import csv
 import hashlib
 import io
@@ -312,3 +313,165 @@ def test_complete_pair_binds_generated_sdk_provenance(public_pair, mutation):
         sdist[path] += b"changed provenance\n"
     with pytest.raises(ValueError, match="sdist"):
         verify()
+
+
+@pytest.fixture
+def metadata_refresh_production(monkeypatch):
+    """Use the real two version files with an independently bound CI receipt."""
+    manifest = json.loads((ROOT / "SOURCE-MANIFEST.json").read_bytes())
+    paths = ("packages/openecon-charts/src/openecon_charts/__init__.py",
+             "src/openecon/__init__.py")
+    manifest["files"] = [row for row in manifest["files"] if row["path"] in paths]
+    source = {path: (ROOT / path).read_bytes() for path in paths}
+    before = {paths[0]: "0.3.2a1", paths[1]: "0.3.20a1"}
+    after = {paths[0]: "0.3.2a2", paths[1]: "0.3.20a2"}
+    identity = {
+        "schema_version": 1, "status": "passed_metadata_only_runtime_identity",
+        "baseline_repository": "bluearf/openeconometrics",
+        "baseline_public_commit": "d11ed130feb4ad8e6e990e61bb0bd8a9101cb981",
+        "public_checkout_commit": "a" * 40,
+        "event": "pull_request", "run_id": "123", "run_attempt": "1",
+        "scopes": ["src/openecon", "packages/openecon-charts/src/openecon_charts", "web"],
+        "excluded_generated_directories": ["src/openecon/static", "web/node_modules", "web/dist"],
+        "generated_frontend": "separately bound by verify_public_package_pair.py",
+        "new_full_scientific_gate_claimed": False,
+        "runtime_source_files": 1040, "unchanged_runtime_source_files": 1038,
+        "version_only_files": [
+            {"path": row["path"], "before": before[row["path"]], "after": after[row["path"]],
+             "before_sha256": row["original_sha256"], "after_sha256": row["sha256"]}
+            for row in manifest["files"]
+        ],
+        "baseline_inventory_sha256":
+            "48685ba004b4a00c971583f1cbfe0d171ca4ce060150d9df783e0c7614fdfe35",
+        "normalized_current_inventory_sha256":
+            "48685ba004b4a00c971583f1cbfe0d171ca4ce060150d9df783e0c7614fdfe35",
+    }
+    for key, value in {"GITHUB_EVENT_NAME": "pull_request", "GITHUB_RUN_ID": "123",
+                       "GITHUB_RUN_ATTEMPT": "1", "GITHUB_SHA": "a" * 40}.items():
+        monkeypatch.setenv(key, value)
+    return manifest, source, identity
+
+
+def check_refresh(fixture):
+    manifest, source, identity = fixture
+    return VERIFIER["check_production_source"](
+        manifest, source, "0.3.20a2", "0.3.2a2", identity
+    )
+
+
+def test_metadata_refresh_accepts_only_the_two_pinned_version_files(metadata_refresh_production):
+    assert check_refresh(metadata_refresh_production) is None
+
+
+@pytest.mark.parametrize("mutation", [
+    "missing-proof", "wrong-proof-checkout", "wrong-proof-run", "wrong-proof-attempt",
+    "wrong-proof-baseline", "wrong-proof-inventory", "wrong-proof-scope", "missing-proof-version",
+    "wrong-proof-version", "proof-full-science", "manifest-full-science", "wrong-baseline",
+    "wrong-inherited-source", "wrong-previous-version", "wrong-new-version", "wrong-receipt",
+    "missing-transform", "duplicate-transform", "wrong-before-hash", "wrong-after-hash",
+    "wrong-before-size", "unmarked-version-transform", "wrong-original-source-hash",
+    "wrong-current-source-hash", "wrong-current-source-size", "missing-refresh-record",
+])
+def test_metadata_refresh_rejects_unbound_identity_or_transform(
+    metadata_refresh_production, mutation
+):
+    manifest, source, identity = copy.deepcopy(metadata_refresh_production)
+    refresh = manifest["metadata_refresh"]
+    path = "src/openecon/__init__.py"
+    row = next(row for row in manifest["files"] if row["path"] == path)
+    change = next(row for row in refresh["changed_files"] if row["path"] == path)
+    if mutation == "missing-proof":
+        identity = None
+    elif mutation.startswith("wrong-proof-"):
+        key = {"checkout": "public_checkout_commit", "run": "run_id", "attempt": "run_attempt",
+               "baseline": "baseline_public_commit", "inventory": "baseline_inventory_sha256",
+               "scope": "scopes", "version": "version_only_files"}[mutation[12:]]
+        identity[key] = "incorrect"
+    elif mutation == "missing-proof-version":
+        identity["version_only_files"].pop()
+    elif mutation == "proof-full-science":
+        identity["new_full_scientific_gate_claimed"] = True
+    elif mutation == "manifest-full-science":
+        refresh["new_full_scientific_gate_claimed"] = True
+    elif mutation == "wrong-baseline":
+        refresh["baseline_runtime_public_commit"] = "b" * 40
+    elif mutation == "wrong-inherited-source":
+        refresh["inherited_private_source_commit"] = "b" * 40
+    elif mutation == "wrong-previous-version":
+        refresh["previous_versions"]["sdk"] = "0.3.19a1"
+    elif mutation == "wrong-new-version":
+        refresh["versions"]["sdk"] = "0.3.20a3"
+    elif mutation == "wrong-receipt":
+        refresh["runtime_identity_receipt"] = "unbound.json"
+    elif mutation == "missing-transform":
+        refresh["changed_files"].remove(change)
+    elif mutation == "duplicate-transform":
+        refresh["changed_files"].append(copy.deepcopy(change))
+    elif mutation == "wrong-before-hash":
+        change["baseline_sha256"] = "b" * 64
+    elif mutation == "wrong-after-hash":
+        change["refreshed_sha256"] = "b" * 64
+    elif mutation == "wrong-before-size":
+        change["baseline_bytes"] += 1
+    elif mutation == "unmarked-version-transform":
+        row["transformed"] = False
+    elif mutation == "wrong-original-source-hash":
+        row["original_sha256"] = row["sha256"]
+    elif mutation == "wrong-current-source-hash":
+        row["sha256"] = "b" * 64
+    elif mutation == "wrong-current-source-size":
+        row["bytes"] += 1
+    elif mutation == "missing-refresh-record":
+        del manifest["metadata_refresh"]
+    with pytest.raises(ValueError, match="(?:Metadata refresh|Production source)"):
+        check_refresh((manifest, source, identity))
+
+
+@pytest.mark.parametrize("path", ["src/openecon/__init__.py",
+                                 "packages/openecon-charts/src/openecon_charts/__init__.py"])
+def test_refresh_cannot_self_authorize_injected_code_with_updated_hashes(
+    metadata_refresh_production, path
+):
+    manifest, source, identity = copy.deepcopy(metadata_refresh_production)
+    source[path] += b"\nraise RuntimeError('unreviewed code')\n"
+    forged_hash = hashlib.sha256(source[path]).hexdigest()
+    row = next(row for row in manifest["files"] if row["path"] == path)
+    row.update(sha256=forged_hash, bytes=len(source[path]))
+    change = next(row for row in manifest["metadata_refresh"]["changed_files"] if row["path"] == path)
+    change.update(refreshed_sha256=forged_hash, refreshed_bytes=len(source[path]))
+    identity_row = next(row for row in identity["version_only_files"] if row["path"] == path)
+    identity_row["after_sha256"] = forged_hash
+    with pytest.raises(ValueError, match="Metadata refresh"):
+        check_refresh((manifest, source, identity))
+
+
+@pytest.mark.parametrize("path,version", [
+    ("src/openecon/__init__.py", "0.3.20"),
+    ("packages/openecon-charts/src/openecon_charts/__init__.py", "0.3.2"),
+])
+@pytest.mark.parametrize("mutation", ["extra-code", "reverted-version"])
+def test_refresh_pins_actual_source_bytes_even_with_unchanged_identity_proof(
+    metadata_refresh_production, path, version, mutation
+):
+    manifest, source, identity = copy.deepcopy(metadata_refresh_production)
+    if mutation == "extra-code":
+        source[path] += b"\nraise RuntimeError('unreviewed code')\n"
+    else:
+        source[path] = source[path].replace(f'__version__ = "{version}a2"'.encode(),
+                                            f'__version__ = "{version}a1"'.encode())
+    with pytest.raises(ValueError, match="Metadata refresh version transform differs"):
+        check_refresh((manifest, source, identity))
+
+
+def test_metadata_refresh_still_rejects_every_other_production_transform(
+    metadata_refresh_production
+):
+    manifest, source, identity = copy.deepcopy(metadata_refresh_production)
+    path = "src/openecon/unreviewed.py"
+    data = b"raise RuntimeError('unreviewed code')\n"
+    source[path] = data
+    manifest["files"].append({"path": path, "bytes": len(data),
+                              "sha256": hashlib.sha256(data).hexdigest(),
+                              "original_sha256": "b" * 64, "transformed": True})
+    with pytest.raises(ValueError, match="Production source was transformed"):
+        check_refresh((manifest, source, identity))
