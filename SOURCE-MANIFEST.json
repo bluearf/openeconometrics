@@ -127,15 +127,15 @@
     },
     {
       "path": "PYPI-README.md",
-      "bytes": 3637,
-      "sha256": "a23ef49293444071d304dbccafc94825533a79458712ac552c7cd3c82f0e67fb",
+      "bytes": 3275,
+      "sha256": "ed4d7277ed30810c0f83192b5cf100562457838aff9415043727f98cb773a144",
       "original_sha256": "2f24d1f0d8607de915c3ddbc9a91563e465b25a53df08c2a1bfbae9bed7f3003",
       "transformed": true
     },
     {
       "path": "README.md",
-      "bytes": 24050,
-      "sha256": "f53214151110f0c3e32ed4e584c94d73de832f1cedc0b60996df7c7c6fde9693",
+      "bytes": 24205,
+      "sha256": "9482751bb850dd4181aed06821414ebd3dbb2681ba3ef34f8151881cea0846e3",
       "original_sha256": "b0e33f0eb35c3d03d0a8167054fb7fa8646483863bc73a7a88f63ef09f080922",
       "transformed": true
     },
@@ -1100,8 +1100,8 @@
     },
     {
       "path": "docs/distribution.md",
-      "bytes": 6099,
-      "sha256": "c10f876a9bfe95b39be3aaacf2ed99dfcc4246a7c10f434410d29bd8ffce7a47",
+      "bytes": 6430,
+      "sha256": "10952417ce30bd3fe44cc55018bd9b29aff678f1eedb46ed17d016b917e44ba1",
       "original_sha256": "3be5dd980ac4fb5b5d93937367aaa5428efc676966e03e0c2f5e6284377bfac3",
       "transformed": true
     },
@@ -9150,8 +9150,8 @@
     },
     {
       "path": "packages/openecon-charts/PYPI-README.md",
-      "bytes": 2831,
-      "sha256": "a707263b3813760659c3db0405d026ed5cf05bfc3b6694b6d3a1d57c9efff729",
+      "bytes": 2692,
+      "sha256": "3d8f3bcc894dd043042bdd58439d870bc02c8ccef091ed8091416e695e705f83",
       "original_sha256": "422642eaf629d2e5471b9e5e229cb8a79358942872806d33ea7773c8e4ef5598",
       "transformed": true
     },
@@ -9179,16 +9179,16 @@
     {
       "path": "packages/openecon-charts/pyproject.toml",
       "bytes": 787,
-      "sha256": "f78bad50758400d5719b85df59878e42609c32f69e49ed4dd4d4658e4179789e",
+      "sha256": "8c4c7a8f20c3164f8398226c896e444605a16120282ca7119950a7968a157f48",
       "original_sha256": "f78bad50758400d5719b85df59878e42609c32f69e49ed4dd4d4658e4179789e",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "packages/openecon-charts/src/openecon_charts/__init__.py",
       "bytes": 358,
-      "sha256": "fda11eb18023be875d92ad1a0ee5c1ede3b70c4393180801c2d20124cdd9f9cc",
+      "sha256": "a2508a00d8484a21993d2b257ae405b26562cecfb65d79b76334c6a9aed4739d",
       "original_sha256": "fda11eb18023be875d92ad1a0ee5c1ede3b70c4393180801c2d20124cdd9f9cc",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "packages/openecon-charts/src/openecon_charts/annotations.py",
@@ -9501,7 +9501,7 @@
     {
       "path": "pyproject.toml",
       "bytes": 2670,
-      "sha256": "7c58a3355b16f7581d071be8fbefb56cb06e1afd87d5578cf4a1afed7d343092",
+      "sha256": "1ab3213711633d777e90401822363ece51a28dff37622c39be13cab471a348a4",
       "original_sha256": "cd2ab046a0a202447aba7dd442aca600d1224f513797b8a5d9bfb59ba8502076",
       "transformed": true
     },
@@ -11916,9 +11916,9 @@
     {
       "path": "src/openecon/__init__.py",
       "bytes": 19171,
-      "sha256": "a1f1848e93b83ca0beceef8ef89fa9e497e684b0a7cce43743fdd6273059c0ef",
+      "sha256": "501030ba75dea2e87203184eec481e4614c3f07521ef13cdcf038caed1076836",
       "original_sha256": "a1f1848e93b83ca0beceef8ef89fa9e497e684b0a7cce43743fdd6273059c0ef",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "src/openecon/_network_bipartite.py",
@@ -23214,9 +23214,9 @@
     {
       "path": "uv.lock",
       "bytes": 423958,
-      "sha256": "989c86bcd08922637a2ba53745eec17b31905507de5ad3197a417ba5b4cc0db0",
+      "sha256": "9d8edbbd8e4e6fabf3da1062cb21acabba9f01fadf4855e99602b88b4dd3bcf4",
       "original_sha256": "989c86bcd08922637a2ba53745eec17b31905507de5ad3197a417ba5b4cc0db0",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "web/index.html",
@@ -32528,7 +32528,7 @@
     "tests/fixtures/unitroot_hegy/simulated_critical_values.json",
     "tests/fixtures/unitroot_hegy/uroot_reference.json"
   ],
-  "source_files_sha256": "a9c7fcfb9c3f780eef212b2bde169a7c7870f17beda866bc6a883ee93662ab28",
+  "source_files_sha256": "4cd7be14ca27ad067429324355ad207e5123932000001eb327cd58adc3156d8e",
   "publication_documentation_transforms": [
     {
       "path": "README.md",
@@ -32548,5 +32548,98 @@
       "published_sha256": "a707263b3813760659c3db0405d026ed5cf05bfc3b6694b6d3a1d57c9efff729",
       "reason": "Correct frozen alpha package versions and select explicit GitHub artifacts; retain the separately verified immutable PyPI pair. Production code and Python examples are unchanged."
     }
-  ]
+  ],
+  "metadata_refresh": {
+    "schema_version": 1,
+    "baseline_public_commit": "f202f44f0f4d0c5539105c950e7e3646abc9713f",
+    "baseline_runtime_public_commit": "d11ed130feb4ad8e6e990e61bb0bd8a9101cb981",
+    "inherited_private_source_commit": "a805870d971c0d571f6d5dec79e914b91d6479aa",
+    "previous_versions": {
+      "sdk": "0.3.20a1",
+      "charts": "0.3.2a1"
+    },
+    "versions": {
+      "sdk": "0.3.20a2",
+      "charts": "0.3.2a2"
+    },
+    "scope": "Package descriptions, installation documentation and package version metadata; runtime source changes only the two exact __version__ literals.",
+    "runtime_identity_verifier": ".github/checks/verify_metadata_refresh_source.py",
+    "runtime_identity_receipt": "source-identity.json",
+    "baseline_runtime_inventory_sha256": "48685ba004b4a00c971583f1cbfe0d171ca4ce060150d9df783e0c7614fdfe35",
+    "new_full_scientific_gate_claimed": false,
+    "registry_publication": "Requires separate protected publication and exact distribution hash readback.",
+    "changed_files": [
+      {
+        "path": "PUBLIC-SOURCE.md",
+        "baseline_sha256": "fe4dabf4eca7b5cc724ce1ef2951e8c5ab88760b761db378da8fa7be1bc22cb6",
+        "refreshed_sha256": "4725de31cc9dc4585032993c493a26ada598773fd049a69266c0b62a9e3e1ce1",
+        "baseline_bytes": 1967,
+        "refreshed_bytes": 2460
+      },
+      {
+        "path": "PYPI-README.md",
+        "baseline_sha256": "a23ef49293444071d304dbccafc94825533a79458712ac552c7cd3c82f0e67fb",
+        "refreshed_sha256": "ed4d7277ed30810c0f83192b5cf100562457838aff9415043727f98cb773a144",
+        "baseline_bytes": 3637,
+        "refreshed_bytes": 3275
+      },
+      {
+        "path": "README.md",
+        "baseline_sha256": "f53214151110f0c3e32ed4e584c94d73de832f1cedc0b60996df7c7c6fde9693",
+        "refreshed_sha256": "9482751bb850dd4181aed06821414ebd3dbb2681ba3ef34f8151881cea0846e3",
+        "baseline_bytes": 24050,
+        "refreshed_bytes": 24205
+      },
+      {
+        "path": "docs/distribution.md",
+        "baseline_sha256": "c10f876a9bfe95b39be3aaacf2ed99dfcc4246a7c10f434410d29bd8ffce7a47",
+        "refreshed_sha256": "10952417ce30bd3fe44cc55018bd9b29aff678f1eedb46ed17d016b917e44ba1",
+        "baseline_bytes": 6099,
+        "refreshed_bytes": 6430
+      },
+      {
+        "path": "packages/openecon-charts/PYPI-README.md",
+        "baseline_sha256": "a707263b3813760659c3db0405d026ed5cf05bfc3b6694b6d3a1d57c9efff729",
+        "refreshed_sha256": "3d8f3bcc894dd043042bdd58439d870bc02c8ccef091ed8091416e695e705f83",
+        "baseline_bytes": 2831,
+        "refreshed_bytes": 2692
+      },
+      {
+        "path": "packages/openecon-charts/pyproject.toml",
+        "baseline_sha256": "f78bad50758400d5719b85df59878e42609c32f69e49ed4dd4d4658e4179789e",
+        "refreshed_sha256": "8c4c7a8f20c3164f8398226c896e444605a16120282ca7119950a7968a157f48",
+        "baseline_bytes": 787,
+        "refreshed_bytes": 787
+      },
+      {
+        "path": "packages/openecon-charts/src/openecon_charts/__init__.py",
+        "baseline_sha256": "fda11eb18023be875d92ad1a0ee5c1ede3b70c4393180801c2d20124cdd9f9cc",
+        "refreshed_sha256": "a2508a00d8484a21993d2b257ae405b26562cecfb65d79b76334c6a9aed4739d",
+        "baseline_bytes": 358,
+        "refreshed_bytes": 358
+      },
+      {
+        "path": "pyproject.toml",
+        "baseline_sha256": "7c58a3355b16f7581d071be8fbefb56cb06e1afd87d5578cf4a1afed7d343092",
+        "refreshed_sha256": "1ab3213711633d777e90401822363ece51a28dff37622c39be13cab471a348a4",
+        "baseline_bytes": 2670,
+        "refreshed_bytes": 2670
+      },
+      {
+        "path": "src/openecon/__init__.py",
+        "baseline_sha256": "a1f1848e93b83ca0beceef8ef89fa9e497e684b0a7cce43743fdd6273059c0ef",
+        "refreshed_sha256": "501030ba75dea2e87203184eec481e4614c3f07521ef13cdcf038caed1076836",
+        "baseline_bytes": 19171,
+        "refreshed_bytes": 19171
+      },
+      {
+        "path": "uv.lock",
+        "baseline_sha256": "989c86bcd08922637a2ba53745eec17b31905507de5ad3197a417ba5b4cc0db0",
+        "refreshed_sha256": "9d8edbbd8e4e6fabf3da1062cb21acabba9f01fadf4855e99602b88b4dd3bcf4",
+        "baseline_bytes": 423958,
+        "refreshed_bytes": 423958
+      }
+    ],
+    "generated_documents": "PUBLIC-SOURCE.md and SOURCE-MANIFEST.json are generated provenance documents outside the inherited files inventory; PUBLIC-SOURCE.md hashes are recorded above. This manifest does not include a recursive hash of itself."
+  }
 }

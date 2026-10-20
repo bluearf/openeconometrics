@@ -14,8 +14,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  SDK_VERSION: '0.3.20a1'
-  CHARTS_VERSION: '0.3.2a1'
+  SDK_VERSION: '0.3.20a2'
+  CHARTS_VERSION: '0.3.2a2'
 
 jobs:
   build:
@@ -27,6 +27,11 @@ jobs:
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.13'
+      - name: Bind metadata refresh to the published runtime source
+        run: |
+          git fetch --no-tags --depth=1 origin d11ed130feb4ad8e6e990e61bb0bd8a9101cb981
+          python .github/checks/verify_metadata_refresh_source.py --output pair-build/source-identity.json
+          python -m unittest discover -s .github/checks -p test_metadata_refresh_source.py
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '24'
@@ -90,6 +95,11 @@ jobs:
         with:
           name: fixed-sdk-charts-build-${{ github.run_id }}-${{ github.run_attempt }}
           path: pair-build
+      - name: Independently verify the same metadata-only runtime identity
+        run: |
+          git fetch --no-tags --depth=1 origin d11ed130feb4ad8e6e990e61bb0bd8a9101cb981
+          python .github/checks/verify_metadata_refresh_source.py --output "$RUNNER_TEMP/source-identity.json"
+          cmp pair-build/source-identity.json "$RUNNER_TEMP/source-identity.json"
       - name: Verify the same four distributions against source and build execution
         run: |
           python -m pip install 'packaging>=24.2,<27'
@@ -177,6 +187,8 @@ jobs:
           path: |
             pair-build/build-execution.json
             pair-build/package-pair-provenance.json
+            pair-build/source-identity.json
+            ${{ runner.temp }}/source-identity.json
             ${{ runner.temp }}/pair-execution.json
             ${{ runner.temp }}/sdk-*-smoke.json
             ${{ runner.temp }}/charts-*-smoke.json
