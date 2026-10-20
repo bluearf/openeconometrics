@@ -16,6 +16,7 @@ import email
 import hashlib
 import io
 import json
+import os
 from pathlib import Path, PurePosixPath
 import re
 import runpy
@@ -26,6 +27,24 @@ import zipfile
 from packaging.markers import Marker
 from packaging.requirements import Requirement
 from packaging.utils import canonicalize_name
+
+
+# This allowance is specific to the reviewed a1 -> a2 description refresh. Pin
+# both complete files so replacing the version text cannot admit another edit.
+METADATA_REFRESH_BASELINE = "d11ed130feb4ad8e6e990e61bb0bd8a9101cb981"
+METADATA_REFRESH_INVENTORY = "48685ba004b4a00c971583f1cbfe0d171ca4ce060150d9df783e0c7614fdfe35"
+METADATA_REFRESH_VERSIONS = {
+    "packages/openecon-charts/src/openecon_charts/__init__.py": {
+        "before": "0.3.2a1", "after": "0.3.2a2", "bytes": 358,
+        "before_sha256": "fda11eb18023be875d92ad1a0ee5c1ede3b70c4393180801c2d20124cdd9f9cc",
+        "after_sha256": "a2508a00d8484a21993d2b257ae405b26562cecfb65d79b76334c6a9aed4739d",
+    },
+    "src/openecon/__init__.py": {
+        "before": "0.3.20a1", "after": "0.3.20a2", "bytes": 19171,
+        "before_sha256": "a1f1848e93b83ca0beceef8ef89fa9e497e684b0a7cce43743fdd6273059c0ef",
+        "after_sha256": "501030ba75dea2e87203184eec481e4614c3f07521ef13cdcf038caed1076836",
+    },
+}
 
 
 def digest(data: bytes) -> str:
@@ -263,6 +282,119 @@ def check_metadata(files: dict[str, bytes], project: dict, *, wheel: bool) -> di
     return dependency_receipt
 
 
+def check_production_source(
+    manifest: dict, source: dict[str, bytes], sdk_version: str, charts_version: str,
+    source_identity: dict | None = None,
+) -> None:
+    """Retain immutable production sources except the two pinned version files."""
+    allowed = set()
+    if "metadata_refresh" in manifest:
+        refresh = manifest["metadata_refresh"]
+        require(
+            isinstance(refresh, dict)
+            and refresh.get("schema_version") == 1
+            and refresh.get("baseline_public_commit")
+            == "f202f44f0f4d0c5539105c950e7e3646abc9713f"
+            and refresh.get("baseline_runtime_public_commit") == METADATA_REFRESH_BASELINE
+            and refresh.get("inherited_private_source_commit") == manifest["source_commit"]
+            == "a805870d971c0d571f6d5dec79e914b91d6479aa"
+            and refresh.get("previous_versions") == {"sdk": "0.3.20a1", "charts": "0.3.2a1"}
+            and refresh.get("versions") == {"sdk": sdk_version, "charts": charts_version}
+            == {"sdk": "0.3.20a2", "charts": "0.3.2a2"}
+            and refresh.get("baseline_runtime_inventory_sha256") == METADATA_REFRESH_INVENTORY
+            and refresh.get("runtime_identity_verifier")
+            == ".github/checks/verify_metadata_refresh_source.py"
+            and refresh.get("runtime_identity_receipt") == "source-identity.json"
+            and refresh.get("new_full_scientific_gate_claimed") is False,
+            "Metadata refresh identity differs from the pinned a1-to-a2 refresh",
+        )
+        expected_versions = [
+            {"path": path, **{key: version[key] for key in
+                              ("before", "after", "before_sha256", "after_sha256")}}
+            for path, version in sorted(METADATA_REFRESH_VERSIONS.items())
+        ]
+        expected_proof = {
+            "schema_version": 1,
+            "status": "passed_metadata_only_runtime_identity",
+            "baseline_repository": "bluearf/openeconometrics",
+            "baseline_public_commit": METADATA_REFRESH_BASELINE,
+            "scopes": ["src/openecon", "packages/openecon-charts/src/openecon_charts", "web"],
+            "excluded_generated_directories": [
+                "src/openecon/static", "web/node_modules", "web/dist"
+            ],
+            "generated_frontend": "separately bound by verify_public_package_pair.py",
+            "new_full_scientific_gate_claimed": False,
+            "runtime_source_files": 1040,
+            "unchanged_runtime_source_files": 1038,
+            "version_only_files": expected_versions,
+            "baseline_inventory_sha256": METADATA_REFRESH_INVENTORY,
+            "normalized_current_inventory_sha256": METADATA_REFRESH_INVENTORY,
+        }
+        identity_keys = {"public_checkout_commit", "event", "run_id", "run_attempt"}
+        require(
+            isinstance(source_identity, dict)
+            and set(source_identity) == set(expected_proof) | identity_keys
+            and all(source_identity.get(key) == value for key, value in expected_proof.items())
+            and source_identity.get("new_full_scientific_gate_claimed") is False
+            and isinstance(source_identity.get("public_checkout_commit"), str)
+            and bool(re.fullmatch(r"[0-9a-f]{40}", source_identity["public_checkout_commit"])),
+            "Metadata refresh source-identity proof differs or is missing",
+        )
+        ci = {"event": os.environ.get("GITHUB_EVENT_NAME"),
+              "run_id": os.environ.get("GITHUB_RUN_ID"),
+              "run_attempt": os.environ.get("GITHUB_RUN_ATTEMPT")}
+        if any(value is not None for value in ci.values()):
+            require(
+                all(isinstance(value, str) and value for value in ci.values())
+                and all(source_identity.get(key) == value for key, value in ci.items())
+                and source_identity["public_checkout_commit"] == os.environ.get("GITHUB_SHA"),
+                "Metadata refresh proof belongs to a different checkout/run",
+            )
+        else:
+            require(
+                all(source_identity.get(key) is None for key in ci),
+                "Metadata refresh proof has an unbound CI identity",
+            )
+        changed = refresh.get("changed_files", [])
+        require(
+            isinstance(changed, list) and all(isinstance(row, dict) for row in changed)
+            and len({row.get("path") for row in changed}) == len(changed),
+            "Metadata refresh changed-file records are invalid or duplicated",
+        )
+        changes = {row.get("path"): row for row in changed}
+        records = {row["path"]: row for row in manifest["files"]}
+        for path, version in METADATA_REFRESH_VERSIONS.items():
+            row = records.get(path, {})
+            data = source.get(path, b"")
+            new = f'__version__ = "{version["after"]}"'.encode()
+            old = f'__version__ = "{version["before"]}"'.encode()
+            require(
+                data.count(new) == 1 and digest(data) == version["after_sha256"]
+                and digest(data.replace(new, old, 1)) == version["before_sha256"]
+                and len(data) == version["bytes"]
+                and row.get("transformed") is True
+                and row.get("original_sha256") == version["before_sha256"]
+                and row.get("sha256") == version["after_sha256"]
+                and row.get("bytes") == version["bytes"]
+                and changes.get(path) == {
+                    "path": path,
+                    "baseline_sha256": version["before_sha256"],
+                    "refreshed_sha256": version["after_sha256"],
+                    "baseline_bytes": version["bytes"],
+                    "refreshed_bytes": version["bytes"],
+                },
+                f"Metadata refresh version transform differs from pinned bytes: {path}",
+            )
+            allowed.add(path)
+    for row in manifest["files"]:
+        if row["path"].startswith(("src/openecon/", "packages/openecon-charts/src/openecon_charts/")):
+            require(
+                row["path"] in allowed
+                or (not row["transformed"] and row["original_sha256"] == row["sha256"]),
+                f"Production source was transformed: {row['path']}",
+            )
+
+
 def verify(
     root: Path, dist: Path, sdk_version: str, charts_version: str, source_commit: str | None = None
 ) -> dict:
@@ -293,6 +425,14 @@ def verify(
             f"Source inventory bytes differ: {name}",
         )
         source[name] = data
+
+    source_identity = None
+    if "metadata_refresh" in manifest:
+        proof = root / "pair-build/source-identity.json"
+        require(proof.is_file() and not proof.is_symlink(),
+                "Metadata refresh requires a regular pair-build/source-identity.json")
+        source_identity = json.loads(proof.read_bytes())
+    check_production_source(manifest, source, sdk_version, charts_version, source_identity)
 
     definitions = (
         ("openecon", root, sdk_version, "src/openecon/", "openecon/"),
@@ -355,12 +495,6 @@ def verify(
             if path.is_file() and "__pycache__" not in path.parts
         }
         require(disk_paths == set(expected_source), f"Unrecorded production files: {name}")
-        for row in records:
-            if row["path"].startswith(source_prefix):
-                require(
-                    not row["transformed"] and row["original_sha256"] == row["sha256"],
-                    f"Production source was transformed: {row['path']}",
-                )
         expected_wheel = {
             wheel_prefix + path.removeprefix(source_prefix): data
             for path, data in expected_source.items()
