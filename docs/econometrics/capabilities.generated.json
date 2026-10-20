@@ -3431,7 +3431,7 @@
       "pydantic>=2.9,<3",
       "threadpoolctl>=3.5,<4",
       "packaging>=24,<27",
-      "openecon-charts==0.3.2a1"
+      "openecon-charts==0.3.2a2"
     ]
   },
   "estimators": {
@@ -21608,9 +21608,9 @@
   "schema": 1,
   "source_fingerprints": {
     "desktop/src-tauri/tauri.conf.json": "03a3962c9f0d921d20f7fd8737374344057dcd828ba8b78a4a6dc05a0ffc97ef",
-    "packages/openecon-charts/pyproject.toml": "f78bad50758400d5719b85df59878e42609c32f69e49ed4dd4d4658e4179789e",
-    "pyproject.toml": "7c58a3355b16f7581d071be8fbefb56cb06e1afd87d5578cf4a1afed7d343092",
-    "src/openecon/__init__.py": "a1f1848e93b83ca0beceef8ef89fa9e497e684b0a7cce43743fdd6273059c0ef",
+    "packages/openecon-charts/pyproject.toml": "8c4c7a8f20c3164f8398226c896e444605a16120282ca7119950a7968a157f48",
+    "pyproject.toml": "1ab3213711633d777e90401822363ece51a28dff37622c39be13cab471a348a4",
+    "src/openecon/__init__.py": "501030ba75dea2e87203184eec481e4614c3f07521ef13cdcf038caed1076836",
     "src/openecon/analysis_contracts.py": "264c981303f0af6640a97f691ba7c0664381c6460619db3d538ebad3b303b169",
     "src/openecon/dataset.py": "cfc19b714a6807ab33b3e8264cdda2d92e9418bfd909ca9532082fcd1b516616",
     "src/openecon/dataset_prepare.py": "180aca26fddac9276f7706bb539b20c9851dddc9e9c37eef569b8bb26cd76cdb",
@@ -21719,7 +21719,7 @@
     "src/openecon/source_readers.py": "6c90b8870ba76a6a906889f8f2dbd318223f45189332993d59c13cdd1b53a18c",
     "src/openecon/survey.py": "1d03d66d8ca4223f9699d0e57d31ac38bbfb3242c8ac8c245427f925628f85ec"
   },
-  "source_ref": "2cdadc1764c2b210838fefa89978c0917cbed2bd",
+  "source_ref": "35ee0ce87b6d773f9623a26a186bda539dc5322a",
   "stata_parity_validated": false,
   "state_space_paths": {
     "budgets": {
@@ -23519,9 +23519,9 @@
     "weights": false
   },
   "versions": {
-    "charts": "0.3.2a1",
+    "charts": "0.3.2a2",
     "native": "0.3.46",
-    "sdk": "0.3.20a1"
+    "sdk": "0.3.20a2"
   },
   "workspace": {
     "configuration": "OPENECON_WORKSPACE_MB",

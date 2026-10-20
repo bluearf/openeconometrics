@@ -1059,9 +1059,9 @@
     {
       "path": "docs/capabilities.md",
       "bytes": 85992,
-      "sha256": "e9baaaf3c60522d03ddbf66cc8c41692601a2544a9c590cd22ef5edd9f55d05d",
+      "sha256": "e27049ea9a8962bfeae6852070a5acccfc3dd52efccc9b68284fdaff11735afb",
       "original_sha256": "e9baaaf3c60522d03ddbf66cc8c41692601a2544a9c590cd22ef5edd9f55d05d",
-      "transformed": false
+      "transformed": true
     },
     {
       "path": "docs/charts-provenance.md",
@@ -1241,7 +1241,7 @@
     {
       "path": "docs/econometrics/capabilities.generated.json",
       "bytes": 787288,
-      "sha256": "4ee411f7749b4fa5679f0977232e09ed794f91d263c7c2f4c56777143af55b3c",
+      "sha256": "57411e6c97a9548e6ffff7207188696bf2d1766db582fe5caf7ad075c3239fb2",
       "original_sha256": "29ee08eccea512d203521b81fb8046bef9f2e75132e526280dbb2f2e34c14edc",
       "transformed": true
     },
@@ -32528,7 +32528,7 @@
     "tests/fixtures/unitroot_hegy/simulated_critical_values.json",
     "tests/fixtures/unitroot_hegy/uroot_reference.json"
   ],
-  "source_files_sha256": "ae073265beffa83c1342605c5af2284e4d85fcb0eb7ac1e8b40c1d987694861c",
+  "source_files_sha256": "e1400a677c13e27b9e8bcf1b8b2de3fcfe5ef3388fcc05d41b55a233561ada5f",
   "publication_documentation_transforms": [
     {
       "path": "README.md",
@@ -32591,11 +32591,25 @@
         "refreshed_bytes": 24205
       },
       {
+        "path": "docs/capabilities.md",
+        "baseline_sha256": "e9baaaf3c60522d03ddbf66cc8c41692601a2544a9c590cd22ef5edd9f55d05d",
+        "refreshed_sha256": "e27049ea9a8962bfeae6852070a5acccfc3dd52efccc9b68284fdaff11735afb",
+        "baseline_bytes": 85992,
+        "refreshed_bytes": 85992
+      },
+      {
         "path": "docs/distribution.md",
         "baseline_sha256": "c10f876a9bfe95b39be3aaacf2ed99dfcc4246a7c10f434410d29bd8ffce7a47",
         "refreshed_sha256": "10952417ce30bd3fe44cc55018bd9b29aff678f1eedb46ed17d016b917e44ba1",
         "baseline_bytes": 6099,
         "refreshed_bytes": 6430
+      },
+      {
+        "path": "docs/econometrics/capabilities.generated.json",
+        "baseline_sha256": "4ee411f7749b4fa5679f0977232e09ed794f91d263c7c2f4c56777143af55b3c",
+        "refreshed_sha256": "57411e6c97a9548e6ffff7207188696bf2d1766db582fe5caf7ad075c3239fb2",
+        "baseline_bytes": 787288,
+        "refreshed_bytes": 787288
       },
       {
         "path": "packages/openecon-charts/PYPI-README.md",
@@ -32663,6 +32677,16 @@
       {
         "path": "tests/test_public_package_pair_metadata.py",
         "reason": "Add 34 bounded acceptance and adversarial cases for the exact metadata-refresh allowance, proof/manifest tampering and unreviewed production changes."
+      }
+    ],
+    "generated_capability_transforms": [
+      {
+        "path": "docs/capabilities.md",
+        "reason": "Regenerate only the recorded source reference, SDK/charts version labels and exact charts dependency label; retain all method, domain, coverage and validation-boundary text."
+      },
+      {
+        "path": "docs/econometrics/capabilities.generated.json",
+        "reason": "Regenerate only source_ref, SDK/charts version labels, the exact charts dependency label and fingerprints of both pyproject.toml files plus src/openecon/__init__.py; all scientific capability fields remain unchanged."
       }
     ]
   }
