@@ -1,0 +1,59 @@
+{
+  "assets": {
+    "BUILD-EXECUTION.json": {
+      "bytes": 375,
+      "sha256": "451bee88d5e6e72b8624820a0c1ada9e99080e6a4f72f51a016cbf848d214134"
+    },
+    "PACKAGE-PAIR-PROVENANCE.json": {
+      "bytes": 134804,
+      "sha256": "92457fb88adfe14487b67eb4d45aadca8fcaa79af1eb88f96ca79fe2ec601eb1"
+    },
+    "SOURCE-IDENTITY.json": {
+      "bytes": 1606,
+      "sha256": "66e8cf782664a179c68616a8df8b6995c7fcbeaf3d16e1e293e90604b6de45f7"
+    },
+    "linux-package-3.11-evidence.zip": {
+      "bytes": 160254,
+      "sha256": "9f0929a35803b396e68096246046d7854e7dc014218fc835b75f98857c719a11"
+    },
+    "linux-package-3.13-evidence.zip": {
+      "bytes": 160331,
+      "sha256": "633b49994e7db68c980996269cc6af407db323d7e10139c3ac11832b9ac31a87"
+    },
+    "openecon-0.3.20a2-py3-none-any.whl": {
+      "bytes": 7160251,
+      "sha256": "417d3e38ab7d09f6f50f94d517dd3548dbc67a0666d896740ce7f52499ce74ad"
+    },
+    "openecon-0.3.20a2.tar.gz": {
+      "bytes": 42826834,
+      "sha256": "cd073c61639ed5cdd627996db61ceb1c3c40b43597f0a595f7ad595ee56e7d89"
+    },
+    "openecon_charts-0.3.2a2-py3-none-any.whl": {
+      "bytes": 442502,
+      "sha256": "e8b8120192b42cea790b5c257c1cacf9ef89dce8ac19a5c24e5af917b2008f68"
+    },
+    "openecon_charts-0.3.2a2.tar.gz": {
+      "bytes": 481012,
+      "sha256": "00aeae3d1a9593c2fc559526d130ca438031465bd1fcabb3ab609c0b01da3e9d"
+    }
+  },
+  "baseline": {
+    "profile_sha256": "fa8aad41f8c3198ccfaa1ba905c6f4ad4540ef24ed30f41f9392db3cd2275496",
+    "release": "python-v0.3.20a1"
+  },
+  "release": "python-v0.3.20a2",
+  "repository": "bluearf/openeconometrics",
+  "schema_version": 1,
+  "validation": {
+    "api_head_sha": "f2e88e22e6c84cbf927bb97c001384da315f82c9",
+    "event": "pull_request",
+    "run_attempt": 1,
+    "run_id": 39517821987,
+    "tested_checkout_commit": "4ee89eafe17f5ee9b3e0d3f168f67a9ea959f632",
+    "workflow_path": ".github/workflows/python-sdk-patch.yml"
+  },
+  "versions": {
+    "openecon": "0.3.20a2",
+    "openecon-charts": "0.3.2a2"
+  }
+}
