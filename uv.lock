@@ -1353,7 +1353,7 @@ wheels = [
 
 [[package]]
 name = "openecon"
-version = "0.3.20a1"
+version = "0.3.20a2"
 source = { editable = "." }
 dependencies = [
     { name = "openecon-charts" },
@@ -1472,7 +1472,7 @@ dev = [
 
 [[package]]
 name = "openecon-charts"
-version = "0.3.2a1"
+version = "0.3.2a2"
 source = { editable = "packages/openecon-charts" }
 
 [[package]]

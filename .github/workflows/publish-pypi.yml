@@ -26,51 +26,62 @@ jobs:
   verify:
     name: Verify fixed public release distributions
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.13'
-      - name: Download and verify the reviewed immutable fixed pair
+      - name: Authenticate the unchanged historical baseline and scientific evidence
         run: |
           python -m pip install 'packaging>=24.2,<27'
           python .github/checks/verify_reviewed_package_release.py \
             --profile .github/checks/reviewed-package-release.json
+      - name: Verify metadata refresh bytes and fresh package execution
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python -m unittest discover -s .github/checks -p test_metadata_refresh_release.py
+          python .github/checks/verify_metadata_refresh_release.py \
+            --profile .github/checks/reviewed-metadata-refresh.json \
+            --baseline reviewed --directory reviewed-refresh
       - name: Check distribution metadata
         run: |
           python -m pip install 'twine==7.0.0'
-          python -m twine check --strict openecon/dist/* openecon-charts/dist/*
+          python -m twine check --strict reviewed-refresh/openecon/dist/* reviewed-refresh/openecon-charts/dist/*
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: reviewed-openecon-charts
-          path: openecon-charts/dist/*
+          path: reviewed-refresh/openecon-charts/dist/*
           if-no-files-found: error
           retention-days: 7
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: reviewed-openecon
-          path: openecon/dist/*
+          path: reviewed-refresh/openecon/dist/*
           if-no-files-found: error
           retention-days: 7
 
   publish-charts:
-    name: Publish openecon-charts 0.3.2a1
+    name: Publish openecon-charts 0.3.2a2
     needs: verify
     if: github.repository == 'bluearf/openeconometrics' && github.event_name == 'workflow_dispatch' && inputs.publish && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/openecon-charts/0.3.2a1/
+      url: https://pypi.org/project/openecon-charts/0.3.2a2/
     permissions:
       contents: read
       id-token: write
     env:
       PROJECT: openecon-charts
-      VERSION: 0.3.2a1
-      WHEEL: openecon_charts-0.3.2a1-py3-none-any.whl
-      WHEEL_SHA256: 94d629b56040e2b6f4a32bbda6b2fbd3a79af516c0c6ef38ace7e8e5776814fd
-      SDIST: openecon_charts-0.3.2a1.tar.gz
-      SDIST_SHA256: b8f022c22b5108235532b5584cf194e17ee2539c3dd934664f8420ec1b5d981d
+      VERSION: 0.3.2a2
+      WHEEL: openecon_charts-0.3.2a2-py3-none-any.whl
+      WHEEL_SHA256: e8b8120192b42cea790b5c257c1cacf9ef89dce8ac19a5c24e5af917b2008f68
+      SDIST: openecon_charts-0.3.2a2.tar.gz
+      SDIST_SHA256: 00aeae3d1a9593c2fc559526d130ca438031465bd1fcabb3ab609c0b01da3e9d
     steps:
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
         with:
@@ -176,23 +187,23 @@ jobs:
               time.sleep(5)
 
   publish-sdk:
-    name: Publish openecon 0.3.20a1
+    name: Publish openecon 0.3.20a2
     needs: [verify, publish-charts]
     if: github.repository == 'bluearf/openeconometrics' && github.event_name == 'workflow_dispatch' && inputs.publish && inputs.publish_sdk && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
       name: pypi
-      url: https://pypi.org/project/openecon/0.3.20a1/
+      url: https://pypi.org/project/openecon/0.3.20a2/
     permissions:
       contents: read
       id-token: write
     env:
       PROJECT: openecon
-      VERSION: 0.3.20a1
-      WHEEL: openecon-0.3.20a1-py3-none-any.whl
-      WHEEL_SHA256: 9629cd441637ac73129ae31a2ef53cfc0569f90092309ca7a6fe953c4c7ab7b3
-      SDIST: openecon-0.3.20a1.tar.gz
-      SDIST_SHA256: 062817805a59f289a769c9f0b07d973911dd590442c74eb502b7eeaf9f78bb59
+      VERSION: 0.3.20a2
+      WHEEL: openecon-0.3.20a2-py3-none-any.whl
+      WHEEL_SHA256: 417d3e38ab7d09f6f50f94d517dd3548dbc67a0666d896740ce7f52499ce74ad
+      SDIST: openecon-0.3.20a2.tar.gz
+      SDIST_SHA256: cd073c61639ed5cdd627996db61ceb1c3c40b43597f0a595f7ad595ee56e7d89
     steps:
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5
         with:
