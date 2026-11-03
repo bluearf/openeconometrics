@@ -1,0 +1,41 @@
+{
+  "dataset": "Wine Quality",
+  "creators": ["Paulo Cortez", "A. Cerdeira", "F. Almeida", "T. Matos", "J. Reis"],
+  "publisher": "UCI Machine Learning Repository",
+  "dataset_url": "https://archive.ics.uci.edu/dataset/186/wine+quality",
+  "dataset_doi": "10.24432/C56S3T",
+  "licence": "CC-BY-4.0",
+  "licence_name": "Creative Commons Attribution 4.0 International",
+  "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+  "licence_evidence": "The dataset landing page names the licence \"Creative Commons Attribution 4.0 International\" and links its legal code; read on 2026-10-18. The bundled winequality.names asks users to cite Cortez et al. (2009); that is a citation request, not an extra licence condition.",
+  "citation": "Cortez, P., Cerdeira, A., Almeida, F., Matos, T., & Reis, J. (2009). Wine Quality [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C56S3T",
+  "article": "Cortez, P., Cerdeira, A., Almeida, F., Matos, T., & Reis, J. (2009). Modeling wine preferences by data mining from physicochemical properties. Decision Support Systems, 47(4), 547-553. https://doi.org/10.1016/j.dss.2009.05.016",
+  "retrieved": {
+    "date": "2026-10-18",
+    "url": "https://archive.ics.uci.edu/static/public/186/wine+quality.zip",
+    "archive_sha256": "3ed56667f4b828242bd732d7d1dd7f2861e54432239d7fa63877014cbb0304d4",
+    "publisher_version": "UCI record last updated 2023-11-15"
+  },
+  "files": [
+    {
+      "name": "winequality-red.csv",
+      "sha256": "4a402cf041b025d4566d954c3b9ba8635a3a8a01e039005d97d6a710278cf05e",
+      "bytes": 84199,
+      "origin": "Member of the downloaded archive, byte for byte (semicolon-separated)."
+    },
+    {
+      "name": "winequality-white.csv",
+      "sha256": "76c3f809815c17c07212622f776311faeb31e87610d52c26d87d6e361b169836",
+      "bytes": 264426,
+      "origin": "Member of the downloaded archive, byte for byte (semicolon-separated)."
+    },
+    {
+      "name": "winequality.names",
+      "sha256": "15d215e73b39105952380fd487e4ce1bf5a6b83a425abb285c2ec55193d3ca92",
+      "bytes": 3305,
+      "origin": "Member of the downloaded archive, byte for byte (the publishers' description and citation request)."
+    }
+  ],
+  "changes": "None to the vendored files. The lab workbook stacks the red file above the white file, numbers the wines in that order and keeps colour and quality, as stated in its dataset.json filters.",
+  "used_by": ["18-rank-comparisons"]
+}

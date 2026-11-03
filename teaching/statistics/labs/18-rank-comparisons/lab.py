@@ -1,4 +1,4 @@
-"""Comparing Ordinal Customer Ratings: run the whole file after importing the supplied workbook."""
+"""Comparing Ordinal Quality Scores: run the whole file after importing the supplied workbook."""
 
 from __future__ import annotations
 import json
@@ -10,9 +10,13 @@ import torch
 import openecon as oe
 from openecon.models import ResultBundle
 
-DATA_FILE = "customer_ratings.xlsx"
+DATA_FILE = "wine_quality.xlsx"
 LAB = "18-rank-comparisons"
-TITLE = "Comparing Ordinal Customer Ratings"
+TITLE = "Comparing Ordinal Quality Scores"
+DATA_SOURCE = "UCI Wine Quality, Cortez et al. 2009"
+LICENCE = "CC BY 4.0"
+# Column roles; identical to "roles" in the lab's dataset.json.
+ROLES = {"unit": "wine", "group": "colour", "score": "quality", "groups": ["red", "white"]}
 
 
 def load_data(data_path=None):
@@ -140,52 +144,60 @@ def pack(value):
 
 
 def analyze(raw):
-    native = oe.ranksum(raw, "rating", "service", exact=False, missing="raise")
-    a = raw.loc[raw.service == "A", "rating"].tolist()
-    b = raw.loc[raw.service == "B", "rating"].tolist()
-    u = sum((x > y) + 0.5 * (x == y) for x in a for y in b)
-    prob = u / (len(a) * len(b))
-    ranks = raw.rating.rank(method="average")
-    rank_sum = float(ranks[raw.service == "A"].sum())
+    group, score = ROLES["group"], ROLES["score"]
+    first, second = ROLES["groups"]
+    native = oe.ranksum(raw, score, group, exact=False, missing="raise")
+    counts = {
+        name: raw.loc[raw[group] == name, score].value_counts().sort_index() for name in (first, second)
+    }
+    n_a, n_b = (int(counts[name].sum()) for name in (first, second))
+    # Pair comparisons from the count table: exact, without listing every pair.
+    wins = sum(int(ca * cb) for x, ca in counts[first].items() for y, cb in counts[second].items() if x > y)
+    ties = sum(int(ca * cb) for x, ca in counts[first].items() for y, cb in counts[second].items() if x == y)
+    u = wins + 0.5 * ties
+    ranks = raw[score].rank(method="average")
+    rank_sum = float(ranks[raw[group] == first].sum())
     summary = {
-        "n_A": len(a),
-        "n_B": len(b),
-        "U_A": float(native.attrs["u1"]),
-        "rank_sum_A": rank_sum,
-        "probability_A_exceeds_B_with_half_ties": float(native.attrs["porder"]),
+        f"n_{first}": n_a,
+        f"n_{second}": n_b,
+        f"median_{first}": float(raw.loc[raw[group] == first, score].median()),
+        f"median_{second}": float(raw.loc[raw[group] == second, score].median()),
+        f"U_{first}": float(native.attrs["u1"]),
+        f"rank_sum_{first}": rank_sum,
+        f"probability_{first}_exceeds_{second}_with_half_ties": float(native.attrs["porder"]),
         "z_without_continuity_correction": float(native.attrs["z"]),
         "asymptotic_two_sided_p": float(native.attrs["p_value"]),
-        "tied_pair_fraction": sum(x == y for x in a for y in b) / (len(a) * len(b)),
+        "tied_pair_fraction": ties / (n_a * n_b),
     }
     checks = {
-        "native_U_matches_pair_enumeration": abs(float(native.attrs["u1"]) - u) < 1e-12,
-        "rank_sum_identity": abs(rank_sum - len(a) * (len(a) + 1) / 2 - u) < 1e-12,
-        "native_probability_matches_pair_comparison": abs(float(native.attrs["porder"]) - prob)
+        "native_U_matches_pair_count": abs(float(native.attrs["u1"]) - u) < 1e-9,
+        "rank_sum_identity": abs(rank_sum - n_a * (n_a + 1) / 2 - u) < 1e-9,
+        "native_probability_matches_pair_count": abs(float(native.attrs["porder"]) - u / (n_a * n_b))
         < 1e-12,
-        "all_ranks_sum_correctly": abs(float(ranks.sum()) - len(raw) * (len(raw) + 1) / 2) < 1e-12,
+        "all_ranks_sum_correctly": abs(float(ranks.sum()) - len(raw) * (len(raw) + 1) / 2) < 1e-9,
+        "counts_cover_every_wine": n_a + n_b == len(raw),
     }
-    ratings = list(range(1, 8))
-    by_service = {
-        name: raw.loc[raw.service == name, "rating"].value_counts().reindex(ratings, fill_value=0)
-        for name in ("A", "B")
-    }
-    checks["counts_cover_every_customer"] = sum(int(c.sum()) for c in by_service.values()) == len(raw)
+    scores = list(range(int(raw[score].min()), int(raw[score].max()) + 1))
     return (
         summary,
         native,
         [
             {
                 **panel(
-                    ratings,
-                    by_service["A"].tolist(),
+                    scores,
+                    [0.0] * len(scores),
                     kind="bar",
-                    title="Ratings by Service",
-                    xlabel="Rating (ordered 1–7)",
-                    ylabel="Customers",
+                    title="Quality scores by colour",
+                    xlabel="Quality score (ordered)",
+                    ylabel="Share of wines (%)",
                 ),
                 "series": [
-                    {"label": f"Service {name}", "x": ratings, "y": [int(v) for v in counts]}
-                    for name, counts in by_service.items()
+                    {
+                        "label": name.capitalize(),
+                        "x": scores,
+                        "y": [100 * float(v) / int(counts[name].sum()) for v in counts[name].reindex(scores, fill_value=0)],
+                    }
+                    for name in (first, second)
                 ],
             }
         ],
@@ -209,8 +221,10 @@ def run_lab(output_dir=None, display_callback=None, data_path=None):
         "metadata": {
             "lab": LAB,
             "title": TITLE,
-            "synthetic": True,
+            "synthetic": False,
             "data_file": DATA_FILE,
+            "data_source": DATA_SOURCE,
+            "licence": LICENCE,
             "raw_rows": len(raw),
         },
         "summary": clean(summary),
@@ -219,7 +233,7 @@ def run_lab(output_dir=None, display_callback=None, data_path=None):
         "chart_data": {"panels": panels},
         "checks": clean(checks),
     }
-    latex = str(table.to_latex(precision=6, caption=TITLE + " (original synthetic data)"))
+    latex = str(table.to_latex(precision=6, caption=f"{TITLE} ({DATA_SOURCE}; {LICENCE})"))
     if display_callback is not None:
         display_callback(
             oe.DataFrame(pd.concat(native, names=["procedure"]))

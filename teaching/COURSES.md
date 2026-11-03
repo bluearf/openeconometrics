@@ -1,6 +1,6 @@
 # OpenEconometrics teaching courses
 
-These four English courses use original explanations, synthetic observations, equations, complete Python analyses, executed results, figures and exercises. The foundational Econometrics series has 20 chapters; the three additional series each add 20. Student editions exclude teaching notes, exercise answers, original generators and full verification references. Those materials are indexed in each instructor guide.
+These four English courses use original explanations, mostly synthetic observations (five chapters use published open data), equations, complete Python analyses, executed results, figures and exercises. The foundational Econometrics series has 20 chapters; the three additional series each add 20. Student editions exclude teaching notes, exercise answers, data generators and sources, and full verification references. Those materials are indexed in each instructor guide.
 
 | Course | Chapters | Student entry | Instructor entry | Focus |
 |---|---:|---|---|---|
@@ -9,7 +9,7 @@ These four English courses use original explanations, synthetic observations, eq
 | Microeconomics | 20 | [Course](microeconomics/index.md) | [Guide](microeconomics/INSTRUCTORS.md) | Consumer choice, production, markets, strategic interaction and welfare |
 | Advanced Econometrics | 20 | [Course](advanced-econometrics/index.md) | [Guide](advanced-econometrics/INSTRUCTORS.md) | Projection algebra, covariance, panel transformations, IV, likelihood and dynamic responses |
 
-Every additional chapter supplies a descriptively named Excel workbook. Import it without renaming, open the corresponding complete `lab.py` in a new Python document and run the whole file. For ordinary Python, keep the workbook beside the script or select an explicit `data_path`. Students use the stored rows; original generation belongs to instructor preparation. The Statistics sampling/bootstrap chapters resample the supplied population/sample because resampling is the lesson.
+Every additional chapter supplies a descriptively named Excel workbook. Import it without renaming, open the corresponding complete `lab.py` in a new Python document and run the whole file. For ordinary Python, keep the workbook beside the script or select an explicit `data_path`. Students use the stored rows; rebuilding them belongs to instructor preparation. The Statistics sampling/bootstrap chapters resample the supplied population/sample because resampling is the lesson.
 
 Microeconomics chapters 01–19 evaluate stated model scenarios through Python arithmetic and native OpenEconometrics tables and charts. Their workbooks contain feasible plans, schedules or model inputs; they do not pretend to estimate consumer behavior from empirical observations. Chapter 20 fits a synthetic demand regression. Advanced chapters preserve complete fitted models, including full covariance, declared inference and retained sample positions. The exact assumptions and limits are stated in each handout.
 

@@ -4,97 +4,105 @@
 
 ## Start with the supplied workbook
 
-1. Download [customer_events.xlsx](customer_events.xlsx) and the [Python lab](lab.py). The workbook holds the fixed visits used throughout this chapter.
-2. Import `customer_events.xlsx` into OpenEconometrics and keep that file name as the dataset name. The `Data` sheet holds one row per customer visit; the `Dictionary` sheet explains the three columns and their 0/1 coding.
-3. Open the complete `lab.py` in a new Python document and run the whole file. It reads the imported dataset and displays the membership-by-purchase cross-tabulation, a bar chart of the four visit categories and the table of reported probabilities.
+1. Download [shopper_sessions.xlsx](shopper_sessions.xlsx) and the [Python lab](lab.py). The workbook holds the published website sessions used throughout this chapter.
+2. Import `shopper_sessions.xlsx` into OpenEconometrics and keep that file name as the dataset name. The `Data` sheet holds one row per browsing session; the `Dictionary` sheet explains the four columns and their coding and gives the source and licence.
+3. Open the complete `lab.py` in a new Python document and run the whole file. It reads the imported dataset and displays the returning-by-purchase cross-tabulation, a bar chart of the four session categories and the table of reported probabilities.
 
-For ordinary Python, keep `lab.py` and the workbook in the same folder and run the script there, or call `from lab import run_lab` and then `run_lab(data_path="/path/to/customer_events.xlsx")`. If you want to recode or subset the visits, work on a copy of the loaded table so the distributed workbook stays unchanged.
+For ordinary Python, keep `lab.py` and the workbook in the same folder and run the script there, or call `from lab import run_lab` and then `run_lab(data_path="/path/to/shopper_sessions.xlsx")`. If you want to recode or subset the sessions, work on a copy of the loaded table so the distributed workbook stays unchanged.
 
-A loyalty-program manager reads that 62.6% of member visits end in a purchase. A colleague turns this around: "So about 62% of our buyers are members." In this file the second number is 61.8%, which looks like confirmation. It is not. The two fractions count the same visits, members who bought, but divide them by different groups, and they are close here only because of a coincidence in the table's margins.
+An online shop's report says that 77.0% of the sessions ending in a purchase came from returning visitors. A manager concludes: "Returning visitors are our most likely buyers." In this file the opposite holds. Only 13.9% of returning visitors' sessions ended in a purchase, against 24.6% of the other sessions. Both numbers are correct. They count the same sessions, returning visitors who bought, but divide them by different groups, and returning visitors make up such a large share of all sessions that they dominate the buyers even while buying less often.
 
-This lab uses **600 original synthetic customer visits**. Each visit records two yes-or-no facts: whether the customer held a loyalty membership before the visit, and whether the visit ended in a purchase. They are teaching records, not a real shop's transactions, and no cell is blank. The [LaTeX table](table.tex) collects the reported probabilities.
+This lab uses **12,330 browsing sessions** on an online retailer's website, published in the UCI Machine Learning Repository's Online Shoppers Purchasing Intention Dataset. Each session records whether the visitor was classified as returning and whether the session ended in a purchase. No cell is blank. The [LaTeX table](table.tex) collects the reported probabilities.
+
+## Data source and licence
+
+- **Data:** Sakar, C., and Kastro, Y. (2018). *Online Shoppers Purchasing Intention Dataset* [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5F88Q
+- **Article:** Sakar, C. O., Polat, S. O., Katircioglu, M., and Kastro, Y. (2019). Real-time prediction of online shoppers' purchasing intention using multilayer perceptron and LSTM recurrent neural networks. *Neural Computing and Applications*, 31(10), 6893–6908. https://doi.org/10.1007/s00521-018-3523-0
+- **Licence:** Creative Commons Attribution 4.0 International (CC BY 4.0), https://creativecommons.org/licenses/by/4.0/. The workbook is an adapted copy; the changes are listed below.
+- **Preparation:** all 12,330 sessions of the published file are kept in file order, including 125 rows that repeat another row exactly. `session` numbers them, because the source has no session identifier. `VisitorType` keeps the publisher's three labels; `Weekend` and `Revenue` code the publisher's TRUE/FALSE as 1/0. The other 14 columns are left out.
 
 ## 1. Name the unit and the events
 
-Each row of `Data` is one visit. A customer who came back three times appears three times, and the file has no customer identifier to link those rows. Every probability in this lab is therefore a share **of visits**, not of customers.
+Each row of `Data` is one browsing session. The source has no visitor identifier, so a person who came back three times may appear three times. Every probability in this lab is therefore a share **of sessions**, not of people.
 
 | Column | What it records | Coding |
 |---|---|---|
-| `visit_id` | A label from 1 to 600 that distinguishes visits | Identifier |
-| `member` | Whether the customer held a loyalty membership before this visit | 1 = member, 0 = not a member |
-| `purchase` | Whether this visit ended in a purchase | 1 = purchase, 0 = no purchase |
+| `session` | A label from 1 to 12,330 in the publisher's file order | Identifier |
+| `VisitorType` | The retailer's classification of the visitor | `Returning_Visitor`, `New_Visitor` or `Other` |
+| `Weekend` | Whether the session took place on a weekend | 1 = yes, 0 = no |
+| `Revenue` | Whether the session ended in a purchase | 1 = purchase, 0 = no purchase |
 
-Write $M$ for the event "the visit is by a member" and $P$ for "the visit ends in a purchase." The **sample space** is the set of 600 visits, and each event is a subset of it. Because membership is recorded before the visit, the time order is clear: membership comes first, the purchase decision second.
+Write $R$ for the event "the session is by a returning visitor" and $P$ for "the session ends in a purchase." The **sample space** is the set of 12,330 sessions, and each event is a subset of it. Turning `VisitorType` into the event $R$ needs a rule for its third label: 85 sessions are labelled `Other`. The lab counts them as not returning, together with the 1,694 `New_Visitor` sessions, and Exercise 1 checks how much that choice matters.
 
 ## 2. Count the four cells
 
-Two yes-or-no events split every visit into exactly one of four cells. The cross-tabulation counts them:
+Two yes-or-no events split every session into exactly one of four cells. The cross-tabulation counts them:
 
 | | Purchase | No purchase | Total |
 |---|---:|---:|---:|
-| Member | 147 | 88 | 235 |
-| Not a member | 91 | 274 | 365 |
-| Total | 238 | 362 | 600 |
+| Returning visitor | 1,470 | 9,081 | 10,551 |
+| New or other visitor | 438 | 1,341 | 1,779 |
+| Total | 1,908 | 10,422 | 12,330 |
 
-The cells are mutually exclusive and together cover every visit: $147+88+91+274=600$. The row totals give the number of member and non-member visits, and the column totals the number of visits with and without a purchase.
+The cells are mutually exclusive and together cover every session: $1{,}470+9{,}081+438+1{,}341=12{,}330$. The row totals give the number of returning and other sessions, and the column totals the number of sessions with and without a purchase.
 
-A **joint probability** divides one cell by all visits. The share of visits that are by a member *and* end in a purchase is
+A **joint probability** divides one cell by all sessions. The share of sessions that are by a returning visitor *and* end in a purchase is
 
 $$
-P(M\cap P)=\frac{147}{600}=0.245 .
+P(R\cap P)=\frac{1{,}470}{12{,}330}=0.119 .
 $$
 
-A **marginal probability** divides a row or column total by all visits: $P(M)=235/600=0.392$ and $P(P)=238/600=0.397$. Each describes one event while ignoring the other.
+A **marginal probability** divides a row or column total by all sessions: $P(R)=10{,}551/12{,}330=0.856$ and $P(P)=1{,}908/12{,}330=0.155$. Each describes one event while ignoring the other.
 
 ## 3. Change the denominator to condition
 
-A **conditional probability** restricts attention to the visits where one event happened and asks how often the other happened among them:
+A **conditional probability** restricts attention to the sessions where one event happened and asks how often the other happened among them:
 
 $$
-P(P\mid M)=\frac{P(M\cap P)}{P(M)}=\frac{\text{visits with both}}{\text{member visits}}.
+P(P\mid R)=\frac{P(R\cap P)}{P(R)}=\frac{\text{sessions with both}}{\text{returning sessions}}.
 $$
 
-Read the vertical bar as "among." $P(P\mid M)$ is "the share of purchases among member visits." In counts it is $147/235=0.626$. The condition, $M$, decides the denominator.
+Read the vertical bar as "among." $P(P\mid R)$ is "the share of purchases among returning visitors' sessions." In counts it is $1{,}470/10{,}551=0.139$. The condition, $R$, decides the denominator.
 
 Reversing the condition keeps the numerator and changes the denominator:
 
 $$
-P(M\mid P)=\frac{P(M\cap P)}{P(P)}=\frac{147}{238}=0.618 .
+P(R\mid P)=\frac{P(R\cap P)}{P(P)}=\frac{1{,}470}{1{,}908}=0.770 .
 $$
 
-This is "the share of members among purchase visits." Both fractions start from the same 147 visits. The first divides by the 235 member visits, the second by the 238 purchase visits. They answer different questions: the first is about how members behave, the second about who the buyers are.
+This is "the share of returning visitors among purchase sessions." Both fractions start from the same 1,470 sessions. The first divides by the 10,551 returning sessions, the second by the 1,908 purchase sessions. They answer different questions: the first is about how returning visitors behave, the second about who the buyers are.
 
-**Pause before running.** For each probability in the reported table, name its denominator, as a count of visits, before you open the output.
+**Pause before running.** For each probability in the reported table, name its denominator, as a count of sessions, before you open the output.
 
-## 4. Why the two conditionals are close here
+## 4. Why the two conditionals are so far apart
 
 Multiplying each definition by its denominator gives the **multiplication rule**, which can be written two ways:
 
 $$
-P(M\cap P)=P(P\mid M)\,P(M)=P(M\mid P)\,P(P).
+P(R\cap P)=P(P\mid R)\,P(R)=P(R\mid P)\,P(P).
 $$
 
 Dividing one form by the other shows how the reversed conditionals are related:
 
 $$
-\frac{P(M\mid P)}{P(P\mid M)}=\frac{P(M)}{P(P)}=\frac{235}{238}=0.987 .
+\frac{P(R\mid P)}{P(P\mid R)}=\frac{P(R)}{P(P)}=\frac{10{,}551}{1{,}908}=5.53 .
 $$
 
-The two conditional probabilities differ by exactly the ratio of the two marginal probabilities. Here membership and purchase happen to be almost equally common, 235 and 238 visits, so the ratio is close to one and the two conditionals are close. That is a property of these margins, not a law. In a shop where members made only a small share of visits but bought often, the share of purchases among members could be high while the share of members among buyers stayed low. Rearranging the same identity to compute $P(M\mid P)$ from $P(P\mid M)$ is Bayes' rule, the subject of Lab 05.
+The two conditional probabilities differ by exactly the ratio of the two marginal probabilities. Returning sessions are 5.5 times as common as purchase sessions, so the share of returning visitors among buyers is 5.5 times the share of buyers among returning visitors. Nothing about the buyers' behaviour is needed to explain the gap; the margins alone produce it. Rearranging the same identity to compute $P(R\mid P)$ from $P(P\mid R)$ is Bayes' rule, the subject of Lab 05.
 
 ## 5. Compare with independence
 
-Two events are **independent** when knowing one does not change the probability of the other: $P(P\mid M)=P(P)$. Substituting into the multiplication rule gives the equivalent product form
+Two events are **independent** when knowing one does not change the probability of the other: $P(P\mid R)=P(P)$. Substituting into the multiplication rule gives the equivalent product form
 
 $$
-P(M\cap P)=P(M)\,P(P).
+P(R\cap P)=P(R)\,P(P).
 $$
 
-Independence is a claim about how two events are related, not an identity that always holds. Check it against the table. The product of the marginals is $(235/600)\times(238/600)=0.155$, while the observed joint probability is 0.245. The gap, 0.090, is large: members bought on 62.6% of their visits, compared with 39.7% of all visits.
+Independence is a claim about how two events are related, not an identity that always holds. Check it against the table. The product of the marginals is $0.856\times0.155=0.132$, while the observed joint probability is 0.119. The gap is $-0.013$: returning visitors' sessions end in a purchase *less* often (13.9%) than sessions overall (15.5%), and much less often than the other sessions (24.6%).
 
-The same comparison works in counts. If the events were independent, the member-and-purchase cell would be expected to hold $600\times(235/600)\times(238/600)=235\times238/600=93.2$ visits. The observed count is 147. The cross-tabulation output includes this expected table for all four cells.
+The same comparison works in counts. If the events were independent, the returning-and-purchase cell would be expected to hold $10{,}551\times1{,}908/12{,}330=1{,}632.7$ sessions. The observed count is 1,470, about 163 fewer. The cross-tabulation output includes this expected table for all four cells.
 
-With sampled data, exact equality would not be expected even for independent events, because counts vary by chance. Deciding whether a gap of this size could plausibly be chance needs a test, which the lab's output also prints but which belongs to Lab 16. Here the gap is a descriptive fact about these 600 visits.
+With sampled data, exact equality would not be expected even for independent events, because counts vary by chance. Deciding whether a gap of this size could plausibly be chance needs a test, which the lab's output also prints but which belongs to Lab 16. Here the gap is a descriptive fact about these 12,330 sessions.
 
 ## 6. Run the cross-tabulation
 
@@ -104,84 +112,88 @@ After running `lab.py`, the table step is:
 import openecon as oe
 
 raw = load_data()  # reader defined in the complete lab.py
-table = oe.crosstab(raw, "member", "purchase", expected=True, exact=False)
+sessions = raw.assign(returning=(raw.VisitorType == "Returning_Visitor").astype(int))
+table = oe.crosstab(sessions, "returning", "Revenue", expected=True, exact=False)
 display(table)
 ```
 
-The output holds several tables. The `counts` table is the four-cell table in Section 2, with the rows labeled by `member` (0, 1) and the columns by `purchase` (0, 1), plus totals. The `expected` table gives the counts implied by independence. The test, measure and risk tables summarize the strength and significance of the association; set them aside until Lab 16.
+The output holds several tables. The `counts` table is the four-cell table in Section 2, with the rows labelled by `returning` (0, 1) and the columns by `Revenue` (0, 1), plus totals. The `expected` table gives the counts implied by independence. The test, measure and risk tables summarize the strength and significance of the association; set them aside until Lab 16.
 
 The probabilities can be computed directly from two true/false masks:
 
 ```python
-member = raw.member == 1
-bought = raw.purchase == 1
-visits = len(raw)
-both = (member & bought).sum()
+returning = raw.VisitorType == "Returning_Visitor"
+bought = raw.Revenue == 1
+total = len(raw)
+both = (returning & bought).sum()
 probabilities = {
-    "P(M)": member.mean(),
+    "P(R)": returning.mean(),
     "P(P)": bought.mean(),
-    "P(M and P)": both / visits,
-    "P(P | M)": both / member.sum(),
-    "P(M | P)": both / bought.sum(),
-    "P(M) P(P)": member.mean() * bought.mean(),
+    "P(R and P)": both / total,
+    "P(P | R)": both / returning.sum(),
+    "P(R | P)": both / bought.sum(),
+    "P(P | not R)": (~returning & bought).sum() / (~returning).sum(),
+    "P(R) P(P)": returning.mean() * bought.mean(),
 }
-probabilities["difference"] = probabilities["P(M and P)"] - probabilities["P(M) P(P)"]
+probabilities["difference"] = probabilities["P(R and P)"] - probabilities["P(R) P(P)"]
 print({name: round(float(value), 3) for name, value in probabilities.items()})
 ```
 
 | Quantity | What it means | Denominator | Value |
 |---|---|---:|---:|
-| $P(M)$ | Share of visits by members | 600 visits | 0.392 |
-| $P(P)$ | Share of visits ending in a purchase | 600 visits | 0.397 |
-| $P(M\cap P)$ | Share of visits by members that end in a purchase | 600 visits | 0.245 |
-| $P(P\mid M)$ | Share of member visits that end in a purchase | 235 member visits | 0.626 |
-| $P(M\mid P)$ | Share of purchase visits made by members | 238 purchase visits | 0.618 |
-| $P(M)P(P)$ | Joint share expected under independence | — | 0.155 |
-| Difference | Observed joint share minus independence product | — | 0.090 |
+| $P(R)$ | Share of sessions by returning visitors | 12,330 sessions | 0.856 |
+| $P(P)$ | Share of sessions ending in a purchase | 12,330 sessions | 0.155 |
+| $P(R\cap P)$ | Share of sessions by returning visitors that end in a purchase | 12,330 sessions | 0.119 |
+| $P(P\mid R)$ | Share of returning visitors' sessions that end in a purchase | 10,551 returning sessions | 0.139 |
+| $P(R\mid P)$ | Share of purchase sessions by returning visitors | 1,908 purchase sessions | 0.770 |
+| $P(P\mid \neg R)$ | Share of other sessions that end in a purchase | 1,779 other sessions | 0.246 |
+| $P(R)P(P)$ | Joint share expected under independence | — | 0.132 |
+| Difference | Observed joint share minus independence product | — | −0.013 |
 
-Always read the denominator column first. Three rows divide by all visits, two divide by a subgroup, and the last two rows are comparisons rather than shares of any group.
+Always read the denominator column first. Three rows divide by all sessions, three divide by a subgroup, and the last two rows are comparisons rather than shares of any group.
 
 ## 7. Read the bar chart
 
-![Visits in each of the four membership and purchase categories](figure.svg)
+![Left: sessions in each of the four visitor-type and purchase categories. Right: the two conditional probabilities that share the numerator 1,470](figure.svg)
 
-The chart has one bar per cell of the table: members who purchased (147), members who did not (88), non-members who purchased (91) and non-members who did not (274). The chart labels non-members as "Other." The four bars add up to 600, so each bar height divided by 600 is a joint probability.
+The figure has two panels; in the app only the first appears. The left panel, "Sessions by visitor type and purchase," has one bar per cell of the table: returning visitors who bought (1,470), returning visitors who did not (9,081), new or other visitors who bought (438) and new or other visitors who did not (1,341). The four bars add up to 12,330, so each bar height divided by 12,330 is a joint probability.
 
-No single bar is a conditional probability. To read one, choose its denominator by adding two bars. For purchases among members, add the two member bars (147 + 88 = 235) and compare the first with that total. For members among purchasers, add the two purchase bars (147 + 91 = 238) instead. The tallest bar, non-members who did not buy, shows that the most common visit is neither a member's nor a purchase.
+No single bar is a conditional probability. To read one, choose its denominator by adding two bars. For purchases among returning sessions, add the two returning bars (1,470 + 9,081 = 10,551) and compare the first with that total. For returning visitors among purchases, add the two purchase bars (1,470 + 438 = 1,908) instead. The tallest bar, returning visitors who did not buy, is the most common kind of session by far.
+
+The right panel, "Same numerator, two denominators," draws the two conditionals of Section 3 side by side: $P(\text{buy}\mid\text{returning})=0.139$ and $P(\text{returning}\mid\text{buy})=0.770$. Both bars come from the same 1,470 sessions.
 
 ## A case from the literature
 
-Section 8 warns that a higher purchase share among member visits need not mean that membership causes purchases. Liu (2007) examined the long-term impact of a loyalty program using longitudinal data from a convenience store franchise. Consumers who were already heavy buyers when the program began were the most likely to claim the rewards they qualified for, yet the program did not prompt them to change their purchase behavior. Consumers whose initial patronage was low or moderate, by contrast, gradually bought more and became more loyal to the firm. A comparison that ignored where customers started would mix these groups. Leenheer et al. (2007), as their title states, ask whether loyalty programs enhance behavioral loyalty while accounting for members who select themselves into the program.
+Reading the wrong conditional is a recognized hazard well beyond retail. Thompson and Schumann (1987) asked undergraduates to judge the probable guilt of a suspect from written descriptions of evidence that included the incidence rate of a matching characteristic. Presenting that rate as a conditional probability promoted errors favouring the prosecution, and a majority of participants failed to detect the error in one or both of two fallacious arguments. The prosecutor's fallacy is the confusion of Section 3: treating the probability of the evidence given innocence as if it were the probability of innocence given the evidence.
 
-Reading the wrong conditional is a recognized hazard well beyond retail. Thompson and Schumann (1987) asked undergraduates to judge the probable guilt of a suspect from written descriptions of evidence that included the incidence rate of a matching characteristic. Presenting that rate as a conditional probability promoted errors favoring the prosecution, and a majority of participants failed to detect the error in one or both of two fallacious arguments.
+The sessions in this file were collected for a different purpose. Sakar et al. (2019) used them to predict, while a visit is still under way, whether it will end in a purchase. A prediction of that kind is a conditional probability of a purchase given the session's features, $P(P\mid\text{features})$. It is not the share of buyers who have those features, which is the reverse conditional and is dominated by how common each kind of session is.
 
-The lab's 600 visits are synthetic and carry no customer identifier, so they cannot separate who joins from what membership does. These studies show why that separation needs a design and a careful statement of each denominator, not a cross-tabulation alone.
+The two errors share a structure. A number that is large because its denominator group is large ("77% of buyers are returning visitors") is read as if it described the behaviour of that group. Writing out the numerator and the denominator, as Sections 3 and 4 do, is the protection.
 
 ## 8. Decide what the table supports
 
-The table shows an association in these 600 synthetic visits: purchases are more common among member visits than among visits overall. It does not show that membership causes purchases. Customers choose whether to join, and those who join may already be frequent or keen buyers. Membership is recorded before the visit, which settles the time order, but time order alone does not rule out such selection. Estimating the effect of membership would need, for example, a randomized membership offer with a defined follow-up.
+The table shows an association in these 12,330 sessions: returning visitors' sessions end in a purchase less often than other sessions. It does not show that being a returning visitor lowers the chance of buying. Returning visitors may come back to compare prices or check an order, while a new visitor may arrive from an advertisement for a specific product; the file does not record why anyone visited. The visitor type is also the retailer's own classification, and the `Other` label is not explained in the source.
 
-The shares are also weighted by visits. A customer who visits often counts more than one who visits once, and frequent visitors may be both more likely to be members and more likely to buy. A customer-level probability would need a customer identifier, which this file does not have.
+The shares are weighted by sessions. A visitor who comes back often counts many times, and frequent visitors may be both more likely to be classed as returning and less likely to buy on any one visit. A person-level probability would need a visitor identifier, which this file does not have.
 
-Finally, these are descriptive fractions for one fixed file. They carry no statement of sampling uncertainty and make no claim about any real loyalty program.
+Finally, these are descriptive fractions for one fixed file from one retailer. They carry no statement of sampling uncertainty and make no claim about online shopping in general.
 
 ## 9. Write the probability statement in full
 
-A complete statement for the worked example reads: "Of 600 synthetic customer visits, 235 were by loyalty members and 238 ended in a purchase. Among member visits, 62.6% ended in a purchase (147 of 235). Among purchase visits, 61.8% were by members (147 of 238). The two shares are close only because member and purchase visits are almost equally common. The joint share of member purchases, 0.245, is well above the 0.155 expected if membership and purchase were independent; this is an association, not a causal effect of membership."
+A complete statement for the worked example reads: "Of 12,330 browsing sessions on one retailer's website, 10,551 were by returning visitors and 1,908 ended in a purchase. Among returning visitors' sessions, 13.9% ended in a purchase (1,470 of 10,551), compared with 24.6% of other sessions (438 of 1,779). Among purchase sessions, 77.0% were by returning visitors (1,470 of 1,908). That share is high because returning visitors account for 85.6% of all sessions, not because they buy more often. The unit is the session, not the visitor."
 
 Each probability is stated with its numerator and denominator, so a reader cannot mistake one conditional for the other.
 
 ## Student exercises
 
-1. Compute the share of non-member visits that end in a purchase. Compare it with the share among member visits by their difference and their ratio, and say which group each denominator counts.
-2. Compute $P(M\mid \text{no purchase})$ and $P(\text{no purchase}\mid M)$. Use the identity in Section 4 to explain why these two reversed conditionals are much further apart than $P(P\mid M)$ and $P(M\mid P)$.
-3. Compute by hand the expected counts under independence for the other three cells. Check that the four expected counts have the same row and column totals as the observed table, and relate the member-and-purchase gap in counts (observed minus expected) to the difference of 0.090.
-4. Suppose a customer identifier were added and showed that a few frequent visitors account for many member visits. Explain how a customer-weighted share of members who ever purchase would be computed, and why it could differ from 0.626.
-5. Would this table justify offering free membership to raise purchases? Explain why or why not, and outline a study that could answer that question.
-6. Rewrite "62% of members buy, so 62% of buyers are members" so that each probability states its numerator and denominator, and explain in one sentence why the reasoning in the original is wrong even though both numbers are close to 62%.
+1. Compute the share of sessions ending in a purchase separately for `New_Visitor` and `Other`, and compare each with the returning visitors' 0.139 by difference and ratio. Then recode the 85 `Other` sessions as returning and recompute $P(P\mid R)$ and $P(R\mid P)$. Does the choice change the conclusion?
+2. Compute $P(R\mid \text{no purchase})$ and $P(\text{no purchase}\mid R)$. Use the identity in Section 4 to explain why these two reversed conditionals are close, while $P(P\mid R)$ and $P(R\mid P)$ are far apart.
+3. Compute by hand the expected counts under independence for the other three cells. Check that the four expected counts have the same row and column totals as the observed table, and relate the returning-and-purchase gap in counts (observed minus expected) to the difference of −0.013.
+4. Use `Weekend` as the first event instead of visitor type. Compute $P(P\mid\text{weekend})$, $P(\text{weekend}\mid P)$ and $P(\text{weekend})$, and say in one sentence each what the three numbers describe.
+5. Suppose a visitor identifier were added and showed that a few very frequent visitors account for many returning sessions without buying. Explain how a visitor-weighted purchase share would be computed and why it could differ from 0.139.
+6. Rewrite "77% of our buyers are returning visitors, so returning visitors are our most likely buyers" so that each probability states its numerator and denominator, and explain in one sentence why the conclusion does not follow.
 
 ## Further reading
 
-- Leenheer, J., van Heerde, H. J., Bijmolt, T. H. A., and Smidts, A. (2007). Do loyalty programs really enhance behavioral loyalty? An empirical analysis accounting for self-selecting members. *International Journal of Research in Marketing*, 24(1), 31–47. https://doi.org/10.1016/j.ijresmar.2006.10.005
-- Liu, Y. (2007). The long-term impact of loyalty programs on consumer purchase behavior and loyalty. *Journal of Marketing*, 71(4), 19–35. https://doi.org/10.1509/jmkg.71.4.019
+- Sakar, C. O., Polat, S. O., Katircioglu, M., and Kastro, Y. (2019). Real-time prediction of online shoppers' purchasing intention using multilayer perceptron and LSTM recurrent neural networks. *Neural Computing and Applications*, 31(10), 6893–6908. https://doi.org/10.1007/s00521-018-3523-0
 - Thompson, W. C., and Schumann, E. L. (1987). Interpretation of statistical evidence in criminal trials: The prosecutor's fallacy and the defense attorney's fallacy. *Law and Human Behavior*, 11(3), 167–187. https://doi.org/10.1007/BF01044641

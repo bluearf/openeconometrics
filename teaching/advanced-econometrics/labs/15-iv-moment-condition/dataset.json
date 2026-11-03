@@ -1,39 +1,93 @@
 {
-  "filename": "iv_moment_condition.xlsx",
-  "description": "Instrumental Variables and the Projection Formula; original synthetic teaching data.",
-  "observation_unit": "One synthetic independent unit; dependence is stated explicitly where groups are supplied.",
-  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
-  "generation_seed": 730015,
+  "filename": "maimonides_classes.xlsx",
+  "description": "Instrumental Variables and the Projection Formula; published open data from Angrist and Lavy's (1999) replication deposit.",
+  "observation_unit": "One fifth-grade class in an Israeli Jewish public school, tested in June 1991; scores are class averages. Classes are nested in schools (schlcode).",
+  "source": "Published open data: Angrist and Lavy, replication data for Using Maimonides' Rule to Estimate the Effect of Class Size on Student Achievement, Harvard Dataverse; CC0 1.0.",
+  "publisher": "Harvard Dataverse",
+  "dataset_url": "https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/XRSUJU",
+  "dataset_doi": "10.7910/DVN/XRSUJU",
+  "licence": "CC0-1.0",
+  "licence_name": "CC0 1.0 Universal",
+  "licence_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "citation": {
+    "dataset": "Angrist, J. D., & Lavy, V. (2009). Replication data for: Using Maimonides' Rule to Estimate the Effect of Class Size on Student Achievement (Version 1.0) [Dataset]. Harvard Dataverse. https://doi.org/10.7910/DVN/XRSUJU",
+    "article": "Angrist, J. D., & Lavy, V. (1999). Using Maimonides' rule to estimate the effect of class size on scholastic achievement. Quarterly Journal of Economics, 114(2), 533-575. https://doi.org/10.1162/003355399556061"
+  },
+  "retrieved": {
+    "date": "2026-10-18",
+    "version": "Dataverse version 1.0, released 2009-01-21; final5 in its original Stata format, whose MD5 equals the Dataverse record."
+  },
+  "raw_source": "instructors/sources/angrist-lavy-1999",
+  "raw_sha256": {
+    "final5.dta": "bf443edee9033926b4e74dc2c17a98b04405b899735bf4c372e0e6d468431a54",
+    "AngristLavy_Table4.do": "ebdd331196a4aad50d5cb65a51949151daee2c155f17768f498baf72827baae8"
+  },
+  "filters": [
+    "final5.dta is prepared as in the depositors' AngristLavy_Table4.do, in its order: 100 is subtracted from avgverb and avgmath where they exceed 100, and a class's avgverb (avgmath) is set to missing when no pupil took the reading (math) test.",
+    "Kept: classes with 2 to 44 pupils (1 < classize < 45) in schools with more than five fifth graders (c_size > 5), with c_leom = 1 and c_pik < 3, and with a reading score. This leaves 2,019 classes in 1,002 schools.",
+    "func1 = c_size / (int((c_size - 1) / 40) + 1), Maimonides' predicted class size, defined as in the do-file.",
+    "Scores stored as single-precision numbers are written as the shortest decimals that reproduce them (74.11 rather than 74.1100006).",
+    "schlcode, classid, c_size, tipuach, classize, func1, avgverb and avgmath are kept in the depositors' row order; the other columns are left out."
+  ],
+  "roles": {
+    "y": "avgverb",
+    "x": "classize",
+    "z": "func1",
+    "controls": [
+      "tipuach",
+      "c_size"
+    ],
+    "enrolment": "c_size",
+    "cluster": "schlcode"
+  },
   "columns": [
     {
-      "name": "row_id",
-      "description": "Stable record identifier",
+      "name": "schlcode",
+      "description": "School code; classes in the same school share it",
       "unit": "integer ID",
       "missing": 0
     },
     {
-      "name": "x",
-      "description": "Endogenous exposure",
-      "unit": "units",
+      "name": "classid",
+      "description": "Class number within the school",
+      "unit": "integer ID",
       "missing": 0
     },
     {
-      "name": "z",
-      "description": "Excluded instrument",
-      "unit": "units",
+      "name": "c_size",
+      "description": "September fifth-grade enrolment in the school",
+      "unit": "pupils",
       "missing": 0
     },
     {
-      "name": "control",
-      "description": "Exogenous control",
-      "unit": "units",
+      "name": "tipuach",
+      "description": "Percent disadvantaged: share of the school's pupils from disadvantaged backgrounds",
+      "unit": "percent",
       "missing": 0
     },
     {
-      "name": "y",
-      "description": "Outcome",
-      "unit": "outcome units",
+      "name": "classize",
+      "description": "Class size: pupils in the class in the spring",
+      "unit": "pupils",
       "missing": 0
+    },
+    {
+      "name": "func1",
+      "description": "Maimonides' predicted class size from enrolment (the excluded instrument)",
+      "unit": "pupils",
+      "missing": 0
+    },
+    {
+      "name": "avgverb",
+      "description": "Class average composite reading score",
+      "unit": "score points (scale 1-100)",
+      "missing": 0
+    },
+    {
+      "name": "avgmath",
+      "description": "Class average composite math score",
+      "unit": "score points (scale 1-100)",
+      "missing": 1
     }
   ]
 }

@@ -1,6 +1,6 @@
 # Advanced Econometrics with OpenEconometrics
 
-Twenty English labs each isolate one idea from applied econometrics, such as an algebraic identity, a covariance choice or an identification argument, and check it on a fixed synthetic dataset where the answer is known. A handout derives the result, runs the complete analysis, reads a chart of the lab's concept, connects it to a published study and ends with exercises. Each lab supplies a descriptively named Excel workbook with original synthetic observations and a variable dictionary.
+Twenty English labs each isolate one idea from applied econometrics, such as an algebraic identity, a covariance choice or an identification argument, and check it on a fixed dataset: a synthetic one where the answer is known or, in Lab 15, published replication data. A handout derives the result, runs the complete analysis, reads a chart of the lab's concept, connects it to a published study and ends with exercises. Each lab supplies a descriptively named Excel workbook and a variable dictionary.
 
 ## Chapters
 
@@ -20,7 +20,7 @@ Twenty English labs each isolate one idea from applied econometrics, such as an 
 | 12 | [Centering a Polynomial without Changing Its Fit](labs/12-polynomial-centering/index.md) | [Excel](labs/12-polynomial-centering/polynomial_centering.xlsx) | [Python](labs/12-polynomial-centering/lab.py) |
 | 13 | [Fixed Effects as Dummies and Within Variation](labs/13-fixed-effects-algebra/index.md) | [Excel](labs/13-fixed-effects-algebra/fixed_effects_algebra.xlsx) | [Python](labs/13-fixed-effects-algebra/lab.py) |
 | 14 | [First Differences and Their Error Structure](labs/14-first-differences/index.md) | [Excel](labs/14-first-differences/first_differences.xlsx) | [Python](labs/14-first-differences/lab.py) |
-| 15 | [Instrumental Variables and the Projection Formula](labs/15-iv-moment-condition/index.md) | [Excel](labs/15-iv-moment-condition/iv_moment_condition.xlsx) | [Python](labs/15-iv-moment-condition/lab.py) |
+| 15 | [Instrumental Variables and the Projection Formula](labs/15-iv-moment-condition/index.md) | [Excel](labs/15-iv-moment-condition/maimonides_classes.xlsx) | [Python](labs/15-iv-moment-condition/lab.py) |
 | 16 | [Weak Relevance and IV Sensitivity](labs/16-weak-instruments/index.md) | [Excel](labs/16-weak-instruments/weak_instruments.xlsx) | [Python](labs/16-weak-instruments/lab.py) |
 | 17 | [Logit Probabilities, Odds and Marginal Effects](labs/17-logit-marginal-effects/index.md) | [Excel](labs/17-logit-marginal-effects/logit_marginal_effects.xlsx) | [Python](labs/17-logit-marginal-effects/lab.py) |
 | 18 | [Poisson Rates with an Exposure Offset](labs/18-poisson-exposure/index.md) | [Excel](labs/18-poisson-exposure/poisson_exposure.xlsx) | [Python](labs/18-poisson-exposure/lab.py) |
@@ -31,6 +31,6 @@ Twenty English labs each isolate one idea from applied econometrics, such as an 
 
 Import the named workbook into OpenEconometrics without renaming it. Open the complete Python file in an empty Python document and run the whole file. The script loads the most recent import with that filename or stem. For ordinary Python, keep the workbook beside its script. An explicit `run_lab(data_path="/path/to/workbook.xlsx")` selects another location. Default execution displays results without writing exports.
 
-Read the handout on GitHub or in the separate offline student edition. Students receive explanations, worked analyses and unanswered exercises. Teaching notes, exercise solutions, original data mechanisms and numerical evidence are indexed separately in [the instructor guide](INSTRUCTORS.md) and excluded from the student archive.
+Read the handout on GitHub or in the separate offline student edition. Students receive explanations, worked analyses and unanswered exercises. Teaching notes, exercise solutions, data generators and sources, and numerical evidence are indexed separately in [the instructor guide](INSTRUCTORS.md) and excluded from the student archive.
 
-All observations, explanations and exercises are original synthetic teaching material under the repository's Apache-2.0 license. Results describe the supplied simulations. Each handout cites peer-reviewed journal articles, verified by DOI, for its method and for a published case; no textbook text, exercises or datasets are reproduced.
+The explanations and exercises are original teaching material under the repository's Apache-2.0 license, as are the synthetic observations of most labs; results in those labs describe the supplied simulations. Lab 15 uses Angrist and Lavy's published replication data (CC0 1.0), with the citation in its Data source and licence section, in its workbook's Dictionary sheet and in the README beside the vendored files under `instructors/sources/`. Each handout cites peer-reviewed journal articles, verified by DOI, for its method and for a published case; no textbook text, exercises or datasets are reproduced.

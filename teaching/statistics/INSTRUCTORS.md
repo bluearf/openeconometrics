@@ -10,7 +10,7 @@ Distribute the separate student edition to the class. This guide and the chapter
 | 02 | [Which Average Answers the Question?](instructors/02-center.md) |
 | 03 | [How Variable Are Delivery Times?](instructors/03-spread.md) |
 | 04 | [Which Denominator Belongs in a Probability?](instructors/04-conditional-probability.md) |
-| 05 | [What Does a Quality Alert Tell Us?](instructors/05-bayes.md) |
+| 05 | [What Does a Positive Test Tell Us?](instructors/05-bayes.md) |
 | 06 | [How Many Orders Arrive in Ten Offers?](instructors/06-discrete-model.md) |
 | 07 | [From Parcel Weights to Standard Scores](instructors/07-normal-model.md) |
 | 08 | [Why Do Averages Vary Less Than Observations?](instructors/08-sampling-means.md) |
@@ -21,15 +21,15 @@ Distribute the separate student edition to the class. This guide and the chapter
 | 13 | [The Same Workers Before and After](instructors/13-paired-means.md) |
 | 14 | [Did Two Messages Produce Different Response Rates?](instructors/14-two-proportions.md) |
 | 15 | [Do Study Hours and Scores Move Together?](instructors/15-correlation.md) |
-| 16 | [Are Shopping Channels and Membership Independent?](instructors/16-categorical-independence.md) |
+| 16 | [Are Visitor Type and Purchase Independent?](instructors/16-categorical-independence.md) |
 | 17 | [Comparing Three Training Formats](instructors/17-anova.md) |
-| 18 | [Comparing Ordinal Customer Ratings](instructors/18-rank-comparisons.md) |
+| 18 | [Comparing Ordinal Quality Scores](instructors/18-rank-comparisons.md) |
 | 19 | [Resampling the Observed Baskets](instructors/19-bootstrap.md) |
 | 20 | [From a Question to a Statistical Report](instructors/20-statistical-report.md) |
 
 ## Reproduce and inspect the evidence
 
-Every workbook has a flat `Data` sheet with original rows, order and missing cells, and a `Dictionary` sheet with definitions and units. Never replace a blank measurement with zero merely to simplify import. Original mechanisms in `instructors/generators/` expose `make_data()` and the seed; these files are excluded from the student edition. The ordinary student workflow reads prepared observations and never regenerates them. Resampling lessons derive their draws from the supplied observations with stated seeds and replication counts.
+Every workbook has a flat `Data` sheet with original rows, order and missing cells, and a `Dictionary` sheet with definitions and units. Never replace a blank measurement with zero merely to simplify import. Generators in `instructors/generators/` expose `make_data()`. For synthetic labs they record the mechanism and seed; for the published-data Labs 04, 05, 16 and 18 they rebuild the rows from the publishers' files vendored in `instructors/sources/`, after checking each file's SHA-256, without any download. These files are excluded from the student edition. The ordinary student workflow reads prepared observations and never regenerates them. Resampling lessons derive their draws from the supplied observations with stated seeds and replication counts.
 
 Run focused verification with the locked application environment and numerical threads capped:
 

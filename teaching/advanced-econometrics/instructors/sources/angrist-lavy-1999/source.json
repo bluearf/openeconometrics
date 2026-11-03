@@ -1,0 +1,40 @@
+{
+  "dataset": "Replication data for: Using Maimonides' Rule to Estimate the Effect of Class Size on Student Achievement",
+  "creators": ["Joshua D. Angrist", "Victor Lavy"],
+  "publisher": "Harvard Dataverse",
+  "dataset_url": "https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/XRSUJU",
+  "dataset_doi": "10.7910/DVN/XRSUJU",
+  "licence": "CC0-1.0",
+  "licence_name": "CC0 1.0 Universal",
+  "licence_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "licence_evidence": "The Dataverse API record for version 1.0 gives license name \"CC0 1.0\" (SPDX CC0-1.0), empty terms of use, no guestbook and no file access request; read on 2026-10-18.",
+  "citation": "Angrist, J. D., & Lavy, V. (2009). Replication data for: Using Maimonides' Rule to Estimate the Effect of Class Size on Student Achievement (Version 1.0) [Dataset]. Harvard Dataverse. https://doi.org/10.7910/DVN/XRSUJU",
+  "article": "Angrist, J. D., & Lavy, V. (1999). Using Maimonides' rule to estimate the effect of class size on scholastic achievement. Quarterly Journal of Economics, 114(2), 533-575. https://doi.org/10.1162/003355399556061",
+  "retrieved": {
+    "date": "2026-10-18",
+    "url": "https://dataverse.harvard.edu/api/access/datafile/1232180?format=original",
+    "publisher_version": "Dataverse version 1.0, released 2009-01-21. Files fetched through the access API: 1232180 (final5, original Stata format), 1232176 (AngristLavy_Table4.do) and 1232178 (readme.txt); each file's MD5 equals the checksum in the Dataverse record."
+  },
+  "files": [
+    {
+      "name": "final5.dta",
+      "sha256": "bf443edee9033926b4e74dc2c17a98b04405b899735bf4c372e0e6d468431a54",
+      "bytes": 241713,
+      "origin": "The depositors' original Stata file for fifth-grade classes, byte for byte (Dataverse MD5 ffca19b408107d5ff7bd50efe8278ddc)."
+    },
+    {
+      "name": "AngristLavy_Table4.do",
+      "sha256": "ebdd331196a4aad50d5cb65a51949151daee2c155f17768f498baf72827baae8",
+      "bytes": 2119,
+      "origin": "The depositors' Stata program for Table IV, byte for byte; it defines the sample filters the lab applies."
+    },
+    {
+      "name": "readme.txt",
+      "sha256": "c87254399a91d2e00e9cc0fd986d296011e1981f0b3814b16a7cccf0d9ca71b1",
+      "bytes": 971,
+      "origin": "The depositors' readme, byte for byte."
+    }
+  ],
+  "changes": "None to the vendored files. The lab workbook applies the Table IV sample rules from AngristLavy_Table4.do, keeps the columns the lab needs and adds func1, as stated in its dataset.json filters.",
+  "used_by": ["15-iv-moment-condition"]
+}

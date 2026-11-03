@@ -1,26 +1,61 @@
 {
-  "filename": "customer_events.xlsx",
-  "description": "Which Denominator Belongs in a Probability?; original synthetic teaching data.",
-  "observation_unit": "One synthetic customer visit.",
-  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
-  "generation_seed": 710004,
+  "filename": "shopper_sessions.xlsx",
+  "description": "Which Denominator Belongs in a Probability?; published open data from the UCI Online Shoppers Purchasing Intention Dataset.",
+  "observation_unit": "One browsing session on an online retailer's website. The source has no visitor identifier, so one person can contribute several sessions.",
+  "source": "Published open data: Online Shoppers Purchasing Intention Dataset (Sakar and Kastro 2018), UCI Machine Learning Repository; CC BY 4.0.",
+  "publisher": "UCI Machine Learning Repository",
+  "dataset_url": "https://archive.ics.uci.edu/dataset/468/online+shoppers+purchasing+intention+dataset",
+  "dataset_doi": "10.24432/C5F88Q",
+  "licence": "CC-BY-4.0",
+  "licence_name": "Creative Commons Attribution 4.0 International",
+  "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+  "citation": {
+    "dataset": "Sakar, C., & Kastro, Y. (2018). Online Shoppers Purchasing Intention Dataset [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5F88Q",
+    "article": "Sakar, C. O., Polat, S. O., Katircioglu, M., & Kastro, Y. (2019). Real-time prediction of online shoppers' purchasing intention using multilayer perceptron and LSTM recurrent neural networks. Neural Computing and Applications, 31(10), 6893-6908. https://doi.org/10.1007/s00521-018-3523-0"
+  },
+  "retrieved": {
+    "date": "2026-10-18",
+    "version": "UCI record last updated 2024-01-11; archive SHA-256 2972e6184d3ad7beaaa831d9fc2b059dc3ee29df69d1ec593c466a5cd8485d14."
+  },
+  "raw_source": "instructors/sources/uci-online-shoppers",
+  "raw_sha256": {
+    "online_shoppers_intention.csv": "b3055ee355f59134d851d32641183cb4a8b45def7124d2f50442a042f358e0d9"
+  },
+  "filters": [
+    "All 12,330 sessions are kept in file order, including 125 rows that repeat another row exactly; session numbers them 1-12,330 because the source has no session identifier.",
+    "VisitorType keeps the publisher's labels Returning_Visitor, New_Visitor and Other.",
+    "Weekend and Revenue are the publisher's TRUE/FALSE values coded 1/0.",
+    "The other 14 columns are left out."
+  ],
+  "roles": {
+    "unit": "session",
+    "category": "VisitorType",
+    "event_level": "Returning_Visitor",
+    "outcome": "Revenue"
+  },
   "columns": [
     {
-      "name": "visit_id",
-      "description": "Visit identifier",
+      "name": "session",
+      "description": "Session number in the publisher's file order",
       "unit": "integer ID",
       "missing": 0
     },
     {
-      "name": "member",
-      "description": "Loyalty membership before visit",
-      "unit": "0=no, 1=yes",
+      "name": "VisitorType",
+      "description": "Visitor type recorded by the retailer's analytics",
+      "unit": "Returning_Visitor, New_Visitor or Other",
       "missing": 0
     },
     {
-      "name": "purchase",
-      "description": "Purchase during visit",
-      "unit": "0=no, 1=yes",
+      "name": "Weekend",
+      "description": "Session took place on a weekend",
+      "unit": "0=no, 1=yes (TRUE in the source)",
+      "missing": 0
+    },
+    {
+      "name": "Revenue",
+      "description": "Session ended in a purchase",
+      "unit": "0=no, 1=yes (TRUE in the source)",
       "missing": 0
     }
   ]

@@ -29,7 +29,7 @@ Distribute the separate student edition to the class. This guide and the chapter
 
 ## Reproduce and inspect the evidence
 
-Every workbook has a flat `Data` sheet with original rows, order and missing cells, and a `Dictionary` sheet with definitions and units. Never replace a blank measurement with zero merely to simplify import. Original mechanisms in `instructors/generators/` expose `make_data()` and the seed; these files are excluded from the student edition. The ordinary student workflow reads prepared observations and never regenerates them. Resampling lessons derive their draws from the supplied observations with stated seeds and replication counts.
+Every workbook has a flat `Data` sheet with original rows, order and missing cells, and a `Dictionary` sheet with definitions and units. Never replace a blank measurement with zero merely to simplify import. Generators in `instructors/generators/` expose `make_data()`. For synthetic labs they record the mechanism and seed; for the published-data Lab 15 the generator rebuilds the rows from the depositors' files vendored in `instructors/sources/`, after checking each file's SHA-256, without any download. These files are excluded from the student edition. The ordinary student workflow reads prepared observations and never regenerates them. Resampling lessons derive their draws from the supplied observations with stated seeds and replication counts.
 
 Run focused verification with the locked application environment and numerical threads capped:
 
