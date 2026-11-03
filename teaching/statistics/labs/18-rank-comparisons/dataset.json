@@ -1,26 +1,55 @@
 {
-  "filename": "customer_ratings.xlsx",
-  "description": "Comparing Ordinal Customer Ratings; original synthetic teaching data.",
-  "observation_unit": "One synthetic independent customer rating.",
-  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
-  "generation_seed": 710018,
+  "filename": "wine_quality.xlsx",
+  "description": "Comparing Ordinal Quality Scores; published open data from the UCI Wine Quality dataset.",
+  "observation_unit": "One sample of Portuguese vinho verde, red or white, with its sensory quality score: the median of at least three assessments by wine experts on a 0-10 scale.",
+  "source": "Published open data: Wine Quality (Cortez et al. 2009), UCI Machine Learning Repository; CC BY 4.0.",
+  "publisher": "UCI Machine Learning Repository",
+  "dataset_url": "https://archive.ics.uci.edu/dataset/186/wine+quality",
+  "dataset_doi": "10.24432/C56S3T",
+  "licence": "CC-BY-4.0",
+  "licence_name": "Creative Commons Attribution 4.0 International",
+  "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+  "citation": {
+    "dataset": "Cortez, P., Cerdeira, A., Almeida, F., Matos, T., & Reis, J. (2009). Wine Quality [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C56S3T",
+    "article": "Cortez, P., Cerdeira, A., Almeida, F., Matos, T., & Reis, J. (2009). Modeling wine preferences by data mining from physicochemical properties. Decision Support Systems, 47(4), 547-553. https://doi.org/10.1016/j.dss.2009.05.016"
+  },
+  "retrieved": {
+    "date": "2026-10-18",
+    "version": "UCI record last updated 2023-11-15; archive SHA-256 3ed56667f4b828242bd732d7d1dd7f2861e54432239d7fa63877014cbb0304d4."
+  },
+  "raw_source": "instructors/sources/uci-wine-quality",
+  "raw_sha256": {
+    "winequality-red.csv": "4a402cf041b025d4566d954c3b9ba8635a3a8a01e039005d97d6a710278cf05e",
+    "winequality-white.csv": "76c3f809815c17c07212622f776311faeb31e87610d52c26d87d6e361b169836"
+  },
+  "filters": [
+    "The 1,599 rows of winequality-red.csv are placed above the 4,898 rows of winequality-white.csv, each in file order, including rows that repeat another row exactly; wine numbers the 6,497 rows in that order because the source has no identifier.",
+    "colour records which of the two files a row came from.",
+    "quality is the publisher's sensory score; the 11 physicochemical columns are left out."
+  ],
+  "roles": {
+    "unit": "wine",
+    "group": "colour",
+    "score": "quality",
+    "groups": ["red", "white"]
+  },
   "columns": [
     {
-      "name": "customer_id",
-      "description": "Customer identifier",
+      "name": "wine",
+      "description": "Wine number: red file first, then white, each in file order",
       "unit": "integer ID",
       "missing": 0
     },
     {
-      "name": "service",
-      "description": "Service group",
-      "unit": "A or B",
+      "name": "colour",
+      "description": "Wine colour, from the file the row came from",
+      "unit": "red or white",
       "missing": 0
     },
     {
-      "name": "rating",
-      "description": "Ordered satisfaction response",
-      "unit": "integer scale 1\u20137",
+      "name": "quality",
+      "description": "Sensory quality score: median of at least three expert assessments",
+      "unit": "integer scale 0-10 (3-9 observed)",
       "missing": 0
     }
   ]

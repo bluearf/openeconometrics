@@ -1,26 +1,60 @@
 {
-  "filename": "quality_alerts.xlsx",
-  "description": "What Does a Quality Alert Tell Us?; original synthetic teaching data.",
-  "observation_unit": "One synthetic manufactured component.",
-  "source": "Original OpenEconometrics teaching simulation. Not empirical observations.",
-  "generation_seed": 710005,
+  "filename": "antigen_tests.xlsx",
+  "description": "What Does a Positive Test Tell Us?; published open data from Pray et al. (2021), MMWR.",
+  "observation_unit": "One paired nasal swab: an antigen-test swab and an RT-PCR swab collected from the same participant at the same visit. The 1,098 pairs include 57 participants tested on more than one day.",
+  "source": "Published open data: Table 2 of Pray et al. (2021), Morbidity and Mortality Weekly Report 69(51-52), Centers for Disease Control and Prevention; public domain.",
+  "publisher": "Centers for Disease Control and Prevention, Morbidity and Mortality Weekly Report",
+  "dataset_url": "https://www.cdc.gov/mmwr/volumes/69/wr/mm695152a3.htm",
+  "dataset_doi": "10.15585/mmwr.mm695152a3",
+  "licence": "US-Government-Public-Domain",
+  "licence_name": "Public domain (MMWR series statement)",
+  "licence_url": "https://www.cdc.gov/mmwr/about.html",
+  "citation": {
+    "dataset": "Pray, I. W., Ford, L., Cole, D., et al. (2021). Performance of an antigen-based test for asymptomatic and symptomatic SARS-CoV-2 testing at two university campuses - Wisconsin, September-October 2020. MMWR Morbidity and Mortality Weekly Report, 69(51-52), 1642-1647. https://doi.org/10.15585/mmwr.mm695152a3",
+    "article": "Same report (Table 2). PMC copy: https://pmc.ncbi.nlm.nih.gov/articles/PMC9191905/"
+  },
+  "retrieved": {
+    "date": "2026-10-18",
+    "version": "MMWR 69(51-52), 1 January 2021; Table 2 read on the CDC page and on PMC, which agree. The CDC page notes that the report has been corrected; no erratum was found."
+  },
+  "raw_source": "instructors/sources/mmwr-antigen-2021",
+  "raw_sha256": {
+    "table2_counts.csv": "7b02a6ce1ab9f685118c279e3617e30f44da58b839889516178116b590651ee5"
+  },
+  "filters": [
+    "Each of the eight Table 2 counts (symptom group by antigen result by RT-PCR result) becomes that many rows: asymptomatic first, then symptomatic, and within each group antigen+/PCR+, antigen+/PCR-, antigen-/PCR+, antigen-/PCR-.",
+    "specimen_pair_id numbers the 1,098 rows in that order; the report publishes counts, not records, so row order carries no information.",
+    "Results are coded 1 = positive and 0 = negative; symptomatic = 1 when one or more symptoms were reported at specimen collection."
+  ],
+  "roles": {
+    "unit": "specimen_pair_id",
+    "condition": "pcr_positive",
+    "test": "antigen_positive",
+    "group": "symptomatic"
+  },
   "columns": [
     {
-      "name": "component_id",
-      "description": "Component identifier",
+      "name": "specimen_pair_id",
+      "description": "Label for one paired nasal swab, created when expanding the published table",
       "unit": "integer ID",
       "missing": 0
     },
     {
-      "name": "defect",
-      "description": "Inspection truth, observed for teaching",
-      "unit": "0=sound, 1=defective",
+      "name": "symptomatic",
+      "description": "Participant reported one or more COVID-19 symptoms at specimen collection",
+      "unit": "0=no, 1=yes",
       "missing": 0
     },
     {
-      "name": "alert",
-      "description": "Automated alert",
-      "unit": "0=no, 1=yes",
+      "name": "antigen_positive",
+      "description": "Sofia SARS Antigen Fluorescent Immunoassay result",
+      "unit": "0=negative, 1=positive",
+      "missing": 0
+    },
+    {
+      "name": "pcr_positive",
+      "description": "Real-time RT-PCR result, the study's reference standard",
+      "unit": "0=negative, 1=positive",
       "missing": 0
     }
   ]

@@ -1,0 +1,9 @@
+symptom_status,antigen_result,rt_pcr_result,paired_swabs
+asymptomatic,positive,positive,7
+asymptomatic,positive,negative,14
+asymptomatic,negative,positive,10
+asymptomatic,negative,negative,840
+symptomatic,positive,positive,32
+symptomatic,positive,negative,2
+symptomatic,negative,positive,8
+symptomatic,negative,negative,185

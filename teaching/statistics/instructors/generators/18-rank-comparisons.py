@@ -1,24 +1,38 @@
-"""Original synthetic observations, for instructor preparation only."""
+"""Published open data, for instructor preparation only.
 
-import torch
+Stacks the red and white files of the vendored UCI Wine Quality extract in
+``instructors/sources/uci-wine-quality``. Each file's SHA-256 is checked
+against ``source.json`` before it is read; nothing is downloaded.
+"""
+
+import hashlib
+import json
+from pathlib import Path
+
 import pandas as pd
 
-SEED = 710018
+DATASET = "uci-wine-quality"
+
+
+def source_file(name):
+    here = Path(__file__).resolve().parent
+    for folder in (here.parent / "sources" / DATASET, here / "sources" / DATASET):
+        if (folder / "source.json").is_file():
+            break
+    else:
+        raise FileNotFoundError(f"Vendored source {DATASET} is missing")
+    recorded = {f["name"]: f["sha256"] for f in json.loads((folder / "source.json").read_text())["files"]}
+    if hashlib.sha256((folder / name).read_bytes()).hexdigest() != recorded[name]:
+        raise ValueError(f"{name} differs from its recorded SHA-256")
+    return folder / name
 
 
 def make_data():
-    g = torch.Generator().manual_seed(SEED)
-    n = 80
-    group = torch.arange(n) % 2
-    v = (
-        (3.8 + 0.65 * group + 1.4 * torch.randn(n, generator=g, dtype=torch.float64))
-        .round()
-        .clamp(1, 7)
-    )
+    parts = [
+        pd.read_csv(source_file(f"winequality-{colour}.csv"), sep=";").assign(colour=colour)
+        for colour in ("red", "white")
+    ]
+    wines = pd.concat(parts, ignore_index=True)
     return pd.DataFrame(
-        {
-            "customer_id": range(1, n + 1),
-            "service": ["A" if x == 0 else "B" for x in group.tolist()],
-            "rating": v.tolist(),
-        }
+        {"wine": range(1, len(wines) + 1), "colour": wines.colour, "quality": wines.quality}
     )

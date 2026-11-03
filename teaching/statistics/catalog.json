@@ -53,7 +53,7 @@
       "title": "Which Denominator Belongs in a Probability?",
       "scope": "Joint, marginal and conditional event frequencies.",
       "data_mode": "prepared_excel",
-      "data_file": "customer_events.xlsx",
+      "data_file": "shopper_sessions.xlsx",
       "display_types": [
         "table",
         "plot",
@@ -64,10 +64,10 @@
     {
       "number": 5,
       "slug": "05-bayes",
-      "title": "What Does a Quality Alert Tell Us?",
+      "title": "What Does a Positive Test Tell Us?",
       "scope": "Bayes theorem, sensitivity, specificity and base rates.",
       "data_mode": "prepared_excel",
-      "data_file": "quality_alerts.xlsx",
+      "data_file": "antigen_tests.xlsx",
       "display_types": [
         "table",
         "plot",
@@ -218,10 +218,10 @@
     {
       "number": 16,
       "slug": "16-categorical-independence",
-      "title": "Are Shopping Channels and Membership Independent?",
+      "title": "Are Visitor Type and Purchase Independent?",
       "scope": "Expected counts, Pearson chi-square and association size.",
       "data_mode": "prepared_excel",
-      "data_file": "shopping_channels.xlsx",
+      "data_file": "visitor_purchases.xlsx",
       "display_types": [
         "table",
         "plot",
@@ -246,10 +246,10 @@
     {
       "number": 18,
       "slug": "18-rank-comparisons",
-      "title": "Comparing Ordinal Customer Ratings",
+      "title": "Comparing Ordinal Quality Scores",
       "scope": "Midranks, ties, rank-sum tests and probability of superiority.",
       "data_mode": "prepared_excel",
-      "data_file": "customer_ratings.xlsx",
+      "data_file": "wine_quality.xlsx",
       "display_types": [
         "table",
         "plot",

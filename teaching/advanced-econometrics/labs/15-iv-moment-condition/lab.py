@@ -10,9 +10,20 @@ import torch
 import openecon as oe
 from openecon.models import ResultBundle
 
-DATA_FILE = "iv_moment_condition.xlsx"
+DATA_FILE = "maimonides_classes.xlsx"
 LAB = "15-iv-moment-condition"
 TITLE = "Instrumental Variables and the Projection Formula"
+DATA_SOURCE = "Angrist and Lavy 1999 replication data, Harvard Dataverse"
+LICENCE = "CC0 1.0"
+# Column roles; identical to "roles" in the lab's dataset.json.
+ROLES = {
+    "y": "avgverb",
+    "x": "classize",
+    "z": "func1",
+    "controls": ["tipuach", "c_size"],
+    "enrolment": "c_size",
+    "cluster": "schlcode",
+}
 
 
 def load_data(data_path=None):
@@ -177,57 +188,83 @@ def valid(models):
 
 
 def analyze(raw):
-    ols = fit(raw, ["control", "x"], covariance="nonrobust")
-    iv = oe.ivregress(
-        data=raw,
-        y="y",
-        x=["control"],
-        endog=["x"],
-        instruments=["z"],
-        covariance="unadjusted",
-        small=True,
-        missing="raise",
-    )
-    first = fit(raw, ["control", "z"], y="x", covariance="nonrobust")
-    X = torch.tensor([[1.0, c, x] for c, x in zip(raw.control, raw.x)], dtype=torch.float64)
-    Z = torch.tensor([[1.0, c, z] for c, z in zip(raw.control, raw.z)], dtype=torch.float64)
-    Y = torch.tensor(raw.y.tolist(), dtype=torch.float64)
-    PX = Z @ torch.linalg.lstsq(Z, X).solution
-    b = torch.linalg.solve(X.T @ PX, PX.T @ Y)
-    models = {"ordinary": ols, "first_stage": first, "two_stage_least_squares": iv}
+    y, x, z, controls, cluster = (ROLES[k] for k in ("y", "x", "z", "controls", "cluster"))
+    without_enrolment = [c for c in controls if c != ROLES["enrolment"]]
+    data = raw[[cluster, *controls, x, z, y]]
+    ols = fit(data, [*controls, x], y=y, covariance="nonrobust")
+    first = fit(data, [*controls, z], y=x, covariance="nonrobust")
+    first_clustered = fit(data, [*controls, z], y=x, covariance="cluster", cluster=cluster)
+
+    def iv(exogenous, **options):
+        return oe.ivregress(
+            data=data, y=y, x=exogenous, endog=[x], instruments=[z], small=True, missing="raise", **options
+        )
+
+    two_stage = iv(controls, covariance="unadjusted")
+    two_stage_clustered = iv(controls, cluster=cluster)
+    pd_only = iv(without_enrolment, cluster=cluster)
+    X = torch.tensor(data[controls + [x]].values, dtype=torch.float64)
+    Z = torch.tensor(data[controls + [z]].values, dtype=torch.float64)
+    ones = torch.ones(len(data), 1, dtype=torch.float64)
+    X, Z = torch.cat([ones, X], dim=1), torch.cat([ones, Z], dim=1)
+    Y = torch.tensor(data[y].tolist(), dtype=torch.float64)
+    X_hat = Z @ torch.linalg.lstsq(Z, X).solution
+    b = torch.linalg.solve(X.T @ X_hat, X_hat.T @ Y)
+    enrolment = data[ROLES["enrolment"]]
+    rule = enrolment / ((enrolment - 1) // 40 + 1)
+    models = {
+        "ordinary": ols,
+        "first_stage": first,
+        "first_stage_clustered": first_clustered,
+        "two_stage_least_squares": two_stage,
+        "two_stage_least_squares_clustered": two_stage_clustered,
+        "percent_disadvantaged_only": pd_only,
+    }
     summary = {
-        "ols_x": coef(ols, "x").estimate,
-        "iv_x": coef(iv, "x").estimate,
-        "iv_x_se": coef(iv, "x").std_error,
-        "first_stage_instrument_slope": coef(first, "z").estimate,
-        "matrix_iv_x": float(b[2]),
+        "classes": len(data),
+        "schools": int(data[cluster].nunique()),
+        "ols_class_size": coef(ols, x).estimate,
+        "first_stage_instrument_slope": coef(first, z).estimate,
+        "first_stage_cluster_F": coef(first_clustered, z).statistic ** 2,
+        "iv_class_size": coef(two_stage, x).estimate,
+        "iv_class_size_classical_se": coef(two_stage, x).std_error,
+        "iv_class_size_cluster_se": coef(two_stage_clustered, x).std_error,
+        "iv_class_size_cluster_ci_low": coef(two_stage_clustered, x).ci_low,
+        "iv_class_size_cluster_ci_high": coef(two_stage_clustered, x).ci_high,
+        "iv_class_size_percent_disadvantaged_only": coef(pd_only, x).estimate,
+        "iv_class_size_percent_disadvantaged_only_cluster_se": coef(pd_only, x).std_error,
+        "matrix_iv_class_size": float(b[-1]),
     }
     checks = {
-        "projection_formula_matches_iv": abs(float(b[2]) - coef(iv, "x").estimate) < 1e-9,
-        "same_complete_sample": iv.nobs == ols.nobs == first.nobs == len(raw),
+        "projection_formula_matches_iv": abs(float(b[-1]) - coef(two_stage, x).estimate) < 1e-9,
+        "clustering_changes_only_the_covariance": abs(
+            coef(two_stage_clustered, x).estimate - coef(two_stage, x).estimate
+        )
+        < 1e-10,
+        "instrument_follows_maimonides_rule": float((data[z] - rule).abs().max()) < 1e-12,
+        "same_complete_sample": all(m.nobs == len(data) for m in models.values()),
     }
     checks.update(valid(models))
-    # Concept chart for this chapter.
     return (
         summary,
         models["two_stage_least_squares"],
         [
             panel(
-                raw.z.tolist(),
-                raw.x.tolist(),
+                data[z].tolist(),
+                data[x].tolist(),
                 kind="scatter",
-                title="First stage: X against the instrument",
-                xlabel="Instrument Z (units)",
-                ylabel="Endogenous X (units)",
+                title="First stage: class size against Maimonides' rule",
+                xlabel="Predicted class size, func1 (pupils)",
+                ylabel="Actual class size (pupils)",
             ),
             panel(
-                ["OLS", "IV (2SLS)"],
-                [coef(ols, "x").estimate, coef(iv, "x").estimate],
+                ["OLS + c_size", "2SLS", "2SLS + c_size"],
+                [coef(ols, x).estimate, coef(pd_only, x).estimate, coef(two_stage, x).estimate],
                 kind="bar",
-                title="Slope on X by estimator",
-                xlabel="Estimator",
-                ylabel="Outcome units per X unit",
-            )
+                title="Class-size slope by estimator",
+                xlabel="Estimator (each controls for tipuach)",
+                ylabel="Reading points per pupil",
+            ),
         ],
         checks,
         models,
@@ -249,8 +286,10 @@ def run_lab(output_dir=None, display_callback=None, data_path=None):
         "metadata": {
             "lab": LAB,
             "title": TITLE,
-            "synthetic": True,
+            "synthetic": False,
             "data_file": DATA_FILE,
+            "data_source": DATA_SOURCE,
+            "licence": LICENCE,
             "raw_rows": len(raw),
         },
         "summary": clean(summary),
@@ -259,7 +298,7 @@ def run_lab(output_dir=None, display_callback=None, data_path=None):
         "chart_data": {"panels": panels},
         "checks": clean(checks),
     }
-    latex = str(table.to_latex(precision=6, caption=TITLE + " (original synthetic data)"))
+    latex = str(table.to_latex(precision=6, caption=f"{TITLE} ({DATA_SOURCE}; {LICENCE})"))
     if display_callback is not None:
         display_callback(
             oe.DataFrame(pd.concat(native, names=["procedure"]))

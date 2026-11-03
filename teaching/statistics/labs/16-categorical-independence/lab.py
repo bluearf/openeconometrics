@@ -1,4 +1,4 @@
-"""Are Shopping Channels and Membership Independent?: run the whole file after importing the supplied workbook."""
+"""Are Visitor Type and Purchase Independent?: run the whole file after importing the supplied workbook."""
 
 from __future__ import annotations
 import json
@@ -10,9 +10,13 @@ import torch
 import openecon as oe
 from openecon.models import ResultBundle
 
-DATA_FILE = "shopping_channels.xlsx"
+DATA_FILE = "visitor_purchases.xlsx"
 LAB = "16-categorical-independence"
-TITLE = "Are Shopping Channels and Membership Independent?"
+TITLE = "Are Visitor Type and Purchase Independent?"
+DATA_SOURCE = "UCI Online Shoppers Purchasing Intention Dataset, Sakar and Kastro 2018"
+LICENCE = "CC BY 4.0"
+# Column roles; identical to "roles" in the lab's dataset.json.
+ROLES = {"unit": "session", "row": "VisitorType", "column": "Revenue"}
 
 
 def load_data(data_path=None):
@@ -62,6 +66,55 @@ def panel(x, y, *, kind="line", title=TITLE, xlabel="Observation", ylabel="Value
     }
 
 
+def chart(panel):
+    """Draw a chart_data panel with OpenEconometrics Charts, as the handout figure does."""
+    series = panel["series"]
+    first = series[0]
+    options = {"title": panel["title"]}
+    if panel.get("value_limits"):
+        options["xlim" if "low" in first else "ylim"] = list(panel["value_limits"])
+    if panel.get("segments"):
+        options["annotations"] = [
+            {
+                "type": "segment",
+                "text": g["label"],
+                **{k: g[k] for k in ("x0", "y0", "x1", "y1", "color", "align", "dx", "dy") if k in g},
+            }
+            for g in panel["segments"]
+        ]
+    if "low" in first:
+        records = [
+            {"term": str(term), "estimate": estimate, "ci_low": low, "ci_high": high}
+            for term, estimate, low, high in zip(first["x"], first["y"], first["low"], first["high"])
+        ]
+        plot = oe.plot.coefficients(
+            {"coefficients": records}, x_label=panel["ylabel"], y_label=panel["xlabel"], **options
+        )
+    elif panel["kind"] == "bar":
+        frame = {panel["xlabel"]: [str(v) for v in first["x"]], **{s["label"]: s["y"] for s in series}}
+        plot = oe.plot.bar(
+            data=frame,
+            x=panel["xlabel"],
+            y=[s["label"] for s in series],
+            legend=len(series) > 1,
+            y_label=panel["ylabel"],
+            **options,
+        )
+    else:
+        plotter = oe.plot.scatter if panel["kind"] == "scatter" else oe.plot.line
+        plot = plotter(
+            data={"x": first["x"], "y": first["y"]},
+            x="x",
+            y="y",
+            x_label=panel["xlabel"],
+            y_label=panel["ylabel"],
+            **options,
+        )
+    for line in panel.get("reference_lines", []):
+        plot = (plot.hline if line["axis"] == "y" else plot.vline)(line["value"], text=line["label"])
+    return plot
+
+
 def clean(value):
     if isinstance(value, dict):
         return {str(k): clean(v) for k, v in value.items()}
@@ -91,21 +144,24 @@ def pack(value):
 
 
 def analyze(raw):
-    native = oe.crosstab(raw, "channel", "member", expected=True, exact=False)
-    counts = pd.crosstab(raw.channel, raw.member).to_numpy(dtype=float)
+    row, column = ROLES["row"], ROLES["column"]
+    native = oe.crosstab(raw, row, column, expected=True, exact=False)
+    counts = pd.crosstab(raw[row], raw[column]).to_numpy(dtype=float)
     expected = counts.sum(1)[:, None] * counts.sum(0)[None, :] / counts.sum()
     chi = float(((counts - expected) ** 2 / expected).sum())
-    row = native["tests"].loc["pearson"]
+    tests = native["tests"].loc["pearson"]
+    shares = raw.groupby(row)[column].mean()
     summary = {
-        "transactions": len(raw),
-        "pearson_chi_squared": float(row["statistic"]),
-        "df": 2,
-        "p_value": float(row["p_value"]),
+        "sessions": len(raw),
+        "pearson_chi_squared": float(tests["statistic"]),
+        "df": (counts.shape[0] - 1) * (counts.shape[1] - 1),
+        "p_value": float(tests["p_value"]),
         "minimum_expected_count": float(expected.min()),
-        "cramers_v": math.sqrt(chi / len(raw)),
+        "cramers_v": math.sqrt(chi / (len(raw) * (min(counts.shape) - 1))),
+        **{f"purchase_share_{name}": float(value) for name, value in shares.items()},
     }
     checks = {
-        "native_chi_square_matches_cell_formula": abs(float(row["statistic"]) - chi) < 1e-10,
+        "native_chi_square_matches_cell_formula": abs(float(tests["statistic"]) - chi) < 1e-10,
         "expected_margins_match_observed": bool(
             abs(expected.sum(0) - counts.sum(0)).max() < 1e-10
             and abs(expected.sum(1) - counts.sum(1)).max() < 1e-10
@@ -113,17 +169,17 @@ def analyze(raw):
         "adequate_expected_counts": float(expected.min()) >= 5,
         "observed_cells_partition": int(counts.sum()) == len(raw),
     }
-    rates = raw.groupby("channel").member.mean()
     return (
         summary,
         native,
         [
             panel(
-                rates.index.tolist(),
-                rates.tolist(),
+                shares.index.tolist(),
+                shares.tolist(),
                 kind="bar",
-                xlabel="Shopping channel",
-                ylabel="Member fraction",
+                title="Purchase share by visitor type",
+                xlabel="Visitor type",
+                ylabel="Purchase fraction",
             )
         ],
         checks,
@@ -146,8 +202,10 @@ def run_lab(output_dir=None, display_callback=None, data_path=None):
         "metadata": {
             "lab": LAB,
             "title": TITLE,
-            "synthetic": True,
+            "synthetic": False,
             "data_file": DATA_FILE,
+            "data_source": DATA_SOURCE,
+            "licence": LICENCE,
             "raw_rows": len(raw),
         },
         "summary": clean(summary),
@@ -156,18 +214,14 @@ def run_lab(output_dir=None, display_callback=None, data_path=None):
         "chart_data": {"panels": panels},
         "checks": clean(checks),
     }
-    latex = str(table.to_latex(precision=6, caption=TITLE + " (original synthetic data)"))
+    latex = str(table.to_latex(precision=6, caption=f"{TITLE} ({DATA_SOURCE}; {LICENCE})"))
     if display_callback is not None:
         display_callback(
             oe.DataFrame(pd.concat(native, names=["procedure"]))
             if isinstance(native, dict)
             else native
         )
-        first = panels[0]
-        series = first["series"][0]
-        chart_frame = oe.DataFrame({"x": series["x"], "y": series["y"]})
-        plotter = getattr(oe.plot, {"hist": "bar"}.get(first["kind"], first["kind"]))
-        display_callback(plotter(data=chart_frame, x="x", y="y", title=first["title"]))
+        display_callback(chart(panels[0]))
         display_callback(table)
     if output_dir is not None:
         target = Path(output_dir)

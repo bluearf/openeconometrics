@@ -206,7 +206,7 @@
       "title": "Instrumental Variables and the Projection Formula",
       "scope": "How does an instrument isolate exposure variation that is orthogonal to the structural error?",
       "data_mode": "prepared_excel",
-      "data_file": "iv_moment_condition.xlsx",
+      "data_file": "maimonides_classes.xlsx",
       "display_types": [
         "model",
         "plot",

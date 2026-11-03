@@ -1,0 +1,29 @@
+{
+  "dataset": "Online Shoppers Purchasing Intention Dataset",
+  "creators": ["C. Sakar", "Yomi Kastro"],
+  "publisher": "UCI Machine Learning Repository",
+  "dataset_url": "https://archive.ics.uci.edu/dataset/468/online+shoppers+purchasing+intention+dataset",
+  "dataset_doi": "10.24432/C5F88Q",
+  "licence": "CC-BY-4.0",
+  "licence_name": "Creative Commons Attribution 4.0 International",
+  "licence_url": "https://creativecommons.org/licenses/by/4.0/",
+  "licence_evidence": "The dataset landing page names the licence \"Creative Commons Attribution 4.0 International\" and links its legal code; read on 2026-10-18.",
+  "citation": "Sakar, C., & Kastro, Y. (2018). Online Shoppers Purchasing Intention Dataset [Dataset]. UCI Machine Learning Repository. https://doi.org/10.24432/C5F88Q",
+  "article": "Sakar, C. O., Polat, S. O., Katircioglu, M., & Kastro, Y. (2019). Real-time prediction of online shoppers' purchasing intention using multilayer perceptron and LSTM recurrent neural networks. Neural Computing and Applications, 31(10), 6893-6908. https://doi.org/10.1007/s00521-018-3523-0",
+  "retrieved": {
+    "date": "2026-10-18",
+    "url": "https://archive.ics.uci.edu/static/public/468/online+shoppers+purchasing+intention+dataset.zip",
+    "archive_sha256": "2972e6184d3ad7beaaa831d9fc2b059dc3ee29df69d1ec593c466a5cd8485d14",
+    "publisher_version": "UCI record last updated 2024-01-11"
+  },
+  "files": [
+    {
+      "name": "online_shoppers_intention.csv",
+      "sha256": "b3055ee355f59134d851d32641183cb4a8b45def7124d2f50442a042f358e0d9",
+      "bytes": 1072063,
+      "origin": "The only member of the downloaded archive, byte for byte (comma-separated, CRLF line endings)."
+    }
+  ],
+  "changes": "None to the vendored file. Each lab workbook numbers the sessions in file order, keeps the columns it needs and codes Revenue TRUE/FALSE as 1/0, as stated in that lab's dataset.json filters.",
+  "used_by": ["04-conditional-probability", "16-categorical-independence"]
+}
